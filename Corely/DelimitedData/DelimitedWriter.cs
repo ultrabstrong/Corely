@@ -86,7 +86,7 @@
             string recordstring = WriteRecordToString(record);
             FileInfo file = new FileInfo(filepath);
 
-            if (!file.Directory?.Exists ?? false) { file.Directory.Create(); }
+            if (!file.Directory?.Exists ?? false) { file?.Directory?.Create(); }
 
             if (include_record_delim)
             {
