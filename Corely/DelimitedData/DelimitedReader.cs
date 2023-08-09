@@ -51,13 +51,13 @@ namespace Corely.DelimitedData
         private ReadRecordResult ReadRecordForStream(Stream s, System.Text.Encoding encoding)
         {
             // Create record to return
-            ReadRecordResult r = new ReadRecordResult();
+            ReadRecordResult r = new();
             // Init variables for reading record
             string currenttoken = "";
             int currentrecorddelim = 0;
             bool isinliteral = false, lastcharescaped = false, lasttokenliteralescaped = false;
 
-            using (StreamReader sr = new StreamReader(s, encoding))
+            using (StreamReader sr = new(s, encoding))
             {
                 // Increase length for BOM if this is the start of a UTF8-BOM steam
                 if (s.Position == 0 && Equals(new UTF8Encoding(true), sr.CurrentEncoding)) { r.Length += 3; }
@@ -80,7 +80,7 @@ namespace Corely.DelimitedData
                                 isinliteral = true;
                             }
                             // Only append literal if literal isn't already escaped
-                            else if (currenttoken.Length > 0 && currenttoken[currenttoken.Length - 1] != TokenLiteral)
+                            else if (currenttoken.Length > 0 && currenttoken[^1] != TokenLiteral)
                             {
                                 // Append literal to data string without entering block
                                 currenttoken += c;
@@ -91,7 +91,7 @@ namespace Corely.DelimitedData
                         else
                         {
                             // If last char was also a literal
-                            if (currenttoken.Length > 0 && currenttoken[currenttoken.Length - 1] == TokenLiteral)
+                            if (currenttoken.Length > 0 && currenttoken[^1] == TokenLiteral)
                             {
                                 // If last char was already escaped push this one
                                 if (lastcharescaped)
@@ -124,10 +124,10 @@ namespace Corely.DelimitedData
                         if (isinliteral)
                         {
                             // If last char was an unescaped literal
-                            if (currenttoken.Length > 0 && currenttoken[currenttoken.Length - 1] == TokenLiteral && !lastcharescaped)
+                            if (currenttoken.Length > 0 && currenttoken[^1] == TokenLiteral && !lastcharescaped)
                             {
                                 // Token is complete. Remove last literal char, reset vars, and push token
-                                currenttoken = currenttoken.Substring(0, currenttoken.Length - 1);
+                                currenttoken = currenttoken[..^1];
                                 r.Tokens.Add(currenttoken);
                                 currenttoken = "";
                                 isinliteral = false;
@@ -167,7 +167,7 @@ namespace Corely.DelimitedData
                             if (currentrecorddelim == RecordDelimiter.Length - 1)
                             {
                                 // Remove record delimiter chars from current data
-                                currenttoken = currenttoken.Substring(0, currenttoken.Length - RecordDelimiter.Length);
+                                currenttoken = currenttoken[..^RecordDelimiter.Length];
                                 // Record is complete. Exit reader
                                 break;
                             }
@@ -195,7 +195,7 @@ namespace Corely.DelimitedData
                                     else
                                     {
                                         // Token is complete. Remove last literal char, record delimiter chars, reset vars, and push token
-                                        currenttoken = currenttoken.Substring(0, currenttoken.Length - RecordDelimiter.Length - 1);
+                                        currenttoken = currenttoken[..(currenttoken.Length - RecordDelimiter.Length - 1)];
                                         isinliteral = false;
                                         // Record is complete. Exit reader
                                         break;
@@ -233,7 +233,7 @@ namespace Corely.DelimitedData
             ReadRecordResult result;
             long mslength = 0;
 
-            using (MemoryStream ms = new MemoryStream(data_bytes))
+            using (MemoryStream ms = new(data_bytes))
             {
                 byte[] bom = new byte[4];
                 ms.Read(bom, 0, 4);
@@ -249,14 +249,14 @@ namespace Corely.DelimitedData
             {
                 result.HasMore = false;
             }
-            return result;
+            return result ?? new() { HasMore = false };
         }
 
         public List<ReadRecordResult> ReadAllStringRecords(string data)
         {
-            List<ReadRecordResult> records = new List<ReadRecordResult>();
+            List<ReadRecordResult> records = new();
             byte[] data_bytes = Encoding.ASCII.GetBytes(data);
-            ReadRecordResult record = new ReadRecordResult();
+            ReadRecordResult record = new();
             do
             {
                 record = ReadStringRecord(record.EndPosition, data_bytes);
@@ -272,7 +272,7 @@ namespace Corely.DelimitedData
             ReadRecordResult result;
             long fslength = 0;
 
-            using (FileStream fs = new FileStream(filepath, FileMode.Open, FileAccess.Read))
+            using (FileStream fs = new(filepath, FileMode.Open, FileAccess.Read))
             {
                 byte[] bom = new byte[4];
                 fs.Read(bom, 0, 4);
@@ -288,13 +288,13 @@ namespace Corely.DelimitedData
             {
                 result.HasMore = false;
             }
-            return result;
+            return result ?? new() { HasMore = false };
         }
 
         public List<ReadRecordResult> ReadAllFileRecords(string filepath)
         {
-            List<ReadRecordResult> records = new List<ReadRecordResult>();
-            ReadRecordResult record = new ReadRecordResult();
+            List<ReadRecordResult> records = new();
+            ReadRecordResult record = new();
             do
             {
                 record = ReadFileRecord(record.EndPosition, filepath);

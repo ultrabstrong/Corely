@@ -4,20 +4,15 @@
     {
         public static string UrlEncode(this string source)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException("source cannot be null");
-            }
+            ArgumentNullException.ThrowIfNull(source);
+
             return Uri.EscapeDataString(source);
         }
 
         public static string UrlDecode(this string source)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException("source cannot be null");
-            }
-            source = source.Replace("+", "%20");
+            ArgumentNullException.ThrowIfNull(source);
+
             return Uri.UnescapeDataString(source);
         }
 

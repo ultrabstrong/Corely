@@ -5,7 +5,14 @@ VisualStudioVersion = 17.6.33717.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{00650092-1E47-4E30-ACDD-FF2E988BDF6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely", "Corely\Corely.csproj", "{55D6D33A-3ABC-4950-9DB8-4DFA3665B06D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely", "Corely\Corely.csproj", "{55D6D33A-3ABC-4950-9DB8-4DFA3665B06D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.UnitTests", "Corely.UnitTests\Corely.UnitTests.csproj", "{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BFDA9561-A99A-48F5-8346-2AA4EE57CFFA}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +28,10 @@ Global
 		{55D6D33A-3ABC-4950-9DB8-4DFA3665B06D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55D6D33A-3ABC-4950-9DB8-4DFA3665B06D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55D6D33A-3ABC-4950-9DB8-4DFA3665B06D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
