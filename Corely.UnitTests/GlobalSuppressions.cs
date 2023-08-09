@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE0230:Use UTF-8 string literal", Justification = "BOM reader is a unicorn", Scope = "member", Target = "~M:Corely.UnitTests.Core.Encoding.BomReaderTests.GetBomReaderTestData~System.Collections.Generic.IEnumerable{System.Object[]}")]
+[assembly: SuppressMessage("Style", "IDE0230:Use UTF-8 string literal", Justification = "BOM reader is a unicorn", Scope = "member", Target = "~M:Corely.UnitTests.Shared.Core.Encoding.BomReaderTests.GetBomReaderTestData~System.Collections.Generic.IEnumerable{System.Object[]}")]

@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Corely\Corely.csproj" />
+    <ProjectReference Include="..\Corely.Shared\Corely.Shared.csproj" />
   </ItemGroup>
 
 </Project>
