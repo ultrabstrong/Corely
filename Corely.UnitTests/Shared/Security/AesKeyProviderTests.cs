@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Security;
+﻿using Corely.Shared.Providers.Security;
 using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Shared.Security

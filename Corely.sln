@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.DataAccess", "Corely.DataAccess\Corely.DataAccess.csproj", "{EA424CC7-FF06-4B94-9E95-50FFE4679926}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.Domain", "Corely.Domain\Corely.Domain.csproj", "{B8428647-121D-476A-BBD6-B377D159417A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA424CC7-FF06-4B94-9E95-50FFE4679926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA424CC7-FF06-4B94-9E95-50FFE4679926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA424CC7-FF06-4B94-9E95-50FFE4679926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA424CC7-FF06-4B94-9E95-50FFE4679926}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8428647-121D-476A-BBD6-B377D159417A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8428647-121D-476A-BBD6-B377D159417A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8428647-121D-476A-BBD6-B377D159417A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8428647-121D-476A-BBD6-B377D159417A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

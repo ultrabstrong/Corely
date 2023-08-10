@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Security;
+﻿using Corely.Shared.Providers.Security;
 
 namespace Corely.Shared.Models.Security
 {

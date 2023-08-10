@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Core.Encoding;
+﻿using Corely.Shared.Extensions;
 using System.Collections.Immutable;
 
 namespace Corely.Shared.Proxies

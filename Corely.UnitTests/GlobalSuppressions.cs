@@ -5,4 +5,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE0230:Use UTF-8 string literal", Justification = "BOM reader is a unicorn", Scope = "member", Target = "~M:Corely.UnitTests.Shared.Core.Encoding.BomReaderTests.GetBomReaderTestData~System.Collections.Generic.IEnumerable{System.Object[]}")]
+// member
+[assembly: SuppressMessage("Style", "IDE0230:Use UTF-8 string literal", Justification = "BOM reader is a unicorn", Scope = "member", Target = "~M:Corely.UnitTests.Shared.Extensions.BomReaderExtensionsTests.GetEncodingTestData~System.Collections.Generic.IEnumerable{System.Object[]}")]
+
+// module
+[assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Marking method static just because it doesn't reference local variables provides more confusion than help", Scope = "module")]
