@@ -3,29 +3,29 @@ using System.Text;
 
 namespace Corely.Shared.Providers.Data
 {
-    public class DelimitedTextDataProvider : IDelimitedTextDataProvider
+    public class DelimitedTextProvider : IDelimitedTextProvider
     {
         private readonly char _tokenDelimiter;
         private readonly char _tokenLiteral;
         private readonly string _recordDelimiter;
 
-        public DelimitedTextDataProvider() : this(',', '"', Environment.NewLine)
+        public DelimitedTextProvider() : this(',', '"', Environment.NewLine)
         {
         }
 
-        public DelimitedTextDataProvider(Delimiter delimiter)
+        public DelimitedTextProvider(TokenDelimiter delimiter)
         {
             (_tokenDelimiter, _tokenLiteral, _recordDelimiter) =
                 delimiter switch
                 {
-                    Delimiter.Semicolon => (';', '"', Environment.NewLine),
-                    Delimiter.Pipe => ('|', '"', Environment.NewLine),
-                    Delimiter.Tab => ('\t', '"', Environment.NewLine),
+                    TokenDelimiter.Semicolon => (';', '"', Environment.NewLine),
+                    TokenDelimiter.Pipe => ('|', '"', Environment.NewLine),
+                    TokenDelimiter.Tab => ('\t', '"', Environment.NewLine),
                     _ => (',', '"', Environment.NewLine),
                 };
         }
 
-        public DelimitedTextDataProvider(char tokenDelimiter, char tokenLiteral, string recordDelimiter)
+        public DelimitedTextProvider(char tokenDelimiter, char tokenLiteral, string recordDelimiter)
         {
             (_tokenDelimiter, _tokenLiteral, _recordDelimiter) = (tokenDelimiter, tokenLiteral, recordDelimiter);
         }

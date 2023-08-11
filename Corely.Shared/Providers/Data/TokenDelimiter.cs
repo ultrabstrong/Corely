@@ -1,8 +1,8 @@
 ﻿namespace Corely.Shared.Providers.Data
 {
-    public enum Delimiter
+    public enum TokenDelimiter
     {
-        CSV,
+        Comma,
         Tab,
         Pipe,
         Semicolon

@@ -1,6 +1,6 @@
 ﻿namespace Corely.Shared.Providers.Data
 {
-    public interface IDelimitedTextDataProvider
+    public interface IDelimitedTextProvider
     {
         List<ReadRecordResult> ReadAllRecords(Stream stream);
 

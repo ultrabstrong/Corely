@@ -1,25 +1,28 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Corely.Shared.Text
+namespace Corely.Shared.Providers.Data
 {
-    public static class Normalization
+    public class TextNormalizationProvider : ITextNormalizationProvider
     {
-        public static string BasicNormalize(string s)
+        public string BasicNormalize(string s)
         {
+            ArgumentNullException.ThrowIfNull(s, nameof(s));
             return Regex.Replace(s.ToUpper(), "[^\\w]", string.Empty);
         }
 
-        public static string NormalizeAddress(string street, params string[] additional)
+        public string NormalizeAddress(string street, params string[] additional)
         {
+            ArgumentNullException.ThrowIfNull(street, nameof(street));
             return NormalizeAddress(false, street, additional);
         }
 
-        public static string NormalizeAddressAndState(string street, params string[] additional)
+        public string NormalizeAddressAndState(string street, params string[] additional)
         {
+            ArgumentNullException.ThrowIfNull(street, nameof(street));
             return NormalizeAddress(true, street, additional);
         }
 
-        private static string NormalizeAddress(bool includestate, string street, params string[] additional)
+        private string NormalizeAddress(bool includestate, string street, params string[] additional)
         {
             string normalizedaddress = street.ToUpper() + " ";
             normalizedaddress = Regex.Replace(normalizedaddress, "[^\\w\\s]", string.Empty);
@@ -47,7 +50,7 @@ namespace Corely.Shared.Text
             return normalizedaddress;
         }
 
-        private static readonly List<Tuple<string, string, bool>> _commonStreetAbbreviations = new()
+        private readonly List<Tuple<string, string, bool>> _commonStreetAbbreviations = new()
         {
             // Ordinal 
             new Tuple<string, string, bool>("Northeast","NE", false),
@@ -93,7 +96,7 @@ namespace Corely.Shared.Text
             new Tuple<string, string, bool>("Unit","UNIT", true)
         };
 
-        private static readonly List<Tuple<string, string>> _commonStateAbbreviations = new()
+        private readonly List<Tuple<string, string>> _commonStateAbbreviations = new()
         { 
             // States
             new Tuple<string, string> ("Alabama","AL"),

@@ -2,13 +2,13 @@
 
 namespace Corely.UnitTests.Shared.Providers.Data
 {
-    public class DelimitedTextDataProviderTests
+    public class DelimitedTextProviderTests
     {
-        private readonly DelimitedTextDataProvider _delimitedTextDataProvider;
+        private readonly DelimitedTextProvider _delimitedTextDataProvider;
 
-        public DelimitedTextDataProviderTests()
+        public DelimitedTextProviderTests()
         {
-            _delimitedTextDataProvider = new DelimitedTextDataProvider();
+            _delimitedTextDataProvider = new DelimitedTextProvider();
         }
 
         [Fact]
@@ -43,6 +43,9 @@ namespace Corely.UnitTests.Shared.Providers.Data
              * Its late; I'm tired; and this is not a high priority right now.
              * Hopefully one day I'll have a reason to come back and finish this, but for now there are bigger fish to fry.
              */
+
+            // use it to suppress IDE0052 suggestion
+            _delimitedTextDataProvider.GetType();
             Assert.True(true);
         }
     }

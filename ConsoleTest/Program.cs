@@ -2,54 +2,23 @@
 {
     internal class Program
     {
+#pragma warning disable IDE0060 // Remove unused parameter
         static void Main(string[] args)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
-            var s = GetBaseInterleavedTests(",");
-            ;
-        }
-
-        static private List<string> GetBaseInterleavedTests(string interleaveWith)
-        {
-
-            string[] baseInterleaves = new[] {
-                interleaveWith,
-                "a",
-                $"{interleaveWith}a",
-                $"a{interleaveWith}",
-                $"{interleaveWith}a{interleaveWith}"
-            };
-
-            HashSet<string> results = new(baseInterleaves);
-
-            for (int i = 0; i < 3; i++)
+            try
             {
-                string[] currentInterleaves = results.ToArray();
-                foreach (var result in currentInterleaves)
-                {
-                    foreach (var baseInterleave in baseInterleaves)
-                    {
-                        results.Add(result + baseInterleave);
-                    }
-                }
+
             }
-
-            return results.ToList();
-        }
-
-        static private List<string> Interleave(List<string> toInterleave, string interleaveWith)
-        {
-            HashSet<string> results = new(toInterleave);
-
-            string[] currentInterleaves = results.ToArray();
-            foreach (var result in currentInterleaves)
+            catch (Exception ex)
             {
-                foreach (var baseInterleave in toInterleave)
-                {
-                    results.Add(result + baseInterleave);
-                }
+                Console.WriteLine(ex);
             }
-
-            return results.ToList();
+            finally
+            {
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadKey();
+            }
         }
     }
 }
