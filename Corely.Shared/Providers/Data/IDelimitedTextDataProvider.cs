@@ -2,24 +2,12 @@
 {
     public interface IDelimitedTextDataProvider
     {
-        ReadRecordResult ReadStringRecord(long startposition, byte[] data_bytes);
+        List<ReadRecordResult> ReadAllRecords(Stream stream);
 
-        List<ReadRecordResult> ReadAllStringRecords(string data);
+        ReadRecordResult ReadNextRecord(Stream stream, long startPosition);
 
-        ReadRecordResult ReadFileRecord(long startposition, string filepath);
+        void WriteAllRecords(List<List<string>> records, Stream writeTo);
 
-        List<ReadRecordResult> ReadAllFileRecords(string filepath);
-
-        string WriteRecordToString(List<string> record);
-
-        string WriteAllRecordsToString(List<List<string>> records);
-
-        void AppendRecordToFile(List<string> record, string filepath, bool includeRecordDelim);
-
-        void AppendReadRecordToFile(ReadRecordResult record, string filepath, bool includeRecordDelim);
-
-        void AppendAllRecordsToFile(List<List<string>> records, string filepath);
-
-        void AppendAllReadRecordsToFile(List<ReadRecordResult> records, string filepath);
+        void WriteRecord(List<string> record, Stream writeTo);
     }
 }
