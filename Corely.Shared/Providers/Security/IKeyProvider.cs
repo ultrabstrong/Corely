@@ -2,7 +2,7 @@
 {
     public interface IKeyProvider
     {
-        string GetKey();
+        string CreateKey();
 
         bool IsKeyValid(string key);
     }

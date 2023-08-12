@@ -14,8 +14,4 @@
     <NoWarn>8618</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Text\" />
-  </ItemGroup>
-
 </Project>

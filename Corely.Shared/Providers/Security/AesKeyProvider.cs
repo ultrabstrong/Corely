@@ -4,7 +4,7 @@ namespace Corely.Shared.Providers.Security
 {
     public class AesKeyProvider : IKeyProvider
     {
-        public string GetKey()
+        public string CreateKey()
         {
             using (Aes aes = Aes.Create())
             {
