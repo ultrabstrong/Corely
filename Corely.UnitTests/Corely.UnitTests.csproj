@@ -30,6 +30,7 @@
   <ItemGroup>
     <Folder Include="Domain\" />
     <Folder Include="DataAccess\" />
+    <Folder Include="Shared\Models\Security\" />
   </ItemGroup>
 
 </Project>

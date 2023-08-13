@@ -1,6 +1,7 @@
-﻿using System.Net.Http.Headers;
+﻿using Corely.Shared.Models.Http;
+using System.Net.Http.Headers;
 
-namespace Corely.Shared.Proxies
+namespace Corely.Shared.Providers.Proxies
 {
     public class HttpProxy : IDisposable
     {
@@ -41,16 +42,17 @@ namespace Corely.Shared.Proxies
             }
         }
 
-        public virtual HttpResponseMessage SendRequestForHttpResponseNoErrors(string requestUri, HttpMethod method, HttpContent content, Dictionary<string, string> headers, HttpParameters parameters)
+        public virtual HttpResponseMessage SendRequestForHttpResponseNoErrors(string requestUri, HttpMethod method, HttpContent content, Dictionary<string, string> headers, IHttpParameters parameters)
         {
             if (!IsConnected)
             {
                 throw new Exception("proxy is not connected");
             }
 
-            if (parameters != null && (parameters.HasParameters() || parameters.HasTempParameters()))
+            string paramsString = parameters.CreateParameters();
+            if (!string.IsNullOrWhiteSpace(paramsString))
             {
-                requestUri += $"?{parameters.GetParamString()}";
+                requestUri += $"?{paramsString}";
             }
 
             HttpRequestMessage message = new(method, requestUri);
@@ -72,7 +74,7 @@ namespace Corely.Shared.Proxies
             return result;
         }
 
-        public virtual HttpResponseMessage SendRequestForHttpResponse(string requestUri, HttpMethod method, HttpContent content, Dictionary<string, string> headers, HttpParameters parameters)
+        public virtual HttpResponseMessage SendRequestForHttpResponse(string requestUri, HttpMethod method, HttpContent content, Dictionary<string, string> headers, IHttpParameters parameters)
         {
             HttpResponseMessage result = SendRequestForHttpResponseNoErrors(requestUri, method, content, headers, parameters);
 
@@ -87,48 +89,48 @@ namespace Corely.Shared.Proxies
             }
         }
 
-        public virtual string SendRequestForStringResult(string requestUri, HttpMethod method, HttpContent content, Dictionary<string, string> headers = null, HttpParameters parameters = null)
+        public virtual string SendRequestForStringResult(string requestUri, HttpMethod method, HttpContent content, Dictionary<string, string> headers = null, IHttpParameters parameters = null)
         {
             HttpResponseMessage result = SendRequestForHttpResponse(requestUri, method, content, headers, parameters);
             return result.Content.ReadAsStringAsync().GetAwaiter().GetResult();
         }
 
-        public virtual string SendFormRequestForStringResult(string requestUri, HttpMethod method, Dictionary<string, string> formdata, Dictionary<string, string> headers = null, HttpParameters parameters = null)
+        public virtual string SendFormRequestForStringResult(string requestUri, HttpMethod method, Dictionary<string, string> formdata, Dictionary<string, string> headers = null, IHttpParameters parameters = null)
         {
             HttpContent content = BuildFormRequestContent(formdata);
             return SendRequestForStringResult(requestUri, method, content, headers, parameters);
         }
 
-        public virtual string SendUrlencodedRequestForStringResult(string requestUri, HttpMethod method, Dictionary<string, string> formdata, Dictionary<string, string> headers = null, HttpParameters parameters = null)
+        public virtual string SendUrlencodedRequestForStringResult(string requestUri, HttpMethod method, Dictionary<string, string> formdata, Dictionary<string, string> headers = null, IHttpParameters parameters = null)
         {
             HttpContent content = BuildUrlencodedContent(formdata);
             return SendRequestForStringResult(requestUri, method, content, headers, parameters);
         }
 
-        public virtual string SendJsonRequestForStringResult(string requestUri, HttpMethod method, string jsonContent, Dictionary<string, string> headers = null, HttpParameters parameters = null)
+        public virtual string SendJsonRequestForStringResult(string requestUri, HttpMethod method, string jsonContent, Dictionary<string, string> headers = null, IHttpParameters parameters = null)
         {
             HttpContent content = BuildJsonContent(jsonContent);
             return SendRequestForStringResult(requestUri, method, content, headers, parameters);
         }
 
-        public virtual void SendRequest(string requestUri, HttpMethod method, HttpContent content, Dictionary<string, string> headers = null, HttpParameters parameters = null)
+        public virtual void SendRequest(string requestUri, HttpMethod method, HttpContent content, Dictionary<string, string> headers = null, IHttpParameters parameters = null)
         {
             SendRequestForHttpResponse(requestUri, method, content, headers, parameters);
         }
 
-        public virtual void SendFormRequest(string requestUri, HttpMethod method, Dictionary<string, string> formdata, Dictionary<string, string> headers = null, HttpParameters parameters = null)
+        public virtual void SendFormRequest(string requestUri, HttpMethod method, Dictionary<string, string> formdata, Dictionary<string, string> headers = null, IHttpParameters parameters = null)
         {
             HttpContent content = BuildFormRequestContent(formdata);
             SendRequest(requestUri, method, content, headers, parameters);
         }
 
-        public virtual void SendUrlencodedRequest(string requestUri, HttpMethod method, Dictionary<string, string> formdata, Dictionary<string, string> headers = null, HttpParameters parameters = null)
+        public virtual void SendUrlencodedRequest(string requestUri, HttpMethod method, Dictionary<string, string> formdata, Dictionary<string, string> headers = null, IHttpParameters parameters = null)
         {
             HttpContent content = BuildUrlencodedContent(formdata);
             SendRequest(requestUri, method, content, headers, parameters);
         }
 
-        public virtual void SendJsonRequest(string requestUri, HttpMethod method, string jsonContent, Dictionary<string, string> headers = null, HttpParameters parameters = null)
+        public virtual void SendJsonRequest(string requestUri, HttpMethod method, string jsonContent, Dictionary<string, string> headers = null, IHttpParameters parameters = null)
         {
             HttpContent content = BuildJsonContent(jsonContent);
             SendRequest(requestUri, method, content, headers, parameters);

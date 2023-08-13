@@ -2,7 +2,7 @@
 {
     public static class Base64StringExtensions
     {
-        public static string Base64Encode(string s)
+        public static string Base64Encode(this string s)
         {
             if (string.IsNullOrEmpty(s))
             {
@@ -11,7 +11,7 @@
             return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(s));
         }
 
-        public static string Base64Decode(string s)
+        public static string Base64Decode(this string s)
         {
             if (string.IsNullOrEmpty(s))
             {
