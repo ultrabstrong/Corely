@@ -12,6 +12,13 @@ namespace Corely.UnitTests.Shared.Providers.Data
         }
 
         [Fact]
+        public void GetString_ShouldThrowException_WhenLengthIsNegative()
+        {
+            var length = -1;
+            Assert.Throws<ArgumentException>(() => _randomStringProvider.GetString(length));
+        }
+
+        [Fact]
         public void GetString_ShouldReturnStringOfSpecifiedLength()
         {
             var length = 10;
@@ -26,5 +33,6 @@ namespace Corely.UnitTests.Shared.Providers.Data
             var result = _randomStringProvider.GetString(length);
             Assert.Equal(length, result.Length);
         }
+
     }
 }

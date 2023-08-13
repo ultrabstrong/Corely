@@ -3,13 +3,8 @@ using System.Net.Http.Headers;
 
 namespace Corely.Shared.Providers.Proxies
 {
-    public class HttpProxy : IDisposable
+    public class HttpProxyProvider : IHttpProxyProvider, IDisposable
     {
-        public HttpProxy(string host)
-        {
-            Connect(host);
-        }
-
         private HttpClient _httpClient { get; set; }
 
         public bool IsConnected { get; internal set; } = false;

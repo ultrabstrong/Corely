@@ -1,4 +1,6 @@
-﻿namespace Corely.Shared.Providers.Data
+﻿using Corely.Shared.Models.Responses;
+
+namespace Corely.Shared.Providers.Data
 {
     public interface IDelimitedTextProvider
     {

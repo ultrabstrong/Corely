@@ -1,4 +1,6 @@
-﻿using Corely.Shared.Extensions;
+﻿using Corely.Shared.Enums;
+using Corely.Shared.Extensions;
+using Corely.Shared.Models.Responses;
 using System.Text;
 
 namespace Corely.Shared.Providers.Data

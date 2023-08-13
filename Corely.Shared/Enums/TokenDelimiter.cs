@@ -1,4 +1,4 @@
-﻿namespace Corely.Shared.Providers.Data
+﻿namespace Corely.Shared.Enums
 {
     public enum TokenDelimiter
     {
