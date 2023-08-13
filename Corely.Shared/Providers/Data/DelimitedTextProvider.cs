@@ -1,5 +1,5 @@
-﻿using Corely.Shared.Enums;
-using Corely.Shared.Extensions;
+﻿using Corely.Shared.Extensions;
+using Corely.Shared.Providers.Data.Enums;
 using Corely.Shared.Providers.Data.Models;
 using System.Text;
 
@@ -35,10 +35,10 @@ namespace Corely.Shared.Providers.Data
         public List<ReadRecordResult> ReadAllRecords(Stream stream)
         {
             List<ReadRecordResult> records = new();
-            ReadRecordResult record;
+            ReadRecordResult record = new();
             do
             {
-                record = ReadNextRecord(stream, 0);
+                record = ReadNextRecord(stream, record.EndPosition);
                 records.Add(record);
             }
             while (record.HasMore);
@@ -216,6 +216,7 @@ namespace Corely.Shared.Providers.Data
                                 {
                                     // Token is complete. Remove last literal char, record delimiter chars, reset vars, and push token
                                     currentToken = currentToken[..(currentToken.Length - _recordDelimiter.Length - 1)];
+                                    isInLiteral = false;
                                     // Record is complete. Exit reader
                                     break;
                                 }
@@ -246,40 +247,44 @@ namespace Corely.Shared.Providers.Data
             return result;
         }
 
-        public void WriteAllRecords(List<List<string>> records, Stream writeTo)
+        public void WriteAllRecords(IEnumerable<IEnumerable<string>> records, Stream writeTo)
         {
+            List<IEnumerable<string>> recordsList = records.ToList();
+
             StreamWriter writer = new(writeTo, Encoding.UTF8);
-            if (records.Count > 0)
+            if (recordsList.Count > 0)
             {
-                WriteRecord(records[0], writer);
+                WriteRecord(recordsList[0], writer);
             }
 
-            for (int i = 1; i < records.Count; i++)
+            for (int i = 1; i < recordsList.Count; i++)
             {
                 writer.Write(_recordDelimiter);
-                WriteRecord(records[i], writer);
+                WriteRecord(recordsList[i], writer);
             }
             writer.Flush();
         }
 
-        public void WriteRecord(List<string> record, Stream writeTo)
+        public void WriteRecord(IEnumerable<string> record, Stream writeTo)
         {
             StreamWriter writer = new(writeTo, Encoding.UTF8);
             WriteRecord(record, writer);
             writer.Flush();
         }
 
-        private void WriteRecord(List<string> record, StreamWriter writer)
+        private void WriteRecord(IEnumerable<string> record, StreamWriter writer)
         {
-            if (record.Count > 0)
+            List<string> recordList = record.ToList();
+
+            if (recordList.Count > 0)
             {
-                AppendTokenLiteral(record[0], writer);
+                AppendTokenLiteral(recordList[0], writer);
             }
 
-            for (int i = 1; i < record.Count; i++)
+            for (int i = 1; i < recordList.Count; i++)
             {
                 writer.Write(_tokenDelimiter);
-                AppendTokenLiteral(record[i], writer);
+                AppendTokenLiteral(recordList[i], writer);
             }
         }
 

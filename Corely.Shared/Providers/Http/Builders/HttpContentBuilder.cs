@@ -6,6 +6,7 @@ namespace Corely.Shared.Providers.Http.Builders
     {
         public HttpContent Build<T>(IHttpContent<T> content)
         {
+            ArgumentNullException.ThrowIfNull(content, nameof(content));
             return content switch
             {
                 HttpMultipartFormDataContent c => BuildMultipartFormDataContent(c),

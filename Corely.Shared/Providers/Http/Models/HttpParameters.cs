@@ -1,6 +1,6 @@
 ﻿namespace Corely.Shared.Providers.Http.Models
 {
-    public class HttpParameters : HttpParametersBase
+    public sealed class HttpParameters : HttpParametersBase
     {
         public HttpParameters()
             : base()

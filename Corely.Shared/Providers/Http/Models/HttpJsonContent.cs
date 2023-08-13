@@ -2,7 +2,7 @@
 
 namespace Corely.Shared.Providers.Http.Models
 {
-    public class HttpJsonContent : HttpStringContentBase
+    public sealed class HttpJsonContent : HttpStringContentBase
     {
         public HttpJsonContent(object content)
             : base(JsonSerializer.Serialize(content))

@@ -1,4 +1,7 @@
-﻿using Corely.Shared.Providers.Data;
+﻿using Corely.Shared.Extensions;
+using Corely.Shared.Providers.Data;
+using Corely.Shared.Providers.Data.Models;
+using System.Text;
 
 namespace Corely.UnitTests.Shared.Providers.Data
 {
@@ -12,41 +15,53 @@ namespace Corely.UnitTests.Shared.Providers.Data
         }
 
         [Fact]
-        public void Tests_ShouldBeImplemented_AtSomePointInTheFuture()
+        public void ReadAllRecordsThenWriteAllRecords_ShouldProduceOriginalInput()
         {
-            /*
-             * 8-10-23
-             * I spent a siginifcant amount of time thinking of how to auto-generate tests for this class.
-             * After much consideration I realized there are potentially millions of test cases that could be generated.
-             * This is obviously not feasible or helpful for unit testing
-             * 
-             * The best thing to do is hand code the most likely "gotchya" test cases
-             * The tests should focus on token literals (i.e. tokens that contain delimiters.)
-             * 
-             * We ideally want to test:
-             * - each type of delimiter and combinations of delimiters
-             * - delimiters at/near beginning and at/near end of token
-             * - combinations of delimiters at/near beginning and at/near end of token
-             * - delimiters at/near beginning and at/near end of record
-             * - combinations of delimiters at/near beginning and at/near end of record
-             * 
-             * It's probably easy to go overboard even with handwriting tests. Work on real-world cases first,
-             * like types of thing's I've actually see in a delimited file:
-             * - tokens that have token literal delimiters (beginning, middle, and end of token)
-             * - records that have tokens with token literal delimiters (beginning and end of record)
-             * - tokens that have token and/or record delimiters (beginning, middle, and end of token)
-             *     - consider empty beginning and end case
-             *     - consider these at beginning and end of records
-             *     - consider these at beginning and end of file
-             *     - consider there might be tokens that are themselves lists of records that use the same delimiters as the record they're in.
-             * 
-             * Its late; I'm tired; and this is not a high priority right now.
-             * Hopefully one day I'll have a reason to come back and finish this, but for now there are bigger fish to fry.
-             */
+            string base64EncodedTestData = "dGVzdDEsdGVzdDIsdGVzdDMNCiIiInRlc3QxIiwiIiJ0ZXN0MiIsIiIidGVzdDMiDQoidGVzdDEiIiIsInRlc3QyIiIiLCJ0ZXN0MyIiIg0KInRlIiJzdDEiLCJ0ZSIic3QyIiwidGUiInN0MyINCiIsdGVzdDEiLCIsdGVzdDIiLCIsdGVzdDMiDQoidGVzdDEsIiwidGVzdDIsIiwidGVzdDMsIg0KInRlLHN0MSIsInRlLHN0MiIsInRlLHN0MyINCiIKdGVzdDEiLHRlc3QyLHRlc3QzDQoidGVzdDEKIix0ZXN0Mix0ZXN0Mw0KdGVzdDEsIgp0ZXN0MiIsdGVzdDMNCnRlc3QxLCJ0ZXN0MgoiLHRlc3QzDQp0ZXN0MSx0ZXN0MiwiCnRlc3QzIg0KdGVzdDEsdGVzdDIsInRlc3QzCiINCiIiIix0ZXN0MSwKdGVzdDEuMSwiIiIsdGVzdDIsdGVzdDMNCnRlc3QxLCIiIix0ZXN0MiwKdGVzdDIuMiwiIiIsdGVzdDMNCnRlc3QxLHRlc3QyLCIiIix0ZXN0MywKdGVzdDMuMywiIiI=";
+            string testData = base64EncodedTestData.Base64Decode();
 
-            // use it to suppress IDE0052 suggestion
-            _delimitedTextDataProvider.GetType();
-            Assert.True(true);
+            List<ReadRecordResult> results = new List<ReadRecordResult>();
+            using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(testData)))
+            {
+                results = _delimitedTextDataProvider.ReadAllRecords(stream);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (ReadRecordResult result in results)
+            {
+                foreach (var s in result.Tokens)
+                {
+                    if (s.Contains(',') | s.Contains('"') | s.Contains(Environment.NewLine))
+                    {
+                        sb.Append('"');
+                        sb.Append(s);
+                        sb.Append('"');
+                    }
+                    else
+                    {
+                        sb.Append(s);
+                    }
+                    sb.Append(',');
+                }
+                sb.Remove(sb.Length - 1, 1);
+                sb.AppendLine();
+            }
+
+            string asdf = sb.ToString();
+
+            string resultData;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                _delimitedTextDataProvider.WriteAllRecords(results.Select(m => m.Tokens), stream);
+                stream.Position = 0;
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    resultData = reader.ReadToEnd();
+                }
+            }
+            string base64EncodedResultData = resultData.Base64Encode();
+
+            Assert.Equal(base64EncodedTestData, base64EncodedResultData);
         }
     }
 }

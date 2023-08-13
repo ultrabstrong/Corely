@@ -2,10 +2,10 @@
 
 namespace Corely.Shared.Providers.Http
 {
-    public class HttpProxyProvider : HttpProxyProviderBase
+    public sealed class HttpProxyProvider : HttpProxyProviderBase
     {
-        public HttpProxyProvider(IHttpContentBuilder httpContentBuilder)
-            : base(httpContentBuilder)
+        public HttpProxyProvider(IHttpContentBuilder httpContentBuilder, string host)
+            : base(httpContentBuilder, host)
         {
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Corely.Shared.Providers.Http.Models
 {
-    public abstract class HttpParametersBase
+    public abstract class HttpParametersBase : IHttpParameters
     {
         private readonly Dictionary<string, string> _parameters;
         private readonly Dictionary<string, string> _tempParameters;

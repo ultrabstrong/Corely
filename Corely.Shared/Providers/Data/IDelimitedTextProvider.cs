@@ -8,8 +8,8 @@ namespace Corely.Shared.Providers.Data
 
         ReadRecordResult ReadNextRecord(Stream stream, long startPosition);
 
-        void WriteAllRecords(List<List<string>> records, Stream writeTo);
+        void WriteAllRecords(IEnumerable<IEnumerable<string>> records, Stream writeTo);
 
-        void WriteRecord(List<string> record, Stream writeTo);
+        void WriteRecord(IEnumerable<string> record, Stream writeTo);
     }
 }

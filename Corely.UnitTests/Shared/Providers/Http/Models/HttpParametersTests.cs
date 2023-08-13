@@ -12,6 +12,18 @@ namespace Corely.UnitTests.Shared.Providers.Http.Models
         }
 
         [Fact]
+        public void HttpParametersBase_ShouldImplementIHttpParameters()
+        {
+            Assert.IsAssignableFrom<IHttpParameters>(_httpParameters);
+        }
+
+        [Fact]
+        public void HttpParametersBase_ShouldImplementHttpParametersBase()
+        {
+            Assert.IsAssignableFrom<HttpParametersBase>(_httpParameters);
+        }
+
+        [Fact]
         public void HttpParametersBaseConstructor_ShouldSetProperties()
         {
             Assert.False(_httpParameters.HasParameters());
