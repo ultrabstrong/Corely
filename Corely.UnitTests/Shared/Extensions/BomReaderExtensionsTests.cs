@@ -8,7 +8,7 @@ namespace Corely.UnitTests.Shared.Extensions
         [Theory, MemberData(nameof(GetEncodingTestData))]
         public void GetEncoding_ShouldReturnCorrectEncoding(byte[] bom, Encoding expectedEncoding)
         {
-            var encoding = BomReaderExtensions.GetEncoding(bom);
+            var encoding = bom.GetEncoding();
             Assert.Equal(expectedEncoding, encoding);
         }
 

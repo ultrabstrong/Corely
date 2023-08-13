@@ -13,7 +13,7 @@ namespace Corely.UnitTests.Shared.Extensions
         [Fact]
         public void UrlEncode_EmptyString_ReturnsEmptyString()
         {
-            Assert.Equal(string.Empty, UrlEncodingExtensions.UrlEncode(string.Empty));
+            Assert.Equal("", "".UrlEncode());
         }
 
         [Fact]
@@ -25,9 +25,14 @@ namespace Corely.UnitTests.Shared.Extensions
         [Fact]
         public void UrlDecode_EmptyString_ReturnsEmptyString()
         {
-            Assert.Equal(string.Empty, UrlEncodingExtensions.UrlDecode(string.Empty));
+            Assert.Equal("", "".UrlDecode());
         }
 
+        [Theory, MemberData(nameof(GetUrlEncodeDecodeTestData))]
+        public void UrlEncodeThenDecode_ShouldReturnOriginalString(string source)
+        {
+            Assert.Equal(source, source.UrlEncode().UrlDecode());
+        }
         public static IEnumerable<object[]> GetUrlEncodeDecodeTestData()
         {
             yield return new object[] { "http://www.google.com" };
@@ -40,12 +45,16 @@ namespace Corely.UnitTests.Shared.Extensions
             yield return new object[] { "http://www.google.com?query=hello%252520world" };
         }
 
-        [Theory, MemberData(nameof(GetUrlEncodeDecodeTestData))]
-        public void UrlEncodeThenDecode_ShouldReturnOriginalString(string source)
+        [Fact]
+        public void UrlEncode_ShouldEncodeSpecialCharacters()
         {
-            var encoded = UrlEncodingExtensions.UrlEncode(source);
-            var decoded = UrlEncodingExtensions.UrlDecode(encoded);
-            Assert.Equal(source, decoded);
+            Assert.Equal("%21%40%23%24%25%5E%26%2A%28%29_%2B%20", "!@#$%^&*()_+ ".UrlEncode());
+        }
+
+        [Fact]
+        public void UrlDecode_ShouldDecodeSpecialCharacters()
+        {
+            Assert.Equal("!@#$%^&*()_+ ", "%21%40%23%24%25%5E%26%2A%28%29_%2B%20".UrlDecode());
         }
     }
 }

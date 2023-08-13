@@ -8,13 +8,13 @@ namespace Corely.UnitTests.Shared.Extensions
         [Theory, ClassData(typeof(NullAndEmpty))]
         public void Base64Encode_ShouldReturnEmptyString_WhenStringIsNullOrEmpty(string s)
         {
-            Assert.Equal(string.Empty, Base64StringExtensions.Base64Encode(s));
+            Assert.Equal(string.Empty, s.Base64Encode());
         }
 
         [Theory, ClassData(typeof(NullAndEmpty))]
         public void Base64Decode_ShouldReturnEmptyString_WhenStringIsNullOrEmpty(string s)
         {
-            Assert.Equal(string.Empty, Base64StringExtensions.Base64Decode(s));
+            Assert.Equal(string.Empty, s.Base64Decode());
         }
 
         [Theory]
@@ -23,7 +23,7 @@ namespace Corely.UnitTests.Shared.Extensions
         [InlineData("test string with spaces and special characters !@#$%^&*()_+")]
         public void Base64Encode_ShouldBase64DecodeToOriginalString(string s)
         {
-            Assert.Equal(s, Base64StringExtensions.Base64Decode(Base64StringExtensions.Base64Encode(s)));
+            Assert.Equal(s, s.Base64Encode().Base64Decode());
         }
 
     }
