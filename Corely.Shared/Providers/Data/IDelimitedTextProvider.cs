@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Models.Responses;
+﻿using Corely.Shared.Providers.Data.Models;
 
 namespace Corely.Shared.Providers.Data
 {

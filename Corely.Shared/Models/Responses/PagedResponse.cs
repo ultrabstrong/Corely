@@ -3,7 +3,7 @@
     public class PagedResponse<T> where T : class
     {
         private int _skip;
-        private int _take;
+        private readonly int _take;
 
 
         public List<T> Items { get; private set; } = new List<T>();

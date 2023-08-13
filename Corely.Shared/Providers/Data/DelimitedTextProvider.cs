@@ -1,6 +1,6 @@
 ﻿using Corely.Shared.Enums;
 using Corely.Shared.Extensions;
-using Corely.Shared.Models.Responses;
+using Corely.Shared.Providers.Data.Models;
 using System.Text;
 
 namespace Corely.Shared.Providers.Data
@@ -35,7 +35,7 @@ namespace Corely.Shared.Providers.Data
         public List<ReadRecordResult> ReadAllRecords(Stream stream)
         {
             List<ReadRecordResult> records = new();
-            ReadRecordResult record = new();
+            ReadRecordResult record;
             do
             {
                 record = ReadNextRecord(stream, 0);
@@ -49,14 +49,13 @@ namespace Corely.Shared.Providers.Data
         public ReadRecordResult ReadNextRecord(Stream stream, long startPosition)
         {
             ReadRecordResult result;
-            long streamLength = 0;
 
             byte[] bom = new byte[4];
             stream.Read(bom, 0, 4);
             Encoding encoding = BomReaderExtensions.GetEncoding(bom);
             stream.Position = startPosition;
 
-            streamLength = stream.Length;
+            long streamLength = stream.Length;
             result = ReadNextRecord(stream, encoding);
             result.StartPosition = startPosition;
 
@@ -217,7 +216,6 @@ namespace Corely.Shared.Providers.Data
                                 {
                                     // Token is complete. Remove last literal char, record delimiter chars, reset vars, and push token
                                     currentToken = currentToken[..(currentToken.Length - _recordDelimiter.Length - 1)];
-                                    isInLiteral = false;
                                     // Record is complete. Exit reader
                                     break;
                                 }

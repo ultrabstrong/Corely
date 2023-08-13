@@ -1,4 +1,4 @@
-﻿namespace Corely.Shared.Models.Responses
+﻿namespace Corely.Shared.Providers.Data.Models
 {
     [Serializable]
     public class ReadRecordResult

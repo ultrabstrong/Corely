@@ -1,6 +1,6 @@
-﻿using Corely.Shared.Models.Http;
+﻿using Corely.Shared.Providers.Http.Models;
 
-namespace Corely.UnitTests.Shared.Models.Http
+namespace Corely.UnitTests.Shared.Providers.Http.Models
 {
     public class HttpParametersTests
     {

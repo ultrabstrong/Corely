@@ -1,6 +1,6 @@
 ﻿using Corely.Shared.Extensions;
 
-namespace Corely.Shared.Models.Http
+namespace Corely.Shared.Providers.Http.Models
 {
     public abstract class HttpParametersBase
     {

@@ -1,4 +1,4 @@
-﻿namespace Corely.Shared.Models.Http
+﻿namespace Corely.Shared.Providers.Http.Models
 {
     public class HttpParameters : HttpParametersBase
     {
