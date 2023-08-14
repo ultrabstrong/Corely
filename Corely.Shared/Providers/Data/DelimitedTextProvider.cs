@@ -70,6 +70,10 @@ namespace Corely.Shared.Providers.Data
         {
             ReadRecordResult result = new();
 
+            // Increase length for BOM if this is the start of a UTF8-BOM steam
+            StreamReader streamReader = new(stream, encoding);
+            if (stream.Position == 0 && Equals(new UTF8Encoding(true), streamReader.CurrentEncoding)) { result.Length += 3; }
+
             string currentToken = "";
             int currentRecordDelim = 0;
 
@@ -77,10 +81,6 @@ namespace Corely.Shared.Providers.Data
                 lastCharEscaped = false,
                 lastTokenLiteralEscaped = false;
 
-            StreamReader streamReader = new(stream, encoding);
-
-            // Increase length for BOM if this is the start of a UTF8-BOM steam
-            if (stream.Position == 0 && Equals(new UTF8Encoding(true), streamReader.CurrentEncoding)) { result.Length += 3; }
             while (!streamReader.EndOfStream)
             {
                 // Get next character
@@ -99,8 +99,19 @@ namespace Corely.Shared.Providers.Data
                             // Enter literal block
                             isInLiteral = true;
                         }
+                        // If last char was an escaped token literal
+                        else if (lastTokenLiteralEscaped
+                            && currentToken[^1] == _tokenLiteral)
+                        {
+                            // Enter literal block
+                            isInLiteral = true;
+                            // Remember literal char is already esacped
+                            lastCharEscaped = true;
+                            lastTokenLiteralEscaped = true;
+                        }
                         // Only append literal if literal isn't already escaped
-                        else if (currentToken.Length > 0 && currentToken[^1] != _tokenLiteral)
+                        else if (currentToken.Length > 0
+                            && currentToken[^1] != _tokenLiteral)
                         {
                             // Append literal to data string without entering block
                             currentToken += c;
@@ -111,7 +122,8 @@ namespace Corely.Shared.Providers.Data
                     else
                     {
                         // If last char was also a literal
-                        if (currentToken.Length > 0 && currentToken[^1] == _tokenLiteral)
+                        if (currentToken.Length > 0
+                            && currentToken[^1] == _tokenLiteral)
                         {
                             // If last char was already escaped push this one
                             if (lastCharEscaped)
@@ -126,6 +138,13 @@ namespace Corely.Shared.Providers.Data
                                 lastCharEscaped = true;
                                 lastTokenLiteralEscaped = true;
                             }
+                        }
+                        else if (currentToken.Length == 0)
+                        {
+                            // First token char is an escaped literal
+                            currentToken += c;
+                            isInLiteral = false;
+                            lastTokenLiteralEscaped = true;
                         }
                         // Last char was not a literal
                         else
@@ -144,7 +163,9 @@ namespace Corely.Shared.Providers.Data
                     if (isInLiteral)
                     {
                         // If last char was an unescaped literal
-                        if (currentToken.Length > 0 && currentToken[^1] == _tokenLiteral && !lastCharEscaped)
+                        if (currentToken.Length > 0
+                            && currentToken[^1] == _tokenLiteral
+                            && !lastCharEscaped)
                         {
                             // Token is complete. Remove last literal char, reset vars, and push token
                             currentToken = currentToken[..^1];
@@ -204,7 +225,8 @@ namespace Corely.Shared.Providers.Data
                         if (currentRecordDelim == _recordDelimiter.Length - 1)
                         {
                             // If the character before the record delimiter is a literal char
-                            if (currentToken[currentToken.Length - _recordDelimiter.Length - 1] == _tokenLiteral)
+                            if (currentToken.Length != _recordDelimiter.Length
+                                && currentToken[currentToken.Length - _recordDelimiter.Length - 1] == _tokenLiteral)
                             {
                                 // Find out if the token literal before the record delimiter was escaped or not
                                 if (lastTokenLiteralEscaped)
@@ -240,6 +262,15 @@ namespace Corely.Shared.Providers.Data
                     // Record delimiter not matched. Reset the current record delim
                     currentRecordDelim = 0;
                 }
+            }
+            // If last char was an unescaped literal
+            if (isInLiteral
+                && currentToken.Length > 0
+                && currentToken[^1] == _tokenLiteral
+                && !lastCharEscaped)
+            {
+                // Token is complete. Remove last literal char, reset vars, and push token
+                currentToken = currentToken[..^1];
             }
             // Push last token
             result.Tokens.Add(currentToken);

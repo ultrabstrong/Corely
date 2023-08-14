@@ -1,5 +1,4 @@
-﻿using Corely.Shared.Extensions;
-using Corely.Shared.Providers.Data;
+﻿using Corely.Shared.Providers.Data;
 using Corely.Shared.Providers.Data.Models;
 using System.Text;
 
@@ -14,54 +13,173 @@ namespace Corely.UnitTests.Shared.Providers.Data
             _delimitedTextDataProvider = new DelimitedTextProvider();
         }
 
-        [Fact]
-        public void ReadAllRecordsThenWriteAllRecords_ShouldProduceOriginalInput()
+        [Theory, MemberData(nameof(WriteAllRecordsTestData))]
+        public void WriteAllRecordsThenReadAllRecords_ShouldProduceOriginalInput(List<List<string>> records)
         {
-            string base64EncodedTestData = "dGVzdDEsdGVzdDIsdGVzdDMNCiIiInRlc3QxIiwiIiJ0ZXN0MiIsIiIidGVzdDMiDQoidGVzdDEiIiIsInRlc3QyIiIiLCJ0ZXN0MyIiIg0KInRlIiJzdDEiLCJ0ZSIic3QyIiwidGUiInN0MyINCiIsdGVzdDEiLCIsdGVzdDIiLCIsdGVzdDMiDQoidGVzdDEsIiwidGVzdDIsIiwidGVzdDMsIg0KInRlLHN0MSIsInRlLHN0MiIsInRlLHN0MyINCiIKdGVzdDEiLHRlc3QyLHRlc3QzDQoidGVzdDEKIix0ZXN0Mix0ZXN0Mw0KdGVzdDEsIgp0ZXN0MiIsdGVzdDMNCnRlc3QxLCJ0ZXN0MgoiLHRlc3QzDQp0ZXN0MSx0ZXN0MiwiCnRlc3QzIg0KdGVzdDEsdGVzdDIsInRlc3QzCiINCiIiIix0ZXN0MSwKdGVzdDEuMSwiIiIsdGVzdDIsdGVzdDMNCnRlc3QxLCIiIix0ZXN0MiwKdGVzdDIuMiwiIiIsdGVzdDMNCnRlc3QxLHRlc3QyLCIiIix0ZXN0MywKdGVzdDMuMywiIiI=";
-            string testData = base64EncodedTestData.Base64Decode();
+            string delimitedData;
+            using (MemoryStream stream = new())
+            {
+                _delimitedTextDataProvider.WriteAllRecords(records, stream);
+                stream.Position = 0;
+                using (StreamReader reader = new(stream))
+                {
+                    delimitedData = reader.ReadToEnd();
+                }
+            }
 
-            List<ReadRecordResult> results = new List<ReadRecordResult>();
-            using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(testData)))
+            List<ReadRecordResult> results = new();
+            using (MemoryStream stream = new(Encoding.UTF8.GetBytes(delimitedData)))
             {
                 results = _delimitedTextDataProvider.ReadAllRecords(stream);
             }
 
-            StringBuilder sb = new StringBuilder();
-            foreach (ReadRecordResult result in results)
+            Assert.Equal(records.Count, results.Count);
+            for (int i = 0; i < records.Count; i++)
             {
-                foreach (var s in result.Tokens)
+                Assert.Equal(records[i].Count, results[i].Tokens.Count);
+                for (int j = 0; j < records[i].Count; j++)
                 {
-                    if (s.Contains(',') | s.Contains('"') | s.Contains(Environment.NewLine))
-                    {
-                        sb.Append('"');
-                        sb.Append(s);
-                        sb.Append('"');
-                    }
-                    else
-                    {
-                        sb.Append(s);
-                    }
-                    sb.Append(',');
-                }
-                sb.Remove(sb.Length - 1, 1);
-                sb.AppendLine();
-            }
-
-            string asdf = sb.ToString();
-
-            string resultData;
-            using (MemoryStream stream = new MemoryStream())
-            {
-                _delimitedTextDataProvider.WriteAllRecords(results.Select(m => m.Tokens), stream);
-                stream.Position = 0;
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    resultData = reader.ReadToEnd();
+                    Assert.Equal(records[i][j], results[i].Tokens[j]);
                 }
             }
-            string base64EncodedResultData = resultData.Base64Encode();
+        }
 
-            Assert.Equal(base64EncodedTestData, base64EncodedResultData);
+        public static IEnumerable<object[]> WriteAllRecordsTestData()
+        {
+
+            // No delimiters in tokens
+            yield return new object[] {
+                new List<List<string>> {
+                    new() { "test1", "test2", "test3" }
+                } };
+
+            // One delimiter type in tokens
+            yield return new object[]
+            {
+                new List<List<string>>()
+                {
+                    //// Token literal
+                    new() { "\"test1", "\"test2", "\"test3" },
+                    new() { "test1\"", "test2\"", "test3\"" },
+                    new() { "te\"st1", "te\"st2", "te\"st3" },
+
+                    // Token delimiter
+                    new() { ",test1", ",test2", ",test3" },
+                    new() { "test1,", "test2,", "test3," },
+                    new() { "te,st1", "te,st2", "te,st3" },
+
+                    // Record delimiter
+                    new() { "\r\ntest1", "\r\ntest2", "\r\ntest3" },
+                    new() { "test1\r\n", "test2\r\n", "test3\r\n" },
+                    new() { "te\r\nst1", "te\r\nst2", "te\r\nst3" },
+                } };
+
+            // Mixed delimiter types in tokens
+            yield return new object[]
+            {
+                new List<List<string>>()
+                {
+                    // Token literal and token delimiter
+
+                        // Token literal first
+                    new() { "\",test1", "\",test2", "\",test3" },
+                    new() { "test1\",", "test2\",", "test3\"," },
+                    new() { "te\",st1", "te\",st2", "te\",st3" },
+
+                        // Token delimiter first
+                    new() { ",\"test1", ",\"test2", ",\"test3" },
+                    new() { "test1,\"", "test2,\"", "test3,\"" },
+                    new() { "te,\"st1", "te,\"st2", "te,\"st3" },
+
+                    // Token literal and record delimiter
+
+                        // Token literal first
+                    new() { "\"\r\ntest1", "\"\r\ntest2", "\"\r\ntest3" },
+                    new() { "test1\"\r\n", "test2\"\r\n", "test3\"\r\n" },
+                    new() { "te\"\r\nst1", "te\"\r\nst2", "te\"\r\nst3" },
+
+                        // Record delimiter first
+                    new() { "\r\n\"test1", "\r\n\"test2", "\r\n\"test3" },
+                    new() { "test1\"\r\n", "test2\"\r\n", "test3\"\r\n" },
+                    new() { "te\"\r\nst1", "te\"\r\nst2", "te\"\r\nst3" },
+
+                    // Token delimiter and record delimiter
+
+                        // Token delimiter first
+                    new() { ",\r\ntest1", ",\r\ntest2", ",\r\ntest3" },
+                    new() { "test1,\r\n", "test2,\r\n", "test3,\r\n" },
+                    new() { "te,\r\nst1", "te,\r\nst2", "te,\r\nst3" },
+                        // Record delimiter first
+                    new() { "\r\n,test1", "\r\n,test2", "\r\n,test3" },
+                    new() { "test1\r\n,", "test2\r\n,", "test3\r\n," },
+                    new() { "te\r\nst1,", "te\r\n,st2", "te\r\n,st3" },
+                } };
+
+            // Mixed delimiter types in tokens with excess token literals
+            yield return new object[]
+            {
+                new List<List<string>>()
+                {
+                    // Token literal (2x) and token delimiter
+
+                        // Token literal first
+                    new() { "\"\",test1", "\"\",test2", "\"\",test3" },
+                    new() { "test1\"\",", "test2\"\",", "test3\"\"," },
+                    new() { "te\"\",st1", "te\"\",st2", "te\"\",st3" },
+
+                        // Token delimiter first
+                    new() { ",\"\"test1", ",\"\"test2", ",\"\"test3" },
+                    new() { "test1,\"\"", "test2,\"\"", "test3,\"\"" },
+                    new() { "te,\"\"st1", "te,\"\"st2", "te,\"\"st3" },
+
+                    // Token literal (2x) and record delimiter
+
+                        // Token literal first
+                    new() { "\"\"\r\ntest1", "\"\"\r\ntest2", "\"\"\r\ntest3" },
+                    new() { "test1\"\"\r\n", "test2\"\"\r\n", "test3\"\"\r\n" },
+                    new() { "te\"\"\r\nst1", "te\"\"\r\nst2", "te\"\"\r\nst3" },
+
+                        // Record delimiter first
+                    new() { "\r\n\"\"test1", "\r\n\"\"test2", "\r\n\"\"test3" },
+                    new() { "test1\"\"\r\n", "test2\"\"\r\n", "test3\"\"\r\n" },
+                    new() { "te\"\"\r\nst1", "te\"\"\r\nst2", "te\"\"\r\nst3" },
+                    
+                    // Token literal (3x) and token delimiter
+
+                        // Token literal first
+                    new() { "\"\"\",test1", "\"\"\",test2", "\"\"\",test3" },
+                    new() { "test1\"\"\",", "test2\"\"\",", "test3\"\"\"," },
+                    new() { "te\"\"\",st1", "te\"\"\",st2", "te\"\"\",st3" },
+
+                        // Token delimiter first
+                    new() { ",\"\"\"test1", ",\"\"\"test2", ",\"\"\"test3" },
+                    new() { "test1,\"\"\"", "test2,\"\"\"", "test3,\"\"\"" },
+                    new() { "te,\"\"\"st1", "te,\"\"\"st2", "te,\"\"\"st3" },
+
+                    // Token literal (3x) and record delimiter
+
+                        // Token literal first
+                    new() { "\"\"\"\r\ntest1", "\"\"\"\r\ntest2", "\"\"\"\r\ntest3" },
+                    new() { "test1\"\"\"\r\n", "test2\"\"\"\r\n", "test3\"\"\"\r\n" },
+                    new() { "te\"\"\"\r\nst1", "te\"\"\"\r\nst2", "te\"\"\"\r\nst3" },
+
+                        // Record delimiter first
+                    new() { "\r\n\"\"\"test1", "\r\n\"\"\"test2", "\r\n\"\"\"test3" },
+                    new() { "test1\"\"\"\r\n", "test2\"\"\"\r\n", "test3\"\"\"\r\n" },
+                    new() { "te\"\"\"\r\nst1", "te\"\"\"\r\nst2", "te\"\"\"\r\nst3" },
+
+                } };
+
+            // All three delimiter types
+            yield return new object[]
+            {
+                new List<List<string>>()
+                {
+                    new() { "\",test1\r\ntest1.1,\"", "test2", "test3" },
+                    new() { "test1", "\",test2\r\ntest2.1,\"", "test3" },
+                    new() { "test1", "test2", "\",test3\r\ntest3.1,\"" }
+                } };
         }
     }
+
 }

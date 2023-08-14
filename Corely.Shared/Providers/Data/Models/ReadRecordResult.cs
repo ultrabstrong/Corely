@@ -12,5 +12,10 @@
         public bool HasMore { get; set; } = true;
 
         public long EndPosition => StartPosition + Length;
+
+        public override string ToString()
+        {
+            return string.Join(',', Tokens);
+        }
     }
 }
