@@ -46,7 +46,6 @@ namespace Corely.UnitTests.Shared.Providers.Data
 
         public static IEnumerable<object[]> WriteAllRecordsTestData()
         {
-
             // No delimiters in tokens
             yield return new object[] {
                 new List<List<string>> {

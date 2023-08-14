@@ -8,6 +8,12 @@ namespace Corely.Shared.Models.Security
         private readonly IEncryptionProvider _encryptionProvider;
         public string Secret { get; private set; }
 
+        public EncryptedValue(IEncryptionProvider encryptionProvider)
+            : this(encryptionProvider, "")
+        {
+
+        }
+
         public EncryptedValue(IEncryptionProvider encryptionProvider, string secret)
         {
             Secret = secret;

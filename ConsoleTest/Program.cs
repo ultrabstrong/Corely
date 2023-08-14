@@ -1,4 +1,8 @@
-﻿namespace ConsoleTest
+﻿using Corely.Shared.Providers.Data;
+using Corely.Shared.Providers.Data.Models;
+using System.Text;
+
+namespace ConsoleTest
 {
     internal class Program
     {
@@ -13,7 +17,21 @@
         {
             try
             {
+                string s = File.ReadAllText(desktop + "\\csvData.csv");
+                var provider = new DelimitedTextProvider();
+                List<ReadRecordResult> results;
+                using (MemoryStream stream = new(Encoding.UTF8.GetBytes(s)))
+                {
+                    results = provider.ReadAllRecords(stream);
+                }
 
+                string d;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    provider.WriteAllRecords(results.Select(m => m.Tokens), ms);
+                    d = Encoding.UTF8.GetString(ms.ToArray());
+                }
+                ;
             }
             catch (Exception ex)
             {

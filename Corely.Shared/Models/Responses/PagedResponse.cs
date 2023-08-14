@@ -5,11 +5,9 @@
         private int _skip;
         private readonly int _take;
 
-
         public List<T> Items { get; private set; } = new List<T>();
         public int PageNum => _skip / _take;
         public bool HasMore { get; private set; } = true;
-
 
         public delegate PagedResponse<T> GetNextChunkDelegate(PagedResponse<T> currentChunk);
         public event GetNextChunkDelegate OnGetNextChunk
@@ -25,7 +23,6 @@
             }
         }
         private event GetNextChunkDelegate _onGetNextChunk;
-
 
         public PagedResponse(int skip, int take)
         {
