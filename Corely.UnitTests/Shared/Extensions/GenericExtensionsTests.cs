@@ -8,7 +8,7 @@ namespace Corely.UnitTests.Shared.Extensions
         public void ThrowIfNull_ShouldThrow_WhenNull()
         {
             object? obj = null;
-            Assert.Throws<ArgumentNullException>(() => obj.ThrowIfNull());
+            Assert.Throws<ArgumentNullException>(obj.ThrowIfNull);
         }
 
         [Fact]

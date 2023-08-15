@@ -1,4 +1,8 @@
-﻿using Corely.Shared.Providers.Data;
+﻿#pragma warning disable IDE0052 // Remove unread private members
+#pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable IDE0090 // Use 'new(...)'
+
+using Corely.Shared.Providers.Data;
 using Corely.Shared.Providers.Data.Models;
 using System.Text;
 
@@ -6,14 +10,11 @@ namespace ConsoleTest
 {
     internal class Program
     {
-#pragma warning disable IDE0052 // Remove unread private members
         private static readonly string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         private static readonly string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-#pragma warning restore IDE0052 // Remove unread private members
 
-#pragma warning disable IDE0060 // Remove unused parameter
+
         static void Main(string[] args)
-#pragma warning restore IDE0060 // Remove unused parameter
         {
             try
             {
@@ -45,3 +46,8 @@ namespace ConsoleTest
         }
     }
 }
+
+
+#pragma warning restore IDE0052 // Remove unread private members
+#pragma warning restore IDE0060 // Remove unused parameter
+#pragma warning restore IDE0090 // Use 'new(...)'

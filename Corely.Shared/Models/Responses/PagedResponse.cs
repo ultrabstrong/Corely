@@ -6,7 +6,9 @@
         private readonly int _take;
 
         public List<T> Items { get; private set; } = new List<T>();
-        public int PageNum => _skip / _take;
+        public int Skip => _skip;
+        public int Take => _take;
+        public int PageNum => (int)Math.Ceiling((decimal)_skip / _take);
         public bool HasMore { get; private set; } = true;
 
         public delegate PagedResponse<T> GetNextChunkDelegate(PagedResponse<T> currentChunk);
@@ -26,22 +28,38 @@
 
         public PagedResponse(int skip, int take)
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(skip, nameof(skip));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(take, nameof(take));
+
             _skip = skip;
             _take = take;
         }
 
-        public void SetItems(List<T> items)
+        public PagedResponse<T>? GetNextChunk()
         {
-            UpdatePage(items?.Count ?? 0);
+            if (_onGetNextChunk == null)
+            {
+                throw new InvalidOperationException($"{nameof(OnGetNextChunk)} must be set first");
+            }
+            if (HasMore == false)
+            {
+                return null;
+            }
+            return _onGetNextChunk?.Invoke(this);
+        }
+
+        public void SetItems(IEnumerable<T> items)
+        {
+            UpdatePage(items?.Count() ?? 0);
             if (items != null)
             {
-                Items = items;
+                Items = new(items);
             }
         }
 
-        public void AddItems(List<T> items)
+        public void AddItems(IEnumerable<T> items)
         {
-            UpdatePage(items?.Count ?? 0);
+            UpdatePage(items?.Count() ?? 0);
             if (items != null)
             {
                 Items.AddRange(items);
@@ -52,15 +70,6 @@
         {
             _skip += itemscount;
             HasMore = itemscount == _take;
-        }
-
-        public PagedResponse<T>? GetNextChunk()
-        {
-            if (HasMore == false || _onGetNextChunk == null)
-            {
-                return null;
-            }
-            return _onGetNextChunk?.Invoke(this);
         }
     }
 }
