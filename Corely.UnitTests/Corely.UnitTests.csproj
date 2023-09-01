@@ -24,12 +24,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Corely.DataAccess\Corely.DataAccess.csproj" />
+    <ProjectReference Include="..\Corely.Domain\Corely.Domain.csproj" />
     <ProjectReference Include="..\Corely.Shared\Corely.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Domain\" />
-    <Folder Include="DataAccess\" />
   </ItemGroup>
 
 </Project>
