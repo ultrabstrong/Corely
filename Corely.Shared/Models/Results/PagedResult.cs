@@ -1,6 +1,6 @@
-﻿namespace Corely.Shared.Models.Responses
+﻿namespace Corely.Shared.Models.Results
 {
-    public class PagedResponse<T> where T : class
+    public class PagedResult<T>
     {
         private int _skip;
         private readonly int _take;
@@ -11,7 +11,7 @@
         public int PageNum => (int)Math.Ceiling((decimal)_skip / _take);
         public bool HasMore { get; private set; } = true;
 
-        public delegate PagedResponse<T> GetNextChunkDelegate(PagedResponse<T> currentChunk);
+        public delegate PagedResult<T> GetNextChunkDelegate(PagedResult<T> currentChunk);
         public event GetNextChunkDelegate OnGetNextChunk
         {
             add
@@ -26,7 +26,7 @@
         }
         private event GetNextChunkDelegate _onGetNextChunk;
 
-        public PagedResponse(int skip, int take)
+        public PagedResult(int skip, int take)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(skip, nameof(skip));
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(take, nameof(take));
@@ -35,7 +35,7 @@
             _take = take;
         }
 
-        public PagedResponse<T>? GetNextChunk()
+        public PagedResult<T>? GetNextChunk()
         {
             if (_onGetNextChunk == null)
             {

@@ -26,7 +26,8 @@ namespace Corely.UnitTests.Shared.Providers.Http.Models
         [Fact]
         public void HttpMultipartFormDataContent_ShouldThrowArgumentNullException_WhenContentIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new HttpMultipartFormDataContent(null));
+            void act() => new HttpMultipartFormDataContent(null);
+            Assert.Throws<ArgumentNullException>(act);
         }
 
 

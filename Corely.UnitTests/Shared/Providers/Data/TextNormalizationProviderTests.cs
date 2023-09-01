@@ -31,7 +31,8 @@ namespace Corely.UnitTests.Shared.Providers.Data
         public void BasicNormalize_ShouldThrowArgumentNullException()
         {
             string input = null;
-            Assert.Throws<ArgumentNullException>(() => _textNormalizationProvider.BasicNormalize(input));
+            void act() => _textNormalizationProvider.BasicNormalize(input);
+            Assert.Throws<ArgumentNullException>(act);
         }
 
         [Theory, MemberData(nameof(NormalizeAddressTestData))]
@@ -53,7 +54,8 @@ namespace Corely.UnitTests.Shared.Providers.Data
         {
             string street = null;
             string[] additional = { "Apt. 1" };
-            Assert.Throws<ArgumentNullException>(() => _textNormalizationProvider.NormalizeAddress(street, additional));
+            void act() => _textNormalizationProvider.NormalizeAddress(street, additional);
+            Assert.Throws<ArgumentNullException>(act);
         }
 
         [Theory, MemberData(nameof(NormalizeAddressAndStateTestData))]
@@ -75,7 +77,8 @@ namespace Corely.UnitTests.Shared.Providers.Data
         {
             string street = null;
             string[] additional = { "Apt. 1" };
-            Assert.Throws<ArgumentNullException>(() => _textNormalizationProvider.NormalizeAddressAndState(street, additional));
+            void act() => _textNormalizationProvider.NormalizeAddressAndState(street, additional);
+            Assert.Throws<ArgumentNullException>(act);
 
         }
     }

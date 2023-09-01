@@ -15,7 +15,8 @@ namespace Corely.UnitTests.Shared.Providers.Data
         public void GetString_ShouldThrowException_WhenLengthIsNegative()
         {
             var length = -1;
-            Assert.Throws<ArgumentException>(() => _randomStringProvider.GetString(length));
+            void act() => _randomStringProvider.GetString(length);
+            Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]

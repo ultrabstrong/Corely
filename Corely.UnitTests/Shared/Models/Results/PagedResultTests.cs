@@ -1,13 +1,13 @@
-﻿using Corely.Shared.Models.Responses;
+﻿using Corely.Shared.Models.Results;
 
-namespace Corely.UnitTests.Shared.Models.Responses
+namespace Corely.UnitTests.Shared.Models.Results
 {
-    public class PagedResponseTests
+    public class PagedResultTests
     {
-        private PagedResponse<object> _pagedResponse;
+        private PagedResult<object> _pagedResponse;
         private readonly List<object> _testData;
 
-        public PagedResponseTests()
+        public PagedResultTests()
         {
             _testData = new List<object>();
             for (int i = 0; i < 100; i++)
@@ -15,14 +15,16 @@ namespace Corely.UnitTests.Shared.Models.Responses
                 _testData.Add($"test{i}");
             }
 
-            _pagedResponse = new PagedResponse<object>(0, 10);
+            _pagedResponse = new PagedResult<object>(0, 10);
         }
 
         [Fact]
         public void PagedResponse_ShouldThrowErrors_WithInvalidConstructorArgs()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new PagedResponse<object>(-1, 10));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new PagedResponse<object>(0, 0));
+            void act1() => new PagedResult<object>(-1, 10);
+            Assert.Throws<ArgumentOutOfRangeException>(act1);
+            void act2() => new PagedResult<object>(0, 0);
+            Assert.Throws<ArgumentOutOfRangeException>(act2);
         }
 
         [Fact]
@@ -37,7 +39,7 @@ namespace Corely.UnitTests.Shared.Models.Responses
         [Theory, MemberData(nameof(SkipAndTakeTestData))]
         public void PagedResponse_ShouldAddAllItems(int skip, int take)
         {
-            _pagedResponse = new PagedResponse<object>(skip, take);
+            _pagedResponse = new PagedResult<object>(skip, take);
 
             _pagedResponse.OnGetNextChunk += (pagedResponse) =>
             {
@@ -65,7 +67,7 @@ namespace Corely.UnitTests.Shared.Models.Responses
         [Theory, MemberData(nameof(SkipAndTakeTestData))]
         public void PagedResponse_ShouldSetAllItems(int skip, int take)
         {
-            _pagedResponse = new PagedResponse<object>(skip, take);
+            _pagedResponse = new PagedResult<object>(skip, take);
 
             _pagedResponse.OnGetNextChunk += (pagedResponse) =>
             {
@@ -97,7 +99,7 @@ namespace Corely.UnitTests.Shared.Models.Responses
         [Theory, MemberData(nameof(SkipAndTakeTestData))]
         public void PageNum_ShouldBeCeilingSkipOverTake(int skip, int take)
         {
-            _pagedResponse = new PagedResponse<object>(skip, take);
+            _pagedResponse = new PagedResult<object>(skip, take);
             Assert.Equal((int)Math.Ceiling((decimal)skip / take), _pagedResponse.PageNum);
         }
         public static IEnumerable<object[]> SkipAndTakeTestData()

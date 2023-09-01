@@ -7,7 +7,8 @@ namespace Corely.UnitTests.Shared.Extensions
         [Fact]
         public void UrlEncode_Null_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => UrlEncodingExtensions.UrlEncode(null));
+            void act() => UrlEncodingExtensions.UrlEncode(null);
+            Assert.Throws<ArgumentNullException>(act);
         }
 
         [Fact]
@@ -19,7 +20,8 @@ namespace Corely.UnitTests.Shared.Extensions
         [Fact]
         public void UrlDecode_Null_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => UrlEncodingExtensions.UrlDecode(null));
+            void act() => UrlEncodingExtensions.UrlDecode(null);
+            Assert.Throws<ArgumentNullException>(act);
         }
 
         [Fact]

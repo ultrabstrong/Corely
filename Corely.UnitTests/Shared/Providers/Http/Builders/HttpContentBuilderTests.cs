@@ -22,8 +22,9 @@ namespace Corely.UnitTests.Shared.Providers.Http.Builders
         public void HttpContentBuilder_Build_ShouldThrowArgumentNullException()
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            Assert.Throws<ArgumentNullException>(() => _builder.Build(null as IHttpContent<string>));
+            void act() => _builder.Build(null as IHttpContent<string>);
 #pragma warning restore CS8604 // Possible null reference argument.
+            Assert.Throws<ArgumentNullException>(act);
         }
 
         private class TestHttpContent : IHttpContent<string>
@@ -34,7 +35,8 @@ namespace Corely.UnitTests.Shared.Providers.Http.Builders
         [Fact]
         public void HttpContentBuilder_Build_ShouldThrowNotImplementedException()
         {
-            Assert.Throws<NotImplementedException>(() => _builder.Build(new TestHttpContent()));
+            void act() => _builder.Build(new TestHttpContent());
+            Assert.Throws<NotImplementedException>(act);
         }
 
         [Fact]

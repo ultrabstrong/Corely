@@ -30,7 +30,8 @@ namespace Corely.Shared.Providers.Http
             else
             {
                 string body = await result.Content.ReadAsStringAsync();
-                throw new HttpRequestException($"{(int)result.StatusCode} {result.StatusCode} - {result.ReasonPhrase}{Environment.NewLine}{result.RequestMessage}", new Exception(body));
+                string message = $"{(int)result.StatusCode} {result.StatusCode} - {result.ReasonPhrase}{Environment.NewLine}{result.RequestMessage}";
+                throw new HttpRequestException(message, new Exception(body));
             }
         }
 
