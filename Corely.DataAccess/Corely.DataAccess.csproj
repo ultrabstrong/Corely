@@ -10,5 +10,7 @@
     <ProjectReference Include="..\Corely.Domain\Corely.Domain.csproj" />
     <ProjectReference Include="..\Corely.Shared\Corely.Shared.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <InternalsVisibleTo Include="Corely.UnitTests" />
+  </ItemGroup>
 </Project>

@@ -14,4 +14,7 @@
     <NoWarn>8618</NoWarn>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Corely.UnitTests" />
+  </ItemGroup>
 </Project>
