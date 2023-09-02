@@ -4,12 +4,7 @@ namespace Corely.UnitTests.Shared.Providers.Http.Models
 {
     public class HttpMultipartFormDataContentTests
     {
-        private readonly HttpMultipartFormDataContent _httpMultipartFormDataContent;
-
-        public HttpMultipartFormDataContentTests()
-        {
-            _httpMultipartFormDataContent = new HttpMultipartFormDataContent(new Dictionary<string, string>());
-        }
+        private readonly HttpMultipartFormDataContent _httpMultipartFormDataContent = new(new());
 
         [Fact]
         public void HttpMultipartFormDataContent_ShouldBeOfTypeIHttpContent()

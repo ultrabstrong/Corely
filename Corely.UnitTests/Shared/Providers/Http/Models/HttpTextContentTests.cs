@@ -5,12 +5,7 @@ namespace Corely.UnitTests.Shared.Providers.Http.Models
 {
     public class HttpTextContentTests
     {
-        private readonly HttpTextContent _httpTextContent;
-
-        public HttpTextContentTests()
-        {
-            _httpTextContent = new HttpTextContent("content");
-        }
+        private readonly HttpTextContent _httpTextContent = new("content");
 
         [Fact]
         public void HttpFormUrlEncodedContent_ShouldBeOfTypeIHttpContent()

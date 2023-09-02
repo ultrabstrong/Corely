@@ -5,7 +5,8 @@ namespace Corely.UnitTests.Shared.Providers.Http
 {
     public class HttpProxyProviderTests
     {
-        private readonly HttpProxyProvider _httpProxyProvider;
+        private readonly HttpProxyProvider _httpProxyProvider
+             = new(new Mock<IHttpContentBuilder>().Object, "http://localhost/");
 
         public HttpProxyProviderTests()
         {

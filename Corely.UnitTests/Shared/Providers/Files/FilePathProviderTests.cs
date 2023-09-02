@@ -13,24 +13,8 @@ namespace Corely.Shared.UnitTests.Providers.Files
 
     public class FilePathProviderTests
     {
-        private readonly Mock<TestableFilePathProvider> _filePathProviderMock;
-
+        private readonly Mock<TestableFilePathProvider> _filePathProviderMock = new() { CallBase = true };
         private bool _doesFileExist;
-
-        public FilePathProviderTests()
-        {
-            _filePathProviderMock = GetMockedFilePathProvider();
-        }
-
-        private Mock<TestableFilePathProvider> GetMockedFilePathProvider()
-        {
-            var filePathProviderMock = new Mock<TestableFilePathProvider>
-            {
-                CallBase = true
-            };
-
-            return filePathProviderMock;
-        }
 
         private void SetupStandardReturnForDoesFileExist()
         {
@@ -82,7 +66,7 @@ namespace Corely.Shared.UnitTests.Providers.Files
 
         public static IEnumerable<object[]> GetOverwriteProtectedPathTestData(int number)
         {
-            var append = (int i) => i < 1 ? "" : $"-[{i}]";
+            string append(int i) => i < 1 ? "" : $"-[{i}]";
 
             yield return new object[] { number, "C:\\file_that_exists.txt", $"C:\\file_that_exists{append(number)}.txt" };
             yield return new object[] { number, "C:\\config.json.sample", $"C:\\config.json{append(number)}.sample" };

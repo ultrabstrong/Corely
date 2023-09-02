@@ -22,7 +22,7 @@ namespace Corely.DataAccess.Factories
         public virtual void CheckKnownConnectionDataTypes<T>(IDataAccessConnection<T> connection)
         {
             ArgumentNullException.ThrowIfNull(connection, nameof(connection));
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(connection.ConnectionName, nameof(connection.ConnectionName));
+            ArgumentException.ThrowIfNullOrWhiteSpace(connection.ConnectionName, nameof(connection.ConnectionName));
 
             switch (connection.ConnectionName)
             {

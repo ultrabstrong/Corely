@@ -5,12 +5,7 @@ namespace Corely.UnitTests.Shared.Providers.Http.Builders
 {
     public class HttpContentBuilderTests
     {
-        private readonly HttpContentBuilder _builder;
-
-        public HttpContentBuilderTests()
-        {
-            _builder = new HttpContentBuilder();
-        }
+        private readonly HttpContentBuilder _builder = new();
 
         [Fact]
         public void HttpContentBuilder_ShouldImplementIHttpContentBuilder()

@@ -4,12 +4,7 @@ namespace Corely.UnitTests.Shared.Providers.Data
 {
     public class RandomStringProviderTests
     {
-        private readonly RandomStringProvider _randomStringProvider;
-
-        public RandomStringProviderTests()
-        {
-            _randomStringProvider = new RandomStringProvider();
-        }
+        private readonly RandomStringProvider _randomStringProvider = new();
 
         [Fact]
         public void GetString_ShouldThrowException_WhenLengthIsNegative()

@@ -4,12 +4,7 @@ namespace Corely.UnitTests.Shared.Providers.Http.Models
 {
     public class HttpSendRequestTests
     {
-        private readonly HttpSendRequest _httpSendRequest;
-
-        public HttpSendRequestTests()
-        {
-            _httpSendRequest = new HttpSendRequest("/v1/entity", HttpMethod.Get);
-        }
+        private readonly HttpSendRequest _httpSendRequest = new("/v1/entity", HttpMethod.Get);
 
         [Fact]
         public void CreateHttpRequestMessage_ShouldReturnHttpRequestMessage()

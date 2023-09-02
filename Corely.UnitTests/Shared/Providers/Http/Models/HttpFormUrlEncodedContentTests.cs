@@ -4,12 +4,7 @@ namespace Corely.UnitTests.Shared.Providers.Http.Models
 {
     public class HttpFormUrlEncodedContentTests
     {
-        private readonly HttpFormUrlEncodedContent _httpFormUrlEncodedContent;
-
-        public HttpFormUrlEncodedContentTests()
-        {
-            _httpFormUrlEncodedContent = new HttpFormUrlEncodedContent(new());
-        }
+        private readonly HttpFormUrlEncodedContent _httpFormUrlEncodedContent = new(new());
 
         [Fact]
         public void HttpFormUrlEncodedContent_ShouldBeOfTypeIHttpContent()

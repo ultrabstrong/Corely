@@ -5,12 +5,7 @@ namespace Corely.UnitTests.Shared.Providers.Security
 {
     public class AesKeyProviderTests
     {
-        private readonly AesKeyProvider _aesKeyProvider;
-
-        public AesKeyProviderTests()
-        {
-            _aesKeyProvider = new AesKeyProvider();
-        }
+        private readonly AesKeyProvider _aesKeyProvider = new();
 
         [Fact]
         public void GetKey_ShouldReturnValidKeyKey()

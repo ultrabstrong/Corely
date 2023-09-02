@@ -6,12 +6,7 @@ namespace Corely.UnitTests.Shared.Providers.Data
 {
     public class DelimitedTextProviderTests
     {
-        private readonly DelimitedTextProvider _delimitedTextDataProvider;
-
-        public DelimitedTextProviderTests()
-        {
-            _delimitedTextDataProvider = new DelimitedTextProvider();
-        }
+        private readonly DelimitedTextProvider _delimitedTextDataProvider = new();
 
         [Theory, MemberData(nameof(WriteAllRecordsTestData))]
         public void WriteAllRecordsThenReadAllRecords_ShouldProduceOriginalInput(List<List<string>> records)

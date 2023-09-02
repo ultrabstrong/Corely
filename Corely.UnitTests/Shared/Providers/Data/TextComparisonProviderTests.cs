@@ -4,12 +4,7 @@ namespace Corely.UnitTests.Shared.Providers.Data
 {
     public class TextComparisonProviderTests
     {
-        private readonly TextComparisonProvider _textComparisonProvider;
-
-        public TextComparisonProviderTests()
-        {
-            _textComparisonProvider = new TextComparisonProvider();
-        }
+        private readonly TextComparisonProvider _textComparisonProvider = new();
 
         [Theory, MemberData(nameof(GetLevenshteinEditDistanceTestData))]
         public void GetLevenshteinEditDistance_ShouldReturnCorrectValue(

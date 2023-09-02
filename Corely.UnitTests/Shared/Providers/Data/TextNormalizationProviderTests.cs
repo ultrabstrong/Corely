@@ -6,12 +6,7 @@ namespace Corely.UnitTests.Shared.Providers.Data
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
     public class TextNormalizationProviderTests
     {
-        private readonly TextNormalizationProvider _textNormalizationProvider;
-
-        public TextNormalizationProviderTests()
-        {
-            _textNormalizationProvider = new TextNormalizationProvider();
-        }
+        private readonly TextNormalizationProvider _textNormalizationProvider = new();
 
         [Theory, MemberData(nameof(BasicNormalizeTestData))]
         public void BasicNormalize_ShouldReturnBasicNormalizedString(string input, string expected)

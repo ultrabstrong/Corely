@@ -4,12 +4,7 @@ namespace Corely.UnitTests.Shared.Providers.Http.Models
 {
     public class HttpParametersTests
     {
-        private readonly HttpParametersBase _httpParameters;
-
-        public HttpParametersTests()
-        {
-            _httpParameters = new HttpParameters();
-        }
+        private readonly HttpParametersBase _httpParameters = new HttpParameters();
 
         [Fact]
         public void HttpParametersBase_ShouldImplementIHttpParameters()

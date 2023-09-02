@@ -12,7 +12,7 @@ namespace Corely.Shared.Providers.Http
         public HttpProxyProviderBase(IHttpContentBuilder httpContentBuilder, string host)
         {
             ArgumentNullException.ThrowIfNull(httpContentBuilder, nameof(httpContentBuilder));
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(host, nameof(host));
+            ArgumentException.ThrowIfNullOrWhiteSpace(host, nameof(host));
             _httpContentBuilder = httpContentBuilder;
             _httpClient = new HttpClient() { BaseAddress = new Uri(host) };
         }
