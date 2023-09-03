@@ -8,35 +8,52 @@ namespace Corely.UnitTests.DataAccess
 {
     public class GenericRepoFactoryTests
     {
-        private readonly Mock<GenericRepoFactory> _genericRepoFactoryMock = new() { CallBase = true };
-        private readonly Fixture _fixture = new();
+        private readonly GenericRepoFactory<object> _genericRepoFactory;
+        private readonly Fixture _fixture;
 
-        [Theory, MemberData(nameof(CreateAccountManagementRepoFactoryTestData))]
-        public void CreateAccountManagementRepoFactory_ReturnsCorrectType<T>(string connectionName, T connectionInfo, Type expectedType)
+        public GenericRepoFactoryTests()
         {
-            var connection = new DataAccessConnection<T>(
-                               connectionName,
-                               connectionInfo);
+            _fixture = new();
 
-            var actual = _genericRepoFactoryMock.Object.CreateAccountManagementRepoFactory(connection);
+            _genericRepoFactory = new(
+                new DataAccessConnection<object>(
+                    _fixture.Create<string>(),
+                    _fixture.Create<object>()));
+        }
 
-            _genericRepoFactoryMock.Verify(m =>
-                m.CheckKnownConnectionDataTypes<T>(It.IsAny<IDataAccessConnection<T>>()),
-                Times.Once);
+        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
+        public void GenericRepoFactoryConstructor_ThrowsException_WhenConnectionNameIsInvalid(string connectionName)
+        {
+            void act() => new GenericRepoFactory<object>(
+                new DataAccessConnection<object>(
+                    connectionName,
+                    _fixture.Create<object>()));
 
-            Assert.IsType(expectedType, actual);
+            if (connectionName == null)
+                Assert.Throws<ArgumentNullException>(act);
+            else
+                Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void CreateAccountManagementRepoFactory_ThrowsException_WhenConnectionIsUnknown()
+        public void GenericRepoFactoryConstructor_ThrowsException_WhenConnectionIsNull()
         {
-            var connection = new DataAccessConnection<object>(
-                                 _fixture.Create<string>(),
-                                 _fixture.Create<object>());
+            void act() => new GenericRepoFactory<object>(null);
 
-            void act() => _genericRepoFactoryMock.Object.CreateAccountManagementRepoFactory(connection);
+            Assert.Throws<ArgumentNullException>(act);
+        }
 
-            Assert.Throws<ArgumentOutOfRangeException>(act);
+        [Theory, MemberData(nameof(CreateAccountManagementRepoFactoryTestData))]
+        public void CreateAccountManagementRepoFactory_ReturnsCorrectType<T>(string connectionName, T connection, Type expectedType)
+        {
+            GenericRepoFactory<T> genericRepoFactory = new(
+                new DataAccessConnection<T>(
+                    connectionName,
+                    connection));
+
+            var actual = genericRepoFactory.CreateAccountManagementRepoFactory();
+
+            Assert.IsType(expectedType, actual);
         }
 
         public static IEnumerable<object[]> CreateAccountManagementRepoFactoryTestData()
@@ -44,54 +61,40 @@ namespace Corely.UnitTests.DataAccess
             Fixture fixture = new();
 
             yield return new object[] {
-                ConnectionName.EntityFramework,
+                ConnectionName.EntityFrameworkMySql,
                 fixture.Create<string>(),
-                typeof(EFAccountManagementRepoFactory) };
+                typeof(EfMySqlAccountManagementRepoFactory) };
+        }
+
+        [Fact]
+        public void CreateAccountManagementRepoFactory_ThrowsException_WhenConnectionIsUnknown()
+        {
+            void act() => _genericRepoFactory.CreateAccountManagementRepoFactory();
+
+            Assert.Throws<ArgumentOutOfRangeException>(act);
         }
 
         [Fact]
         public void CheckKnownConnectionDataTypes_DoesNotThrowException_WhenConnectionIsUnknown()
         {
-            var connection = new DataAccessConnection<object>(
-                _fixture.Create<string>(),
-                 _fixture.Create<object>());
+            var genericRepoFactoryMock = new Mock<GenericRepoFactory<object>>(
+                new DataAccessConnection<object>(
+                    _fixture.Create<string>(),
+                    _fixture.Create<object>()));
 
-            void act() => _genericRepoFactoryMock.Object.CheckKnownConnectionDataTypes(connection);
+            void act() => genericRepoFactoryMock.Object.CheckKnownConnectionDataTypes();
 
-            _genericRepoFactoryMock.Verify(m =>
-                m.ThrowForInvalidDataType<object, object>(It.IsAny<IDataAccessConnection<object>>()),
+            genericRepoFactoryMock.Verify(m =>
+                m.ThrowForInvalidDataType<object>(),
                 Times.Never);
 
             Assert.Null(Record.Exception(act));
         }
 
-        [Fact]
-        public void CheckKnownConnectionDataTypes_ThrowsException_WhenConnectionIsNull()
-        {
-            DataAccessConnection<object>? nullConnection = null;
-            void act() => _genericRepoFactoryMock.Object.CheckKnownConnectionDataTypes(nullConnection);
-            Assert.Throws<ArgumentNullException>(act);
-        }
-
-        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void CheckKnownConnectionDataTypes_ThrowsException_WhenConnectionNameIsInvalid(string connectionName)
-        {
-            var connection = new DataAccessConnection<object>(
-                connectionName,
-                _fixture.Create<object>());
-
-            void act() => _genericRepoFactoryMock.Object.CheckKnownConnectionDataTypes(connection);
-
-            if (connection.ConnectionName == null)
-                Assert.Throws<ArgumentNullException>(act);
-            else
-                Assert.Throws<ArgumentException>(act);
-        }
-
         [Theory, MemberData(nameof(ThrowForInvalidDataTypeTestData))]
-        public void ThrowForInvalidDataType_ThrowsException_WhenDataTypesAreInvalid<T1, T2>(bool shouldThrow, T1 _, IDataAccessConnection<T2> connection)
+        public void ThrowForInvalidDataType_ThrowsException_WhenDataTypesAreInvalid<T1, T2>(bool shouldThrow, T1 _)
         {
-            void act() => _genericRepoFactoryMock.Object.ThrowForInvalidDataType<T1, T2>(connection);
+            void act() => _genericRepoFactory.ThrowForInvalidDataType<T1>();
 
             if (shouldThrow)
             {
@@ -107,18 +110,13 @@ namespace Corely.UnitTests.DataAccess
         {
             Fixture fixture = new();
 
-            var connection = new DataAccessConnection<string>(
-                               fixture.Create<string>(),
-                               fixture.Create<string>());
-
             yield return new object[] {
                 false,
-                fixture.Create<string>(),
-                connection };
+                fixture.Create<object>() };
+
             yield return new object[] {
                 true,
-                fixture.Create<int>(),
-                connection };
+                fixture.Create<string>() };
         }
     }
 }

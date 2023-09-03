@@ -1,11 +1,9 @@
-﻿using Corely.DataAccess.Connections;
-using Corely.DataAccess.Factories.AccountManagement;
+﻿using Corely.DataAccess.Factories.AccountManagement;
 
 namespace Corely.DataAccess.Factories
 {
-    public interface IGenericRepoFactory
+    public interface IGenericRepoFactory<T>
     {
-        public IAccountManagementRepoFactory CreateAccountManagementRepoFactory<T>(
-            IDataAccessConnection<T> connectionProvider);
+        public IAccountManagementRepoFactory CreateAccountManagementRepoFactory();
     }
 }

@@ -1,10 +1,18 @@
-﻿using Corely.Domain.Entities.Users;
+﻿using Corely.DataAccess.DataAccess.EntityFramework;
+using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 
 namespace Corely.DataAccess.Repos.User
 {
     internal class EFUserRepo : IUserRepo
     {
+        private readonly AccountManagementDbContext _dbContext;
+
+        public EFUserRepo(AccountManagementDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         public void Create(UserEntity entity)
         {
             throw new NotImplementedException();

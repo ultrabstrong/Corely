@@ -3,43 +3,48 @@ using Corely.DataAccess.Factories.AccountManagement;
 
 namespace Corely.DataAccess.Factories
 {
-    public abstract class GenericRepoFactoryBase : IGenericRepoFactory
+    public abstract class GenericRepoFactoryBase<T> : IGenericRepoFactory<T>
     {
-        public virtual IAccountManagementRepoFactory CreateAccountManagementRepoFactory<T>(
-            IDataAccessConnection<T> connection)
-        {
-            CheckKnownConnectionDataTypes(connection);
+        private readonly IDataAccessConnection<T> _connection;
 
-            return connection.ConnectionName switch
-            {
-                ConnectionName.EntityFramework =>
-                    new EFAccountManagementRepoFactory(((IDataAccessConnection<string>)connection).GetConnection()),
-                _ =>
-                    throw new ArgumentOutOfRangeException(connection.ConnectionName),
-            };
-        }
-
-        public virtual void CheckKnownConnectionDataTypes<T>(IDataAccessConnection<T> connection)
+        protected GenericRepoFactoryBase(IDataAccessConnection<T> connection)
         {
             ArgumentNullException.ThrowIfNull(connection, nameof(connection));
             ArgumentException.ThrowIfNullOrWhiteSpace(connection.ConnectionName, nameof(connection.ConnectionName));
 
-            switch (connection.ConnectionName)
+            _connection = connection;
+            CheckKnownConnectionDataTypes();
+        }
+
+        public virtual void CheckKnownConnectionDataTypes()
+        {
+            switch (_connection.ConnectionName)
             {
-                case ConnectionName.EntityFramework:
-                    ThrowForInvalidDataType<string, T>(connection);
+                case ConnectionName.EntityFrameworkMySql:
+                    ThrowForInvalidDataType<string>();
                     break;
                 default:
                     break;
             }
         }
 
-        public virtual void ThrowForInvalidDataType<T1, T2>(IDataAccessConnection<T2> connection)
+        public virtual void ThrowForInvalidDataType<T1>()
         {
-            if (typeof(T1) != typeof(T2))
+            if (typeof(T1) != typeof(T))
             {
-                throw new ArgumentException($"Invalid connection type for {connection.ConnectionName}. Expected {typeof(T1)} and received {typeof(T2)}");
+                throw new ArgumentException($"Invalid connection type for {_connection.ConnectionName}. Expected {typeof(T1)} and received {typeof(T)}");
             }
+        }
+
+        public virtual IAccountManagementRepoFactory CreateAccountManagementRepoFactory()
+        {
+            return _connection.ConnectionName switch
+            {
+                ConnectionName.EntityFrameworkMySql =>
+                    new EfMySqlAccountManagementRepoFactory(((IDataAccessConnection<string>)_connection).GetConnection()),
+                _ =>
+                    throw new ArgumentOutOfRangeException(_connection.ConnectionName),
+            };
         }
     }
 }

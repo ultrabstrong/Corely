@@ -2,6 +2,6 @@
 {
     public class ConnectionName
     {
-        public const string EntityFramework = "EntityFramework";
+        public const string EntityFrameworkMySql = nameof(EntityFrameworkMySql);
     }
 }
