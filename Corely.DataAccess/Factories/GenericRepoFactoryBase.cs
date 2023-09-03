@@ -7,7 +7,7 @@ namespace Corely.DataAccess.Factories
     {
         private readonly IDataAccessConnection<T> _connection;
 
-        protected GenericRepoFactoryBase(IDataAccessConnection<T> connection)
+        protected internal GenericRepoFactoryBase(IDataAccessConnection<T> connection)
         {
             ArgumentNullException.ThrowIfNull(connection, nameof(connection));
             ArgumentException.ThrowIfNullOrWhiteSpace(connection.ConnectionName, nameof(connection.ConnectionName));
@@ -16,7 +16,7 @@ namespace Corely.DataAccess.Factories
             CheckKnownConnectionDataTypes();
         }
 
-        public virtual void CheckKnownConnectionDataTypes()
+        protected internal virtual void CheckKnownConnectionDataTypes()
         {
             switch (_connection.ConnectionName)
             {
@@ -28,7 +28,7 @@ namespace Corely.DataAccess.Factories
             }
         }
 
-        public virtual void ThrowForInvalidDataType<T1>()
+        protected internal virtual void ThrowForInvalidDataType<T1>()
         {
             if (typeof(T1) != typeof(T))
             {
