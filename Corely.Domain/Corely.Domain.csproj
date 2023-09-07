@@ -25,4 +25,8 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Corely.UnitTests" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="3.0.1" />
+  </ItemGroup>
 </Project>

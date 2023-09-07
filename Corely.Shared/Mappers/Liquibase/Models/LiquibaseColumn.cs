@@ -1,4 +1,4 @@
-﻿namespace Corely.Shared.Models.Liquibase
+﻿namespace Corely.Shared.Mappers.Liquibase.Models
 {
     public class LiquibaseColumn
     {

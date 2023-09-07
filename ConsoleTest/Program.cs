@@ -4,6 +4,7 @@
 
 using Corely.Shared.Providers.Data;
 using Corely.Shared.Providers.Data.Models;
+using Serilog;
 using System.Text;
 
 namespace ConsoleTest
@@ -12,6 +13,9 @@ namespace ConsoleTest
     {
         private static readonly string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         private static readonly string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+        private static readonly ILogger logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .CreateLogger();
 
 
         static void Main(string[] args)
@@ -19,7 +23,7 @@ namespace ConsoleTest
             try
             {
                 string s = File.ReadAllText(desktop + "\\csvData.csv");
-                var provider = new DelimitedTextProvider();
+                var provider = new DelimitedTextProvider(logger);
                 List<ReadRecordResult> results;
                 using (MemoryStream stream = new(Encoding.UTF8.GetBytes(s)))
                 {

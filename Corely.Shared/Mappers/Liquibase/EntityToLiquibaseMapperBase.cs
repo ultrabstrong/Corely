@@ -1,4 +1,5 @@
-﻿using Corely.Shared.Models.Liquibase;
+﻿using Corely.Shared.Attributes.Db;
+using Corely.Shared.Mappers.Liquibase.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
@@ -18,15 +19,15 @@ namespace Corely.Shared.Mappers.Liquibase
             return entities;
         }
 
-        protected internal virtual IEnumerable<LiquibaseCreateTable> MapToClasses(List<Type> entities)
+        protected internal virtual IEnumerable<LiquibaseCreateTable> MapCreateTables(List<Type> entities)
         {
             foreach (var entity in entities)
             {
-                yield return MapToClass(entity);
+                yield return MapCreateTable(entity);
             }
         }
 
-        protected internal virtual LiquibaseCreateTable MapToClass(Type entity)
+        protected internal virtual LiquibaseCreateTable MapCreateTable(Type entity)
         {
             var createTable = new LiquibaseCreateTable
             {
@@ -34,30 +35,45 @@ namespace Corely.Shared.Mappers.Liquibase
                 Columns = new List<LiquibaseColumn>()
             };
 
-            foreach (var prop in entity.GetProperties())
-            {
-                var column = new LiquibaseColumn
-                {
-                    Name = prop.Name,
-                    Type = MapDotNetTypeToSqlType(prop.PropertyType),
-                    Constraints = new LiquibaseConstraints
-                    {
-                        PrimaryKey = prop.GetCustomAttributes<KeyAttribute>().Any(),
-                        Nullable = !prop.GetCustomAttributes<RequiredAttribute>().Any()
-                    }
-                };
-
-                createTable.Columns.Add(column);
-            }
+            createTable.Columns.AddRange(MapColumns(entity));
 
             return createTable;
         }
 
-        protected internal virtual string MapDotNetTypeToSqlType(Type type)
+        protected internal virtual IEnumerable<LiquibaseColumn> MapColumns(Type entity)
+        {
+            foreach (var prop in entity.GetProperties())
+            {
+                var column = MapColumn(prop);
+                if (column != null)
+                {
+                    yield return column;
+                }
+            }
+        }
+
+        protected internal virtual LiquibaseColumn? MapColumn(PropertyInfo prop)
+        {
+            if (MapSqlType(prop.PropertyType, out string sqlType))
+            {
+                var column = new LiquibaseColumn
+                {
+                    Name = prop.Name,
+                    Type = sqlType,
+                    Constraints = MapConstraints(prop)
+                };
+
+                return column;
+            }
+
+            return null;
+        }
+
+        protected internal virtual bool MapSqlType(Type type, out string sqlType)
         {
             Type underlyingType = Nullable.GetUnderlyingType(type) ?? type;
 
-            return underlyingType switch
+            sqlType = underlyingType switch
             {
                 Type t when t == typeof(int) => "INT",
                 Type t when t == typeof(string) => "VARCHAR",
@@ -68,6 +84,25 @@ namespace Corely.Shared.Mappers.Liquibase
                 Type t when t == typeof(decimal) => "DECIMAL",
                 _ => "UNKNOWN_TYPE",
             };
+
+            return sqlType != "UNKNOWN_TYPE";
+        }
+
+        protected internal virtual LiquibaseConstraints MapConstraints(PropertyInfo prop)
+        {
+            var constraints = new LiquibaseConstraints
+            {
+                PrimaryKey = prop.GetCustomAttributes<KeyAttribute>().Any(),
+                Nullable = !prop.GetCustomAttributes<RequiredAttribute>().Any(),
+                Unique = prop.GetCustomAttributes<UniqueAttribute>().Any(),
+                ForeignKey = prop.GetCustomAttributes<ForeignKeyAttribute>().FirstOrDefault()?.Name,
+                //ForeignKeyTable = prop.GetCustomAttributes<ForeignKeyAttribute>().FirstOrDefault()?.NavigationProperty,
+                CheckExpression = prop.GetCustomAttributes<CheckAttribute>().FirstOrDefault()?.Expression,
+                Default = prop.GetCustomAttributes<DefaultAttribute>().FirstOrDefault()?.Value,
+                AutoIncrement = prop.GetCustomAttributes<AutoIncrementAttribute>().Any()
+            };
+
+            return constraints;
         }
     }
 }

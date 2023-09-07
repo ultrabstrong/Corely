@@ -1,15 +1,20 @@
 ﻿using Corely.DataAccess.DataAccess.EntityFramework;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
+using Serilog;
 
 namespace Corely.DataAccess.Repos.User
 {
     internal class EFUserRepo : IUserRepo
     {
+        private readonly ILogger _logger;
         private readonly AccountManagementDbContext _dbContext;
 
-        public EFUserRepo(AccountManagementDbContext dbContext)
+        public EFUserRepo(
+            ILogger logger,
+            AccountManagementDbContext dbContext)
         {
+            _logger = logger;
             _dbContext = dbContext;
         }
 

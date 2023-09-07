@@ -3,19 +3,27 @@ using Corely.DataAccess.Connections;
 using Corely.DataAccess.Factories;
 using Corely.DataAccess.Factories.AccountManagement;
 using Corely.UnitTests.ClassData;
+using Corely.UnitTests.Collections;
+using Corely.UnitTests.Fixtures;
+using Corely.UnitTests.Shared.Providers.Http;
+using Serilog;
 
 namespace Corely.UnitTests.DataAccess
 {
+    [Collection(nameof(CollectionNames.SerilogCollection))]
     public class GenericRepoFactoryTests
     {
+        private readonly ILogger _logger;
         private readonly GenericRepoFactory<object> _genericRepoFactory;
         private readonly Fixture _fixture;
 
-        public GenericRepoFactoryTests()
+        public GenericRepoFactoryTests(TestLoggerFixture loggerFixture)
         {
+            _logger = loggerFixture.Logger.ForContext<HttpProxyProviderTests>();
             _fixture = new();
 
             _genericRepoFactory = new(
+                _logger,
                 new DataAccessConnection<object>(
                     _fixture.Create<string>(),
                     _fixture.Create<object>()));
@@ -25,6 +33,7 @@ namespace Corely.UnitTests.DataAccess
         public void GenericRepoFactoryConstructor_ThrowsException_WhenConnectionNameIsInvalid(string connectionName)
         {
             void act() => new GenericRepoFactory<object>(
+                _logger,
                 new DataAccessConnection<object>(
                     connectionName,
                     _fixture.Create<object>()));
@@ -38,7 +47,9 @@ namespace Corely.UnitTests.DataAccess
         [Fact]
         public void GenericRepoFactoryConstructor_ThrowsException_WhenConnectionIsNull()
         {
-            void act() => new GenericRepoFactory<object>(null);
+            void act() => new GenericRepoFactory<object>(
+                _logger,
+                null);
 
             Assert.Throws<ArgumentNullException>(act);
         }
@@ -47,6 +58,7 @@ namespace Corely.UnitTests.DataAccess
         public void CreateAccountManagementRepoFactory_ReturnsCorrectType<T>(string connectionName, T connection, Type expectedType)
         {
             GenericRepoFactory<T> genericRepoFactory = new(
+                _logger,
                 new DataAccessConnection<T>(
                     connectionName,
                     connection));
@@ -78,6 +90,7 @@ namespace Corely.UnitTests.DataAccess
         public void CheckKnownConnectionDataTypes_DoesNotThrowException_WhenConnectionIsUnknown()
         {
             var genericRepoFactoryMock = new Mock<GenericRepoFactory<object>>(
+                _logger,
                 new DataAccessConnection<object>(
                     _fixture.Create<string>(),
                     _fixture.Create<object>()));
