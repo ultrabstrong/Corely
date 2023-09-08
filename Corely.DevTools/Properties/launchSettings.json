@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Corely.DevTools": {
+      "commandName": "Project",
+      "commandLineArgs": "Add 1 2 -m 2"
+    }
+  }
+}
