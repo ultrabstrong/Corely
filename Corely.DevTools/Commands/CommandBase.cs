@@ -37,7 +37,7 @@ namespace Corely.DevTools.Commands
                 }
             }
 
-            Handler = CommandHandler.Create((Action<BindingContext>)InvokeExecute);
+            Handler = CommandHandler.Create(InvokeExecute);
         }
 
         private bool CreateOption(PropertyInfo property, OptionAttribute optionAttribute, out Option option)
