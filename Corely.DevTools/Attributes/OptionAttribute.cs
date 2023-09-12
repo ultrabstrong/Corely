@@ -3,7 +3,7 @@
     [AttributeUsage(AttributeTargets.Property)]
     internal class OptionAttribute : Attribute
     {
-        public string[] Aliases { get; }
+        public string[] Aliases { get; init; }
 
         public string Description { get; init; } = null;
 

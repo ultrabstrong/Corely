@@ -12,21 +12,17 @@ namespace Corely.DevTools.Commands
         private readonly Dictionary<string, Argument> _arguments = new();
         private readonly Dictionary<string, Option> _options = new();
 
+        public CommandBase(string name, string description, string additionalDescription)
+            : this(name, $"{description}{Environment.NewLine}{additionalDescription}")
+        { }
+
         public CommandBase(string name, string description) : base(name, description)
         {
             var type = GetType();
             foreach (var property in type.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly))
             {
                 var optionAttribute = property.GetCustomAttribute<OptionAttribute>();
-                if (optionAttribute != null)
-                {
-                    if (CreateOption(property, optionAttribute, out var option))
-                    {
-                        _options.Add(property.Name, option);
-                        AddOption(option);
-                    }
-                }
-                else
+                if (optionAttribute == null)
                 {
                     var argumentAttribute = property.GetCustomAttribute<ArgumentAttribute>();
                     if (CreateArgument(property, argumentAttribute, out var argument))
@@ -35,9 +31,43 @@ namespace Corely.DevTools.Commands
                         AddArgument(argument);
                     }
                 }
+                else
+                {
+                    if (CreateOption(property, optionAttribute, out var option))
+                    {
+                        _options.Add(property.Name, option);
+                        AddOption(option);
+                    }
+                }
             }
 
             Handler = CommandHandler.Create(InvokeExecute);
+        }
+
+        private bool CreateArgument(PropertyInfo property, ArgumentAttribute? argumentAttribute, out Argument argument)
+        {
+            var argumentGenericType = typeof(Argument<>).MakeGenericType(property.PropertyType);
+            var optionalText = argumentAttribute?.IsRequired ?? false ? "" : "[Optional] ";
+
+            var argumentInstance = Activator.CreateInstance(
+                argumentGenericType,
+                new object[]
+                {
+                    property.Name,
+                    $"{optionalText}{argumentAttribute?.Description}"});
+
+            if (argumentInstance is Argument arg)
+            {
+                if (!argumentAttribute?.IsRequired ?? true)
+                {
+                    arg.SetDefaultValue(property.GetValue(this));
+                }
+                argument = arg;
+                return true;
+            }
+
+            argument = null;
+            return false;
         }
 
         private bool CreateOption(PropertyInfo property, OptionAttribute optionAttribute, out Option option)
@@ -47,7 +77,7 @@ namespace Corely.DevTools.Commands
                 optionGenericType,
                 new object[] {
                     optionAttribute.Aliases,
-                    optionAttribute.Description });
+                    optionAttribute.Description});
 
             if (optionInstance is Option opt)
             {
@@ -57,27 +87,6 @@ namespace Corely.DevTools.Commands
             }
 
             option = null;
-            return false;
-        }
-
-        private bool CreateArgument(PropertyInfo property, ArgumentAttribute? argumentAttribute, out Argument argument)
-        {
-            var argumentGenericType = typeof(Argument<>).MakeGenericType(property.PropertyType);
-            var argumentInstance = Activator.CreateInstance(
-                argumentGenericType,
-                new object[]
-                {
-                    property.Name,
-                    argumentAttribute?.Description ?? ""});
-
-            if (argumentInstance is Argument arg)
-            {
-                if (argumentAttribute != null) { arg.SetDefaultValue(property.GetValue(this)); }
-                argument = arg;
-                return true;
-            }
-
-            argument = null;
             return false;
         }
 

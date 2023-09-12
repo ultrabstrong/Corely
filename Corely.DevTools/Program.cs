@@ -20,8 +20,6 @@ namespace Corely.DevTools
             {
                 Console.WriteLine($"Exception caught:{Environment.NewLine}{ex}");
             }
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
         }
 
         static List<CommandBase> GetCommands()
