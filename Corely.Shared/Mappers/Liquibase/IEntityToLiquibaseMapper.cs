@@ -1,6 +1,6 @@
 ﻿namespace Corely.Shared.Mappers.Liquibase
 {
-    internal interface IEntityToLiquibaseMapper
+    public interface IEntityToLiquibaseMapper
     {
         public string MapEntitiesInNamespace(string rootEntityNamespace);
     }

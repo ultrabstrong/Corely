@@ -8,14 +8,24 @@ namespace Corely.Shared.Mappers.Liquibase
 {
     public abstract class EntityToLiquibaseMapperBase : IEntityToLiquibaseMapper
     {
+        private readonly string _assemblyPath;
+
+        protected EntityToLiquibaseMapperBase(string assemblyPath)
+        {
+            _assemblyPath = assemblyPath;
+        }
+
         public abstract string MapEntitiesInNamespace(string rootEntityNamespace);
 
         protected internal virtual List<Type> FindEntitiesInNamespace(string rootEntityNamespace)
         {
-            var entities = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(type => string.Equals(type.Namespace, rootEntityNamespace, StringComparison.Ordinal))
+            var assembly = Assembly.LoadFrom(_assemblyPath);
+
+            var entities = assembly
+                .GetTypes()
+                .Where(type => type.Namespace?.StartsWith(rootEntityNamespace, StringComparison.Ordinal) == true)
                 .ToList();
+
             return entities;
         }
 

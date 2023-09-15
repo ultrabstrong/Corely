@@ -58,10 +58,18 @@ namespace Corely.DevTools.Commands
 
             if (argumentInstance is Argument arg)
             {
-                if (!argumentAttribute?.IsRequired ?? true)
+                if (argumentAttribute != null)
                 {
-                    arg.SetDefaultValue(property.GetValue(this));
+                    if (argumentAttribute.ArgumentArity != null)
+                    {
+                        arg.Arity = argumentAttribute.ArgumentArity.Value;
+                    }
+                    if (argumentAttribute.IsRequired)
+                    {
+                        arg.SetDefaultValue(property.GetValue(this));
+                    }
                 }
+
                 argument = arg;
                 return true;
             }
@@ -81,7 +89,12 @@ namespace Corely.DevTools.Commands
 
             if (optionInstance is Option opt)
             {
+                if (optionAttribute.ArgumentArity != null)
+                {
+                    opt.Arity = optionAttribute.ArgumentArity.Value;
+                }
                 opt.SetDefaultValue(property.GetValue(this));
+
                 option = opt;
                 return true;
             }
