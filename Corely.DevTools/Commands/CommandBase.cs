@@ -12,11 +12,11 @@ namespace Corely.DevTools.Commands
         private readonly Dictionary<string, Argument> _arguments = new();
         private readonly Dictionary<string, Option> _options = new();
 
-        public CommandBase(string name, string description, string additionalDescription)
+        protected CommandBase(string name, string description, string additionalDescription)
             : this(name, $"{description}{Environment.NewLine}{additionalDescription}")
         { }
 
-        public CommandBase(string name, string description) : base(name, description)
+        protected CommandBase(string name, string description) : base(name, description)
         {
             var type = GetType();
             foreach (var property in type.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly))

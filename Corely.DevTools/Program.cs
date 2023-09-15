@@ -33,6 +33,10 @@ namespace Corely.DevTools
                 .Where(commandInstances => commandInstances != null)
                 .ToList();
 
+            // Todo: Iterate command instances and create/add subcommands
+            // Add a GetSubCommand method that takes CommandBase as a parameter and returns a list of CommandBase subcommands
+            // This allows it to be recursive and get all subcommands
+
 #pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
             // For some reason it doesn't realize that there is a Where linq statement above that filters out nulls
             return commandInstances;
