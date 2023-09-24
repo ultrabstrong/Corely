@@ -1,7 +1,7 @@
 ﻿namespace Corely.DevTools.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    internal class OptionAttribute : ArgumentAttributeBase
+    internal class OptionAttribute : AttributeBase
     {
         public string[] Aliases { get; init; }
 

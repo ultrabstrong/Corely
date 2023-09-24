@@ -1,7 +1,7 @@
 ﻿namespace Corely.DevTools.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    internal class ArgumentAttribute : ArgumentAttributeBase
+    internal class ArgumentAttribute : AttributeBase
     {
         public bool IsRequired { get; init; } = true;
 

@@ -9,14 +9,22 @@ namespace Corely.DevTools.Commands
 {
     internal abstract class CommandBase : Command
     {
+        private const string _helpFlag = "--help";
+
         private readonly Dictionary<string, Argument> _arguments = new();
         private readonly Dictionary<string, Option> _options = new();
 
-        protected CommandBase(string name, string description, string additionalDescription)
+        protected CommandBase(
+            string name,
+            string description,
+            string additionalDescription)
             : this(name, $"{description}{Environment.NewLine}{additionalDescription}")
         { }
 
-        protected CommandBase(string name, string description) : base(name, description)
+        protected CommandBase(
+            string name,
+            string description)
+            : base(name, description)
         {
             var type = GetType();
             foreach (var property in type.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly))
@@ -27,7 +35,7 @@ namespace Corely.DevTools.Commands
                     var argumentAttribute = property.GetCustomAttribute<ArgumentAttribute>();
                     if (CreateArgument(property, argumentAttribute, out var argument))
                     {
-                        _arguments.Add(property.Name, argument);
+                        _arguments.Add(type.FullName + property.Name, argument);
                         AddArgument(argument);
                     }
                 }
@@ -35,7 +43,7 @@ namespace Corely.DevTools.Commands
                 {
                     if (CreateOption(property, optionAttribute, out var option))
                     {
-                        _options.Add(property.Name, option);
+                        _options.Add(type.FullName + property.Name, option);
                         AddOption(option);
                     }
                 }
@@ -64,7 +72,7 @@ namespace Corely.DevTools.Commands
                     {
                         arg.Arity = argumentAttribute.ArgumentArity.Value;
                     }
-                    if (argumentAttribute.IsRequired)
+                    if (!argumentAttribute.IsRequired)
                     {
                         arg.SetDefaultValue(property.GetValue(this));
                     }
@@ -108,9 +116,9 @@ namespace Corely.DevTools.Commands
             var type = GetType();
             foreach (var property in type.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly))
             {
-                var value = _options.TryGetValue(property.Name, out Option? option)
+                var value = _options.TryGetValue(type.FullName + property.Name, out Option? option)
                     ? context.ParseResult.GetValueForOption(option)
-                    : context.ParseResult.GetValueForArgument(_arguments[property.Name]);
+                    : context.ParseResult.GetValueForArgument(_arguments[type.FullName + property.Name]);
 
                 if (value != null)
                 {
@@ -118,9 +126,50 @@ namespace Corely.DevTools.Commands
                 }
             }
 
-            Execute();
+            try
+            {
+                Execute();
+            }
+            catch (Exception ex) when (ex is ArgumentException
+                || ex is ArgumentNullException
+                || ex is NotSupportedException)
+            {
+                ShowHelp(ex.Message);
+            }
         }
 
         public abstract void Execute();
+
+        protected void ShowHelp(string message = null)
+        {
+            if (!string.IsNullOrEmpty(message))
+            {
+                Warn(message);
+                Console.WriteLine();
+            }
+            this.Invoke(_helpFlag);
+        }
+
+        protected void Success(string message)
+        {
+            Console.WriteLine(message, ConsoleColor.Green);
+        }
+
+        protected void Warn(string message)
+        {
+            WriteColored(message, ConsoleColor.Yellow);
+        }
+
+        protected void Error(string message)
+        {
+            Console.WriteLine(message, ConsoleColor.Red);
+        }
+
+        protected void WriteColored(string message, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(message);
+            Console.ResetColor();
+        }
     }
 }

@@ -8,7 +8,7 @@
 
         public override void Execute()
         {
-            Console.WriteLine("Please provide one of the following sub-commands");
+            ShowHelp("You must specify a subcommand");
         }
     }
 }
