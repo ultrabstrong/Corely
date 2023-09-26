@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Corely.Shared.Mappers.Liquibase
 {
@@ -18,7 +19,8 @@ namespace Corely.Shared.Mappers.Liquibase
                 createTables,
                 new JsonSerializerOptions
                 {
-                    WriteIndented = true
+                    WriteIndented = true,
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
                 });
 
             return createTableJson;

@@ -2,7 +2,7 @@
   "profiles": {
     "Corely.DevTools": {
       "commandName": "Project",
-      "commandLineArgs": "lb"
+      "commandLineArgs": "lb map ./Corely.Domain.dll Corely.Domain.Entities -o ./mapping.json"
     }
   }
 }

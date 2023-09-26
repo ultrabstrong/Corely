@@ -8,6 +8,7 @@ namespace Corely.Shared.Mappers.Liquibase
         public EntityToLiquibaseXmlMapper(string assemblyPath)
             : base(assemblyPath)
         {
+            throw new NotImplementedException("Current XML implentation is placeholder and does not work for Liquibase");
         }
 
         public override string MapEntitiesInNamespace(string rootEntityNamespace)

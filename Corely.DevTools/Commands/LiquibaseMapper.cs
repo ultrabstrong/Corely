@@ -13,11 +13,11 @@ namespace Corely.DevTools.Commands
             [Argument("Root entity namespace")]
             private string RootEntityNamespace { get; init; }
 
-            [Option("-o", "--out", Description = "Output path")]
-            private string OutPath { get; init; }
-
             [Option("-t", "--type", Description = "Output type [json|xml]")]
             private string OutputType { get; init; } = "json";
+
+            [Option("-o", "--out", Description = "Output path")]
+            private string OutPath { get; init; }
 
             public LiquibaseMapper() : base("map", "Liquibase mapper operations")
             {
@@ -27,7 +27,14 @@ namespace Corely.DevTools.Commands
             {
                 IEntityToLiquibaseMapper mapper = GetMapper();
                 var createTableJson = mapper.MapEntitiesInNamespace(RootEntityNamespace);
-                File.WriteAllText(OutPath, createTableJson);
+                if (!string.IsNullOrEmpty(OutPath))
+                {
+                    OutputToFile(createTableJson);
+                }
+                else
+                {
+                    Console.WriteLine(createTableJson);
+                }
             }
 
             private IEntityToLiquibaseMapper GetMapper()
@@ -38,6 +45,23 @@ namespace Corely.DevTools.Commands
                     "xml" => new EntityToLiquibaseXmlMapper(AssemblyPath),
                     _ => throw new NotSupportedException($"Output type {OutputType} is not supported")
                 };
+            }
+
+            private void OutputToFile(string createTableJson)
+            {
+                FileInfo info = new(OutPath);
+                if (!info.Directory?.Exists ?? false)
+                {
+                    Error($"Directory {info.Directory?.FullName} does not exist");
+                }
+                else if (info.Exists)
+                {
+                    Error($"File {info.FullName} already exists");
+                }
+                else
+                {
+                    File.WriteAllText(OutPath, createTableJson);
+                }
             }
         }
     }

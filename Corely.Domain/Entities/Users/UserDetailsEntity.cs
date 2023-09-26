@@ -6,8 +6,10 @@ namespace Corely.Domain.Entities.Users
     [Table("UserDetails")]
     public class UserDetailsEntity
     {
+        [ForeignKey(nameof(UserId))]
+        public UserEntity User { get; set; }
+
         [Key]
-        [ForeignKey(nameof(UserEntity.Id))]
         public int UserId { get; set; }
 
         [MaxLength(50)]

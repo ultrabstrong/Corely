@@ -1,4 +1,5 @@
 ﻿using Corely.Shared.Attributes.Db;
+using Corely.Shared.Mappers.Liquibase.Constraints;
 using Corely.Shared.Mappers.Liquibase.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -37,56 +38,93 @@ namespace Corely.Shared.Mappers.Liquibase
             }
         }
 
-        protected internal virtual LiquibaseCreateTable MapCreateTable(Type entity)
+        private LiquibaseCreateTable MapCreateTable(Type entity)
         {
+            var tableName = entity.GetCustomAttribute<TableAttribute>()?.Name ?? entity.Name;
+
             var createTable = new LiquibaseCreateTable
             {
-                TableName = entity.GetCustomAttribute<TableAttribute>()?.Name ?? entity.Name,
-                Columns = new List<LiquibaseColumn>()
+                TableName = tableName,
+                Columns = MapColumns(entity, tableName)
             };
-
-            createTable.Columns.AddRange(MapColumns(entity));
 
             return createTable;
         }
 
-        protected internal virtual IEnumerable<LiquibaseColumn> MapColumns(Type entity)
+        private List<LiquibaseColumn> MapColumns(Type entity, string tableName)
         {
+            List<LiquibaseColumn> columns = new();
+            List<LiquibaseForeignKey> foreignKeys = new();
+
             foreach (var prop in entity.GetProperties())
             {
-                var column = MapColumn(prop);
-                if (column != null)
+                if (MapColumn(prop, tableName, out var column))
                 {
-                    yield return column;
+                    columns.Add(column);
+                }
+                else if (MapNavigationPropertyForeignKey(prop, out LiquibaseForeignKey foreignKey))
+                {
+                    foreignKeys.Add(foreignKey);
                 }
             }
+
+            return columns;
         }
 
-        protected internal virtual LiquibaseColumn? MapColumn(PropertyInfo prop)
+        private bool MapColumn(PropertyInfo prop, string tableName, out LiquibaseColumn column)
         {
-            if (MapSqlType(prop.PropertyType, out string sqlType))
-            {
-                var column = new LiquibaseColumn
-                {
-                    Name = prop.Name,
-                    Type = sqlType,
-                    Constraints = MapConstraints(prop)
-                };
+            column = null;
+            var columnAttr = prop.GetCustomAttribute<ColumnAttribute>();
+            var autoIncrementAttr = GetAutoIncrementAttribute(prop);
 
-                return column;
+            var sqlType = columnAttr?.TypeName ?? MapSqlType(prop);
+            var columnName = columnAttr?.Name ?? prop.Name;
+
+            if (sqlType != "UNKNOWN_TYPE")
+            {
+                column = new LiquibaseColumn
+                {
+                    Name = columnName,
+                    Type = sqlType,
+                    Value = null,
+                    AfterColumn = null,
+                    AutoIncrement = autoIncrementAttr != null,
+                    BeforeColumn = null,
+                    Computed = null,
+                    DefaultValue = null,
+                    DefaultValueBoolean = null,
+                    DefaultValueComputed = null,
+                    DefaultValueConstraintName = null,
+                    DefaultValueDate = null,
+                    DefaultValueNumeric = null,
+                    Descending = null,
+                    Encoding = null,
+                    IncrementBy = autoIncrementAttr?.IncrementBy,
+                    Position = columnAttr?.Order,
+                    Remarks = null,
+                    StartWith = autoIncrementAttr?.StartWith,
+                    ValueBlobFile = null,
+                    ValueBoolean = null,
+                    ValueClobFile = null,
+                    ValueComputed = null,
+                    ValueDate = null,
+                    ValueNumeric = null,
+                    Constraints = MapConstraints(prop, tableName, columnName)
+                };
             }
 
-            return null;
+            return column != null;
         }
 
-        protected internal virtual bool MapSqlType(Type type, out string sqlType)
+        private string MapSqlType(PropertyInfo prop)
         {
-            Type underlyingType = Nullable.GetUnderlyingType(type) ?? type;
+            Type underlyingType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            var maxLength = prop.GetCustomAttribute<MaxLengthAttribute>()?.Length;
 
-            sqlType = underlyingType switch
+            return underlyingType switch
             {
                 Type t when t == typeof(int) => "INT",
-                Type t when t == typeof(string) => "VARCHAR",
+                Type t when t == typeof(string) => (maxLength.HasValue ? "VARCHAR" : $"VARCHAR({maxLength})"),
                 Type t when t == typeof(bool) => "BOOLEAN",
                 Type t when t == typeof(DateTime) => "DATETIME",
                 Type t when t == typeof(float) => "FLOAT",
@@ -94,25 +132,51 @@ namespace Corely.Shared.Mappers.Liquibase
                 Type t when t == typeof(decimal) => "DECIMAL",
                 _ => "UNKNOWN_TYPE",
             };
-
-            return sqlType != "UNKNOWN_TYPE";
         }
 
-        protected internal virtual LiquibaseConstraints MapConstraints(PropertyInfo prop)
+        private AutoIncrementAttribute? GetAutoIncrementAttribute(PropertyInfo prop)
         {
-            var constraints = new LiquibaseConstraints
+            var autoIncrementAttribute = prop.GetCustomAttribute<AutoIncrementAttribute>();
+            if (autoIncrementAttribute == null)
             {
-                PrimaryKey = prop.GetCustomAttributes<KeyAttribute>().Any(),
-                Nullable = !prop.GetCustomAttributes<RequiredAttribute>().Any(),
-                Unique = prop.GetCustomAttributes<UniqueAttribute>().Any(),
-                ForeignKey = prop.GetCustomAttributes<ForeignKeyAttribute>().FirstOrDefault()?.Name,
-                //ForeignKeyTable = prop.GetCustomAttributes<ForeignKeyAttribute>().FirstOrDefault()?.NavigationProperty,
-                CheckExpression = prop.GetCustomAttributes<CheckAttribute>().FirstOrDefault()?.Expression,
-                Default = prop.GetCustomAttributes<DefaultAttribute>().FirstOrDefault()?.Value,
-                AutoIncrement = prop.GetCustomAttributes<AutoIncrementAttribute>().Any()
-            };
+                if (prop.GetCustomAttribute<DatabaseGeneratedAttribute>() != null)
+                {
+                    autoIncrementAttribute = new AutoIncrementAttribute();
+                }
+            }
+
+            return autoIncrementAttribute;
+        }
+
+        private LiquibaseConstraints MapConstraints(PropertyInfo prop, string tableName, string columnName)
+        {
+            var constraints = new LiquibaseConstraints();
+
+            // Todo : implement
 
             return constraints;
+        }
+
+        private bool MapNavigationPropertyForeignKey(PropertyInfo prop, out LiquibaseForeignKey foreignKey)
+        {
+            foreignKey = null;
+
+            var foreignKeyAttr = prop.GetCustomAttributes<ForeignKeyAttribute>().FirstOrDefault();
+            if (foreignKeyAttr != null)
+            {
+                var entity = prop.PropertyType;
+                var table = entity.GetCustomAttribute<TableAttribute>()?.Name ?? entity.Name;
+
+                if (!string.IsNullOrWhiteSpace(table))
+                {
+                    foreignKey = new LiquibaseForeignKey
+                    {
+                        Table = table,
+                        Column = foreignKeyAttr.Name
+                    };
+                }
+            }
+            return foreignKey != null;
         }
     }
 }
