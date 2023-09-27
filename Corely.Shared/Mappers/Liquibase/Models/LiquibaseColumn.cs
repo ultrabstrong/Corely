@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Corely.Shared.Mappers.Liquibase.Models
 {
-    public class LiquibaseColumn
+    public sealed class LiquibaseColumn
     {
         /*
          * View this page for column attribute references:
@@ -32,7 +32,7 @@ namespace Corely.Shared.Mappers.Liquibase.Models
         public bool? Computed { get; set; }
 
         [JsonPropertyName("defaultValue")]
-        public string? DefaultValue { get; set; }
+        public object? DefaultValue { get; set; }
 
         [JsonPropertyName("defaultValueBoolean")]
         public bool? DefaultValueBoolean { get; set; }

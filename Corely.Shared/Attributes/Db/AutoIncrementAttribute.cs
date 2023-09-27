@@ -1,11 +1,38 @@
 ﻿namespace Corely.Shared.Attributes.Db
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class AutoIncrementAttribute : Attribute
+    public sealed class AutoIncrementAttribute : Attribute
     {
-        public AutoIncrementAttribute()
+        private int? _startWith;
+        private int? _incrementBy;
+
+        public int? StartWith
         {
+            get => _startWith;
+            init
+            {
+                if (value.HasValue && value < 0)
+                {
+                    throw new ArgumentException("StartWith cannot be less than 0");
+                }
+                _startWith = value;
+            }
         }
+
+        public int? IncrementBy
+        {
+            get => _incrementBy;
+            init
+            {
+                if (value.HasValue && value < 1)
+                {
+                    throw new ArgumentException("IncrementBy cannot be less than 1");
+                }
+                _incrementBy = value;
+            }
+        }
+
+        public AutoIncrementAttribute() { }
 
         public AutoIncrementAttribute(int startWith, int incrementBy)
             : this(incrementBy)
@@ -17,8 +44,5 @@
         {
             IncrementBy = incrementBy;
         }
-
-        public int? StartWith { get; init; }
-        public int? IncrementBy { get; init; }
     }
 }

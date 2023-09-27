@@ -2,7 +2,7 @@
 
 namespace Corely.Shared.Providers.Security
 {
-    public class AesKeyProvider : IKeyProvider
+    public sealed class AesKeyProvider : IKeyProvider
     {
         public string CreateKey()
         {

@@ -1,9 +1,36 @@
 ﻿namespace Corely.Shared.Attributes.Db
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class CheckAttribute : Attribute
+    public sealed class CheckAttribute : Attribute
     {
-        public string Expression { get; set; }
-        public CheckAttribute(string expression) => Expression = expression;
+        private bool? _initiallyDeferred;
+
+        public string Expression { get; init; }
+
+        public bool? Deferrable { get; }
+
+        public bool? InitiallyDeferred
+        {
+            get => _initiallyDeferred;
+            init
+            {
+                if (value == true && Deferrable != true)
+                {
+                    throw new ArgumentException("Cannot set InitiallyDeferred to true if Deferrable is not true.");
+                }
+                _initiallyDeferred = value;
+            }
+        }
+
+        public CheckAttribute(string expression)
+        {
+            Expression = expression;
+        }
+
+        public CheckAttribute(string expression, bool deferrable)
+            : this(expression)
+        {
+            Deferrable = deferrable;
+        }
     }
 }

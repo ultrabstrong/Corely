@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Corely.Shared.Attributes.Json
 {
-    public class JsonDateTimeConverter : JsonConverter<DateTime?>
+    public sealed class JsonDateTimeConverter : JsonConverter<DateTime?>
     {
         private const string format = "yyyy-MM-ddTHH:mm:ss";
 

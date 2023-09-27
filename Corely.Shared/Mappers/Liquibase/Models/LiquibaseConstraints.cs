@@ -2,7 +2,7 @@
 
 namespace Corely.Shared.Mappers.Liquibase.Models
 {
-    public class LiquibaseConstraints
+    public sealed class LiquibaseConstraints
     {
         /*
          * View this page for column constraint references:

@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace Corely.Shared.Providers.Security
 {
-    public class AESEncryptionProvider : IEncryptionProvider
+    public sealed class AESEncryptionProvider : IEncryptionProvider
     {
         private readonly string _key;
         private readonly IKeyProvider _keyProvider;

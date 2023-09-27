@@ -1,6 +1,6 @@
 ﻿namespace Corely.Shared.Mappers.Liquibase.Models
 {
-    public class LiquibaseChange
+    public sealed class LiquibaseChange
     {
         public LiquibaseCreateTable CreateTable { get; set; }
     }
