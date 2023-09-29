@@ -5,7 +5,7 @@
     {
         private bool? _initiallyDeferred;
 
-        public string Expression { get; init; }
+        public string Expression { get; }
 
         public bool? Deferrable { get; }
 
@@ -24,6 +24,7 @@
 
         public CheckAttribute(string expression)
         {
+            ArgumentNullException.ThrowIfNull(expression, nameof(expression));
             Expression = expression;
         }
 

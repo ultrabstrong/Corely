@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Attributes.Json;
+﻿using Corely.Shared.Converters.Json;
 using System.Text.Json.Serialization;
 
 namespace Corely.Shared.Mappers.Liquibase.Models

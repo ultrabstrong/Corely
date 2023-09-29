@@ -11,6 +11,7 @@
             get => _afterColumn;
             init
             {
+                ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(AfterColumn));
                 _afterColumn = value;
                 ThrowIfColumnsAreSame();
             }
@@ -21,6 +22,7 @@
             get => _beforeColumn;
             init
             {
+                ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(BeforeColumn));
                 _beforeColumn = value;
                 ThrowIfColumnsAreSame();
             }

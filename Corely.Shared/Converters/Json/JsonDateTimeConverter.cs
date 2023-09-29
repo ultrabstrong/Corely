@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Corely.Shared.Attributes.Json
+namespace Corely.Shared.Converters.Json
 {
-    public sealed class JsonDateConverter : JsonConverter<DateTime?>
+    public sealed class JsonDateTimeConverter : JsonConverter<DateTime?>
     {
-        private const string format = "yyyy-MM-dd";
+        private const string format = "yyyy-MM-ddTHH:mm:ss";
 
         public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

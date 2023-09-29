@@ -3,6 +3,8 @@ using Corely.Shared.Mappers.Liquibase.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
+using CorelyForeignKeyAttribute = Corely.Shared.Attributes.Db.ForeignKeyAttribute;
+
 namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 {
     internal class EntityToLiquibaseConstraintMapper : ILiquibaseConstraintMapper
@@ -104,6 +106,24 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
             _constraints.UniqueConstraintName = uniqueAttr == null
                 ? null
                 : $"{_uniqueConstraintPrefix}{_constraintNamePostifx}";
+        }
+
+        private void MapCorelyForeignKey()
+        {
+            var corelyFkAttr = _prop.GetCustomAttribute<CorelyForeignKeyAttribute>();
+            if (corelyFkAttr != null)
+            {
+                if (corelyFkAttr.IsCustom())
+                {
+                    _constraints.References = corelyFkAttr.CustomSql;
+                }
+                else
+                {
+                    _constraints.ReferencedTableSchemaName = corelyFkAttr.Schema;
+                    _constraints.ReferencedTableName = corelyFkAttr.Table;
+                    _constraints.ReferencedColumnNames = string.Join(',', corelyFkAttr.Columns);
+                }
+            }
         }
 
         private bool HasAnyConstraints()

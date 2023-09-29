@@ -3,7 +3,7 @@
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class RemarksAttribute : Attribute
     {
-        public string Remarks { get; init; }
+        public string Remarks { get; }
 
         public RemarksAttribute(string remarks)
         {
