@@ -1,5 +1,4 @@
-﻿using Corely.Shared.Attributes.Db;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Corely.Domain.Entities.Users
@@ -7,7 +6,7 @@ namespace Corely.Domain.Entities.Users
     [Table("Users")]
     public class UserEntity
     {
-        [Key, AutoIncrement]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [DataType(DataType.DateTime)]

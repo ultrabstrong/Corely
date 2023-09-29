@@ -4,5 +4,7 @@
     public sealed class PrimaryKeyAttribute : Attribute
     {
         public string? Tablespace { get; init; }
+
+        public bool? Validate { get; init; }
     }
 }

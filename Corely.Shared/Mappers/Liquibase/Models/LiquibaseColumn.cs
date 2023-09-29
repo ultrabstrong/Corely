@@ -5,6 +5,7 @@ namespace Corely.Shared.Mappers.Liquibase.Models
 {
     public sealed class LiquibaseColumn
     {
+
         /*
          * View this page for column attribute references:
          * https://docs.liquibase.com/change-types/nested-tags/column.html

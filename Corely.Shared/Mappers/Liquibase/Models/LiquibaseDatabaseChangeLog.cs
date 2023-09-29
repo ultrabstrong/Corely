@@ -1,7 +1,10 @@
-﻿namespace Corely.Shared.Mappers.Liquibase.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Corely.Shared.Mappers.Liquibase.Models
 {
     public sealed class LiquibaseDatabaseChangeLog
     {
-        public List<LiquibaseChangeSet> ChangeSets { get; set; }
+        [JsonPropertyName("changeSet")]
+        public IEnumerable<LiquibaseChangeSet> ChangeSets { get; set; }
     }
 }
