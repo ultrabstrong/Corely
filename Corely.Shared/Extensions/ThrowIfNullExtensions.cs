@@ -1,6 +1,6 @@
 ﻿namespace Corely.Shared.Extensions
 {
-    public static class ThrowIfNullExtension
+    public static class ThrowIfNullExtensions
     {
         public static T ThrowIfNull<T>(
             this T? obj,
@@ -12,7 +12,7 @@
         }
 
         public static T[] ThrowIfAnyNull<T>(
-            this T[]? obj,
+            this T?[]? obj,
             string paramName)
             where T : class
         {
