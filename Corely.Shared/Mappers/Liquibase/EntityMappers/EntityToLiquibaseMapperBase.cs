@@ -1,4 +1,6 @@
-﻿using Corely.Shared.Mappers.Liquibase.Models;
+﻿using Corely.Shared.Extensions;
+using Corely.Shared.Mappers.Liquibase.EntityMappers.Finders;
+using Corely.Shared.Mappers.Liquibase.Models;
 using System.Reflection;
 
 namespace Corely.Shared.Mappers.Liquibase.EntityMappers
@@ -21,6 +23,7 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
                 }
             }
         }
+
         public string Author
         {
             get => _author; init
@@ -34,11 +37,11 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 
         internal EntityToLiquibaseMapperBase(string assemblyPath, string rootEntityNamespace)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(assemblyPath, nameof(assemblyPath));
-            ArgumentException.ThrowIfNullOrWhiteSpace(rootEntityNamespace, nameof(rootEntityNamespace));
+            _assemblyPath = assemblyPath
+                .ThrowIfNullOrWhiteSpace(nameof(assemblyPath));
 
-            _assemblyPath = assemblyPath;
-            _rootEntityNamespace = rootEntityNamespace;
+            _rootEntityNamespace = rootEntityNamespace
+                .ThrowIfNullOrWhiteSpace(nameof(rootEntityNamespace));
         }
 
         public abstract string Map();
@@ -76,16 +79,18 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
             return entities;
         }
 
-        private IEnumerable<LiquibaseChange> MapChanges(List<Type> entities)
+        private IEnumerable<LiquibaseChange> MapChanges(IList<Type> entities)
         {
+            var foreignKeyFinder = new EntityForeignKeyFinder(entities);
             foreach (var entity in entities)
             {
-                var tableMapper = new EntityToLiquibaseTableMapper(entity);
+                var tableMapper = new EntityToLiquibaseTableMapper(entity, foreignKeyFinder);
                 yield return new LiquibaseChange
                 {
                     CreateTable = tableMapper.Map()
                 };
             }
         }
+
     }
 }

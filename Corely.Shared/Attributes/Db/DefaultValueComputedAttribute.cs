@@ -1,4 +1,6 @@
-﻿namespace Corely.Shared.Attributes.Db
+﻿using Corely.Shared.Extensions;
+
+namespace Corely.Shared.Attributes.Db
 {
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class DefaultValueComputedAttribute : Attribute
@@ -7,8 +9,8 @@
 
         public DefaultValueComputedAttribute(string expression)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(expression, nameof(expression));
-            Expression = expression;
+            Expression = expression
+                .ThrowIfNullOrWhiteSpace(nameof(expression));
         }
     }
 }

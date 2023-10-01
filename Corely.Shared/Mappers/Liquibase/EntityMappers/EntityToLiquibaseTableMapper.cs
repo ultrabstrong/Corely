@@ -1,20 +1,23 @@
-﻿using Corely.Shared.Mappers.Liquibase.Models;
+﻿using Corely.Shared.Extensions;
+using Corely.Shared.Mappers.Liquibase.EntityMappers.Finders;
+using Corely.Shared.Mappers.Liquibase.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
-using CorelyForeignKeyAttribute = Corely.Shared.Attributes.Db.ForeignKeyAttribute;
-using SystemForeignKeyAttribute = System.ComponentModel.DataAnnotations.Schema.ForeignKeyAttribute;
 
 namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 {
     internal class EntityToLiquibaseTableMapper : ILiquibaseTableMapper
     {
         private readonly Type _entity;
+        private readonly IEntityForeignKeyFinder _foreignKeyFinder;
 
-        public EntityToLiquibaseTableMapper(Type entity)
+        public EntityToLiquibaseTableMapper(
+            Type entity,
+            IEntityForeignKeyFinder foreignKeyFinder)
         {
-            ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-            _entity = entity;
+            _entity = entity.ThrowIfNull(nameof(entity));
+            _foreignKeyFinder = foreignKeyFinder.ThrowIfNull(nameof(foreignKeyFinder));
         }
         public LiquibaseCreateTable Map()
         {
@@ -23,27 +26,21 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
             var createTable = new LiquibaseCreateTable
             {
                 TableName = tableName,
-                Columns = MapColumns(_entity, tableName)
+                Columns = MapColumns(tableName)
             };
 
             return createTable;
         }
 
-        private List<LiquibaseColumn> MapColumns(Type entity, string tableName)
+        private List<LiquibaseColumn> MapColumns(string tableName)
         {
             List<LiquibaseColumn> columns = new();
-            List<CorelyForeignKeyAttribute> foreignKeys = new();
 
-            foreach (var prop in entity.GetProperties())
+            foreach (var prop in _entity.GetProperties())
             {
                 if (MapColumn(prop, tableName, out var column))
                 {
                     columns.Add(column);
-                }
-                else if (MapNavigationPropertyForeignKey(prop, out CorelyForeignKeyAttribute? foreignKey)
-                    && foreignKey != null)
-                {
-                    foreignKeys.Add(foreignKey);
                 }
             }
 
@@ -58,7 +55,19 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 
             if (columnAttr.TypeName != "UNKNOWN_TYPE")
             {
-                var columnMapper = new EntityToLiquibaseColumnMapper(prop, columnAttr, tableName);
+                var constraintNamePostfix = $"{tableName}_{columnAttr.Name}";
+
+                var constraintMapper = new EntityToLiquibaseConstraintMapper(
+                    prop,
+                    constraintNamePostfix,
+                    _foreignKeyFinder);
+
+                var columnMapper = new EntityToLiquibaseColumnMapper(
+                    prop,
+                    columnAttr,
+                    constraintNamePostfix,
+                    constraintMapper);
+
                 column = columnMapper.Map();
             }
 
@@ -91,28 +100,6 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
                 Type t when t == typeof(decimal) => "DECIMAL",
                 _ => "UNKNOWN_TYPE",
             };
-        }
-
-        private bool MapNavigationPropertyForeignKey(PropertyInfo prop, out CorelyForeignKeyAttribute? corelyFkAttr)
-        {
-            corelyFkAttr = prop.GetCustomAttribute<CorelyForeignKeyAttribute>();
-
-            if (corelyFkAttr == null)
-            {
-                var systemFkAttr = prop.GetCustomAttribute<SystemForeignKeyAttribute>();
-                if (systemFkAttr != null)
-                {
-                    var entity = prop.PropertyType;
-                    var table = entity.GetCustomAttribute<TableAttribute>()?.Name ?? entity.Name;
-
-                    if (!string.IsNullOrWhiteSpace(table))
-                    {
-                        corelyFkAttr = new CorelyForeignKeyAttribute(table, systemFkAttr.Name);
-                    }
-                }
-            }
-
-            return corelyFkAttr != null;
         }
     }
 }

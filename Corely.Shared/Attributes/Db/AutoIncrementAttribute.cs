@@ -13,7 +13,7 @@
             {
                 if (value.HasValue && value < 0)
                 {
-                    throw new ArgumentException("StartWith cannot be less than 0");
+                    throw new ArgumentOutOfRangeException("StartWith cannot be less than 0");
                 }
                 _startWith = value;
             }
@@ -26,7 +26,7 @@
             {
                 if (value.HasValue && value < 1)
                 {
-                    throw new ArgumentException("IncrementBy cannot be less than 1");
+                    throw new ArgumentOutOfRangeException("IncrementBy cannot be less than 1");
                 }
                 _incrementBy = value;
             }

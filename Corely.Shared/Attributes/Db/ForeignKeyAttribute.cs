@@ -1,4 +1,6 @@
-﻿namespace Corely.Shared.Attributes.Db
+﻿using Corely.Shared.Extensions;
+
+namespace Corely.Shared.Attributes.Db
 {
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class ForeignKeyAttribute : Attribute
@@ -15,25 +17,24 @@
 
         public ForeignKeyAttribute(string table, params string[] columns)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(table, nameof(table));
-            ArgumentNullException.ThrowIfNull(columns, nameof(columns));
-            columns.ToList().ForEach(c => ArgumentException.ThrowIfNullOrWhiteSpace(c, nameof(columns)));
+            Table = table
+                .ThrowIfNullOrWhiteSpace(nameof(table));
 
-            Table = table;
-            Columns = columns;
+            Columns = columns
+                .ThrowIfAnyNullOrWhiteSpace(nameof(columns));
         }
 
         public ForeignKeyAttribute(string schema, string table, params string[] columns)
             : this(table, columns)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(schema, nameof(schema));
-            Schema = schema;
+            Schema = schema
+                .ThrowIfNullOrWhiteSpace(nameof(schema));
         }
 
         public ForeignKeyAttribute(string customSql)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(customSql, nameof(customSql));
-            CustomSql = customSql;
+            CustomSql = customSql
+                .ThrowIfNullOrWhiteSpace(nameof(customSql));
         }
 
         public bool IsCustom()

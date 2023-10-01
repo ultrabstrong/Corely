@@ -1,6 +1,7 @@
 ﻿using Corely.DataAccess.DataAccess.EntityFramework;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
+using Corely.Shared.Extensions;
 using Serilog;
 
 namespace Corely.DataAccess.Repos.Auth
@@ -14,8 +15,8 @@ namespace Corely.DataAccess.Repos.Auth
             ILogger logger,
             AccountManagementDbContext dbContext)
         {
-            _logger = logger;
-            _dbContext = dbContext;
+            _logger = logger.ThrowIfNull(nameof(logger));
+            _dbContext = dbContext.ThrowIfNull(nameof(dbContext));
         }
 
         public void Create(BasicAuthEntity entity)

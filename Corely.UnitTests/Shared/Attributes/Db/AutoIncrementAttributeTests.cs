@@ -5,25 +5,25 @@ namespace Corely.UnitTests.Shared.Attributes.Db
     public class AutoIncrementAttributeTests
     {
         [Fact]
-        public void AutoIncrementConstructor_ShouldThrowArgumentException_WhenStartWithIsLessThanZero()
+        public void AutoIncrementConstructor_ShouldThrowException_WhenStartWithIsLessThanZero()
         {
-            Assert.Throws<ArgumentException>(() => new AutoIncrementAttribute(1, -1));
-            Assert.Throws<ArgumentException>(() => new AutoIncrementAttribute(1)
+            Assert.Throws<ArgumentOutOfRangeException>(() => new AutoIncrementAttribute(1, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new AutoIncrementAttribute(1)
             {
                 StartWith = -1
             });
-            Assert.Throws<ArgumentException>(() => new AutoIncrementAttribute()
+            Assert.Throws<ArgumentOutOfRangeException>(() => new AutoIncrementAttribute()
             {
                 StartWith = -1
             });
         }
 
         [Fact]
-        public void AutoIncrementConstructor_ShouldThrowArgumentException_WhenIncrementByIsLessThanOne()
+        public void AutoIncrementConstructor_ShouldThrowException_WhenIncrementByIsLessThanOne()
         {
-            Assert.Throws<ArgumentException>(() => new AutoIncrementAttribute(0, 0));
-            Assert.Throws<ArgumentException>(() => new AutoIncrementAttribute(0));
-            Assert.Throws<ArgumentException>(() => new AutoIncrementAttribute()
+            Assert.Throws<ArgumentOutOfRangeException>(() => new AutoIncrementAttribute(0, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new AutoIncrementAttribute(0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new AutoIncrementAttribute()
             {
                 IncrementBy = 0
             });

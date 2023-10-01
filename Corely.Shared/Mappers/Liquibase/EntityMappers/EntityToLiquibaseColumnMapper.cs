@@ -1,4 +1,5 @@
 ﻿using Corely.Shared.Attributes.Db;
+using Corely.Shared.Extensions;
 using Corely.Shared.Mappers.Liquibase.Models;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,19 +14,27 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
         private readonly PropertyInfo _prop;
         private readonly ColumnAttribute _columnAttr;
         private readonly string _constraintNamePostfix;
+        private readonly ILiquibaseConstraintMapper _constraintMapper;
 
         private LiquibaseColumn _column;
 
-        public EntityToLiquibaseColumnMapper(PropertyInfo prop, ColumnAttribute columnAttr, string tableName)
+        public EntityToLiquibaseColumnMapper(
+            PropertyInfo prop,
+            ColumnAttribute columnAttr,
+            string constraintNamePostfix,
+            ILiquibaseConstraintMapper constraintMapper)
         {
-            ArgumentNullException.ThrowIfNull(prop, nameof(prop));
-            ArgumentNullException.ThrowIfNull(columnAttr, nameof(columnAttr));
+            _prop = prop.ThrowIfNull(nameof(prop));
+
+            _columnAttr = columnAttr.ThrowIfNull(nameof(columnAttr));
             ArgumentNullException.ThrowIfNull(columnAttr.Name, nameof(columnAttr.Name));
             ArgumentNullException.ThrowIfNull(columnAttr.TypeName, nameof(columnAttr.TypeName));
 
-            _prop = prop;
-            _columnAttr = columnAttr;
-            _constraintNamePostfix = $"{tableName}_{columnAttr.Name}";
+            _constraintNamePostfix = constraintNamePostfix
+                .ThrowIfNullOrWhiteSpace(nameof(constraintNamePostfix));
+
+            _constraintMapper = constraintMapper
+                .ThrowIfNull(nameof(constraintMapper));
         }
 
         public LiquibaseColumn Map()
@@ -119,8 +128,7 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 
         private void MapConstraints()
         {
-            var LiqubaseConstraintMapper = new EntityToLiquibaseConstraintMapper(_prop, _constraintNamePostfix);
-            _column.Constraints = LiqubaseConstraintMapper.Map();
+            _column.Constraints = _constraintMapper.Map();
         }
 
         private void MapDefault()

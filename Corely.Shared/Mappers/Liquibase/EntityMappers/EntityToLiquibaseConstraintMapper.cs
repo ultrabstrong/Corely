@@ -1,9 +1,9 @@
 ﻿using Corely.Shared.Attributes.Db;
+using Corely.Shared.Extensions;
+using Corely.Shared.Mappers.Liquibase.EntityMappers.Finders;
 using Corely.Shared.Mappers.Liquibase.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-
-using CorelyForeignKeyAttribute = Corely.Shared.Attributes.Db.ForeignKeyAttribute;
 
 namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 {
@@ -17,15 +17,22 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 
         private readonly PropertyInfo _prop;
         private readonly string _constraintNamePostifx;
+        private readonly IEntityForeignKeyFinder _foreignKeyFinder;
 
         private LiquibaseConstraints _constraints;
 
-        public EntityToLiquibaseConstraintMapper(PropertyInfo prop, string constraintNamePostifx)
+        public EntityToLiquibaseConstraintMapper(
+            PropertyInfo prop,
+            string constraintNamePostifx,
+            IEntityForeignKeyFinder foreignKeyFinder)
         {
-            ArgumentNullException.ThrowIfNull(prop, nameof(prop));
+            _prop = prop.ThrowIfNull(nameof(prop));
 
-            _prop = prop;
-            _constraintNamePostifx = constraintNamePostifx;
+            _constraintNamePostifx = constraintNamePostifx
+                .ThrowIfNullOrWhiteSpace(nameof(constraintNamePostifx));
+
+            _foreignKeyFinder = foreignKeyFinder
+                .ThrowIfNull(nameof(foreignKeyFinder));
         }
 
         public LiquibaseConstraints? Map()
@@ -37,6 +44,7 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
             MapNullable();
             MapPrimaryKey();
             MapUnique();
+            MapCorelyForeignKey();
 
             return HasAnyConstraints() ? _constraints : null;
         }
@@ -110,18 +118,22 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 
         private void MapCorelyForeignKey()
         {
-            var corelyFkAttr = _prop.GetCustomAttribute<CorelyForeignKeyAttribute>();
-            if (corelyFkAttr != null)
+            if (_prop.DeclaringType != null)
             {
-                if (corelyFkAttr.IsCustom())
+                var corelyFkAttr = _foreignKeyFinder.Find(_prop.DeclaringType, _prop.Name);
+                if (corelyFkAttr != null)
                 {
-                    _constraints.References = corelyFkAttr.CustomSql;
-                }
-                else
-                {
-                    _constraints.ReferencedTableSchemaName = corelyFkAttr.Schema;
-                    _constraints.ReferencedTableName = corelyFkAttr.Table;
-                    _constraints.ReferencedColumnNames = string.Join(',', corelyFkAttr.Columns);
+                    if (corelyFkAttr.IsCustom())
+                    {
+                        _constraints.References = corelyFkAttr.CustomSql;
+                    }
+                    else
+                    {
+                        _constraints.ReferencedTableSchemaName = corelyFkAttr.Schema;
+                        _constraints.ReferencedTableName = corelyFkAttr.Table;
+                        _constraints.ReferencedColumnNames = string.Join(',', corelyFkAttr.Columns);
+                    }
+                    _constraints.ForeignKeyName = $"{_foreignKeyConstraintPrefix}{_constraintNamePostifx}";
                 }
             }
         }
@@ -148,7 +160,6 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
                 || _constraints.ValidateNullable != null
                 || _constraints.ValidatePrimaryKey != null
                 || _constraints.ValidateUnique != null;
-
         }
     }
 }

@@ -5,7 +5,6 @@ namespace Corely.Shared.Mappers.Liquibase.Models
 {
     public sealed class LiquibaseColumn
     {
-
         /*
          * View this page for column attribute references:
          * https://docs.liquibase.com/change-types/nested-tags/column.html
@@ -89,6 +88,6 @@ namespace Corely.Shared.Mappers.Liquibase.Models
         public object? ValueNumeric { get; set; }
 
         [JsonPropertyName("constraints")]
-        public LiquibaseConstraints Constraints { get; set; }
+        public LiquibaseConstraints? Constraints { get; set; }
     }
 }

@@ -1,18 +1,32 @@
 ﻿using Corely.Shared.Attributes.Db;
+using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Shared.Attributes.Db
 {
     public class CheckAttributeTests
     {
-        [Fact]
-        public void CheckConstructor_ShouldThrowArgumentNullException_WhenExpressionIsNull()
+        [Theory]
+        [ClassData(typeof(NullEmptyAndWhitespace))]
+        public void CheckConstructor_ShouldThrowException_WhenExpressionIsInvalid(string value)
         {
-            Assert.Throws<ArgumentNullException>(() => new CheckAttribute(null));
-            Assert.Throws<ArgumentNullException>(() => new CheckAttribute(null, true));
-            Assert.Throws<ArgumentNullException>(() => new CheckAttribute(null, true)
+            if (value == null)
             {
-                InitiallyDeferred = true
-            });
+                Assert.Throws<ArgumentNullException>(() => new CheckAttribute(value));
+                Assert.Throws<ArgumentNullException>(() => new CheckAttribute(value, true));
+                Assert.Throws<ArgumentNullException>(() => new CheckAttribute(value, true)
+                {
+                    InitiallyDeferred = true
+                });
+            }
+            else
+            {
+                Assert.Throws<ArgumentException>(() => new CheckAttribute(value));
+                Assert.Throws<ArgumentException>(() => new CheckAttribute(value, true));
+                Assert.Throws<ArgumentException>(() => new CheckAttribute(value, true)
+                {
+                    InitiallyDeferred = true
+                });
+            }
         }
 
         [Fact]

@@ -1,4 +1,6 @@
-﻿namespace Corely.Shared.Attributes.Db
+﻿using Corely.Shared.Extensions;
+
+namespace Corely.Shared.Attributes.Db
 {
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class ColumnPlacementAttribute : Attribute
@@ -11,8 +13,8 @@
             get => _afterColumn;
             init
             {
-                ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(AfterColumn));
-                _afterColumn = value;
+                _afterColumn = value
+                    .ThrowIfNullOrWhiteSpace(nameof(AfterColumn));
                 ThrowIfColumnsAreSame();
             }
         }
@@ -22,8 +24,8 @@
             get => _beforeColumn;
             init
             {
-                ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(BeforeColumn));
-                _beforeColumn = value;
+                _beforeColumn = value
+                    .ThrowIfNullOrWhiteSpace(nameof(BeforeColumn));
                 ThrowIfColumnsAreSame();
             }
         }

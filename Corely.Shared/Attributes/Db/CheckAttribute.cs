@@ -1,4 +1,6 @@
-﻿namespace Corely.Shared.Attributes.Db
+﻿using Corely.Shared.Extensions;
+
+namespace Corely.Shared.Attributes.Db
 {
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class CheckAttribute : Attribute
@@ -24,8 +26,8 @@
 
         public CheckAttribute(string expression)
         {
-            ArgumentNullException.ThrowIfNull(expression, nameof(expression));
-            Expression = expression;
+            Expression = expression
+                .ThrowIfNullOrWhiteSpace(nameof(expression));
         }
 
         public CheckAttribute(string expression, bool deferrable)
