@@ -12,7 +12,7 @@
         }
 
         public static T[] ThrowIfAnyNull<T>(
-            this T?[]? obj,
+            this T[]? obj,
             string paramName)
             where T : class
         {

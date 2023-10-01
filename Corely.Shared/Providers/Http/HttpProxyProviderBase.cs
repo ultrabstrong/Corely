@@ -1,4 +1,5 @@
-﻿using Corely.Shared.Providers.Http.Builders;
+﻿using Corely.Shared.Extensions;
+using Corely.Shared.Providers.Http.Builders;
 using Corely.Shared.Providers.Http.Models;
 using Serilog;
 
@@ -16,11 +17,12 @@ namespace Corely.Shared.Providers.Http
             IHttpContentBuilder httpContentBuilder,
             string host)
         {
-            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
-            ArgumentNullException.ThrowIfNull(httpContentBuilder, nameof(httpContentBuilder));
+            _logger = logger.ThrowIfNull(nameof(logger));
+
+            _httpContentBuilder = httpContentBuilder
+                .ThrowIfNull(nameof(httpContentBuilder));
+
             ArgumentException.ThrowIfNullOrWhiteSpace(host, nameof(host));
-            _logger = logger;
-            _httpContentBuilder = httpContentBuilder;
             _httpClient = new HttpClient() { BaseAddress = new Uri(host) };
         }
 
@@ -28,6 +30,8 @@ namespace Corely.Shared.Providers.Http
             HttpSendRequest request,
             IHttpContent<T>? httpContent = null)
         {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+
             var requestMessage = CreateHttpRequestMessage(request, httpContent);
 
             _logger.ForContext(nameof(request.Headers), request.Headers)

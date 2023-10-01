@@ -11,7 +11,7 @@ namespace Corely.Shared.Providers.Security
         public AESEncryptionProvider(IKeyProvider keyProvider, string key)
         {
             _key = key;
-            _keyProvider = keyProvider.ThrowIfNull();
+            _keyProvider = keyProvider.ThrowIfNull(nameof(keyProvider));
             if (!_keyProvider.IsKeyValid(_key))
             {
                 throw new ArgumentException("Key is not valid");

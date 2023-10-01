@@ -24,8 +24,8 @@ namespace Corely.Shared.Providers.Http.Models
 
         public HttpParametersBase(Dictionary<string, string> parameters, Dictionary<string, string> tempParameters)
         {
-            _parameters = parameters;
-            _tempParameters = tempParameters;
+            _parameters = parameters.ThrowIfNull(nameof(parameters));
+            _tempParameters = tempParameters.ThrowIfNull(nameof(tempParameters));
         }
 
         public string CreateParameters()

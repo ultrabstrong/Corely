@@ -1,4 +1,5 @@
-﻿using Corely.Shared.Providers.Security;
+﻿using Corely.Shared.Extensions;
+using Corely.Shared.Providers.Security;
 
 namespace Corely.Shared.Models.Security
 {
@@ -17,7 +18,8 @@ namespace Corely.Shared.Models.Security
         public EncryptedValue(IEncryptionProvider encryptionProvider, string secret)
         {
             Secret = secret;
-            _encryptionProvider = encryptionProvider;
+            _encryptionProvider = encryptionProvider
+                .ThrowIfNull(nameof(encryptionProvider));
         }
 
         public void Set(string decryptedValue)

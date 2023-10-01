@@ -1,4 +1,6 @@
-﻿namespace Corely.Shared.Providers.Http.Models
+﻿using Corely.Shared.Extensions;
+
+namespace Corely.Shared.Providers.Http.Models
 {
     public class HttpSendRequest
     {
@@ -10,8 +12,8 @@
 
         public HttpSendRequest(string requestUri, HttpMethod httpMethod)
         {
-            _requestUri = requestUri;
-            _httpMethod = httpMethod;
+            _requestUri = requestUri.ThrowIfNullOrWhiteSpace(nameof(requestUri));
+            _httpMethod = httpMethod.ThrowIfNull(nameof(httpMethod));
         }
 
         public HttpRequestMessage CreateHttpRequestMessage()

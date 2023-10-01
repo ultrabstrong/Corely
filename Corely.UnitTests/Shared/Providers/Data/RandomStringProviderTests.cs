@@ -11,7 +11,7 @@ namespace Corely.UnitTests.Shared.Providers.Data
         {
             var length = -1;
             void act() => _randomStringProvider.GetString(length);
-            Assert.Throws<ArgumentException>(act);
+            Assert.Throws<ArgumentOutOfRangeException>(act);
         }
 
         [Fact]

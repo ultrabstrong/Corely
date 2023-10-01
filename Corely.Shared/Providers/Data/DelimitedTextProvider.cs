@@ -22,8 +22,8 @@ namespace Corely.Shared.Providers.Data
             ILogger logger,
             TokenDelimiter delimiter)
         {
-            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
-            _logger = logger;
+            _logger = logger.ThrowIfNull(nameof(logger));
+
             (_tokenDelimiter, _tokenLiteral, _recordDelimiter) =
                 delimiter switch
                 {
