@@ -1,5 +1,5 @@
 ﻿using Corely.Shared.Extensions;
-using Corely.Shared.Mappers.Liquibase.EntityMappers.Finders;
+using Corely.Shared.Mappers.Liquibase.EntityMappers.Providers;
 using Corely.Shared.Mappers.Liquibase.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,11 +10,11 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
     internal class EntityToLiquibaseTableMapper : ILiquibaseTableMapper
     {
         private readonly Type _entity;
-        private readonly IEntityForeignKeyFinder _foreignKeyFinder;
+        private readonly IEntityForeignKeyProvider _foreignKeyFinder;
 
         public EntityToLiquibaseTableMapper(
             Type entity,
-            IEntityForeignKeyFinder foreignKeyFinder)
+            IEntityForeignKeyProvider foreignKeyFinder)
         {
             _entity = entity.ThrowIfNull(nameof(entity));
             _foreignKeyFinder = foreignKeyFinder.ThrowIfNull(nameof(foreignKeyFinder));

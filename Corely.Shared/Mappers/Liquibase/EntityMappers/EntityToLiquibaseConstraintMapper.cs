@@ -1,6 +1,6 @@
 ﻿using Corely.Shared.Attributes.Db;
 using Corely.Shared.Extensions;
-using Corely.Shared.Mappers.Liquibase.EntityMappers.Finders;
+using Corely.Shared.Mappers.Liquibase.EntityMappers.Providers;
 using Corely.Shared.Mappers.Liquibase.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -17,14 +17,14 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 
         private readonly PropertyInfo _prop;
         private readonly string _constraintNamePostifx;
-        private readonly IEntityForeignKeyFinder _foreignKeyFinder;
+        private readonly IEntityForeignKeyProvider _foreignKeyFinder;
 
         private LiquibaseConstraints _constraints;
 
         public EntityToLiquibaseConstraintMapper(
             PropertyInfo prop,
             string constraintNamePostifx,
-            IEntityForeignKeyFinder foreignKeyFinder)
+            IEntityForeignKeyProvider foreignKeyFinder)
         {
             _prop = prop.ThrowIfNull(nameof(prop));
 
@@ -120,7 +120,7 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
         {
             if (_prop.DeclaringType != null)
             {
-                var corelyFkAttr = _foreignKeyFinder.Find(_prop.DeclaringType, _prop.Name);
+                var corelyFkAttr = _foreignKeyFinder.Get(_prop.DeclaringType, _prop.Name);
                 if (corelyFkAttr != null)
                 {
                     if (corelyFkAttr.IsCustom())

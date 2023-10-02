@@ -20,6 +20,7 @@ namespace Corely.Domain.Entities.Users
         [MaxLength(100)]
         public string Email { get; set; }
 
-        public UserDetailsEntity? Details { get; set; }
+        [ForeignKey(nameof(UserDetailsEntity.UserId))]
+        public List<UserDetailsEntity>? Details { get; set; }
     }
 }

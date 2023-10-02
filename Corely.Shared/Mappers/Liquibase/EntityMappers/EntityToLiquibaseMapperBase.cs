@@ -1,5 +1,5 @@
 ﻿using Corely.Shared.Extensions;
-using Corely.Shared.Mappers.Liquibase.EntityMappers.Finders;
+using Corely.Shared.Mappers.Liquibase.EntityMappers.Providers;
 using Corely.Shared.Mappers.Liquibase.Models;
 using System.Reflection;
 
@@ -81,7 +81,7 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
 
         private IEnumerable<LiquibaseChange> MapChanges(IList<Type> entities)
         {
-            var foreignKeyFinder = new EntityForeignKeyFinder(entities);
+            var foreignKeyFinder = new EntityForeignKeyProvider(entities);
             foreach (var entity in entities)
             {
                 var tableMapper = new EntityToLiquibaseTableMapper(entity, foreignKeyFinder);
