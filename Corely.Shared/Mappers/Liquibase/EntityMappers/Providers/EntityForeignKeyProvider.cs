@@ -11,9 +11,9 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers.Providers
         private readonly Dictionary<Type, Dictionary<string, CorelyForeignKeyAttribute>> _foreignKeys;
         private readonly List<IPropertyInfoForeignKeyProvider> _providers = new()
         {
-            new PropertyInfoCorelyFkProvider(),
-            new PropertyInfoSystemFkProvider(),
-            //new PropertyInfoNavigationFkProvider(),
+            new PropertyInfoFkProviderForCorelyAttr(),
+            new PropertyInfoFkProviderForSystemAttr(),
+            //new PropertyInfoFkProviderForNavProperty(),
         };
 
         public EntityForeignKeyProvider(IEnumerable<Type> entites)

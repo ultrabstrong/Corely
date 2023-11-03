@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using CorelyForeignKeyAttribute = Corely.Shared.Attributes.Db.ForeignKeyAttribute;
 using SystemForeignKeyAttribute = System.ComponentModel.DataAnnotations.Schema.ForeignKeyAttribute;
 
 namespace Corely.Shared.Mappers.Liquibase.EntityMappers.Providers
 {
-    internal class PropertyInfoSystemFkProvider : IPropertyInfoForeignKeyProvider
+    internal class PropertyInfoFkProviderForSystemAttr : IPropertyInfoForeignKeyProvider
     {
         public (Type, CorelyForeignKeyAttribute?) GetCorelyForeignKeyAttr(PropertyInfo prop)
         {
@@ -29,27 +30,28 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers.Providers
                     navigationEntity = GetNavigationEntity(navigationProp);
                     principleTableName = navigationEntity.GetCustomAttribute<TableAttribute>()?.Name ?? navigationEntity.Name;
                     dependantColumns = new[] { GetColumnName(prop) };
-                    // Todo: Verify the dependant column is also in principle table
+                    VerifyPrincipleEntityReferencePropertiesExist(new[] { prop.Name }, navigationEntity);
                     foreignKeyOwnerEntity = declaringEntity;
                 }
                 else
                 {
+                    // case 2 : attribute on `???.navigation` and references `dependent.key`
                     navigationEntity = GetNavigationEntity(prop);
                     if (IsInverseNavigation(prop, navigationEntity, systemFkAttr.Name))
                     {
-                        // case 3 : attribute on `principle.navigation` and references `dependent.key` (inverse navigation)
+                        // case 2.1 : attribute on `principle.navigation` and references `dependent.key` (inverse navigation)
                         principleTableName = declaringEntity.GetCustomAttribute<TableAttribute>()?.Name ?? declaringEntity.Name;
-                        dependantColumns = GetColumnNames(navigationEntity, systemFkAttr, prop);
-                        // Todo: Verify the dependant column is also in principle table
+                        dependantColumns = GetFkColumnNames(navigationEntity, systemFkAttr, prop);
+                        VerifyPrincipleEntityReferencePropertiesExist(systemFkAttr.Name.Split(','), declaringEntity);
                         foreignKeyOwnerEntity = navigationEntity;
 
                     }
                     else
                     {
-                        // case 2 : attribute on `dependent.navigation` and references `dependent.key`
+                        // case 2.2 : attribute on `dependent.navigation` and references `dependent.key`
                         principleTableName = navigationEntity.GetCustomAttribute<TableAttribute>()?.Name ?? navigationEntity.Name;
-                        dependantColumns = GetColumnNames(declaringEntity, systemFkAttr, prop);
-                        // Todo: Verify the dependant column is also in principle table
+                        dependantColumns = GetFkColumnNames(declaringEntity, systemFkAttr, prop);
+                        VerifyPrincipleEntityReferencePropertiesExist(systemFkAttr.Name.Split(','), navigationEntity);
                         foreignKeyOwnerEntity = declaringEntity;
                     }
                 }
@@ -104,12 +106,12 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers.Providers
             return principleEntityType;
         }
 
-        private string[] GetColumnNames(
+        private string[] GetFkColumnNames(
             Type? dependentEntityType,
             SystemForeignKeyAttribute systemFkAttr,
             PropertyInfo navigationProp)
         {
-            List<string> keyNames = new();
+            List<string> foreignKeyColumnNames = new();
 
             string[] keyPropertyNames = systemFkAttr.Name.Split(',');
             foreach (string keyPropertyName in keyPropertyNames)
@@ -117,10 +119,10 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers.Providers
                 var keyProperty = dependentEntityType?.GetProperty(systemFkAttr.Name)
                     ?? throw new Exception($"Could not find key property `{dependentEntityType?.Name}.{systemFkAttr.Name}` for navigation property `{navigationProp.DeclaringType?.Name}.{navigationProp.Name}`");
 
-                keyNames.Add(GetColumnName(keyProperty));
+                foreignKeyColumnNames.Add(GetColumnName(keyProperty));
             }
 
-            return keyNames.ToArray();
+            return foreignKeyColumnNames.ToArray();
         }
 
         private string GetColumnName(PropertyInfo prop)
@@ -131,16 +133,53 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers.Providers
                 : prop.Name;
         }
 
-        private void VerifyPrinipleEntityReferencedColumnsExist(string[] columnNames, Type principleEntityType)
+        private void VerifyPrincipleEntityReferencePropertiesExist(string[] fkPropertyNames, Type principleEntityType)
         {
-            foreach (string columnName in columnNames)
+            var principleProperties = principleEntityType.GetProperties();
+            foreach (string fkName in fkPropertyNames)
             {
-                if (principleEntityType.GetProperty(columnName) == null)
+                List<string> columnsChecked = new();
+
+                if (principleProperties.Any(p => p.Name == fkName))
                 {
-                    throw new Exception($"Could not find column `{principleEntityType.Name}.{columnName}` referenced by foreign key");
+                    continue;
                 }
+                columnsChecked.Add(fkName);
+
+                if (fkName.Length > principleEntityType.Name.Length &&
+                    fkName.StartsWith(principleEntityType.Name))
+                {
+                    var columnNameShort = fkName.Remove(0, principleEntityType.Name.Length);
+                    if (principleEntityType.GetProperty(columnNameShort) != null)
+                    {
+                        continue;
+                    }
+                    columnsChecked.Add(columnNameShort);
+                }
+
+                if (fkPropertyNames.Length == 1)
+                {
+                    if (principleProperties.Any(p => p.Name == "Id"))
+                    {
+                        continue;
+                    }
+                    columnsChecked.Add("Id");
+
+                    if (principleProperties.Any(p => p.Name == $"{principleEntityType.Name}Id"))
+                    {
+                        continue;
+                    }
+                    columnsChecked.Add($"{principleEntityType.Name}Id");
+
+                    if (principleProperties.Any(p => Attribute.IsDefined(p, typeof(KeyAttribute))))
+                    {
+                        continue;
+                    }
+                    columnsChecked.Add("[Key] attribute");
+                }
+
+                throw new Exception($"Could not find column `{principleEntityType.Name}.[{string.Join("|", columnsChecked)}]` referenced by foreign key `{fkName}`");
             }
         }
-
     }
 }

@@ -3,11 +3,14 @@ using CorelyForeignKeyAttribute = Corely.Shared.Attributes.Db.ForeignKeyAttribut
 
 namespace Corely.Shared.Mappers.Liquibase.EntityMappers.Providers
 {
-    internal class PropertyInfoNavigationFkProvider : IPropertyInfoForeignKeyProvider
+    internal class PropertyInfoFkProviderForCorelyAttr : IPropertyInfoForeignKeyProvider
     {
         public (Type, CorelyForeignKeyAttribute?) GetCorelyForeignKeyAttr(PropertyInfo prop)
         {
-            throw new NotImplementedException();
+            var declaringType = prop.DeclaringType
+                ?? throw new Exception("Declaring type is null");
+
+            return (declaringType, prop.GetCustomAttribute<CorelyForeignKeyAttribute>());
         }
     }
 }

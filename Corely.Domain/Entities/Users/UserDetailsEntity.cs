@@ -9,7 +9,7 @@ namespace Corely.Domain.Entities.Users
         [ForeignKey(nameof(UserId))]
         public UserEntity User { get; set; }
 
-        [Key, ForeignKey(nameof(User))]
+        [ForeignKey(nameof(User))]
         public int UserId { get; set; }
 
         [MaxLength(50)]

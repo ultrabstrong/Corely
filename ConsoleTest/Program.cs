@@ -2,10 +2,8 @@
 #pragma warning disable IDE0060 // Remove unused parameter
 #pragma warning disable IDE0090 // Use 'new(...)'
 
-using Corely.Shared.Providers.Data;
-using Corely.Shared.Providers.Data.Models;
+using Corely.Shared.Mappers.Liquibase.EntityMappers;
 using Serilog;
-using System.Text;
 
 namespace ConsoleTest
 {
@@ -22,31 +20,16 @@ namespace ConsoleTest
         {
             try
             {
-                string s = File.ReadAllText(desktop + "\\csvData.csv");
-                var provider = new DelimitedTextProvider(logger);
-                List<ReadRecordResult> results;
-                using (MemoryStream stream = new(Encoding.UTF8.GetBytes(s)))
-                {
-                    results = provider.ReadAllRecords(stream);
-                }
-
-                string d;
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    provider.WriteAllRecords(results.Select(m => m.Tokens), ms);
-                    d = Encoding.UTF8.GetString(ms.ToArray());
-                }
-                ;
+                var lbm = new EntityToLiquibaseJsonMapper("./Corely.Domain.dll", "Corely.Domain.Entities");
+                var json = lbm.Map();
+                File.WriteAllText($"{downloads}\\liquibase.json", json);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-            finally
-            {
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
-            }
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
         }
     }
 }
