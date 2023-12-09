@@ -5,11 +5,11 @@ namespace Corely.Shared.Attributes.Db
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class ForeignKeyAttribute : Attribute
     {
-        public string Table { get; }
+        public string ReferencedTable { get; }
 
-        public string[] Columns { get; }
+        public string[] ReferencedColumns { get; }
 
-        public string? Schema { get; }
+        public string? ReferencedSchema { get; }
 
         public string? CustomSql { get; }
 
@@ -17,17 +17,17 @@ namespace Corely.Shared.Attributes.Db
 
         public ForeignKeyAttribute(string table, params string[] columns)
         {
-            Table = table
+            ReferencedTable = table
                 .ThrowIfNullOrWhiteSpace(nameof(table));
 
-            Columns = columns
+            ReferencedColumns = columns
                 .ThrowIfAnyNullOrWhiteSpace(nameof(columns));
         }
 
         public ForeignKeyAttribute(string schema, string table, params string[] columns)
             : this(table, columns)
         {
-            Schema = schema
+            ReferencedSchema = schema
                 .ThrowIfNullOrWhiteSpace(nameof(schema));
         }
 

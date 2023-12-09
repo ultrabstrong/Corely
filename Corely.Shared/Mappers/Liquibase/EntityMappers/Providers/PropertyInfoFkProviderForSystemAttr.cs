@@ -133,46 +133,72 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers.Providers
                 : prop.Name;
         }
 
-        private void VerifyPrincipleEntityReferencePropertiesExist(string[] fkPropertyNames, Type principleEntityType)
+        private string[] VerifyPrincipleEntityReferencePropertiesExist(string[] fkPropertyNames, Type principleEntityType)
         {
-            var principleProperties = principleEntityType.GetProperties();
+            List<string> principleColumnNames = new();
+            string principleColumnName;
+
             foreach (string fkName in fkPropertyNames)
             {
                 List<string> columnsChecked = new();
 
-                if (principleProperties.Any(p => p.Name == fkName))
+                bool getPrincipleColumnName(string dependentColumnName)
+                {
+                    var prop = principleEntityType.GetProperty(dependentColumnName);
+                    if (prop != null)
+                    {
+                        var columnAttr = prop.GetCustomAttribute<ColumnAttribute>();
+                        var principleColumnName = string.IsNullOrWhiteSpace(columnAttr?.Name)
+                            ? prop.Name
+                            : columnAttr.Name;
+
+                        principleColumnNames.Add(principleColumnName);
+                        return true;
+                    }
+
+                    columnsChecked.Add(fkName);
+                    return false;
+                };
+
+                if (getPrincipleColumnName(fkName))
                 {
                     continue;
                 }
-                columnsChecked.Add(fkName);
 
                 if (fkName.Length > principleEntityType.Name.Length &&
                     fkName.StartsWith(principleEntityType.Name))
                 {
                     var columnNameShort = fkName.Remove(0, principleEntityType.Name.Length);
-                    if (principleEntityType.GetProperty(columnNameShort) != null)
+                    if (getPrincipleColumnName(columnNameShort))
                     {
                         continue;
                     }
-                    columnsChecked.Add(columnNameShort);
                 }
 
                 if (fkPropertyNames.Length == 1)
                 {
-                    if (principleProperties.Any(p => p.Name == "Id"))
+                    if (getPrincipleColumnName("Id"))
                     {
                         continue;
                     }
-                    columnsChecked.Add("Id");
 
-                    if (principleProperties.Any(p => p.Name == $"{principleEntityType.Name}Id"))
+                    if (getPrincipleColumnName($"{principleEntityType.Name}Id"))
                     {
                         continue;
                     }
-                    columnsChecked.Add($"{principleEntityType.Name}Id");
 
-                    if (principleProperties.Any(p => Attribute.IsDefined(p, typeof(KeyAttribute))))
+                    var keyProperty = principleEntityType
+                        .GetProperties()
+                        .FirstOrDefault(p =>
+                            Attribute.IsDefined(p, typeof(KeyAttribute)));
+                    if (keyProperty != null)
                     {
+                        var columnAttr = keyProperty.GetCustomAttribute<ColumnAttribute>();
+                        var principleKeyColumnName = string.IsNullOrWhiteSpace(columnAttr?.Name)
+                            ? keyProperty.Name
+                            : columnAttr.Name;
+
+                        principleColumnNames.Add(principleKeyColumnName);
                         continue;
                     }
                     columnsChecked.Add("[Key] attribute");
@@ -180,6 +206,8 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers.Providers
 
                 throw new Exception($"Could not find column `{principleEntityType.Name}.[{string.Join("|", columnsChecked)}]` referenced by foreign key `{fkName}`");
             }
+
+            return principleColumnNames.ToArray();
         }
     }
 }

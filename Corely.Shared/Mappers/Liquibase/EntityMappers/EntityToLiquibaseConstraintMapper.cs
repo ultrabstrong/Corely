@@ -129,9 +129,9 @@ namespace Corely.Shared.Mappers.Liquibase.EntityMappers
                     }
                     else
                     {
-                        _constraints.ReferencedTableSchemaName = corelyFkAttr.Schema;
-                        _constraints.ReferencedTableName = corelyFkAttr.Table;
-                        _constraints.ReferencedColumnNames = string.Join(',', corelyFkAttr.Columns);
+                        _constraints.ReferencedTableSchemaName = corelyFkAttr.ReferencedSchema;
+                        _constraints.ReferencedTableName = corelyFkAttr.ReferencedTable;
+                        _constraints.ReferencedColumnNames = string.Join(',', corelyFkAttr.ReferencedColumns);
                     }
                     _constraints.ForeignKeyName = $"{_foreignKeyConstraintPrefix}{_constraintNamePostifx}";
                 }
