@@ -2,7 +2,6 @@
 #pragma warning disable IDE0060 // Remove unused parameter
 #pragma warning disable IDE0090 // Use 'new(...)'
 
-using Corely.Shared.Mappers.Liquibase.EntityMappers;
 using Serilog;
 
 namespace ConsoleTest
@@ -20,9 +19,7 @@ namespace ConsoleTest
         {
             try
             {
-                var lbm = new EntityToLiquibaseJsonMapper("./Corely.Domain.dll", "Corely.Domain.Entities");
-                var json = lbm.Map();
-                File.WriteAllText($"{downloads}\\liquibase.json", json);
+
             }
             catch (Exception ex)
             {
