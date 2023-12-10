@@ -1,4 +1,4 @@
-﻿using Corely.DataAccess.DataAccess.EntityFramework;
+﻿using Corely.DataAccess.Sources.EntityFramework;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 using Serilog;

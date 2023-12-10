@@ -73,7 +73,7 @@ namespace Corely.UnitTests.DataAccess
             Fixture fixture = new();
 
             yield return new object[] {
-                ConnectionName.EntityFrameworkMySql,
+                ConnectionNames.EntityFrameworkMySql,
                 fixture.Create<string>(),
                 typeof(EfMySqlAccountManagementRepoFactory) };
         }

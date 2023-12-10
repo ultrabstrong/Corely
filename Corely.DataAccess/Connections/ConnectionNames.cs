@@ -1,6 +1,6 @@
 ﻿namespace Corely.DataAccess.Connections
 {
-    public class ConnectionName
+    public static class ConnectionNames
     {
         public const string EntityFrameworkMySql = nameof(EntityFrameworkMySql);
     }

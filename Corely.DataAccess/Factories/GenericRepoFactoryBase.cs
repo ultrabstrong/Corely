@@ -1,5 +1,6 @@
 ﻿using Corely.DataAccess.Connections;
 using Corely.DataAccess.Factories.AccountManagement;
+using Corely.Shared.Extensions;
 using Serilog;
 
 namespace Corely.DataAccess.Factories
@@ -13,12 +14,10 @@ namespace Corely.DataAccess.Factories
             ILogger logger,
             IDataAccessConnection<T> connection)
         {
-            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
-            ArgumentNullException.ThrowIfNull(connection, nameof(connection));
             ArgumentException.ThrowIfNullOrWhiteSpace(connection.ConnectionName, nameof(connection.ConnectionName));
 
-            _logger = logger;
-            _connection = connection;
+            _logger = logger.ThrowIfNull(nameof(logger));
+            _connection = connection.ThrowIfNull(nameof(connection));
             CheckKnownConnectionDataTypes();
         }
 
@@ -26,7 +25,7 @@ namespace Corely.DataAccess.Factories
         {
             switch (_connection.ConnectionName)
             {
-                case ConnectionName.EntityFrameworkMySql:
+                case ConnectionNames.EntityFrameworkMySql:
                     ThrowForInvalidDataType<string>();
                     break;
                 default:
@@ -46,7 +45,7 @@ namespace Corely.DataAccess.Factories
         {
             return _connection.ConnectionName switch
             {
-                ConnectionName.EntityFrameworkMySql =>
+                ConnectionNames.EntityFrameworkMySql =>
                     new EfMySqlAccountManagementRepoFactory(
                         _logger,
                         ((IDataAccessConnection<string>)_connection).GetConnection()),
