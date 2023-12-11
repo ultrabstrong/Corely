@@ -1,6 +1,6 @@
 ﻿using Corely.DataAccess.Repos.Auth;
 using Corely.DataAccess.Repos.User;
-using Corely.DataAccess.Sources.EntityFramework;
+using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
 using Microsoft.EntityFrameworkCore;

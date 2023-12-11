@@ -1,6 +1,7 @@
-﻿using Corely.DataAccess.Sources.EntityFramework;
+﻿using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Corely.DataAccess.Repos.User
@@ -20,47 +21,61 @@ namespace Corely.DataAccess.Repos.User
 
         public void Create(UserEntity entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Users.Add(entity);
         }
 
         public void Delete(UserEntity entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Users.Remove(entity);
         }
 
-        public UserEntity Get(int id)
+        public UserEntity? Get(int id)
         {
-            throw new NotImplementedException();
+            return _dbContext.Users.Find(id);
         }
 
-        public UserEntity GetByEmail(string email)
+        public UserEntity? GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            return _dbContext.Users
+                .FirstOrDefault(u => u.Email == email);
         }
 
-        public UserEntity GetByUserName(string userName)
+        public UserEntity? GetByUserName(string userName)
         {
-            throw new NotImplementedException();
+            return _dbContext.Users
+                .FirstOrDefault(u => u.Username == userName);
         }
 
-        public UserEntity GetWithDetailsByEmail(string email)
+        public UserEntity? GetWithDetailsByEmail(string email)
         {
-            throw new NotImplementedException();
+            return _dbContext.Users
+                .Include(u => u.BasicAuth)
+                .FirstOrDefault(u => u.Email == email);
         }
 
-        public UserEntity GetWithDetailsById(int userId)
+        public UserEntity? GetWithDetailsById(int userId)
         {
-            throw new NotImplementedException();
+            return _dbContext.Users
+                .Include(u => u.BasicAuth)
+                .FirstOrDefault(u => u.Id == userId);
         }
 
-        public UserEntity GetWithDetailsByUserName(string userName)
+        public UserEntity? GetWithDetailsByUserName(string userName)
         {
-            throw new NotImplementedException();
+            return _dbContext.Users
+                .Include(u => u.BasicAuth)
+                .FirstOrDefault(u => u.Username == userName);
         }
 
         public void Update(UserEntity entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Users.Update(entity);
+        }
+
+        public bool DoesUserExist(string userName, string email)
+        {
+            return _dbContext.Users
+                .Any(u => u.Username == userName || u.Email == email);
         }
     }
 }

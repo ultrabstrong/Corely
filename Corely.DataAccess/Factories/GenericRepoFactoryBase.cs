@@ -46,8 +46,7 @@ namespace Corely.DataAccess.Factories
             return _connection.ConnectionName switch
             {
                 ConnectionNames.EntityFrameworkMySql =>
-                    new EfMySqlAccountManagementRepoFactory(
-                        _logger,
+                    new EfMySqlAccountManagementRepoFactory(_logger,
                         ((IDataAccessConnection<string>)_connection).GetConnection()),
                 _ =>
                     throw new ArgumentOutOfRangeException(_connection.ConnectionName),

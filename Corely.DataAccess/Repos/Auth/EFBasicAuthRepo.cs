@@ -1,4 +1,4 @@
-﻿using Corely.DataAccess.Sources.EntityFramework;
+﻿using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
 using Corely.Shared.Extensions;
@@ -21,37 +21,34 @@ namespace Corely.DataAccess.Repos.Auth
 
         public void Create(BasicAuthEntity entity)
         {
-            throw new NotImplementedException();
+            _dbContext.BasicAuths.Add(entity);
         }
 
         public void Delete(BasicAuthEntity entity)
         {
-            throw new NotImplementedException();
+            _dbContext.BasicAuths.Remove(entity);
         }
 
-        public BasicAuthEntity Get(int id)
+        public BasicAuthEntity? Get(int id)
         {
-            throw new NotImplementedException();
+            return _dbContext.BasicAuths.Find(id);
         }
 
-        public BasicAuthEntity GetByEmail(string email)
+        public BasicAuthEntity? GetByUserId(int userId)
         {
-            throw new NotImplementedException();
+            return _dbContext.BasicAuths
+                .FirstOrDefault(a => a.UserId == userId);
         }
 
-        public BasicAuthEntity GetByUserId(int userId)
+        public BasicAuthEntity? GetByUserName(string userName)
         {
-            throw new NotImplementedException();
-        }
-
-        public BasicAuthEntity GetByUserName(string userName)
-        {
-            throw new NotImplementedException();
+            return _dbContext.BasicAuths
+                .FirstOrDefault(a => a.Username == userName);
         }
 
         public void Update(BasicAuthEntity entity)
         {
-            throw new NotImplementedException();
+            _dbContext.BasicAuths.Update(entity);
         }
     }
 }

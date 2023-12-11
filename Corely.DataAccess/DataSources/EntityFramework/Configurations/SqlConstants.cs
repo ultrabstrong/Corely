@@ -1,4 +1,4 @@
-﻿namespace Corely.DataAccess.Sources.EntityFramework.EntityConfigurations
+﻿namespace Corely.DataAccess.DataSources.EntityFramework.Configurations
 {
     internal static class SqlConstants
     {

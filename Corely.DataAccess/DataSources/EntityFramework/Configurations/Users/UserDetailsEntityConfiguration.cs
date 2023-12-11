@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.Sources.EntityFramework.EntityConfigurations.Users
+namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Users
 {
     internal class UserDetailsEntityConfiguration : IEntityTypeConfiguration<UserDetailsEntity>
     {

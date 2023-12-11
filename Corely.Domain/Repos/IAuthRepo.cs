@@ -2,8 +2,7 @@
 {
     public interface IAuthRepo<T> : IRepo<T>
     {
-        T GetByUserId(int userId);
-        T GetByUserName(string userName);
-        T GetByEmail(string email);
+        T? GetByUserId(int userId);
+        T? GetByUserName(string userName);
     }
 }

@@ -1,13 +1,15 @@
-﻿using Corely.DataAccess.Sources.EntityFramework.EntityConfigurations.Users;
+﻿using Corely.DataAccess.DataSources.EntityFramework.Configurations.Auth;
+using Corely.DataAccess.DataSources.EntityFramework.Configurations.Users;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace Corely.DataAccess.Sources.EntityFramework
+namespace Corely.DataAccess.DataSources.EntityFramework
 {
     internal class AccountManagementDbContext : DbContext
     {
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<UserDetailsEntity> UserDetails { get; set; }
         public DbSet<BasicAuthEntity> BasicAuths { get; set; }
 
         public AccountManagementDbContext()
@@ -21,6 +23,8 @@ namespace Corely.DataAccess.Sources.EntityFramework
         {
             modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
             modelBuilder.ApplyConfiguration(new UserDetailsEntityConfiguration());
+
+            modelBuilder.ApplyConfiguration(new BasicAuthEntityConfiguration());
         }
     }
 }
