@@ -8,9 +8,9 @@ namespace Corely.DataAccess.Sources.EntityFramework.EntityConfigurations.Users
     {
         public void Configure(EntityTypeBuilder<UserDetailsEntity> builder)
         {
-            builder.HasOne(e => e.User)
-                .WithOne(p => p.Details)
-                .HasForeignKey<UserEntity>(p => p.Id);
+            builder.ToTable("UserDetails");
+
+            builder.HasKey(e => e.UserId);
 
             builder.Property(e => e.Name)
                 .HasMaxLength(4000); // https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/

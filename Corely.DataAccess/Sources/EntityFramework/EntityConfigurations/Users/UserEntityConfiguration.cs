@@ -30,6 +30,11 @@ namespace Corely.DataAccess.Sources.EntityFramework.EntityConfigurations.Users
             builder.Property(e => e.Email)
                 .HasMaxLength(254) // RFC 5321 standard
                 .IsRequired();
+
+            builder.HasOne(p => p.Details)
+                .WithOne(d => d.User)
+                .HasForeignKey<UserDetailsEntity>(p => p.UserId);
+
         }
     }
 }

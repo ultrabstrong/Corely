@@ -1,4 +1,6 @@
-﻿namespace Corely.Domain.Entities.Users
+﻿using Corely.Domain.Entities.Auth;
+
+namespace Corely.Domain.Entities.Users
 {
     public class UserEntity
     {
@@ -12,6 +14,8 @@
 
         public string Email { get; set; }
 
-        public UserDetailsEntity? Details { get; set; }
+        public virtual UserDetailsEntity? Details { get; set; }
+
+        public virtual BasicAuthEntity? BasicAuth { get; set; }
     }
 }
