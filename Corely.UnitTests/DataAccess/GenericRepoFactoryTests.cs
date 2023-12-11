@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
-using Corely.DataAccess.Connections;
 using Corely.DataAccess.Factories;
 using Corely.DataAccess.Factories.AccountManagement;
+using Corely.Domain.Connections;
 using Corely.UnitTests.ClassData;
 using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;

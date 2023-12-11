@@ -1,4 +1,4 @@
-﻿using Corely.DataAccess.Connections;
+﻿using Corely.Domain.Connections;
 using Serilog;
 
 namespace Corely.DataAccess.Factories

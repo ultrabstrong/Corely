@@ -17,6 +17,7 @@ namespace Corely.DataAccess.Repos.Auth
         {
             _logger = logger.ThrowIfNull(nameof(logger));
             _dbContext = dbContext.ThrowIfNull(nameof(dbContext));
+            _logger.Debug("EFBasicAuthRepo created");
         }
 
         public void Create(BasicAuthEntity entity)

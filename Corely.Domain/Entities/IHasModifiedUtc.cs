@@ -1,6 +1,6 @@
 ﻿namespace Corely.Domain.Entities
 {
-    public class ModifiedEntity
+    public interface IHasModifiedUtc
     {
         public DateTime ModifiedUtc { get; set; }
     }

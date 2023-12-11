@@ -9,16 +9,7 @@ namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Users
     {
         public void Configure(EntityTypeBuilder<UserEntity> builder)
         {
-            builder.ToTable("Users");
-
-            builder.HasKey(e => e.Id);
-
-            builder.Property(e => e.Id)
-                .ValueGeneratedOnAdd();
-
-            builder.Property(e => e.CreatedUtc)
-                .HasDefaultValueSql(SqlConstants.GETUTCDATE)
-                .IsRequired();
+            BaseEntityTypeConfiguration.Configure(builder);
 
             builder.Property(e => e.Enabled)
                 .HasDefaultValue(true)

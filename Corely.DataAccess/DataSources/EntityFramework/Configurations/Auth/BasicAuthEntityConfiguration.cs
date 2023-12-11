@@ -8,9 +8,7 @@ namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Auth
     {
         public void Configure(EntityTypeBuilder<BasicAuthEntity> builder)
         {
-            builder.ToTable("BasicAuth");
-
-            builder.HasKey(x => x.Id);
+            BaseEntityTypeConfiguration.Configure(builder);
 
             builder.Property(x => x.Username)
                 .IsRequired()

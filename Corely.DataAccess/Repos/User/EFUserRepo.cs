@@ -17,6 +17,7 @@ namespace Corely.DataAccess.Repos.User
         {
             _logger = logger;
             _dbContext = dbContext;
+            _logger.Debug("EFUserRepo created");
         }
 
         public void Create(UserEntity entity)

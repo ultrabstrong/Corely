@@ -1,6 +1,6 @@
 ﻿namespace Corely.Domain.Entities
 {
-    public class CreatedEntity
+    public interface IHasCreatedUtc
     {
         public DateTime CreatedUtc { get; set; }
     }

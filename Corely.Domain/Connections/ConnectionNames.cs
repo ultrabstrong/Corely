@@ -1,4 +1,4 @@
-﻿namespace Corely.DataAccess.Connections
+﻿namespace Corely.Domain.Connections
 {
     public static class ConnectionNames
     {
