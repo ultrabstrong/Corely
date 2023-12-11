@@ -1,18 +1,17 @@
-﻿using AutoMapper;
-using Corely.Domain.Entities.Auth;
-using Corely.Shared.Models.Security;
+﻿using Corely.Shared.Models.Security;
 
 namespace Corely.Domain.Models.Auth
 {
-    public class BasicAuth : Profile
+    public class BasicAuth : IValidate
     {
-        public string Username { get; set; }
-        public IEncryptedValue Password { get; set; }
-        public DateTime ModifiedUtc { get; set; }
+        public string Username { get; init; }
+        public IEncryptedValue Password { get; init; }
+        public DateTime ModifiedUtc { get; init; }
 
-        public BasicAuth()
+        public bool IsValid()
         {
-            CreateMap<BasicAuth, BasicAuthEntity>();
+            return !string.IsNullOrWhiteSpace(Username)
+                && Password != null;
         }
     }
 }

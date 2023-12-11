@@ -1,22 +1,18 @@
-﻿using AutoMapper;
-using Corely.Domain.Entities.Users;
-using Corely.Domain.Models.Auth;
-
-namespace Corely.Domain.Models.Users
+﻿namespace Corely.Domain.Models.Users
 {
-    public class User : Profile
+    public class User : IValidate
     {
-        public int Id { get; private set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public bool Enabled { get; set; }
-        public DateTime CreatedUtc { get; set; }
-        public UserDetails? Details { get; set; }
-        public BasicAuth? BasicAuth { get; set; }
-        public User(int id)
+        public int Id { get; init; }
+        public string Username { get; init; }
+        public string Email { get; init; }
+        public bool Enabled { get; init; }
+        public DateTime CreatedUtc { get; init; }
+        public UserDetails? Details { get; init; }
+
+        public bool IsValid()
         {
-            Id = id;
-            CreateMap<User, UserEntity>();
+            return !string.IsNullOrWhiteSpace(Username)
+                && !string.IsNullOrWhiteSpace(Email);
         }
     }
 }

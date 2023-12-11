@@ -25,11 +25,6 @@ namespace Corely.DataAccess.Repos.Auth
             _dbContext.BasicAuths.Add(entity);
         }
 
-        public void Delete(BasicAuthEntity entity)
-        {
-            _dbContext.BasicAuths.Remove(entity);
-        }
-
         public BasicAuthEntity? Get(int id)
         {
             return _dbContext.BasicAuths.Find(id);
@@ -50,6 +45,10 @@ namespace Corely.DataAccess.Repos.Auth
         public void Update(BasicAuthEntity entity)
         {
             _dbContext.BasicAuths.Update(entity);
+        }
+        public void Delete(BasicAuthEntity entity)
+        {
+            _dbContext.BasicAuths.Remove(entity);
         }
     }
 }

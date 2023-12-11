@@ -25,11 +25,6 @@ namespace Corely.DataAccess.Repos.User
             _dbContext.Users.Add(entity);
         }
 
-        public void Delete(UserEntity entity)
-        {
-            _dbContext.Users.Remove(entity);
-        }
-
         public UserEntity? Get(int id)
         {
             return _dbContext.Users.Find(id);
@@ -71,6 +66,11 @@ namespace Corely.DataAccess.Repos.User
         public void Update(UserEntity entity)
         {
             _dbContext.Users.Update(entity);
+        }
+
+        public void Delete(UserEntity entity)
+        {
+            _dbContext.Users.Remove(entity);
         }
 
         public bool DoesUserExist(string userName, string email)

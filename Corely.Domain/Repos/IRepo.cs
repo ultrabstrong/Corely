@@ -2,8 +2,8 @@
 {
     public interface IRepo<T>
     {
-        T? Get(int id);
         void Create(T entity);
+        T? Get(int id);
         void Update(T entity);
         void Delete(T entity);
     }

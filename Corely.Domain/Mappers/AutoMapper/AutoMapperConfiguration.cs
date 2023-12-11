@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using System.Reflection;
 
-namespace Corely.Domain.Providers
+namespace Corely.Domain.Mappers.AutoMapper
 {
-    public static class AutomapperConfigurationProvider
+    public static class AutoMapperConfiguration
     {
         public static MapperConfiguration GetConfiguration()
         {

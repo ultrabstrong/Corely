@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Exceptions;
+using Corely.Domain.Models.Auth;
 using Corely.Domain.Models.Users;
 using Corely.Domain.Repos;
 
-namespace Corely.Domain.Services
+namespace Corely.Domain.Services.Users
 {
     internal class UserService : IUserService
     {
@@ -18,12 +19,12 @@ namespace Corely.Domain.Services
             _mapper = mapper;
         }
 
-        public void Create(User user)
+        public void Create(User user, BasicAuth basicAuth)
         {
             var userEntity = _mapper.Map<UserEntity>(user);
             if (_userRepo.DoesUserExist(userEntity.Username, userEntity.Email))
             {
-                throw new UserServiceException() { Reason = UserServiceException.Reason.UserAlreadyExists };
+                throw new UserServiceException() { Reason = UserServiceException.ErrorReason.UserAlreadyExists };
             }
             _userRepo.Create(userEntity);
         }
