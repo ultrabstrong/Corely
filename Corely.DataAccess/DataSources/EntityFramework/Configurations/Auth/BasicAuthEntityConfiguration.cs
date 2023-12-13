@@ -1,4 +1,5 @@
-﻿using Corely.Domain.Entities.Auth;
+﻿using Corely.Domain.Constants.Auth;
+using Corely.Domain.Entities.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,11 +13,14 @@ namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Auth
 
             builder.Property(x => x.Username)
                 .IsRequired()
-                .HasMaxLength(30);
+                .HasMaxLength(BasicAuthConstants.USERNAME_MAX_LENGTH);
+
+            builder.HasIndex(x => x.Username)
+                .IsUnique();
 
             builder.Property(x => x.Password)
                 .IsRequired()
-                .HasMaxLength(250); // Hashed password with encoded salt / other info
+                .HasMaxLength(BasicAuthConstants.PASSWORD_MAX_LENGTH);
         }
     }
 }

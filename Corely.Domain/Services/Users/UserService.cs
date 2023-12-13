@@ -21,6 +21,8 @@ namespace Corely.Domain.Services.Users
 
         public void Create(User user, BasicAuth basicAuth)
         {
+
+
             var userEntity = _mapper.Map<UserEntity>(user);
             if (_userRepo.DoesUserExist(userEntity.Username, userEntity.Email))
             {

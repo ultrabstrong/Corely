@@ -1,4 +1,5 @@
-﻿using Corely.Domain.Entities.Auth;
+﻿using Corely.Domain.Constants.Users;
+using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -16,14 +17,14 @@ namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Users
                 .IsRequired();
 
             builder.Property(e => e.Username)
-                .HasMaxLength(30)
+                .HasMaxLength(UserConstants.USERNAME_MAX_LENGTH)
                 .IsRequired();
 
             builder.HasIndex(e => e.Username)
                 .IsUnique();
 
             builder.Property(e => e.Email)
-                .HasMaxLength(254) // RFC 5321 standard
+                .HasMaxLength(UserConstants.EMAIL_MAX_LENGTH)
                 .IsRequired();
 
             builder.HasIndex(e => e.Email)

@@ -1,4 +1,5 @@
-﻿using Corely.Domain.Entities.Users;
+﻿using Corely.Domain.Constants.Users;
+using Corely.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,7 +12,7 @@ namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Users
             BaseEntityTypeConfiguration.Configure(builder);
 
             builder.Property(e => e.Name)
-                .HasMaxLength(4000); // https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
+                .HasMaxLength(UserDetailsConstants.NAME_MAX_LENGTH);
         }
     }
 }

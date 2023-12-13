@@ -2,7 +2,7 @@
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Models.Users;
 
-namespace Corely.Domain.Mappers.Profiles.Users
+namespace Corely.Domain.Mappers.AutoMapper.Profiles.Users
 {
     public class UserProfile : Profile
     {

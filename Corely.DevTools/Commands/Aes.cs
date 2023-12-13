@@ -55,13 +55,15 @@ namespace Corely.DevTools.Commands
 
         private void Encrypt()
         {
-            var encrypted = new AESEncryptionProvider(new AesKeyProvider(), Key).Encrypt(ToEncrypt);
+            var encrypted = new AESEncryptionProvider(new AesKeyProvider(), new InMemorySecretProvider(Key))
+                .Encrypt(ToEncrypt);
             Console.WriteLine(encrypted);
         }
 
         private void Decrypt()
         {
-            var decrypted = new AESEncryptionProvider(new AesKeyProvider(), Key).Decrypt(ToDecrypt);
+            var decrypted = new AESEncryptionProvider(new AesKeyProvider(), new InMemorySecretProvider(Key))
+                .Decrypt(ToDecrypt);
             Console.WriteLine(decrypted);
         }
     }

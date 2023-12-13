@@ -9,8 +9,9 @@ namespace Corely.UnitTests.Shared.Models.Security
 
         public EncryptedValueTests()
         {
-            var keyProvider = new AesKeyProvider();
-            var encryptionProvider = new AESEncryptionProvider(keyProvider, keyProvider.CreateKey());
+            AesKeyProvider keyProvider = new();
+            InMemorySecretProvider secretProvider = new(keyProvider.CreateKey());
+            AESEncryptionProvider encryptionProvider = new(keyProvider, secretProvider);
 
             _encryptedValue = new EncryptedValue(encryptionProvider);
         }

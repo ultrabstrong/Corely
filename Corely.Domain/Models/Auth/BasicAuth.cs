@@ -2,16 +2,10 @@
 
 namespace Corely.Domain.Models.Auth
 {
-    public class BasicAuth : IValidate
+    public class BasicAuth
     {
         public string Username { get; init; }
         public IEncryptedValue Password { get; init; }
         public DateTime ModifiedUtc { get; init; }
-
-        public bool IsValid()
-        {
-            return !string.IsNullOrWhiteSpace(Username)
-                && Password != null;
-        }
     }
 }

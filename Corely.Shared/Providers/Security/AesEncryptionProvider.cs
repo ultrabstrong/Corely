@@ -8,9 +8,9 @@ namespace Corely.Shared.Providers.Security
         private readonly string _key;
         private readonly IKeyProvider _keyProvider;
 
-        public AESEncryptionProvider(IKeyProvider keyProvider, string key)
+        public AESEncryptionProvider(IKeyProvider keyProvider, ISecretProvider secretProvider)
         {
-            _key = key;
+            _key = secretProvider.ThrowIfNull(nameof(secretProvider)).Get();
             _keyProvider = keyProvider.ThrowIfNull(nameof(keyProvider));
             if (!_keyProvider.IsKeyValid(_key))
             {
