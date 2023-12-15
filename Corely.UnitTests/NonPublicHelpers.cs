@@ -1,67 +1,113 @@
-﻿using System.Reflection;
-
-namespace Corely.UnitTests
+﻿namespace Corely.UnitTests
 {
-    internal static class NonPublicHelpers
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
+    namespace AB.TestBase
     {
-        public static T? InvokeNonPublicMethod<T>(object classInstance, string methodName, params object[] args)
+        public static class NonPublicHelpers
         {
-            var result = classInstance
-                ?.GetType()
-                ?.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
-                ?.Invoke(classInstance, args);
-
-            return (T?)result;
-        }
-
-        public static void SetNonPublicProperty(object instance, string propName, object value,
-            bool setBackingFieldFallback = true)
-        {
-            var instanceType = instance.GetType();
-            var prop = instanceType
-                .GetProperty(propName, BindingFlags.Instance | BindingFlags.NonPublic);
-
-            while (prop == null && instanceType.BaseType != null)
+            private const BindingFlags BINDING_FLAGS = BindingFlags.Instance
+                    | BindingFlags.NonPublic
+                    | BindingFlags.FlattenHierarchy
+                    | BindingFlags.Static;
+            public static T? InvokeNonPublicMethod<T>(object classInstance, string methodName)
             {
-                instanceType = instanceType.BaseType;
-                prop = instanceType
-                    .GetProperty(propName, BindingFlags.Instance | BindingFlags.NonPublic);
+                var methodInfo = GetNonPublicMethod(classInstance, methodName)
+                    ?? throw new NullReferenceException($"Method {methodName} not found in type {classInstance.GetType().Name}");
+                return (T?)methodInfo.Invoke(classInstance, null);
             }
 
-            try
+            public static T? InvokeNonPublicMethod<T>(object classInstance, string methodName, params object[] args)
             {
-                ArgumentNullException.ThrowIfNull(prop, nameof(prop));
-                prop.SetValue(instance, value);
+                var methodInfo = GetNonPublicMethod(classInstance, methodName)
+                    ?? throw new NullReferenceException($"Method {methodName} not found in type {classInstance.GetType().Name}");
+                return (T?)methodInfo.Invoke(classInstance, args);
             }
-            catch (ArgumentNullException)
+
+            /// <summary>
+            /// Use this when method is overloaded
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="classInstance"></param>
+            /// <param name="methodName"></param>
+            /// <param name="args"></param>
+            /// <returns></returns>
+            public static T? InvokeNonPublicMethod<T>(object classInstance, string methodName, params (Type, object)[] args)
             {
-                if (setBackingFieldFallback)
+                var methodInfo = GetNonPublicMethod(classInstance, methodName, args.Select(a => a.Item1).ToArray())
+                    ?? throw new NullReferenceException($"Method {methodName} not found in type {classInstance.GetType().Name}");
+                return (T?)methodInfo.Invoke(classInstance, args.Select(a => a.Item2).ToArray());
+            }
+
+            private static MethodInfo? GetNonPublicMethod(object classInstance, string methodName)
+            {
+                var methodInfo = classInstance.GetType().GetMethod(methodName, BINDING_FLAGS)
+                    // This is mostly for cases where class is wrapped for unit testing
+                    ?? classInstance.GetType().BaseType?.GetMethod(methodName, BINDING_FLAGS);
+
+                return methodInfo;
+            }
+
+            private static MethodInfo? GetNonPublicMethod(object classInstance, string methodName, params Type[] paramTypes)
+            {
+                var methodInfo = classInstance.GetType().GetMethod(methodName, BINDING_FLAGS, paramTypes)
+                    ?? classInstance.GetType().BaseType?.GetMethod(methodName, BINDING_FLAGS, paramTypes);
+
+                return methodInfo;
+            }
+
+            public static void SetNonPublicProperty(object instance, string propName, object value, bool setBackingFieldFallback = true)
+            {
+                var instanceType = instance.GetType();
+                var prop = instanceType.GetProperty(propName, BINDING_FLAGS);
+
+                while (prop == null && instanceType.BaseType != null)
                 {
-                    string fieldname = $"<{propName}>k__BackingField";
-                    SetNonPublicField(instance, fieldname, value);
+                    instanceType = instanceType.BaseType;
+                    prop = instanceType.GetProperty(propName, BINDING_FLAGS);
                 }
-                else
+
+                try
                 {
-                    throw;
+                    if (prop == null)
+                    {
+                        throw new NullReferenceException($"Property {propName} not found in type {instanceType.Name}");
+                    }
+                    prop.SetValue(instance, value);
+                }
+                catch (ArgumentException)
+                {
+                    if (setBackingFieldFallback)
+                    {
+                        string fieldname = $"<{propName}>k__BackingField";
+                        SetNonPublicField(instance, fieldname, value);
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
-        }
 
-        public static void SetNonPublicField(object instance, string fieldName, object value)
-        {
-            var instanceType = instance.GetType();
-            var field = instanceType
-                .GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-
-            while (field == null && instanceType.BaseType != null)
+            public static void SetNonPublicField(object instance, string fieldName, object value)
             {
-                instanceType = instanceType.BaseType;
-                field = instanceType
-                    .GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            }
+                var instanceType = instance.GetType();
+                var field = instanceType.GetField(fieldName, BINDING_FLAGS);
 
-            ArgumentNullException.ThrowIfNull(field, nameof(field));
-            field.SetValue(instance, value);
+                while (field == null && instanceType.BaseType != null)
+                {
+                    instanceType = instanceType.BaseType;
+                    field = instanceType.GetField(fieldName, BINDING_FLAGS);
+                }
+
+                if (field == null)
+                {
+                    throw new NullReferenceException($"Field {fieldName} not found in type {instanceType.Name}");
+                }
+                field.SetValue(instance, value);
+            }
         }
     }
 }
