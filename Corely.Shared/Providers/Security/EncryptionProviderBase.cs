@@ -4,31 +4,34 @@ namespace Corely.Shared.Providers.Security
 {
     public abstract class EncryptionProviderBase : IEncryptionProvider
     {
-        private const int TWO_DIGIT_ENCRYPTION_TYPE_CODE_LENGTH = 2;
-
-        protected readonly string _key;
+        protected readonly string Key;
 
         protected abstract string TwoDigitEncryptionTypeCode { get; }
 
         public EncryptionProviderBase(ISecretProvider secretProvider)
         {
-            _key = secretProvider.ThrowIfNull(nameof(secretProvider)).Get();
-            ValidateEncryptionTypeCode();
-        }
-        private void ValidateEncryptionTypeCode()
-        {
-            if (!short.TryParse(TwoDigitEncryptionTypeCode, out _)
-                || TwoDigitEncryptionTypeCode.Length != TWO_DIGIT_ENCRYPTION_TYPE_CODE_LENGTH)
-            {
-                throw new ArgumentException($"{nameof(TwoDigitEncryptionTypeCode)} must be two digit characters [0-9][0-9]");
-            }
+            Key = secretProvider.ThrowIfNull(nameof(secretProvider)).Get();
+            ValidateEncryptionTypeCode(TwoDigitEncryptionTypeCode);
         }
 
         public string Decrypt(string value)
         {
             ArgumentException.ThrowIfNullOrEmpty(value, nameof(value));
-            var valueToDecrypt = value[TWO_DIGIT_ENCRYPTION_TYPE_CODE_LENGTH..];
+
+            var encryptionTypeCode = value[..EncryptionProviderCodeConstants.ENCRYPTION_TYPE_CODE_LENGTH];
+            ValidateEncryptionTypeCode(encryptionTypeCode);
+
+            var valueToDecrypt = value[EncryptionProviderCodeConstants.ENCRYPTION_TYPE_CODE_LENGTH..];
             return DecryptInternal(valueToDecrypt);
+        }
+
+        private void ValidateEncryptionTypeCode(string encryptionTypeCode)
+        {
+            if (!short.TryParse(encryptionTypeCode, out _)
+                || encryptionTypeCode.Length != EncryptionProviderCodeConstants.ENCRYPTION_TYPE_CODE_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(encryptionTypeCode)} must be two digit characters [0-9][0-9]");
+            }
         }
 
         public string Encrypt(string value)

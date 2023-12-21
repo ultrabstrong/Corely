@@ -13,7 +13,7 @@ namespace Corely.Shared.Providers.Security
         {
             using (Aes aes = Aes.Create())
             {
-                aes.Key = Convert.FromBase64String(_key);
+                aes.Key = Convert.FromBase64String(Key);
                 aes.GenerateIV();
 
                 using (ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
@@ -46,7 +46,7 @@ namespace Corely.Shared.Providers.Security
                 Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
                 Buffer.BlockCopy(fullCipher, iv.Length, cipherText, 0, cipherText.Length);
 
-                aes.Key = Convert.FromBase64String(_key);
+                aes.Key = Convert.FromBase64String(Key);
                 aes.IV = iv;
 
                 using (ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV))

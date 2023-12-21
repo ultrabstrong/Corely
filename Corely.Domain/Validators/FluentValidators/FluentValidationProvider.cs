@@ -6,8 +6,8 @@ namespace Corely.Domain.Validators.FluentValidators
 {
     public class FluentValidationProvider : IValidationProvider
     {
-        private IServiceProvider _serviceProvider;
-        private IMapper _mapper;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IMapper _mapper;
 
         public FluentValidationProvider(IServiceProvider serviceProvider,
             IMapper mapper)
