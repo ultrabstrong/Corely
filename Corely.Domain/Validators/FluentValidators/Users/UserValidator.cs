@@ -8,8 +8,8 @@ namespace Corely.Domain.Validators.FluentValidators.Users
     {
         public UserValidator()
         {
-            RuleFor(x => x.Username).NotEmpty().MaximumLength(UserConstants.USERNAME_MAX_LENGTH);
-            RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(UserConstants.EMAIL_MAX_LENGTH);
+            RuleFor(m => m.Username).NotEmpty().MaximumLength(UserConstants.USERNAME_MAX_LENGTH);
+            RuleFor(m => m.Email).NotEmpty().EmailAddress().MaximumLength(UserConstants.EMAIL_MAX_LENGTH);
         }
     }
 }

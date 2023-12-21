@@ -1,27 +1,16 @@
-﻿using Corely.Shared.Extensions;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace Corely.Shared.Providers.Security
 {
-    public sealed class AESEncryptionProvider : IEncryptionProvider
+    public sealed class AESEncryptionProvider : EncryptionProviderBase
     {
-        private readonly string _key;
-        private readonly IKeyProvider _keyProvider;
+        protected override string TwoDigitEncryptionTypeCode => EncryptionProviderCodeConstants.AES;
 
-        public AESEncryptionProvider(IKeyProvider keyProvider, ISecretProvider secretProvider)
+        public AESEncryptionProvider(ISecretProvider secretProvider)
+            : base(secretProvider) { }
+
+        protected override string EncryptInternal(string value)
         {
-            _key = secretProvider.ThrowIfNull(nameof(secretProvider)).Get();
-            _keyProvider = keyProvider.ThrowIfNull(nameof(keyProvider));
-            if (!_keyProvider.IsKeyValid(_key))
-            {
-                throw new ArgumentException("Key is not valid");
-            }
-        }
-
-        public string Encrypt(string value)
-        {
-            ArgumentNullException.ThrowIfNullOrEmpty(value, nameof(value));
-
             using (Aes aes = Aes.Create())
             {
                 aes.Key = Convert.FromBase64String(_key);
@@ -44,10 +33,8 @@ namespace Corely.Shared.Providers.Security
             }
         }
 
-        public string Decrypt(string value)
+        protected override string DecryptInternal(string value)
         {
-            ArgumentNullException.ThrowIfNullOrEmpty(value, nameof(value));
-
             using (Aes aes = Aes.Create())
             {
                 byte[] fullCipher = Convert.FromBase64String(value);

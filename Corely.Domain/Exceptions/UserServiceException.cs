@@ -5,7 +5,8 @@
         public enum ErrorReason
         {
             Undefined,
-            UserAlreadyExists
+            UserAlreadyExists,
+            ValidationFailed
         }
 
         public ErrorReason Reason { get; set; } = ErrorReason.Undefined;
@@ -21,6 +22,5 @@
         public UserServiceException(string message, Exception innerException) : base(message, innerException)
         {
         }
-
     }
 }

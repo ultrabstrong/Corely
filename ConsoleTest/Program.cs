@@ -2,6 +2,7 @@
 #pragma warning disable IDE0060 // Remove unused parameter
 #pragma warning disable IDE0090 // Use 'new(...)'
 
+using Corely.Domain.Models.Users;
 using Serilog;
 
 namespace ConsoleTest
@@ -19,7 +20,12 @@ namespace ConsoleTest
         {
             try
             {
-
+                User user = new User
+                {
+                    Username = "test",
+                    Email = ""
+                };
+                ;
             }
             catch (Exception ex)
             {
