@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Corely.Shared.Providers.Security
+namespace Corely.Shared.Providers.Security.Keys
 {
     public sealed class AesKeyProvider : IKeyProvider
     {

@@ -23,7 +23,7 @@ namespace Corely.DevTools
             }
         }
 
-        static List<CommandBase> GetCommands()
+        static List<CommandBase?> GetCommands()
         {
             var commandInstances = AppDomain.CurrentDomain
                 .GetAssemblies()
@@ -40,10 +40,7 @@ namespace Corely.DevTools
                 AddSubCommands(command);
             }
 
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
-            // For some reason it doesn't realize that there is a Where linq statement above that filters out nulls
             return commandInstances;
-#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
         }
 
         static void AddSubCommands(CommandBase command)

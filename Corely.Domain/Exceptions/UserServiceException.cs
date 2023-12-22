@@ -1,15 +1,15 @@
 ﻿namespace Corely.Domain.Exceptions
 {
-    public class UserServiceException : Exception
+    public sealed class UserServiceException : Exception
     {
         public enum ErrorReason
         {
-            Undefined,
+            Unknown,
             UserAlreadyExists,
             ValidationFailed
         }
 
-        public ErrorReason Reason { get; set; } = ErrorReason.Undefined;
+        public ErrorReason Reason { get; set; } = ErrorReason.Unknown;
 
         public UserServiceException() : base()
         {

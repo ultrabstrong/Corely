@@ -1,5 +1,5 @@
 ﻿using Corely.Shared.Extensions;
-using Corely.Shared.Providers.Security;
+using Corely.Shared.Providers.Security.Encryption;
 
 namespace Corely.Shared.Models.Security
 {

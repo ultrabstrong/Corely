@@ -62,7 +62,7 @@ namespace Corely.Domain.Services.Users
                 _logger.Error(ex, "Error creating user {Username}", user.Username);
                 throw new UserServiceException(ex.Message, ex)
                 {
-                    Reason = UserServiceException.ErrorReason.Undefined
+                    Reason = UserServiceException.ErrorReason.Unknown
                 };
             }
         }

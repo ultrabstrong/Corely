@@ -58,26 +58,59 @@
                 return methodInfo;
             }
 
-            public static void SetNonPublicProperty(object instance, string propName, object value, bool setBackingFieldFallback = true)
+            public static T? GetNonPublicProperty<T>(object instance, string propName, bool getBackingFieldFallback = true)
             {
-                var instanceType = instance.GetType();
-                var prop = instanceType.GetProperty(propName, BINDING_FLAGS);
-
-                while (prop == null && instanceType.BaseType != null)
-                {
-                    instanceType = instanceType.BaseType;
-                    prop = instanceType.GetProperty(propName, BINDING_FLAGS);
-                }
-
                 try
                 {
-                    if (prop == null)
+                    var prop = GetPropertyInfo(instance, propName)
+                        ?? throw new NullReferenceException($"Property {propName} not found in type {instance.GetType()}");
+                    if (prop.GetValue(instance) is T value)
                     {
-                        throw new NullReferenceException($"Property {propName} not found in type {instanceType.Name}");
+                        return value;
                     }
+                    else
+                    {
+                        throw new InvalidCastException($"Property {propName} is not of type {typeof(T)}");
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    if (getBackingFieldFallback)
+                    {
+                        string fieldname = $"<{propName}>k__BackingField";
+                        return GetNonPublicField<T>(instance, fieldname);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            public static T? GetNonPublicField<T>(object instance, string fieldName)
+            {
+                var field = GetFieldInfo(instance, fieldName)
+                    ?? throw new NullReferenceException($"Field {fieldName} not found in type {instance.GetType()}");
+
+                if (field.GetValue(instance) is T value)
+                {
+                    return value;
+                }
+                else
+                {
+                    throw new InvalidCastException($"Field {fieldName} is not of type {typeof(T)}");
+                }
+            }
+
+            public static void SetNonPublicProperty(object instance, string propName, object value, bool setBackingFieldFallback = true)
+            {
+                try
+                {
+                    var prop = GetPropertyInfo(instance, propName)
+                        ?? throw new NullReferenceException($"Property {propName} not found in type {instance.GetType()}");
                     prop.SetValue(instance, value);
                 }
-                catch (ArgumentException)
+                catch (NullReferenceException)
                 {
                     if (setBackingFieldFallback)
                     {
@@ -93,6 +126,27 @@
 
             public static void SetNonPublicField(object instance, string fieldName, object value)
             {
+                var field = GetFieldInfo(instance, fieldName)
+                    ?? throw new NullReferenceException($"Field {fieldName} not found in type {instance.GetType()}");
+                field.SetValue(instance, value);
+            }
+
+            private static PropertyInfo? GetPropertyInfo(object instance, string propName)
+            {
+                var instanceType = instance.GetType();
+                var prop = instanceType.GetProperty(propName, BINDING_FLAGS);
+
+                while (prop == null && instanceType.BaseType != null)
+                {
+                    instanceType = instanceType.BaseType;
+                    prop = instanceType.GetProperty(propName, BINDING_FLAGS);
+                }
+
+                return prop;
+            }
+
+            private static FieldInfo? GetFieldInfo(object instance, string fieldName)
+            {
                 var instanceType = instance.GetType();
                 var field = instanceType.GetField(fieldName, BINDING_FLAGS);
 
@@ -102,11 +156,7 @@
                     field = instanceType.GetField(fieldName, BINDING_FLAGS);
                 }
 
-                if (field == null)
-                {
-                    throw new NullReferenceException($"Field {fieldName} not found in type {instanceType.Name}");
-                }
-                field.SetValue(instance, value);
+                return field;
             }
         }
     }

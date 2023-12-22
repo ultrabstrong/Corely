@@ -2,8 +2,6 @@
 
 namespace Corely.UnitTests.Shared.Providers.Data
 {
-#pragma warning disable CS8604 // Possible null reference argument.
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
     public class TextNormalizationProviderTests
     {
         private readonly TextNormalizationProvider _textNormalizationProvider = new();
@@ -25,7 +23,7 @@ namespace Corely.UnitTests.Shared.Providers.Data
         [Fact]
         public void BasicNormalize_ShouldThrowArgumentNullException()
         {
-            string input = null;
+            string? input = null;
             void act() => _textNormalizationProvider.BasicNormalize(input);
             Assert.Throws<ArgumentNullException>(act);
         }
@@ -47,7 +45,7 @@ namespace Corely.UnitTests.Shared.Providers.Data
         [Fact]
         public void NormalizeAddress_ShouldThrowArgumentNullException()
         {
-            string street = null;
+            string? street = null;
             string[] additional = { "Apt. 1" };
             void act() => _textNormalizationProvider.NormalizeAddress(street, additional);
             Assert.Throws<ArgumentNullException>(act);
@@ -70,13 +68,11 @@ namespace Corely.UnitTests.Shared.Providers.Data
         [Fact]
         public void NormalizeAddressAndState_ShouldThrowArgumentNullException()
         {
-            string street = null;
+            string? street = null;
             string[] additional = { "Apt. 1" };
             void act() => _textNormalizationProvider.NormalizeAddressAndState(street, additional);
             Assert.Throws<ArgumentNullException>(act);
 
         }
     }
-#pragma warning restore CS8604 // Possible null reference argument.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }

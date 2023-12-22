@@ -1,7 +1,7 @@
-﻿using Corely.Shared.Providers.Security;
+﻿using Corely.Shared.Providers.Security.Keys;
 using System.Security.Cryptography;
 
-namespace Corely.UnitTests.Shared.Providers.Security
+namespace Corely.UnitTests.Shared.Providers.Security.Keys
 {
     public class AesKeyProviderTests
     {

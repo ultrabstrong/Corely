@@ -1,4 +1,4 @@
-﻿namespace Corely.Shared.Providers.Security
+﻿namespace Corely.Shared.Providers.Security.Encryption
 {
     public interface IEncryptionProvider
     {
