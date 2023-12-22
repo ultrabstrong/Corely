@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Corely.Shared.Extensions;
+using Corely.Common.Extensions;
 using FluentValidation;
 
 namespace Corely.Domain.Validators.FluentValidators

@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
-using Corely.Shared.Providers.Security.Encryption;
-using Corely.Shared.Providers.Security.Keys;
+using Corely.Common.Providers.Security.Encryption;
+using Corely.Common.Providers.Security.Keys;
 using Corely.UnitTests.AB.TestBase;
 using Corely.UnitTests.ClassData;
 

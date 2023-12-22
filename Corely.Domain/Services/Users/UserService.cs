@@ -5,7 +5,7 @@ using Corely.Domain.Models.Auth;
 using Corely.Domain.Models.Users;
 using Corely.Domain.Repos;
 using Corely.Domain.Validators;
-using Corely.Shared.Extensions;
+using Corely.Common.Extensions;
 using Serilog;
 
 namespace Corely.Domain.Services.Users

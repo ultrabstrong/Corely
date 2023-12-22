@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Providers.Security.Keys;
+﻿using Corely.Common.Providers.Security.Keys;
 using System.Security.Cryptography;
 
 namespace Corely.UnitTests.Shared.Providers.Security.Keys

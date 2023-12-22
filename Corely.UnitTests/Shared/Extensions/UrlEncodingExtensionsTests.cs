@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Extensions;
+﻿using Corely.Common.Extensions;
 
 namespace Corely.UnitTests.Shared.Extensions
 {

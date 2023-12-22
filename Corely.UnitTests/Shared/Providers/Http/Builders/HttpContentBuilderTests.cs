@@ -1,5 +1,5 @@
-﻿using Corely.Shared.Providers.Http.Builders;
-using Corely.Shared.Providers.Http.Models;
+﻿using Corely.Common.Providers.Http.Builders;
+using Corely.Common.Providers.Http.Models;
 
 namespace Corely.UnitTests.Shared.Providers.Http.Builders
 {

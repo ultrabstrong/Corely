@@ -1,7 +1,7 @@
-﻿using Corely.Shared.Providers.Files;
+﻿using Corely.Common.Providers.Files;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.Shared.UnitTests.Providers.Files
+namespace Corely.Common.UnitTests.Providers.Files
 {
     public class TestableFilePathProvider : FilePathProvider
     {

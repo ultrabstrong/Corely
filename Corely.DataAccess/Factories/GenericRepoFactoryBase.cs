@@ -1,6 +1,6 @@
 ﻿using Corely.DataAccess.Factories.AccountManagement;
 using Corely.Domain.Connections;
-using Corely.Shared.Extensions;
+using Corely.Common.Extensions;
 using Serilog;
 
 namespace Corely.DataAccess.Factories

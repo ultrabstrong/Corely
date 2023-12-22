@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Providers.Http.Models;
+﻿using Corely.Common.Providers.Http.Models;
 using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Shared.Providers.Http.Models

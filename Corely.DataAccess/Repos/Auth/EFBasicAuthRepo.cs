@@ -1,7 +1,7 @@
 ﻿using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
-using Corely.Shared.Extensions;
+using Corely.Common.Extensions;
 using Serilog;
 
 namespace Corely.DataAccess.Repos.Auth

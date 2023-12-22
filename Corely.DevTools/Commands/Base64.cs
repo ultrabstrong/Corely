@@ -1,5 +1,5 @@
 ﻿using Corely.DevTools.Attributes;
-using Corely.Shared.Extensions;
+using Corely.Common.Extensions;
 
 namespace Corely.DevTools.Commands
 {

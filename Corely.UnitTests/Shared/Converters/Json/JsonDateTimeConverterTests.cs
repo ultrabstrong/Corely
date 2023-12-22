@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Converters.Json;
+﻿using Corely.Common.Converters.Json;
 using Corely.UnitTests.ClassData;
 using System.Text;
 using System.Text.Json;

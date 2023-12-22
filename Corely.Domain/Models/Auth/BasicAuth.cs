@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Models.Security;
+﻿using Corely.Common.Models.Security;
 
 namespace Corely.Domain.Models.Auth
 {

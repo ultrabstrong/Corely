@@ -1,5 +1,5 @@
-﻿using Corely.Shared.Providers.Http;
-using Corely.Shared.Providers.Http.Builders;
+﻿using Corely.Common.Providers.Http;
+using Corely.Common.Providers.Http.Builders;
 using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
 using Serilog;

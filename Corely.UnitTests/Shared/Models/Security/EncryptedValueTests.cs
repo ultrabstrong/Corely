@@ -1,6 +1,6 @@
-﻿using Corely.Shared.Models.Security;
-using Corely.Shared.Providers.Security.Encryption;
-using Corely.Shared.Providers.Security.Keys;
+﻿using Corely.Common.Models.Security;
+using Corely.Common.Providers.Security.Encryption;
+using Corely.Common.Providers.Security.Keys;
 
 namespace Corely.UnitTests.Shared.Models.Security
 {

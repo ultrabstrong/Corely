@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using Corely.Shared.Providers.Security.Keys;
+using Corely.Common.Providers.Security.Keys;
 
 namespace Corely.UnitTests.Shared.Providers.Security.Keys
 {

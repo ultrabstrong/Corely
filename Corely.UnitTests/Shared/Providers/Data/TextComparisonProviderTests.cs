@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Providers.Data;
+﻿using Corely.Common.Providers.Data;
 
 namespace Corely.UnitTests.Shared.Providers.Data
 {

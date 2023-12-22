@@ -1,5 +1,5 @@
-﻿using Corely.Shared.Providers.Data;
-using Corely.Shared.Providers.Data.Models;
+﻿using Corely.Common.Providers.Data;
+using Corely.Common.Providers.Data.Models;
 using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
 using Corely.UnitTests.Shared.Providers.Http;
