@@ -1,15 +1,15 @@
 ﻿using Corely.Shared.Extensions;
 using Corely.Shared.Providers.Security.Encryption;
 using Corely.Shared.Providers.Security.Exceptions;
-using Corely.Shared.Providers.Security.Secrets;
+using Corely.Shared.Providers.Security.Keys;
 
 namespace Corely.Shared.Providers.Security.Factories
 {
     public class EncryptionProviderFactory : IEncryptionProviderFactory
     {
-        protected readonly ISecretProvider _secretProvider;
+        protected readonly IKeyStoreProvider _secretProvider;
 
-        public EncryptionProviderFactory(ISecretProvider secretProvider)
+        public EncryptionProviderFactory(IKeyStoreProvider secretProvider)
         {
             _secretProvider = secretProvider.ThrowIfNull(nameof(secretProvider));
         }

@@ -1,4 +1,4 @@
-﻿using Corely.Shared.Providers.Security.Secrets;
+﻿using Corely.Shared.Providers.Security.Keys;
 using System.Security.Cryptography;
 
 namespace Corely.Shared.Providers.Security.Encryption
@@ -7,7 +7,7 @@ namespace Corely.Shared.Providers.Security.Encryption
     {
         protected override string TwoDigitEncryptionTypeCode => EncryptionProviderConstants.Aes;
 
-        public AesEncryptionProvider(ISecretProvider secretProvider)
+        public AesEncryptionProvider(IKeyStoreProvider secretProvider)
             : base(secretProvider) { }
 
         protected override string EncryptInternal(string value, string key)

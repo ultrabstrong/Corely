@@ -1,17 +1,17 @@
 ﻿using Corely.Shared.Extensions;
 using Corely.Shared.Providers.Security.Exceptions;
-using Corely.Shared.Providers.Security.Secrets;
+using Corely.Shared.Providers.Security.Keys;
 using System.Text.RegularExpressions;
 
 namespace Corely.Shared.Providers.Security.Encryption
 {
     public abstract class EncryptionProviderBase : IEncryptionProvider
     {
-        protected readonly ISecretProvider _secretProvider;
+        protected readonly IKeyStoreProvider _secretProvider;
 
         protected abstract string TwoDigitEncryptionTypeCode { get; }
 
-        public EncryptionProviderBase(ISecretProvider secretProvider)
+        public EncryptionProviderBase(IKeyStoreProvider secretProvider)
         {
             _secretProvider = secretProvider.ThrowIfNull(nameof(secretProvider));
             TwoDigitEncryptionTypeCode.ThrowIfNullOrWhiteSpace(nameof(TwoDigitEncryptionTypeCode));
@@ -24,6 +24,14 @@ namespace Corely.Shared.Providers.Security.Encryption
                     Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
                 };
             }
+        }
+
+        public string Encrypt(string value)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
+            (var key, var version) = _secretProvider.GetCurrentVersion();
+            var encryptedValue = EncryptInternal(value, key);
+            return FormatEncryptedValue(encryptedValue, version);
         }
 
         public string Decrypt(string value)
@@ -59,14 +67,6 @@ namespace Corely.Shared.Providers.Security.Encryption
             return (parts[1], keyVersion);
         }
 
-        public string Encrypt(string value)
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
-            (var key, var version) = _secretProvider.GetCurrentVersion();
-            var encryptedValue = EncryptInternal(value, key);
-            return FormatEncryptedValue(encryptedValue, version);
-        }
-
         public string ReEncryptWithCurrentKey(string value, bool skipIfAlreadyCurrent = true)
         {
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
@@ -88,6 +88,7 @@ namespace Corely.Shared.Providers.Security.Encryption
         }
 
         protected abstract string DecryptInternal(string value, string key);
+
         protected abstract string EncryptInternal(string value, string key);
     }
 }

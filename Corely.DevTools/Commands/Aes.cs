@@ -1,7 +1,6 @@
 ﻿using Corely.DevTools.Attributes;
 using Corely.Shared.Providers.Security.Encryption;
 using Corely.Shared.Providers.Security.Keys;
-using Corely.Shared.Providers.Security.Secrets;
 
 namespace Corely.DevTools.Commands
 {
@@ -57,14 +56,14 @@ namespace Corely.DevTools.Commands
 
         private void Encrypt()
         {
-            var encrypted = new AesEncryptionProvider(new InMemorySecretProvider(Key))
+            var encrypted = new AesEncryptionProvider(new InMemoryKeyStoreProvider(Key))
                 .Encrypt(ToEncrypt);
             Console.WriteLine(encrypted);
         }
 
         private void Decrypt()
         {
-            var decrypted = new AesEncryptionProvider(new InMemorySecretProvider(Key))
+            var decrypted = new AesEncryptionProvider(new InMemoryKeyStoreProvider(Key))
                 .Decrypt(ToDecrypt);
             Console.WriteLine(decrypted);
         }

@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
-using Corely.Shared.Providers.Security.Secrets;
+using Corely.Shared.Providers.Security.Keys;
 
-namespace Corely.UnitTests.Shared.Providers.Security.Secrets
+namespace Corely.UnitTests.Shared.Providers.Security.Keys
 {
-    public class InMemorySecretProviderTests
+    public class InMemoryKeyStoreProviderTests
     {
         private readonly Fixture _fixture = new();
 
@@ -11,7 +11,7 @@ namespace Corely.UnitTests.Shared.Providers.Security.Secrets
         public void GetCurrentVersion_ShouldReturnOne()
         {
             var secret = _fixture.Create<string>();
-            var secretProvider = new InMemorySecretProvider(secret);
+            var secretProvider = new InMemoryKeyStoreProvider(secret);
 
             var (currentSecret, currentVersion) = secretProvider.GetCurrentVersion();
 
@@ -23,7 +23,7 @@ namespace Corely.UnitTests.Shared.Providers.Security.Secrets
         public void Add_ShouldIncrementVersion()
         {
             var secret = _fixture.Create<string>();
-            var secretProvider = new InMemorySecretProvider(secret);
+            var secretProvider = new InMemoryKeyStoreProvider(secret);
 
             secretProvider.Add(secret);
 
@@ -37,7 +37,7 @@ namespace Corely.UnitTests.Shared.Providers.Security.Secrets
         public void Get_ShouldReturnSecret()
         {
             var secret = _fixture.Create<string>();
-            var secretProvider = new InMemorySecretProvider(_fixture.Create<string>());
+            var secretProvider = new InMemoryKeyStoreProvider(_fixture.Create<string>());
 
             secretProvider.Add(secret);
             secretProvider.Add(_fixture.Create<string>());

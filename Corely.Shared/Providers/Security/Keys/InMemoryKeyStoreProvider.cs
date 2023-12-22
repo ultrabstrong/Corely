@@ -1,13 +1,13 @@
 ﻿using Corely.Shared.Providers.Security.Exceptions;
 
-namespace Corely.Shared.Providers.Security.Secrets
+namespace Corely.Shared.Providers.Security.Keys
 {
-    public class InMemorySecretProvider : ISecretProvider
+    public class InMemoryKeyStoreProvider : IKeyStoreProvider
     {
         private readonly Dictionary<int, string> _secrets = new();
         private int _version = 0;
 
-        public InMemorySecretProvider(string secret)
+        public InMemoryKeyStoreProvider(string secret)
         {
             Add(secret);
         }

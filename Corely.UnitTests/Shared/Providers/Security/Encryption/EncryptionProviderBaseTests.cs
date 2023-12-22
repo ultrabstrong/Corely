@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using Corely.Shared.Providers.Security.Encryption;
 using Corely.Shared.Providers.Security.Exceptions;
-using Corely.Shared.Providers.Security.Secrets;
+using Corely.Shared.Providers.Security.Keys;
 using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Shared.Providers.Security.Encryption
@@ -12,7 +12,7 @@ namespace Corely.UnitTests.Shared.Providers.Security.Encryption
         {
             protected override string TwoDigitEncryptionTypeCode => TEST_ENCRYPTION_TYPE_CODE;
             public string EncryptionTypeCode => TwoDigitEncryptionTypeCode;
-            public MockEncryptionProvider(ISecretProvider secretProvider)
+            public MockEncryptionProvider(IKeyStoreProvider secretProvider)
                 : base(secretProvider) { }
 
             protected override string DecryptInternal(string value, string key) => value;
@@ -23,7 +23,7 @@ namespace Corely.UnitTests.Shared.Providers.Security.Encryption
         {
             protected override string TwoDigitEncryptionTypeCode => "asdf";
 
-            public InvalidMockEncryptionProvider(ISecretProvider secretProvider)
+            public InvalidMockEncryptionProvider(IKeyStoreProvider secretProvider)
                 : base(secretProvider) { }
 
             protected override string DecryptInternal(string value, string key) => value;
@@ -32,13 +32,13 @@ namespace Corely.UnitTests.Shared.Providers.Security.Encryption
 
         private const string TEST_ENCRYPTION_TYPE_CODE = "00";
 
-        private readonly MockEncryptionProvider _mockEncryptionProvider = new(new Mock<ISecretProvider>().Object);
+        private readonly MockEncryptionProvider _mockEncryptionProvider = new(new Mock<IKeyStoreProvider>().Object);
         private readonly Fixture _fixture = new();
 
         [Fact]
         public void InvalidEncryptionTypeCode_ShouldThrowOnBuild()
         {
-            void act() => new InvalidMockEncryptionProvider(new Mock<ISecretProvider>().Object);
+            void act() => new InvalidMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
             Assert.Throws<EncryptionProviderException>(act);
         }
 
@@ -116,7 +116,7 @@ namespace Corely.UnitTests.Shared.Providers.Security.Encryption
         [Fact]
         public void ReEncryptWithCurrentKey_ShouldReturnCurrentValue_IfVersionHasntChanged()
         {
-            var secretProvider = new InMemorySecretProvider(_fixture.Create<string>());
+            var secretProvider = new InMemoryKeyStoreProvider(_fixture.Create<string>());
             var encryptionProvider = new MockEncryptionProvider(secretProvider);
 
             var originalValue = _fixture.Create<string>();
@@ -133,7 +133,7 @@ namespace Corely.UnitTests.Shared.Providers.Security.Encryption
         [Fact]
         public void ReEncryptWithCurrentKey_ShouldReturnNewValue_IfVersionHasChanged()
         {
-            var secretProvider = new InMemorySecretProvider(_fixture.Create<string>());
+            var secretProvider = new InMemoryKeyStoreProvider(_fixture.Create<string>());
             var encryptionProvider = new MockEncryptionProvider(secretProvider);
 
             var originalValue = _fixture.Create<string>();

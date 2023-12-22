@@ -1,6 +1,6 @@
-﻿namespace Corely.Shared.Providers.Security.Secrets
+﻿namespace Corely.Shared.Providers.Security.Keys
 {
-    public interface ISecretProvider
+    public interface IKeyStoreProvider
     {
         (string, int) GetCurrentVersion();
         string Get(int version);

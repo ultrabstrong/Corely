@@ -1,7 +1,6 @@
 ﻿using Corely.Shared.Models.Security;
 using Corely.Shared.Providers.Security.Encryption;
 using Corely.Shared.Providers.Security.Keys;
-using Corely.Shared.Providers.Security.Secrets;
 
 namespace Corely.UnitTests.Shared.Models.Security
 {
@@ -12,7 +11,7 @@ namespace Corely.UnitTests.Shared.Models.Security
         public EncryptedValueTests()
         {
             var keyProvider = new AesKeyProvider();
-            var secretProvider = new InMemorySecretProvider(keyProvider.CreateKey());
+            var secretProvider = new InMemoryKeyStoreProvider(keyProvider.CreateKey());
             var encryptionProvider = new AesEncryptionProvider(secretProvider);
 
             _encryptedValue = new EncryptedValue(encryptionProvider);

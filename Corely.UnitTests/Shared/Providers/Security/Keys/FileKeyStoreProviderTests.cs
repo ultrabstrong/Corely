@@ -1,19 +1,19 @@
 ﻿using AutoFixture;
-using Corely.Shared.Providers.Security.Secrets;
+using Corely.Shared.Providers.Security.Keys;
 using Moq.Protected;
 
-namespace Corely.UnitTests.Shared.Providers.Security.Secrets
+namespace Corely.UnitTests.Shared.Providers.Security.Keys
 {
-    public class FileSecretProviderTests
+    public class FileKeyStoreProviderTests
     {
         private readonly Fixture _fixture = new();
-        private readonly FileSecretProvider _fileSecretProvider;
+        private readonly FileKeyStoreProvider _fileSecretProvider;
         private readonly string _fileSecret;
 
-        public FileSecretProviderTests()
+        public FileKeyStoreProviderTests()
         {
             _fileSecret = _fixture.Create<string>();
-            var fileSecretProvider = new Mock<FileSecretProvider>(_fixture.Create<string>());
+            var fileSecretProvider = new Mock<FileKeyStoreProvider>(_fixture.Create<string>());
             fileSecretProvider.Protected()
                 .Setup<string>("GetFileContents")
                 .Returns(() => _fileSecret);

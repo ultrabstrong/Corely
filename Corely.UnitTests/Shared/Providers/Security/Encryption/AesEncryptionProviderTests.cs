@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using Corely.Shared.Providers.Security.Encryption;
 using Corely.Shared.Providers.Security.Keys;
-using Corely.Shared.Providers.Security.Secrets;
 using Corely.UnitTests.AB.TestBase;
 using Corely.UnitTests.ClassData;
 
@@ -11,7 +10,7 @@ namespace Corely.UnitTests.Shared.Providers.Security.Encryption
     {
         private readonly Fixture _fixture = new();
         private readonly AesKeyProvider _keyProvider = new();
-        private readonly InMemorySecretProvider _secretProvider;
+        private readonly InMemoryKeyStoreProvider _secretProvider;
         private readonly AesEncryptionProvider _aesEncryptionProvider;
 
         public AesEncryptionProviderTests()

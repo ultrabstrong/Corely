@@ -1,10 +1,10 @@
-﻿namespace Corely.Shared.Providers.Security.Secrets
+﻿namespace Corely.Shared.Providers.Security.Keys
 {
-    public class FileSecretProvider : ISecretProvider
+    public class FileKeyStoreProvider : IKeyStoreProvider
     {
         private readonly string _filePath;
         private readonly int _version = 1;
-        public FileSecretProvider(string filePath)
+        public FileKeyStoreProvider(string filePath)
         {
             _filePath = filePath;
         }

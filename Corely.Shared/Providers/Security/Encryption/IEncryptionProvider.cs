@@ -4,5 +4,6 @@
     {
         string Encrypt(string value);
         string Decrypt(string value);
+        string ReEncryptWithCurrentKey(string value, bool skipIfAlreadyCurrent = true);
     }
 }
