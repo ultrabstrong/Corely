@@ -12,6 +12,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
 
         [Theory]
         [InlineData(HashProviderConstants.SALTED_SHA256, typeof(Sha256SaltedHashProvider))]
+        [InlineData(HashProviderConstants.SALTED_SHA512, typeof(Sha512SaltedHashProvider))]
         public void Create(string providerCode, Type expectedType)
         {
             var hashProvider = _hashProviderFactory.Create(providerCode);
@@ -34,6 +35,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
 
         [Theory]
         [InlineData(HashProviderConstants.SALTED_SHA256, typeof(Sha256SaltedHashProvider))]
+        [InlineData(HashProviderConstants.SALTED_SHA512, typeof(Sha512SaltedHashProvider))]
         public void CreateToVerify_ShouldReturnHashProvider(string providerCode, Type expectedType)
         {
             var fixture = new Fixture();

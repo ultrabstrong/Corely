@@ -12,6 +12,7 @@ namespace Corely.Common.Providers.Security.Factories
             return providerCode switch
             {
                 HashProviderConstants.SALTED_SHA256 => new Sha256SaltedHashProvider(),
+                HashProviderConstants.SALTED_SHA512 => new Sha512SaltedHashProvider(),
                 _ => throw new HashProviderException($"Unknown hash provider code {providerCode}")
                 {
                     Reason = HashProviderException.ErrorReason.InvalidTypeCode
