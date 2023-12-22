@@ -7,39 +7,41 @@ namespace Corely.Common.Providers.Security.Factories
 {
     public class EncryptionProviderFactory : IEncryptionProviderFactory
     {
-        protected readonly IKeyStoreProvider _secretProvider;
+        protected readonly IKeyStoreProvider _keyStoreProvider;
 
-        public EncryptionProviderFactory(IKeyStoreProvider secretProvider)
+        public EncryptionProviderFactory(IKeyStoreProvider keyStoreProvider)
         {
-            _secretProvider = secretProvider.ThrowIfNull(nameof(secretProvider));
+            _keyStoreProvider = keyStoreProvider.ThrowIfNull(nameof(keyStoreProvider));
         }
 
-        public IEncryptionProvider Create() => new AesEncryptionProvider(_secretProvider);
+        public IEncryptionProvider Create(string providerCode)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
+
+            return providerCode switch
+            {
+                EncryptionProviderConstants.AES => new AesEncryptionProvider(_keyStoreProvider),
+                _ => throw new EncryptionProviderException($"Unknown encryption provider code {providerCode}")
+                {
+                    Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
+                }
+            };
+        }
 
         public IEncryptionProvider CreateForDecrypting(string value)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
 
-            if (value.Length < 2)
+            string[] parts = value.Split(':');
+            if (parts.Length < 1)
             {
-                throw GetProviderCodeException(value);
+                throw new EncryptionProviderException("Value must be in format encryptionTypeCode:integer:encryptedValue")
+                {
+                    Reason = EncryptionProviderException.ErrorReason.InvalidFormat
+                };
             }
 
-            string providerCode = value[..2];
-
-            return providerCode switch
-            {
-                EncryptionProviderConstants.Aes => new AesEncryptionProvider(_secretProvider),
-                _ => throw GetProviderCodeException(providerCode)
-            };
-        }
-
-        private EncryptionProviderException GetProviderCodeException(string providerCode)
-        {
-            return new EncryptionProviderException($"Unknown encryption provider code {providerCode}")
-            {
-                Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
-            };
+            return Create(parts[0]);
         }
     }
 }

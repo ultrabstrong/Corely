@@ -5,7 +5,7 @@ using Corely.Domain.Connections;
 using Corely.UnitTests.ClassData;
 using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
-using Corely.UnitTests.Shared.Providers.Http;
+using Corely.UnitTests.Common.Providers.Http;
 using Serilog;
 
 namespace Corely.UnitTests.DataAccess

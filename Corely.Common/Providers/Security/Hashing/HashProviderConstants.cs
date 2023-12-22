@@ -2,6 +2,6 @@
 {
     public static class HashProviderConstants
     {
-        public const string SHA256 = "SHA256";
+        public const string SALTED_SHA256 = "00";
     }
 }

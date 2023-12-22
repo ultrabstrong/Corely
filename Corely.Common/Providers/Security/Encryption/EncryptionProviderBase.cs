@@ -1,35 +1,25 @@
 ﻿using Corely.Common.Extensions;
 using Corely.Common.Providers.Security.Exceptions;
 using Corely.Common.Providers.Security.Keys;
-using System.Text.RegularExpressions;
 
 namespace Corely.Common.Providers.Security.Encryption
 {
     public abstract class EncryptionProviderBase : IEncryptionProvider
     {
-        protected readonly IKeyStoreProvider _secretProvider;
+        protected readonly IKeyStoreProvider _keyStoreProvider;
 
-        protected abstract string TwoDigitEncryptionTypeCode { get; }
+        public abstract string EncryptionTypeCode { get; }
 
-        public EncryptionProviderBase(IKeyStoreProvider secretProvider)
+        public EncryptionProviderBase(IKeyStoreProvider keyStoreProvider)
         {
-            _secretProvider = secretProvider.ThrowIfNull(nameof(secretProvider));
-            TwoDigitEncryptionTypeCode.ThrowIfNullOrWhiteSpace(nameof(TwoDigitEncryptionTypeCode));
-
-            Regex reg = new(EncryptionProviderConstants.ENCRYPTION_TYPE_CODE_REGEX);
-            if (!reg.IsMatch(TwoDigitEncryptionTypeCode))
-            {
-                throw new EncryptionProviderException($"{nameof(TwoDigitEncryptionTypeCode)} must be two digit characters [0-9][0-9]")
-                {
-                    Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
-                };
-            }
+            _keyStoreProvider = keyStoreProvider.ThrowIfNull(nameof(keyStoreProvider));
+            EncryptionTypeCode.ThrowIfNullOrWhiteSpace(nameof(EncryptionTypeCode));
         }
 
         public string Encrypt(string value)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
-            (var key, var version) = _secretProvider.GetCurrentVersion();
+            (var key, var version) = _keyStoreProvider.GetCurrentVersion();
             var encryptedValue = EncryptInternal(value, key);
             return FormatEncryptedValue(encryptedValue, version);
         }
@@ -38,14 +28,14 @@ namespace Corely.Common.Providers.Security.Encryption
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
-            return DecryptInternal(encryptedValue, _secretProvider.Get(version));
+            return DecryptInternal(encryptedValue, _keyStoreProvider.Get(version));
         }
 
         private (string, int) ValidateForKeyVersion(string value)
         {
-            if (!value.StartsWith(TwoDigitEncryptionTypeCode))
+            if (!value.StartsWith(EncryptionTypeCode))
             {
-                throw new EncryptionProviderException($"Value must start with {TwoDigitEncryptionTypeCode}")
+                throw new EncryptionProviderException($"Value must start with {EncryptionTypeCode}")
                 {
                     Reason = EncryptionProviderException.ErrorReason.InvalidFormat
                 };
@@ -53,38 +43,32 @@ namespace Corely.Common.Providers.Security.Encryption
 
             string[] parts = value.Split(':');
 
-            if (parts.Length != 2
-                || parts[0].Length < 3
-                || string.IsNullOrWhiteSpace(parts[1])
-                || !int.TryParse(parts[0][TwoDigitEncryptionTypeCode.Length..], out var keyVersion))
+            if (parts.Length != 3
+                || string.IsNullOrWhiteSpace(parts[2])
+                || !int.TryParse(parts[1], out var keyVersion))
             {
-                throw new EncryptionProviderException($"Value must be in format [0-9][0-9]integer:encryptedValue")
+                throw new EncryptionProviderException("Value must be in format encryptionTypeCode:integer:encryptedValue")
                 {
                     Reason = EncryptionProviderException.ErrorReason.InvalidFormat
                 };
             }
 
-            return (parts[1], keyVersion);
+            return (parts[2], keyVersion);
         }
 
-        public string ReEncryptWithCurrentKey(string value, bool skipIfAlreadyCurrent = true)
+        public string ReEncrypt(string value)
         {
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
-            (var key, var currentVersion) = _secretProvider.GetCurrentVersion();
+            (var key, var currentVersion) = _keyStoreProvider.GetCurrentVersion();
 
-            if (skipIfAlreadyCurrent && version == currentVersion)
-            {
-                return value;
-            }
-
-            var decrypted = DecryptInternal(encryptedValue, _secretProvider.Get(version));
+            var decrypted = DecryptInternal(encryptedValue, _keyStoreProvider.Get(version));
             var updatedEncryptedValue = EncryptInternal(decrypted, key);
             return FormatEncryptedValue(updatedEncryptedValue, currentVersion);
         }
 
         private string FormatEncryptedValue(string encryptedValue, int keyVersion)
         {
-            return $"{TwoDigitEncryptionTypeCode}{keyVersion}:{encryptedValue}";
+            return $"{EncryptionTypeCode}:{keyVersion}:{encryptedValue}";
         }
 
         protected abstract string DecryptInternal(string value, string key);

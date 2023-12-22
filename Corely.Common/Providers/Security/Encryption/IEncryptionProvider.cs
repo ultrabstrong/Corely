@@ -2,8 +2,9 @@
 {
     public interface IEncryptionProvider
     {
+        string EncryptionTypeCode { get; }
         string Encrypt(string value);
         string Decrypt(string value);
-        string ReEncryptWithCurrentKey(string value, bool skipIfAlreadyCurrent = true);
+        string ReEncrypt(string value);
     }
 }

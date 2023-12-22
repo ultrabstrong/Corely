@@ -1,12 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Corely.Common.Providers.Security.Encryption
+﻿namespace Corely.Common.Providers.Security.Encryption
 {
     public static class EncryptionProviderConstants
     {
-        [StringSyntax(StringSyntaxAttribute.Regex)]
-        public const string ENCRYPTION_TYPE_CODE_REGEX = @"^\d{2}";
-
-        public const string Aes = "00";
+        public const string AES = "00";
     }
 }

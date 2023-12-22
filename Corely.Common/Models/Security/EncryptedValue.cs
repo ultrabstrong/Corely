@@ -36,9 +36,9 @@ namespace Corely.Common.Models.Security
             return _encryptionProvider.Decrypt(Secret);
         }
 
-        public void ReEncryptWithCurrentKey(bool skipIfAlreadyCurrent)
+        public void ReEncrypt()
         {
-            Secret = _encryptionProvider.ReEncryptWithCurrentKey(Secret, skipIfAlreadyCurrent);
+            Secret = _encryptionProvider.ReEncrypt(Secret);
         }
     }
 }

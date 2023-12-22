@@ -5,6 +5,6 @@
         string Secret { get; }
         void Set(string decryptedValue);
         string Get();
-        void ReEncryptWithCurrentKey(bool skipIfAlreadyCurrent);
+        void ReEncrypt();
     }
 }

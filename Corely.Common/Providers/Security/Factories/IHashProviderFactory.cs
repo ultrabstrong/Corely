@@ -4,7 +4,7 @@ namespace Corely.Common.Providers.Security.Factories
 {
     public interface IHashProviderFactory
     {
-        IHashProvider Create();
+        IHashProvider Create(string providerCode);
 
         IHashProvider CreateToVerify(string hash);
     }

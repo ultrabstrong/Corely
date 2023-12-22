@@ -4,32 +4,32 @@ namespace Corely.Common.Providers.Security.Keys
 {
     public class InMemoryKeyStoreProvider : IKeyStoreProvider
     {
-        private readonly Dictionary<int, string> _secrets = new();
+        private readonly Dictionary<int, string> _keys = new();
         private int _version = 0;
 
-        public InMemoryKeyStoreProvider(string secret)
+        public InMemoryKeyStoreProvider(string key)
         {
-            Add(secret);
+            Add(key);
         }
 
-        public void Add(string secret)
+        public void Add(string key)
         {
-            _secrets.Add(++_version, secret);
+            _keys.Add(++_version, key);
         }
 
-        public (string, int) GetCurrentVersion() => (_secrets[_version], _version);
+        public (string, int) GetCurrentVersion() => (_keys[_version], _version);
 
         public string Get(int version)
         {
-            if (!_secrets.TryGetValue(version, out var secret))
+            if (!_keys.TryGetValue(version, out var key))
             {
-                throw new SecretProviderException($"Key version {version} is invalid")
+                throw new KeyStoreProviderException($"Key version {version} is invalid")
                 {
-                    Reason = SecretProviderException.ErrorReason.InvalidVersion
+                    Reason = KeyStoreProviderException.ErrorReason.InvalidVersion
                 };
             }
 
-            return secret;
+            return key;
         }
     }
 }
