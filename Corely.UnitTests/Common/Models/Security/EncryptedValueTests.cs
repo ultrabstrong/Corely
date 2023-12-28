@@ -1,4 +1,5 @@
-﻿using Corely.Common.Models.Security;
+﻿using AutoFixture;
+using Corely.Common.Models.Security;
 using Corely.Common.Providers.Security.Encryption;
 using Corely.Common.Providers.Security.Keys;
 
@@ -7,6 +8,7 @@ namespace Corely.UnitTests.Common.Models.Security
     public class EncryptedValueTests
     {
         private readonly EncryptedValue _encryptedValue;
+        private readonly Fixture _fixture = new();
 
         public EncryptedValueTests()
         {
@@ -18,12 +20,51 @@ namespace Corely.UnitTests.Common.Models.Security
         }
 
         [Fact]
-        public void SetAndGet_ShouldReturnOriginalValue()
+        public void Constructor_ShouldCreateEncryptedValue()
         {
-            var originalValue = "This is a test";
-            _encryptedValue.Set(originalValue);
+            Assert.NotNull(_encryptedValue);
+        }
+
+        [Fact]
+        public void Constructor_ShouldCreateEncryptedValueWithSecret()
+        {
+            var keyProvider = new AesKeyProvider();
+            var keyStoreProvider = new InMemoryKeyStoreProvider(keyProvider.CreateKey());
+            var encryptionProvider = new AesEncryptionProvider(keyStoreProvider);
+            var value = _fixture.Create<string>();
+
+            var encryptedValue = new EncryptedValue(encryptionProvider, value);
+
+            Assert.Equal(value, encryptedValue.Secret);
+        }
+
+        [Fact]
+        public void Set_ShouldSetEncryptedSecret()
+        {
+            var value = _fixture.Create<string>();
+            _encryptedValue.Set(value);
+            Assert.NotNull(_encryptedValue.Secret);
+            Assert.NotEmpty(_encryptedValue.Secret);
+            Assert.NotEqual(value, _encryptedValue.Secret);
+        }
+
+        [Fact]
+        public void Get_ShouldGetDecryptedSecret()
+        {
+            var value = _fixture.Create<string>();
+            _encryptedValue.Set(value);
             var decryptedValue = _encryptedValue.Get();
-            Assert.Equal(originalValue, decryptedValue);
+            Assert.Equal(value, decryptedValue);
+        }
+
+        [Fact]
+        public void ReEncrypt_ShouldReEncryptSecret()
+        {
+            var value = _fixture.Create<string>();
+            _encryptedValue.Set(value);
+            var oldSecret = _encryptedValue.Secret;
+            _encryptedValue.ReEncrypt();
+            Assert.NotEqual(oldSecret, _encryptedValue.Secret);
         }
     }
 }

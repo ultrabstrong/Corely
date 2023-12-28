@@ -10,16 +10,12 @@ namespace Corely.Common.Models.Security
         public string Secret { get; private set; }
 
         public EncryptedValue(IEncryptionProvider encryptionProvider)
-            : this(encryptionProvider, "")
-        {
-
-        }
+            : this(encryptionProvider, "") { }
 
         public EncryptedValue(IEncryptionProvider encryptionProvider, string secret)
         {
             Secret = secret;
-            _encryptionProvider = encryptionProvider
-                .ThrowIfNull(nameof(encryptionProvider));
+            _encryptionProvider = encryptionProvider.ThrowIfNull(nameof(encryptionProvider));
         }
 
         public void Set(string decryptedValue)
