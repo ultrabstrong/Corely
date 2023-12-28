@@ -14,6 +14,13 @@ namespace Corely.Common.Providers.Security.Hashing
         public SaltedHashProviderBase()
         {
             HashTypeCode.ThrowIfNullOrWhiteSpace(nameof(HashTypeCode));
+            if (HashTypeCode.Contains(':'))
+            {
+                throw new HashProviderException($"Hash type code cannot contain ':'")
+                {
+                    Reason = HashProviderException.ErrorReason.InvalidTypeCode
+                };
+            }
         }
 
         public string Hash(string value)

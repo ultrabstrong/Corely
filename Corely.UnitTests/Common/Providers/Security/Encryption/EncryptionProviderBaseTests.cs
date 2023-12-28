@@ -1,9 +1,10 @@
 ﻿using Corely.Common.Providers.Security.Encryption;
+using Corely.Common.Providers.Security.Exceptions;
 using Corely.Common.Providers.Security.Keys;
 
 namespace Corely.UnitTests.Common.Providers.Security.Encryption
 {
-    public class EncryptionProviderBaseTests : EncryptionProviderTests
+    public class EncryptionProviderBaseTests : EncryptionProviderGenericTests
     {
         private class MockEncryptionProvider : EncryptionProviderBase
         {
@@ -50,6 +51,17 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
             protected override string DecryptInternal(string value, string key) => value;
         }
 
+        private class ColonMockEncryptionProvider : EncryptionProviderBase
+        {
+            public override string EncryptionTypeCode => "as:df";
+
+            public ColonMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
+                : base(keyStoreProvider) { }
+
+            protected override string EncryptInternal(string value, string key) => value;
+            protected override string DecryptInternal(string value, string key) => value;
+        }
+
         private const string TEST_ENCRYPTION_TYPE_CODE = "00";
 
         private readonly MockEncryptionProvider _mockEncryptionProvider = new(new Mock<IKeyStoreProvider>().Object);
@@ -73,6 +85,13 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
         {
             void act() => new WhitespaceMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
             Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ColonEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
+        {
+            void act() => new ColonMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
+            Assert.Throws<EncryptionProviderException>(act);
         }
 
         public override void EncryptionTypeCode_ShouldReturnCorrectCode_ForImplementation()

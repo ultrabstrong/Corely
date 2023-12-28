@@ -7,28 +7,75 @@ namespace Corely.Common.Providers.Security.Factories
 {
     public class EncryptionProviderFactory : IEncryptionProviderFactory
     {
-        protected readonly IKeyStoreProvider _keyStoreProvider;
+        private protected readonly IKeyStoreProvider _keyStoreProvider;
+        private protected readonly Dictionary<string, IEncryptionProvider> _providers = new();
 
         public EncryptionProviderFactory(IKeyStoreProvider keyStoreProvider)
         {
             _keyStoreProvider = keyStoreProvider.ThrowIfNull(nameof(keyStoreProvider));
+            _providers.Add(EncryptionProviderConstants.AES, new AesEncryptionProvider(_keyStoreProvider));
         }
 
-        public IEncryptionProvider Create(string providerCode)
+        public void AddProvider(string providerCode, IEncryptionProvider provider)
+        {
+            provider.ThrowIfNull(nameof(provider));
+            Validate(providerCode);
+
+            if (_providers.ContainsKey(providerCode))
+            {
+                throw new EncryptionProviderException($"Encryption provider code already exists: {providerCode}")
+                {
+                    Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
+                };
+            }
+
+            _providers.Add(providerCode, provider);
+        }
+
+        public void UpdateProvider(string providerCode, IEncryptionProvider provider)
+        {
+            provider.ThrowIfNull(nameof(provider));
+            Validate(providerCode);
+
+            if (!_providers.ContainsKey(providerCode))
+            {
+                throw new EncryptionProviderException($"Encryption provider code not found: {providerCode}")
+                {
+                    Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
+                };
+            }
+
+            _providers[providerCode] = provider;
+        }
+
+        private void Validate(string providerCode)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
+            if (providerCode.Contains(':'))
+            {
+                throw new EncryptionProviderException($"Encryption type code cannot contain ':'")
+                {
+                    Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
+                };
+            }
+        }
+
+        public IEncryptionProvider GetProvider(string providerCode)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
 
-            return providerCode switch
+            if (_providers.TryGetValue(providerCode, out IEncryptionProvider? value))
             {
-                EncryptionProviderConstants.AES => new AesEncryptionProvider(_keyStoreProvider),
-                _ => throw new EncryptionProviderException($"Unknown encryption provider code {providerCode}")
-                {
-                    Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
-                }
+                return value;
+            }
+
+            throw new EncryptionProviderException($"Encryption provider code unknown: {providerCode}")
+            {
+                Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
             };
         }
 
-        public IEncryptionProvider CreateForDecrypting(string value)
+        public IEncryptionProvider GetProviderForDecrypting(string value)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
 
@@ -41,7 +88,16 @@ namespace Corely.Common.Providers.Security.Factories
                 };
             }
 
-            return Create(parts[0]);
+            return GetProvider(parts[0]);
+        }
+
+        public List<(string ProviderCode, Type ProviderType)> ListProviders()
+        {
+            return _providers
+                .Select(kvp => (
+                    ProviderCode: kvp.Key,
+                    ProviderType: kvp.Value.GetType()))
+                .ToList();
         }
     }
 }

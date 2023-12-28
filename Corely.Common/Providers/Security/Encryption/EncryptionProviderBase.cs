@@ -6,7 +6,7 @@ namespace Corely.Common.Providers.Security.Encryption
 {
     public abstract class EncryptionProviderBase : IEncryptionProvider
     {
-        protected readonly IKeyStoreProvider _keyStoreProvider;
+        private readonly IKeyStoreProvider _keyStoreProvider;
 
         public abstract string EncryptionTypeCode { get; }
 
@@ -14,6 +14,13 @@ namespace Corely.Common.Providers.Security.Encryption
         {
             _keyStoreProvider = keyStoreProvider.ThrowIfNull(nameof(keyStoreProvider));
             EncryptionTypeCode.ThrowIfNullOrWhiteSpace(nameof(EncryptionTypeCode));
+            if (EncryptionTypeCode.Contains(':'))
+            {
+                throw new EncryptionProviderException($"Encryption type code cannot contain ':'")
+                {
+                    Reason = EncryptionProviderException.ErrorReason.InvalidTypeCode
+                };
+            }
         }
 
         public string Encrypt(string value)

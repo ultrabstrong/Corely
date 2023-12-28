@@ -2,10 +2,8 @@
 
 namespace Corely.Common.Providers.Security.Factories
 {
-    public interface IEncryptionProviderFactory
+    public interface IEncryptionProviderFactory : IProviderFactory<IEncryptionProvider>
     {
-        IEncryptionProvider Create(string providerCode);
-
-        IEncryptionProvider CreateForDecrypting(string value);
+        IEncryptionProvider GetProviderForDecrypting(string value);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Corely.UnitTests.Common.Providers.Security.Hashing
 {
-    public class Sha512SaltedHashProviderTests : SaltedHashProviderTests
+    public class Sha512SaltedHashProviderTests : SaltedHashProviderGenericTests
     {
         private readonly Sha512SaltedHashProvider _sha512SaltedHashProvider = new();
 

@@ -58,7 +58,7 @@ namespace Corely.DevTools.Commands
         private void Encrypt()
         {
             var encryptionProviderFactor = new EncryptionProviderFactory(new InMemoryKeyStoreProvider(Key));
-            var encrypted = encryptionProviderFactor.Create(EncryptionProviderConstants.AES)
+            var encrypted = encryptionProviderFactor.GetProvider(EncryptionProviderConstants.AES)
                 .Encrypt(ToEncrypt);
             Console.WriteLine(encrypted);
         }
@@ -66,7 +66,7 @@ namespace Corely.DevTools.Commands
         private void Decrypt()
         {
             var encryptionProviderFactor = new EncryptionProviderFactory(new InMemoryKeyStoreProvider(Key));
-            var decrypted = encryptionProviderFactor.Create(EncryptionProviderConstants.AES)
+            var decrypted = encryptionProviderFactor.GetProvider(EncryptionProviderConstants.AES)
                 .Decrypt(ToDecrypt);
             Console.WriteLine(decrypted);
         }

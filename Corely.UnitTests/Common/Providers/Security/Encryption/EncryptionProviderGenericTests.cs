@@ -6,14 +6,14 @@ using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Common.Providers.Security.Encryption
 {
-    public abstract class EncryptionProviderTests
+    public abstract class EncryptionProviderGenericTests
     {
         private readonly Fixture _fixture = new();
         private readonly AesKeyProvider _keyProvider;
         private readonly InMemoryKeyStoreProvider _keyStoreProvider;
         private readonly IEncryptionProvider _encryptionProvider;
 
-        public EncryptionProviderTests()
+        public EncryptionProviderGenericTests()
         {
             _keyProvider = new AesKeyProvider();
             _keyStoreProvider = new InMemoryKeyStoreProvider(_keyProvider.CreateKey());

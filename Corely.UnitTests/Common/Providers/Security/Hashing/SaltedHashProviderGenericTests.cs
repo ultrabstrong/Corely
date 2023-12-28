@@ -3,7 +3,7 @@ using Corely.Common.Providers.Security.Hashing;
 
 namespace Corely.UnitTests.Common.Providers.Security.Hashing
 {
-    public abstract class SaltedHashProviderTests
+    public abstract class SaltedHashProviderGenericTests
     {
         protected abstract IHashProvider HashProvider { get; }
 

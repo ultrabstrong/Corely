@@ -1,12 +1,10 @@
-﻿using AutoFixture;
-using Corely.Common.Providers.Security.Encryption;
+﻿using Corely.Common.Providers.Security.Encryption;
 using Corely.Common.Providers.Security.Keys;
 
 namespace Corely.UnitTests.Common.Providers.Security.Encryption
 {
-    public class AesEncryptionProviderTests : EncryptionProviderTests
+    public class AesEncryptionProviderTests : EncryptionProviderGenericTests
     {
-        private readonly Fixture _fixture = new();
         private readonly AesKeyProvider _keyProvider = new();
         private readonly InMemoryKeyStoreProvider _keyStoreProvider;
         private readonly AesEncryptionProvider _aesEncryptionProvider;

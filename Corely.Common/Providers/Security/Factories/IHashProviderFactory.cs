@@ -2,10 +2,8 @@
 
 namespace Corely.Common.Providers.Security.Factories
 {
-    public interface IHashProviderFactory
+    public interface IHashProviderFactory : IProviderFactory<IHashProvider>
     {
-        IHashProvider Create(string providerCode);
-
-        IHashProvider CreateToVerify(string hash);
+        IHashProvider GetProviderToVerify(string hash);
     }
 }

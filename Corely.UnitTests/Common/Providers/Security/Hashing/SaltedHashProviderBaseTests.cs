@@ -1,8 +1,9 @@
-﻿using Corely.Common.Providers.Security.Hashing;
+﻿using Corely.Common.Providers.Security.Exceptions;
+using Corely.Common.Providers.Security.Hashing;
 
 namespace Corely.UnitTests.Common.Providers.Security.Hashing
 {
-    public class SaltedHashProviderBaseTests : SaltedHashProviderTests
+    public class SaltedHashProviderBaseTests : SaltedHashProviderGenericTests
     {
         private class MockHashProvider : SaltedHashProviderBase
         {
@@ -27,6 +28,12 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         private class WhitespaceTypeCodeMockHashProvider : SaltedHashProviderBase
         {
             public override string HashTypeCode => " ";
+            protected override byte[] HashInternal(byte[] value) => value;
+        }
+
+        private class ColonTypeCodeMockHashProvider : SaltedHashProviderBase
+        {
+            public override string HashTypeCode => "as:df";
             protected override byte[] HashInternal(byte[] value) => value;
         }
 
@@ -55,6 +62,13 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         {
             void act() => new WhitespaceTypeCodeMockHashProvider();
             Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ColonHashTypeCode_ShouldThrowArgumentException_OnBuild()
+        {
+            void act() => new ColonTypeCodeMockHashProvider();
+            Assert.Throws<HashProviderException>(act);
         }
 
         public override void HashTypeCode_ShouldReturnCorrectCode_ForImplementation()

@@ -9,13 +9,123 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
     public class HashProviderFactoryTests
     {
         private readonly HashProviderFactory _hashProviderFactory = new();
+        private readonly Fixture _fixture = new();
+
+        [Fact]
+        public void AddProvider_ShouldAddProvider()
+        {
+            var providerCode = _fixture.Create<string>();
+            var provider = new Mock<IHashProvider>().Object;
+
+            _hashProviderFactory.AddProvider(providerCode, provider);
+            var hashProvider = _hashProviderFactory.GetProvider(providerCode);
+
+            Assert.NotNull(hashProvider);
+        }
+
+        [Fact]
+        public void AddProvider_ShouldThrowHashProviderException_WithExistingProviderCode()
+        {
+            var providerCode = _fixture.Create<string>();
+            var provider = new Mock<IHashProvider>().Object;
+
+            _hashProviderFactory.AddProvider(providerCode, provider);
+            void act() => _hashProviderFactory.AddProvider(providerCode, provider);
+            var exception = Record.Exception(() => act());
+
+            Assert.NotNull(exception);
+            Assert.IsType<HashProviderException>(exception);
+        }
+
+        [Theory]
+        [ClassData(typeof(NullEmptyAndWhitespace))]
+        [InlineData(":")]
+        public void AddProvider_ShouldThrow_WithInvalidCode(string providerCode)
+        {
+            var provider = new Mock<IHashProvider>().Object;
+
+            void act() => _hashProviderFactory.AddProvider(providerCode, provider);
+            var exception = Record.Exception(() => act());
+
+            Assert.NotNull(exception);
+            Assert.True(exception is ArgumentNullException
+                || exception is ArgumentException
+                || exception is HashProviderException);
+        }
+
+        [Fact]
+        public void AddProvider_ShouldThrowNullException_WithNullProvider()
+        {
+            var providerCode = _fixture.Create<string>();
+
+            void act() => _hashProviderFactory.AddProvider(providerCode, null);
+            var exception = Record.Exception(() => act());
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentNullException>(exception);
+        }
+
+        [Fact]
+        public void UpdateProvider_ShouldUpdateProvider()
+        {
+            var providerCode = _fixture.Create<string>();
+            var originalProvider = new Mock<IHashProvider>().Object;
+            var updatedProvider = new Mock<IHashProvider>().Object;
+
+            _hashProviderFactory.AddProvider(providerCode, originalProvider);
+            _hashProviderFactory.UpdateProvider(providerCode, updatedProvider);
+            var hashProvider = _hashProviderFactory.GetProvider(providerCode);
+
+            Assert.Equal(updatedProvider, hashProvider);
+        }
+
+        [Fact]
+        public void UpdateProvider_ShouldThrowHashProviderException_WithNonExistingProviderCode()
+        {
+            var providerCode = _fixture.Create<string>();
+            var provider = new Mock<IHashProvider>().Object;
+
+            void act() => _hashProviderFactory.UpdateProvider(providerCode, provider);
+            var exception = Record.Exception(() => act());
+
+            Assert.NotNull(exception);
+            Assert.IsType<HashProviderException>(exception);
+        }
+
+        [Theory]
+        [ClassData(typeof(NullEmptyAndWhitespace))]
+        [InlineData(":")]
+        public void UpdateProvider_ShouldThrow_WithInvalidCode(string providerCode)
+        {
+            var provider = new Mock<IHashProvider>().Object;
+
+            void act() => _hashProviderFactory.UpdateProvider(providerCode, provider);
+            var exception = Record.Exception(() => act());
+
+            Assert.NotNull(exception);
+            Assert.True(exception is ArgumentNullException
+                || exception is ArgumentException
+                || exception is HashProviderException);
+        }
+
+        [Fact]
+        public void UpdateProvider_ShouldThrowNullException_WithNullProvider()
+        {
+            var providerCode = _fixture.Create<string>();
+
+            void act() => _hashProviderFactory.UpdateProvider(providerCode, null);
+            var exception = Record.Exception(() => act());
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentNullException>(exception);
+        }
 
         [Theory]
         [InlineData(HashProviderConstants.SALTED_SHA256, typeof(Sha256SaltedHashProvider))]
         [InlineData(HashProviderConstants.SALTED_SHA512, typeof(Sha512SaltedHashProvider))]
-        public void Create(string providerCode, Type expectedType)
+        public void GetProvider_ShouldReturnProvider(string providerCode, Type expectedType)
         {
-            var hashProvider = _hashProviderFactory.Create(providerCode);
+            var hashProvider = _hashProviderFactory.GetProvider(providerCode);
             Assert.NotNull(hashProvider);
             Assert.IsType(expectedType, hashProvider);
         }
@@ -24,9 +134,9 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData("-")]
         [InlineData("--")]
-        public void Create_ShouldThrow_WithInvalidCode(string providerCode)
+        public void GetProvider_ShouldThrow_WithInvalidCode(string providerCode)
         {
-            void act() => _hashProviderFactory.Create(providerCode);
+            void act() => _hashProviderFactory.GetProvider(providerCode);
             var exception = Record.Exception(() => act());
             Assert.True(exception is ArgumentNullException
                 || exception is ArgumentException
@@ -36,11 +146,11 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         [Theory]
         [InlineData(HashProviderConstants.SALTED_SHA256, typeof(Sha256SaltedHashProvider))]
         [InlineData(HashProviderConstants.SALTED_SHA512, typeof(Sha512SaltedHashProvider))]
-        public void CreateToVerify_ShouldReturnHashProvider(string providerCode, Type expectedType)
+        public void GetProviderToVerify_ShouldReturnHashProvider(string providerCode, Type expectedType)
         {
             var fixture = new Fixture();
             var hashedValue = $"{providerCode}:{fixture.Create<string>()}";
-            var hashProvider = _hashProviderFactory.CreateToVerify(hashedValue);
+            var hashProvider = _hashProviderFactory.GetProviderToVerify(hashedValue);
             Assert.NotNull(hashProvider);
             Assert.IsType(expectedType, hashProvider);
         }
@@ -49,13 +159,30 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData("-")]
         [InlineData("--")]
-        public void CreateToVerify_ShouldThrow_WithInvalidCode(string providerCode)
+        public void GetProviderToVerify_ShouldThrow_WithInvalidCode(string providerCode)
         {
-            void act() => _hashProviderFactory.CreateToVerify(providerCode);
+            void act() => _hashProviderFactory.GetProviderToVerify(providerCode);
             var exception = Record.Exception(() => act());
             Assert.True(exception is ArgumentNullException
                 || exception is ArgumentException
                 || exception is HashProviderException);
+        }
+
+        [Fact]
+        public void ListProviders_ShouldReturnListOfProviders()
+        {
+            var providerCode = _fixture.Create<string>();
+            var provider = new Mock<IHashProvider>().Object;
+
+            var providers = _hashProviderFactory.ListProviders();
+            _hashProviderFactory.AddProvider(providerCode, provider);
+            var updatedProviders = _hashProviderFactory.ListProviders();
+
+            Assert.NotNull(providers);
+            Assert.NotEmpty(providers);
+            Assert.NotNull(updatedProviders);
+            Assert.NotEmpty(updatedProviders);
+            Assert.True(providers.Count < updatedProviders.Count);
         }
     }
 }
