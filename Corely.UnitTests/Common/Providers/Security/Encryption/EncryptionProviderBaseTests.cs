@@ -94,6 +94,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
             Assert.Throws<EncryptionProviderException>(act);
         }
 
+        [Fact]
         public override void EncryptionTypeCode_ShouldReturnCorrectCode_ForImplementation()
         {
             Assert.Equal(TEST_ENCRYPTION_TYPE_CODE, _mockEncryptionProvider.EncryptionTypeCode);

@@ -71,6 +71,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
             Assert.Throws<HashProviderException>(act);
         }
 
+        [Fact]
         public override void HashTypeCode_ShouldReturnCorrectCode_ForImplementation()
         {
             Assert.Equal(TEST_HASH_TYPE_CODE, _mockHashProvider.HashTypeCode);
