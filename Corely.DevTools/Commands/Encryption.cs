@@ -1,14 +1,19 @@
-﻿using Corely.Common.Providers.Security.Encryption;
-using Corely.Common.Providers.Security.Factories;
+﻿using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Keys;
 using Corely.DevTools.Attributes;
 
 namespace Corely.DevTools.Commands
 {
-    internal class Aes : CommandBase
+    internal class Encryption : CommandBase
     {
         [Argument("Key to validate. Also used for encryption and decryption.", false)]
         private string Key { get; init; }
+
+        [Argument("Code for encryption type to use", false)]
+        private string EncryptionTypeCode { get; init; }
+
+        [Option("-c", "--create", Description = "Create a new key")]
+        private bool Create { get; init; }
 
         [Option("-e", "--encrypt", Description = "Encrypt a value")]
         private string ToEncrypt { get; init; }
@@ -16,15 +21,19 @@ namespace Corely.DevTools.Commands
         [Option("-d", "--decrypt", Description = "Decrypt a value")]
         private string ToDecrypt { get; init; }
 
-        public Aes() : base("aes", "Aes encryption operations", "Default : Create new key if no argument or option is provided")
+        public Encryption() : base("encrypt", "Encryption operations", "Default: List encryption types if no argument or option is provided")
         {
         }
 
         public override void Execute()
         {
-            if (string.IsNullOrWhiteSpace(Key))
+            if (Create)
             {
                 CreateKey();
+            }
+            else if (string.IsNullOrWhiteSpace(Key))
+            {
+                ListProviders();
             }
             else
             {
@@ -43,6 +52,16 @@ namespace Corely.DevTools.Commands
             }
         }
 
+        private void ListProviders()
+        {
+            var encryptionProviderFactor = new EncryptionProviderFactory(new InMemoryKeyStoreProvider(Key));
+            var providers = encryptionProviderFactor.ListProviders();
+            foreach (var (ProviderCode, ProviderType) in providers)
+            {
+                Console.WriteLine($"Code {ProviderCode} = {ProviderType.Name}");
+            }
+        }
+
         private void CreateKey()
         {
             var key = new AesKeyProvider().CreateKey();
@@ -58,7 +77,7 @@ namespace Corely.DevTools.Commands
         private void Encrypt()
         {
             var encryptionProviderFactor = new EncryptionProviderFactory(new InMemoryKeyStoreProvider(Key));
-            var encrypted = encryptionProviderFactor.GetProvider(EncryptionProviderConstants.AES)
+            var encrypted = encryptionProviderFactor.GetProvider(EncryptionTypeCode)
                 .Encrypt(ToEncrypt);
             Console.WriteLine(encrypted);
         }
@@ -66,7 +85,7 @@ namespace Corely.DevTools.Commands
         private void Decrypt()
         {
             var encryptionProviderFactor = new EncryptionProviderFactory(new InMemoryKeyStoreProvider(Key));
-            var decrypted = encryptionProviderFactor.GetProvider(EncryptionProviderConstants.AES)
+            var decrypted = encryptionProviderFactor.GetProvider(EncryptionTypeCode)
                 .Decrypt(ToDecrypt);
             Console.WriteLine(decrypted);
         }

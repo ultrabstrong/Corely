@@ -2,7 +2,7 @@
   "profiles": {
     "Corely.DevTools": {
       "commandName": "Project",
-      "commandLineArgs": "lb map entity ./Corely.Domain.dll Corely.Domain.Entities"
+      "commandLineArgs": "encrypt -c"
     }
   }
 }

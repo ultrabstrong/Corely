@@ -62,7 +62,8 @@ namespace Corely.DevTools.Commands
                 new object[]
                 {
                     property.Name,
-                    $"{optionalText}{argumentAttribute?.Description}"});
+                    $"{optionalText}{argumentAttribute?.Description}"
+                });
 
             if (argumentInstance is Argument arg)
             {
