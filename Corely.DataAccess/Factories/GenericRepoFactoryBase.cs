@@ -1,22 +1,22 @@
-﻿using Corely.DataAccess.Factories.AccountManagement;
+﻿using Corely.Common.Extensions;
+using Corely.DataAccess.Factories.AccountManagement;
 using Corely.Domain.Connections;
-using Corely.Common.Extensions;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories
 {
     public abstract class GenericRepoFactoryBase<T> : IGenericRepoFactory<T>
     {
-        protected readonly ILogger _logger;
+        protected readonly ILoggerFactory _loggerFactory;
         private readonly IDataAccessConnection<T> _connection;
 
         protected internal GenericRepoFactoryBase(
-            ILogger logger,
+            ILoggerFactory loggerFactory,
             IDataAccessConnection<T> connection)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(connection.ConnectionName, nameof(connection.ConnectionName));
 
-            _logger = logger.ThrowIfNull(nameof(logger));
+            _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
             _connection = connection.ThrowIfNull(nameof(connection));
             CheckKnownConnectionDataTypes();
         }
@@ -46,7 +46,7 @@ namespace Corely.DataAccess.Factories
             return _connection.ConnectionName switch
             {
                 ConnectionNames.EntityFrameworkMySql =>
-                    new EfMySqlAccountManagementRepoFactory(_logger,
+                    new EfMySqlAccountManagementRepoFactory(_loggerFactory,
                         ((IDataAccessConnection<string>)_connection).GetConnection()),
                 _ =>
                     throw new ArgumentOutOfRangeException(_connection.ConnectionName),

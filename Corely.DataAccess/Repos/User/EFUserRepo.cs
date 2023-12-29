@@ -2,22 +2,22 @@
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Repos.User
 {
     internal class EFUserRepo : IUserRepo
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<EFUserRepo> _logger;
         private readonly AccountManagementDbContext _dbContext;
 
         public EFUserRepo(
-            ILogger logger,
+            ILogger<EFUserRepo> logger,
             AccountManagementDbContext dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
-            _logger.Debug("EFUserRepo created");
+            _logger.LogDebug("EFUserRepo created");
         }
 
         public void Create(UserEntity entity)

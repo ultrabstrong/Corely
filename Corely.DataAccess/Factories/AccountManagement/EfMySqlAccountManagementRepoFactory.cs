@@ -4,16 +4,16 @@ using Corely.DataAccess.Repos.User;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
 using Microsoft.EntityFrameworkCore;
-using Serilog
-;
+using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories.AccountManagement
 {
     internal class EfMySqlAccountManagementRepoFactory(
-        ILogger logger, string connection)
+        ILoggerFactory loggerFactory,
+        string connection)
         : IAccountManagementRepoFactory
     {
-        private readonly ILogger _logger = logger;
+        private readonly ILoggerFactory _loggerFactory = loggerFactory;
         private readonly string _connection = connection;
 
         private AccountManagementDbContext CreateDbContext()
@@ -25,12 +25,12 @@ namespace Corely.DataAccess.Factories.AccountManagement
 
         public IAuthRepo<BasicAuthEntity> GetBasicAuthRepo()
         {
-            return new EFBasicAuthRepo(_logger, CreateDbContext());
+            return new EFBasicAuthRepo(_loggerFactory.CreateLogger<EFBasicAuthRepo>(), CreateDbContext());
         }
 
         public IUserRepo GetUserRepo()
         {
-            return new EFUserRepo(_logger, CreateDbContext());
+            return new EFUserRepo(_loggerFactory.CreateLogger<EFUserRepo>(), CreateDbContext());
         }
     }
 }

@@ -1,25 +1,25 @@
 ﻿using Corely.Common.Extensions;
 using Corely.Common.Providers.Data.Enums;
 using Corely.Common.Providers.Data.Models;
-using Serilog;
+using Microsoft.Extensions.Logging;
 using System.Text;
 
 namespace Corely.Common.Providers.Data
 {
     public class DelimitedTextProvider : IDelimitedTextProvider
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<DelimitedTextProvider> _logger;
         private readonly char _tokenDelimiter;
         private readonly char _tokenLiteral;
         private readonly string _recordDelimiter;
 
-        public DelimitedTextProvider(ILogger logger)
+        public DelimitedTextProvider(ILogger<DelimitedTextProvider> logger)
             : this(logger, ',', '"', Environment.NewLine)
         {
         }
 
         public DelimitedTextProvider(
-            ILogger logger,
+            ILogger<DelimitedTextProvider> logger,
             TokenDelimiter delimiter)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
@@ -35,7 +35,7 @@ namespace Corely.Common.Providers.Data
         }
 
         public DelimitedTextProvider(
-            ILogger logger,
+            ILogger<DelimitedTextProvider> logger,
             char tokenDelimiter,
             char tokenLiteral,
             string recordDelimiter)
@@ -47,7 +47,7 @@ namespace Corely.Common.Providers.Data
 
         public List<ReadRecordResult> ReadAllRecords(Stream stream)
         {
-            _logger.Information("Reading all records from stream");
+            _logger.LogInformation("Reading all records from stream");
             List<ReadRecordResult> records = [];
             ReadRecordResult record = new();
             do
@@ -57,13 +57,13 @@ namespace Corely.Common.Providers.Data
             }
             while (record.HasMore);
 
-            _logger.Information("Finished reading {RecordCount} records from stream", records.Count);
+            _logger.LogInformation("Finished reading {RecordCount} records from stream", records.Count);
             return records;
         }
 
         public ReadRecordResult ReadNextRecord(Stream stream, long startPosition)
         {
-            _logger.Debug("Reading next record from stream");
+            _logger.LogDebug("Reading next record from stream");
             ReadRecordResult result;
 
             byte[] bom = new byte[4];
@@ -79,7 +79,7 @@ namespace Corely.Common.Providers.Data
             {
                 result.HasMore = false;
             }
-            _logger.Debug("Finished reading next record from stream");
+            _logger.LogDebug("Finished reading next record from stream");
             return result ?? new() { HasMore = false };
         }
 
@@ -297,7 +297,7 @@ namespace Corely.Common.Providers.Data
 
         public void WriteAllRecords(IEnumerable<IEnumerable<string>> records, Stream writeTo)
         {
-            _logger.Information("Writing all records to stream");
+            _logger.LogInformation("Writing all records to stream");
             List<IEnumerable<string>> recordsList = records.ToList();
 
             StreamWriter writer = new(writeTo, Encoding.UTF8);
@@ -312,16 +312,16 @@ namespace Corely.Common.Providers.Data
                 WriteRecord(recordsList[i], writer);
             }
             writer.Flush();
-            _logger.Information("Finished writing all records to stream");
+            _logger.LogInformation("Finished writing all records to stream");
         }
 
         public void WriteRecord(IEnumerable<string> record, Stream writeTo)
         {
-            _logger.Debug("Writing record to stream");
+            _logger.LogDebug("Writing record to stream");
             StreamWriter writer = new(writeTo, Encoding.UTF8);
             WriteRecord(record, writer);
             writer.Flush();
-            _logger.Debug("Finished writing record to stream");
+            _logger.LogDebug("Finished writing record to stream");
         }
 
         private void WriteRecord(IEnumerable<string> record, StreamWriter writer)

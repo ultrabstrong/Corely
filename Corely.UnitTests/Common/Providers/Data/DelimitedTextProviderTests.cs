@@ -1,23 +1,21 @@
 ﻿using Corely.Common.Providers.Data;
 using Corely.Common.Providers.Data.Models;
 using Corely.UnitTests.Collections;
-using Corely.UnitTests.Common.Providers.Http;
 using Corely.UnitTests.Fixtures;
-using Serilog;
+using Microsoft.Extensions.Logging;
 using System.Text;
 
 namespace Corely.UnitTests.Common.Providers.Data
 {
-    [Collection(nameof(CollectionNames.SerilogCollection))]
+    [Collection(CollectionNames.LoggerCollection)]
     public class DelimitedTextProviderTests
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<DelimitedTextProvider> _logger;
         private readonly DelimitedTextProvider _delimitedTextDataProvider;
 
-        public DelimitedTextProviderTests(TestLoggerFixture loggerFixture)
+        public DelimitedTextProviderTests(LoggerFixture loggerFixture)
         {
-            _logger = loggerFixture.Logger.ForContext<HttpProxyProviderTests>();
-
+            _logger = loggerFixture.CreateLogger<DelimitedTextProvider>();
             _delimitedTextDataProvider = new DelimitedTextProvider(_logger);
         }
 

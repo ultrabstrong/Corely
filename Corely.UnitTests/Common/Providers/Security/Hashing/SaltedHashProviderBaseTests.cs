@@ -46,28 +46,28 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         [Fact]
         public void NullHashTypeCode_ShouldThrowArgumentNullException_OnBuild()
         {
-            void act() => new NullTypeCodeMockHashProvider();
+            static void act() => new NullTypeCodeMockHashProvider();
             Assert.Throws<ArgumentNullException>(act);
         }
 
         [Fact]
         public void EmptyHashTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            void act() => new EmptyTypeCodeMockHashProvider();
+            static void act() => new EmptyTypeCodeMockHashProvider();
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
         public void WhitespaceHashTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            void act() => new WhitespaceTypeCodeMockHashProvider();
+            static void act() => new WhitespaceTypeCodeMockHashProvider();
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
         public void ColonHashTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            void act() => new ColonTypeCodeMockHashProvider();
+            static void act() => new ColonTypeCodeMockHashProvider();
             Assert.Throws<HashProviderException>(act);
         }
 

@@ -1,12 +1,13 @@
 ﻿using Corely.Common.Providers.Http.Builders;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Corely.Common.Providers.Http
 {
     public sealed class HttpProxyProvider(
-        ILogger logger,
+        ILogger<HttpProxyProvider> logger,
         IHttpContentBuilder httpContentBuilder,
-        string host) : HttpProxyProviderBase(logger, httpContentBuilder, host)
+        string host)
+        : HttpProxyProviderBase(logger, httpContentBuilder, host)
     {
     }
 }

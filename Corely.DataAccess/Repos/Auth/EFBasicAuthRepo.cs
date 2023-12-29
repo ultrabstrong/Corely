@@ -1,23 +1,23 @@
-﻿using Corely.DataAccess.DataSources.EntityFramework;
+﻿using Corely.Common.Extensions;
+using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
-using Corely.Common.Extensions;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Repos.Auth
 {
     internal class EFBasicAuthRepo : IAuthRepo<BasicAuthEntity>
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<EFBasicAuthRepo> _logger;
         private readonly AccountManagementDbContext _dbContext;
 
         public EFBasicAuthRepo(
-            ILogger logger,
+            ILogger<EFBasicAuthRepo> logger,
             AccountManagementDbContext dbContext)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
             _dbContext = dbContext.ThrowIfNull(nameof(dbContext));
-            _logger.Debug("EFBasicAuthRepo created");
+            _logger.LogDebug("EFBasicAuthRepo created");
         }
 
         public void Create(BasicAuthEntity entity)

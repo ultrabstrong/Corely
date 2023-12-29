@@ -2,21 +2,21 @@
 using Corely.Common.Providers.Http.Builders;
 using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.Common.Providers.Http
 {
-    [Collection(nameof(CollectionNames.SerilogCollection))]
+    [Collection(nameof(CollectionNames.LoggerCollection))]
     public class HttpProxyProviderTests
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<HttpProxyProvider> _logger;
         private readonly HttpProxyProvider _httpProxyProvider;
 
-        public HttpProxyProviderTests(TestLoggerFixture loggerFixture)
+        public HttpProxyProviderTests(LoggerFixture loggerFixture)
         {
-            _logger = loggerFixture.Logger.ForContext<HttpProxyProviderTests>();
+            _logger = loggerFixture.CreateLogger<HttpProxyProvider>();
 
-            _httpProxyProvider = new HttpProxyProvider(
+            _httpProxyProvider = new(
                 _logger,
                 new Mock<IHttpContentBuilder>().Object,
                 "http://localhost/");

@@ -6,7 +6,7 @@ using Corely.Domain.Models.Auth;
 using Corely.Domain.Models.Users;
 using Corely.Domain.Repos;
 using Corely.Domain.Validators;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Corely.Domain.Services.Users
 {
@@ -14,17 +14,17 @@ namespace Corely.Domain.Services.Users
         IUserRepo userRepo,
         IValidationProvider validationProvider,
         IMapProvider mapProvider,
-        ILogger logger)
+        ILogger<UserService> logger)
         : IUserService
     {
         private readonly IUserRepo _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
         private readonly IValidationProvider _validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
         private readonly IMapProvider _mapProvider = mapProvider;
-        private readonly ILogger _logger = logger;
+        private readonly ILogger<UserService> _logger = logger;
 
         public void Create(User user, BasicAuth basicAuth)
         {
-            _logger.Information("Creating user {Username}", user.Username);
+            _logger.LogInformation("Creating user {Username}", user.Username);
             try
             {
                 _validationProvider.Validate(user).ThrowIfInvalid();
@@ -32,7 +32,7 @@ namespace Corely.Domain.Services.Users
             }
             catch (ValidationException ex)
             {
-                _logger.Warning("User creation args are not valid");
+                _logger.LogWarning("User creation args are not valid");
                 throw new UserServiceException(ex.Message, ex)
                 {
                     Reason = UserServiceException.ErrorReason.ValidationFailed
@@ -44,16 +44,16 @@ namespace Corely.Domain.Services.Users
                 var userEntity = _mapProvider.Map<UserEntity>(user);
                 if (_userRepo.DoesUserExist(userEntity.Username, userEntity.Email))
                 {
-                    _logger.Warning("User with username {Username} or email {Email} already exists",
+                    _logger.LogWarning("User with username {Username} or email {Email} already exists",
                         userEntity.Username, userEntity.Email);
                     throw new UserServiceException() { Reason = UserServiceException.ErrorReason.UserAlreadyExists };
                 }
                 _userRepo.Create(userEntity);
-                _logger.Information("User {Username} created", user.Username);
+                _logger.LogInformation("User {Username} created", user.Username);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error creating user {Username}", user.Username);
+                _logger.LogError(ex, "Error creating user {Username}", user.Username);
                 throw new UserServiceException(ex.Message, ex)
                 {
                     Reason = UserServiceException.ErrorReason.Unknown

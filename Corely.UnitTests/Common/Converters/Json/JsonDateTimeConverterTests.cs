@@ -39,7 +39,7 @@ namespace Corely.UnitTests.Common.Converters.Json
             yield return new object[] { "2020-01-01T01:00:00", new DateTime(2020, 1, 1, 1, 0, 0) };
         }
 
-        private Utf8JsonReader GetReader(string input)
+        private static Utf8JsonReader GetReader(string input)
         {
             byte[] jsonData = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(input));
             var jsonSpan = new ReadOnlySpan<byte>(jsonData);

@@ -64,28 +64,28 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
         [Fact]
         public void NullEncryptionTypeCode_ShouldThrowArgumentNullException_OnBuild()
         {
-            void act() => new NullMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
+            static void act() => new NullMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
             Assert.Throws<ArgumentNullException>(act);
         }
 
         [Fact]
         public void EmptyEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            void act() => new EmptyMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
+            static void act() => new EmptyMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
         public void WhitespaceEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            void act() => new WhitespaceMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
+            static void act() => new WhitespaceMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
         public void ColonEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            void act() => new ColonMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
+            static void act() => new ColonMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
             Assert.Throws<EncryptionProviderException>(act);
         }
 

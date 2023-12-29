@@ -2,6 +2,6 @@
 {
     internal class CollectionNames
     {
-        public const string SerilogCollection = nameof(SerilogCollection);
+        public const string LoggerCollection = nameof(LoggerCollection);
     }
 }

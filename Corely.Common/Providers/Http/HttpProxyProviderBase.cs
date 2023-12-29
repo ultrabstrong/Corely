@@ -1,19 +1,19 @@
 ﻿using Corely.Common.Extensions;
 using Corely.Common.Providers.Http.Builders;
 using Corely.Common.Providers.Http.Models;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Corely.Common.Providers.Http
 {
     public abstract class HttpProxyProviderBase : IHttpProxyProvider, IDisposable
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<HttpProxyProviderBase> _logger;
         private readonly IHttpContentBuilder _httpContentBuilder;
         private readonly HttpClient _httpClient;
         private bool _disposed = false;
 
         public HttpProxyProviderBase(
-            ILogger logger,
+            ILogger<HttpProxyProviderBase> logger,
             IHttpContentBuilder httpContentBuilder,
             string host)
         {
@@ -34,23 +34,31 @@ namespace Corely.Common.Providers.Http
 
             var requestMessage = CreateHttpRequestMessage(request, httpContent);
 
-            _logger.ForContext(nameof(request.Headers), request.Headers)
-                .ForContext(nameof(request.Parameters), request.Parameters)
-                .Debug("Sending HTTP request {Uri}", requestMessage.RequestUri);
+            using (_logger.BeginScope(new Dictionary<string, object> {
+                { nameof(request.Headers), request.Headers },
+                { nameof(request.Parameters), request.Parameters } }))
+            {
+                _logger.LogDebug("Sending HTTP request {Uri}", requestMessage.RequestUri);
+            }
 
             HttpResponseMessage result = await _httpClient.SendAsync(requestMessage);
 
             if (result.IsSuccessStatusCode)
             {
-                _logger.Debug("Http request succeeded");
+                _logger.LogDebug("Http request succeeded");
                 return result;
             }
             else
             {
                 string body = await result.Content.ReadAsStringAsync();
                 string message = $"{(int)result.StatusCode} {result.StatusCode} - {result.ReasonPhrase}{Environment.NewLine}{result.RequestMessage}";
-                _logger.ForContext(nameof(body), body)
-                    .Error("Http request failed : {Message}", message);
+
+                using (_logger.BeginScope(new Dictionary<string, object> {
+                    { nameof(body), body } }))
+                {
+                    _logger.LogError("Http request failed : {Message}", message);
+                }
+
                 throw new HttpRequestException(message, new Exception(body));
             }
         }

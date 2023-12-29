@@ -66,7 +66,7 @@ namespace Corely.UnitTests.Common.Providers.Files
 
         public static IEnumerable<object[]> GetOverwriteProtectedPathTestData(int number)
         {
-            string append(int i) => i < 1 ? "" : $"-[{i}]";
+            static string append(int i) => i < 1 ? "" : $"-[{i}]";
 
             yield return new object[] { number, "C:\\file_that_exists.txt", $"C:\\file_that_exists{append(number)}.txt" };
             yield return new object[] { number, "C:\\config.json.sample", $"C:\\config.json{append(number)}.sample" };
