@@ -4,7 +4,7 @@ namespace Corely.Common.Providers.Security.Keys
 {
     public class InMemoryKeyStoreProvider : IKeyStoreProvider
     {
-        private readonly Dictionary<int, string> _keys = new();
+        private readonly Dictionary<int, string> _keys = [];
         private int _version = 0;
 
         public InMemoryKeyStoreProvider(string key)

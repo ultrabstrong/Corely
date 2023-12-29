@@ -5,7 +5,7 @@
         private int _skip;
         private readonly int _take;
 
-        public List<T> Items { get; private set; } = new List<T>();
+        public List<T> Items { get; private set; } = [];
         public int Skip => _skip;
         public int Take => _take;
         public int PageNum => (int)Math.Ceiling((decimal)_skip / _take);

@@ -19,7 +19,7 @@ namespace Corely.Common.Providers.Http.Builders
 
         private MultipartFormDataContent BuildMultipartFormDataContent(HttpDictionaryContentBase content)
         {
-            MultipartFormDataContent result = new();
+            MultipartFormDataContent result = [];
 
             foreach (KeyValuePair<string, string> formvals in content.Content)
             {

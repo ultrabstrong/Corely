@@ -1,8 +1,8 @@
 ﻿using Corely.Common.Providers.Data;
 using Corely.Common.Providers.Data.Models;
 using Corely.UnitTests.Collections;
-using Corely.UnitTests.Fixtures;
 using Corely.UnitTests.Common.Providers.Http;
+using Corely.UnitTests.Fixtures;
 using Serilog;
 using System.Text;
 
@@ -35,7 +35,7 @@ namespace Corely.UnitTests.Common.Providers.Data
                 }
             }
 
-            List<ReadRecordResult> results = new();
+            List<ReadRecordResult> results = [];
             using (MemoryStream stream = new(Encoding.UTF8.GetBytes(delimitedData)))
             {
                 results = _delimitedTextDataProvider.ReadAllRecords(stream);

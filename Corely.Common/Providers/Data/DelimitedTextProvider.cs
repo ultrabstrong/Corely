@@ -48,7 +48,7 @@ namespace Corely.Common.Providers.Data
         public List<ReadRecordResult> ReadAllRecords(Stream stream)
         {
             _logger.Information("Reading all records from stream");
-            List<ReadRecordResult> records = new();
+            List<ReadRecordResult> records = [];
             ReadRecordResult record = new();
             do
             {

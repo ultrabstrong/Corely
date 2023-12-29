@@ -4,17 +4,11 @@ using FluentValidation;
 
 namespace Corely.Domain.Validators.FluentValidators
 {
-    public class FluentValidationProvider : IValidationProvider
+    public class FluentValidationProvider(IServiceProvider serviceProvider,
+        IMapper mapper) : IValidationProvider
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IMapper _mapper;
-
-        public FluentValidationProvider(IServiceProvider serviceProvider,
-            IMapper mapper)
-        {
-            _serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
-            _mapper = mapper.ThrowIfNull(nameof(mapper));
-        }
+        private readonly IServiceProvider _serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
+        private readonly IMapper _mapper = mapper.ThrowIfNull(nameof(mapper));
 
         public ValidationResult Validate<T>(T model)
         {

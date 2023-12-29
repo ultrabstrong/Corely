@@ -3,20 +3,17 @@ using Corely.Common.Providers.Security.Hashing;
 
 namespace Corely.Common.Models.Security
 {
-    public class HashedValue : IHashedValue
+    public class HashedValue(
+        IHashProvider hashProvider,
+        string hash)
+        : IHashedValue
     {
         private readonly object _lock = new();
-        private readonly IHashProvider _hashProvider;
-        public string Hash { get; private set; }
+        private readonly IHashProvider _hashProvider = hashProvider.ThrowIfNull(nameof(hashProvider));
+        public string Hash { get; private set; } = hash;
 
         public HashedValue(IHashProvider hashProvider)
             : this(hashProvider, "") { }
-
-        public HashedValue(IHashProvider hashProvider, string hash)
-        {
-            Hash = hash;
-            _hashProvider = hashProvider.ThrowIfNull(nameof(hashProvider));
-        }
 
         public void Set(string value)
         {

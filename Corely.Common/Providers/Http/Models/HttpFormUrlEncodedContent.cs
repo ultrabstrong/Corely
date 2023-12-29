@@ -1,10 +1,8 @@
 ﻿namespace Corely.Common.Providers.Http.Models
 {
-    public sealed class HttpFormUrlEncodedContent : HttpDictionaryContentBase
+    public sealed class HttpFormUrlEncodedContent(
+        Dictionary<string, string> content)
+        : HttpDictionaryContentBase(content)
     {
-        public HttpFormUrlEncodedContent(Dictionary<string, string> content)
-            : base(content)
-        {
-        }
     }
 }

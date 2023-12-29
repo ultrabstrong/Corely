@@ -5,7 +5,7 @@ namespace Corely.DataAccess.Repos.Auth
 {
     internal class MockBasicAuthRepo : IAuthRepo<BasicAuthEntity>
     {
-        private readonly List<BasicAuthEntity> _auths = new();
+        private readonly List<BasicAuthEntity> _auths = [];
 
         public void Create(BasicAuthEntity entity)
         {

@@ -3,14 +3,10 @@ using Serilog;
 
 namespace Corely.Common.Providers.Http
 {
-    public sealed class HttpProxyProvider : HttpProxyProviderBase
+    public sealed class HttpProxyProvider(
+        ILogger logger,
+        IHttpContentBuilder httpContentBuilder,
+        string host) : HttpProxyProviderBase(logger, httpContentBuilder, host)
     {
-        public HttpProxyProvider(
-            ILogger logger,
-            IHttpContentBuilder httpContentBuilder,
-            string host)
-            : base(logger, httpContentBuilder, host)
-        {
-        }
     }
 }

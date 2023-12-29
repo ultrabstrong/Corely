@@ -8,7 +8,8 @@ namespace Corely.Domain.Mappers.AutoMapper.Profiles.Users
     {
         public UserProfile()
         {
-            CreateMap<User, UserEntity>();
+            CreateMap<User, UserEntity>()
+                .ReverseMap();
         }
     }
 }

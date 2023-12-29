@@ -1,12 +1,9 @@
 ﻿namespace Corely.Common.Providers.Http.Models
 {
-    public class HttpStringContentBase : IHttpContent<string>
+    public class HttpStringContentBase(
+        string content)
+        : IHttpContent<string>
     {
-        public string Content { get; }
-
-        public HttpStringContentBase(string content)
-        {
-            Content = content;
-        }
+        public string Content { get; } = content;
     }
 }

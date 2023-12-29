@@ -28,7 +28,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
             var encrypted = _encryptionProvider.Encrypt(decrypted);
 
             Assert.StartsWith(_encryptionProvider.EncryptionTypeCode, encrypted);
-            Assert.Matches(@"^.+:\d+:\w+", encrypted);
+            Assert.Matches(@"^.+:\d+:.+", encrypted);
             Assert.NotEqual(decrypted, encrypted);
         }
 

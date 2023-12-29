@@ -70,7 +70,7 @@ namespace Corely.UnitTests.Common.Extensions
         [ClassData(typeof(NullEmptyAndWhitespace))]
         public void ThrowIfAnyNullOrWhitespace_ShouldThrowException_WithInvalidValue(string value)
         {
-            string[] values = new[] { _fixture.Create<string>(), value };
+            string[] values = [_fixture.Create<string>(), value];
 
             void act() => values.ThrowIfAnyNullOrWhiteSpace(nameof(values));
 
@@ -104,7 +104,7 @@ namespace Corely.UnitTests.Common.Extensions
         [ClassData(typeof(NullAndEmpty))]
         public void ThrowIfAnyNullOrEmpty_ShouldThrowException_WithInvalidValue(string value)
         {
-            string[] values = new[] { _fixture.Create<string>(), value };
+            string[] values = [_fixture.Create<string>(), value];
 
             void act() => values.ThrowIfAnyNullOrEmpty(nameof(values));
 

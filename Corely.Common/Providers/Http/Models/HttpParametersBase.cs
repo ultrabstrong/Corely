@@ -2,13 +2,16 @@
 
 namespace Corely.Common.Providers.Http.Models
 {
-    public abstract class HttpParametersBase : IHttpParameters
+    public abstract class HttpParametersBase(
+        Dictionary<string, string> parameters,
+        Dictionary<string, string> tempParameters)
+        : IHttpParameters
     {
-        private readonly Dictionary<string, string> _parameters;
-        private readonly Dictionary<string, string> _tempParameters;
+        private readonly Dictionary<string, string> _parameters = parameters.ThrowIfNull(nameof(parameters));
+        private readonly Dictionary<string, string> _tempParameters = tempParameters.ThrowIfNull(nameof(tempParameters));
 
         public HttpParametersBase()
-            : this(new Dictionary<string, string>())
+            : this([])
         {
         }
 
@@ -18,25 +21,17 @@ namespace Corely.Common.Providers.Http.Models
         }
 
         public HttpParametersBase(Dictionary<string, string> parameters)
-            : this(parameters, new Dictionary<string, string>())
+            : this(parameters, [])
         {
-        }
-
-        public HttpParametersBase(Dictionary<string, string> parameters, Dictionary<string, string> tempParameters)
-        {
-            _parameters = parameters.ThrowIfNull(nameof(parameters));
-            _tempParameters = tempParameters.ThrowIfNull(nameof(tempParameters));
         }
 
         public string CreateParameters()
         {
-            List<string> paramsToInclude = new();
-
-            paramsToInclude.AddRange(
-                _parameters.Select(CreateParameters));
-
-            paramsToInclude.AddRange(
-                _tempParameters.Select(CreateParameters));
+            List<string> paramsToInclude =
+            [
+                .. _parameters.Select(CreateParameters),
+                .. _tempParameters.Select(CreateParameters),
+            ];
 
             _tempParameters.Clear();
 

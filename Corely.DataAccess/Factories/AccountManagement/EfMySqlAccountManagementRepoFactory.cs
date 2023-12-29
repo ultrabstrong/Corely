@@ -1,6 +1,6 @@
-﻿using Corely.DataAccess.Repos.Auth;
+﻿using Corely.DataAccess.DataSources.EntityFramework;
+using Corely.DataAccess.Repos.Auth;
 using Corely.DataAccess.Repos.User;
-using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
 using Microsoft.EntityFrameworkCore;
@@ -9,18 +9,12 @@ using Serilog
 
 namespace Corely.DataAccess.Factories.AccountManagement
 {
-    internal class EfMySqlAccountManagementRepoFactory : IAccountManagementRepoFactory
+    internal class EfMySqlAccountManagementRepoFactory(
+        ILogger logger, string connection)
+        : IAccountManagementRepoFactory
     {
-        private readonly ILogger _logger;
-        private readonly string _connection;
-
-        public EfMySqlAccountManagementRepoFactory(
-            ILogger logger,
-            string connection)
-        {
-            _logger = logger;
-            _connection = connection;
-        }
+        private readonly ILogger _logger = logger;
+        private readonly string _connection = connection;
 
         private AccountManagementDbContext CreateDbContext()
         {

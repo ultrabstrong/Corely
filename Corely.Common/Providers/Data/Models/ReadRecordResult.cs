@@ -3,7 +3,7 @@
     [Serializable]
     public class ReadRecordResult
     {
-        public List<string> Tokens { get; set; } = new List<string>();
+        public List<string> Tokens { get; set; } = [];
 
         public long StartPosition { get; set; } = 0;
 

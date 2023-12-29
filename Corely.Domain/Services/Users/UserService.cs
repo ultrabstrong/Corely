@@ -1,32 +1,26 @@
-﻿using Corely.Domain.Entities.Users;
+﻿using Corely.Common.Extensions;
+using Corely.Domain.Entities.Users;
 using Corely.Domain.Exceptions;
 using Corely.Domain.Mappers;
 using Corely.Domain.Models.Auth;
 using Corely.Domain.Models.Users;
 using Corely.Domain.Repos;
 using Corely.Domain.Validators;
-using Corely.Common.Extensions;
 using Serilog;
 
 namespace Corely.Domain.Services.Users
 {
-    internal class UserService : IUserService
+    internal class UserService(
+        IUserRepo userRepo,
+        IValidationProvider validationProvider,
+        IMapProvider mapProvider,
+        ILogger logger)
+        : IUserService
     {
-        private readonly IUserRepo _userRepo;
-        private readonly IValidationProvider _validationProvider;
-        private readonly IMapProvider _mapProvider;
-        private readonly ILogger _logger;
-
-        public UserService(IUserRepo userRepo,
-            IValidationProvider validationProvider,
-            IMapProvider mapProvider,
-            ILogger logger)
-        {
-            _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
-            _validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
-            _mapProvider = mapProvider;
-            _logger = logger;
-        }
+        private readonly IUserRepo _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
+        private readonly IValidationProvider _validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
+        private readonly IMapProvider _mapProvider = mapProvider;
+        private readonly ILogger _logger = logger;
 
         public void Create(User user, BasicAuth basicAuth)
         {

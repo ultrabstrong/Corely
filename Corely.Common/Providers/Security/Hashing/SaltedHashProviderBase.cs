@@ -45,7 +45,7 @@ namespace Corely.Common.Providers.Security.Hashing
 
         private byte[] CreateSaltedValue(byte[] salt, string value)
         {
-            return salt.Concat(Encoding.UTF8.GetBytes(value)).ToArray();
+            return [.. salt, .. Encoding.UTF8.GetBytes(value)];
         }
 
         private string FormatHashedValue(byte[] salt, byte[] hash)

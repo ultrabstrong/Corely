@@ -6,57 +6,52 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
 {
     public class EncryptionProviderBaseTests : EncryptionProviderGenericTests
     {
-        private class MockEncryptionProvider : EncryptionProviderBase
+        private class MockEncryptionProvider(
+            IKeyStoreProvider keyStoreProvider)
+            : EncryptionProviderBase(keyStoreProvider)
         {
             public override string EncryptionTypeCode => TEST_ENCRYPTION_TYPE_CODE;
-            public MockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
-                : base(keyStoreProvider) { }
 
             protected override string EncryptInternal(string value, string key) => $"{Guid.NewGuid()}{value}";
             protected override string DecryptInternal(string value, string key) => value[36..];
         }
 
-        private class NullMockEncryptionProvider : EncryptionProviderBase
+        private class NullMockEncryptionProvider(
+            IKeyStoreProvider keyStoreProvider)
+            : EncryptionProviderBase(keyStoreProvider)
         {
 #pragma warning disable CS8603 // Possible null reference return.
             public override string EncryptionTypeCode => null;
-#pragma warning restore CS8603 // Possible null reference return.
-
-            public NullMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
-                : base(keyStoreProvider) { }
 
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class EmptyMockEncryptionProvider : EncryptionProviderBase
+        private class EmptyMockEncryptionProvider(
+            IKeyStoreProvider keyStoreProvider)
+            : EncryptionProviderBase(keyStoreProvider)
         {
             public override string EncryptionTypeCode => "";
 
-            public EmptyMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
-                : base(keyStoreProvider) { }
-
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class WhitespaceMockEncryptionProvider : EncryptionProviderBase
+        private class WhitespaceMockEncryptionProvider(
+            IKeyStoreProvider keyStoreProvider)
+            : EncryptionProviderBase(keyStoreProvider)
         {
             public override string EncryptionTypeCode => " ";
 
-            public WhitespaceMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
-                : base(keyStoreProvider) { }
-
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class ColonMockEncryptionProvider : EncryptionProviderBase
+        private class ColonMockEncryptionProvider(
+            IKeyStoreProvider keyStoreProvider)
+            : EncryptionProviderBase(keyStoreProvider)
         {
             public override string EncryptionTypeCode => "as:df";
-
-            public ColonMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
-                : base(keyStoreProvider) { }
 
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;

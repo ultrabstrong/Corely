@@ -8,7 +8,7 @@ namespace Corely.Common.Providers.Security.Factories
     public class EncryptionProviderFactory : IEncryptionProviderFactory
     {
         private protected readonly IKeyStoreProvider _keyStoreProvider;
-        private protected readonly Dictionary<string, IEncryptionProvider> _providers = new();
+        private protected readonly Dictionary<string, IEncryptionProvider> _providers = [];
 
         public EncryptionProviderFactory(IKeyStoreProvider keyStoreProvider)
         {

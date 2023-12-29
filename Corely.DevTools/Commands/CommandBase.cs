@@ -11,8 +11,8 @@ namespace Corely.DevTools.Commands
     {
         private const string _helpFlag = "--help";
 
-        private readonly Dictionary<string, Argument> _arguments = new();
-        private readonly Dictionary<string, Option> _options = new();
+        private readonly Dictionary<string, Argument> _arguments = [];
+        private readonly Dictionary<string, Option> _options = [];
 
         protected CommandBase(
             string name,

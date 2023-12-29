@@ -5,7 +5,7 @@ namespace Corely.DataAccess.Repos.User
 {
     internal class MockUserRepo : IUserRepo
     {
-        private readonly List<UserEntity> _users = new();
+        private readonly List<UserEntity> _users = [];
 
         public void Create(UserEntity entity)
         {

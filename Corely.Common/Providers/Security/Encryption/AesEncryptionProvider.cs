@@ -3,12 +3,11 @@ using System.Security.Cryptography;
 
 namespace Corely.Common.Providers.Security.Encryption
 {
-    internal sealed class AesEncryptionProvider : EncryptionProviderBase
+    internal sealed class AesEncryptionProvider(
+        IKeyStoreProvider keyStoreProvider)
+        : EncryptionProviderBase(keyStoreProvider)
     {
         public override string EncryptionTypeCode => EncryptionProviderConstants.AES;
-
-        public AesEncryptionProvider(IKeyStoreProvider keyStoreProvider)
-            : base(keyStoreProvider) { }
 
         protected override string EncryptInternal(string value, string key)
         {

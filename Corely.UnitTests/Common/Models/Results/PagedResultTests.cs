@@ -9,7 +9,7 @@ namespace Corely.UnitTests.Common.Models.Results
 
         public PagedResultTests()
         {
-            _testData = new List<object>();
+            _testData = [];
             for (int i = 0; i < 100; i++)
             {
                 _testData.Add($"test{i}");

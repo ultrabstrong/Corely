@@ -46,7 +46,7 @@ namespace Corely.UnitTests.Common.Providers.Data
         public void NormalizeAddress_ShouldThrowArgumentNullException()
         {
             string? street = null;
-            string[] additional = { "Apt. 1" };
+            string[] additional = ["Apt. 1"];
             void act() => _textNormalizationProvider.NormalizeAddress(street, additional);
             Assert.Throws<ArgumentNullException>(act);
         }
@@ -69,7 +69,7 @@ namespace Corely.UnitTests.Common.Providers.Data
         public void NormalizeAddressAndState_ShouldThrowArgumentNullException()
         {
             string? street = null;
-            string[] additional = { "Apt. 1" };
+            string[] additional = ["Apt. 1"];
             void act() => _textNormalizationProvider.NormalizeAddressAndState(street, additional);
             Assert.Throws<ArgumentNullException>(act);
 

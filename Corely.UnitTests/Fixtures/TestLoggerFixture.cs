@@ -15,7 +15,7 @@ namespace Corely.UnitTests.Fixtures
 
         public void Dispose()
         {
-            Log.CloseAndFlush();
+            GC.SuppressFinalize(this);
         }
     }
 }

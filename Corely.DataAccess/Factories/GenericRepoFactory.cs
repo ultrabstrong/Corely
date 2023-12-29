@@ -3,13 +3,9 @@ using Serilog;
 
 namespace Corely.DataAccess.Factories
 {
-    public class GenericRepoFactory<T> : GenericRepoFactoryBase<T>
+    public class GenericRepoFactory<T>(
+        ILogger logger,
+        IDataAccessConnection<T> connection) : GenericRepoFactoryBase<T>(logger, connection)
     {
-        public GenericRepoFactory(
-            ILogger logger,
-            IDataAccessConnection<T> connection)
-            : base(logger, connection)
-        {
-        }
     }
 }
