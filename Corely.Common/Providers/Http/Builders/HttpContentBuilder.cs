@@ -29,17 +29,17 @@ namespace Corely.Common.Providers.Http.Builders
             return result;
         }
 
-        private FormUrlEncodedContent BuildFormUrlEncodedContent(HttpDictionaryContentBase content)
+        private static FormUrlEncodedContent BuildFormUrlEncodedContent(HttpDictionaryContentBase content)
         {
             return new FormUrlEncodedContent(content.Content);
         }
 
-        private StringContent BuildJsonContent(HttpStringContentBase content)
+        private static StringContent BuildJsonContent(HttpStringContentBase content)
         {
             return new StringContent(content.Content, mediaType: new("application/json"));
         }
 
-        private StringContent BuildTextContent(HttpStringContentBase content)
+        private static StringContent BuildTextContent(HttpStringContentBase content)
         {
             return new StringContent(content.Content, mediaType: new("text/plain"));
         }

@@ -76,7 +76,7 @@ namespace Corely.Common.Providers.Http.Models
             RemoveParameters(_tempParameters.Remove, keys);
         }
 
-        private void RemoveParameters(
+        private static void RemoveParameters(
             Func<string, bool> removeFromDictonary,
             params string[] keys)
         {

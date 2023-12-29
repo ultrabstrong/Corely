@@ -27,7 +27,7 @@ namespace Corely.DevTools.Commands
             }
         }
 
-        private void ListProviders()
+        private static void ListProviders()
         {
             var hashProviderFactor = new HashProviderFactory();
             var providers = hashProviderFactor.ListProviders();

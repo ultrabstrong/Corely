@@ -2,12 +2,12 @@
 
 namespace Corely.Common.Providers.Data
 {
-    public class TextNormalizationProvider : ITextNormalizationProvider
+    public partial class TextNormalizationProvider : ITextNormalizationProvider
     {
         public string BasicNormalize(string s)
         {
             ArgumentNullException.ThrowIfNull(s, nameof(s));
-            return Regex.Replace(s.ToUpper(), "[^\\w]", string.Empty);
+            return WordRegex().Replace(s.ToUpper(), string.Empty);
         }
 
         public string NormalizeAddress(string street, params string[] additional)
@@ -25,7 +25,7 @@ namespace Corely.Common.Providers.Data
         private string NormalizeAddress(bool includestate, string street, params string[] additional)
         {
             string normalizedaddress = street.ToUpper() + " ";
-            normalizedaddress = Regex.Replace(normalizedaddress, "[^\\w\\s]", string.Empty);
+            normalizedaddress = WordAndSpaceRegex().Replace(normalizedaddress, string.Empty);
 
             foreach (Tuple<string, string, bool> abbreviation in _commonStreetAbbreviations)
             {
@@ -46,7 +46,7 @@ namespace Corely.Common.Providers.Data
                     normalizedaddress = normalizedaddress.Replace(abbreviation.Item1.ToUpper(), abbreviation.Item2.ToUpper());
                 }
             }
-            normalizedaddress = Regex.Replace(normalizedaddress, "[^\\w]", string.Empty);
+            normalizedaddress = WordRegex().Replace(normalizedaddress, string.Empty);
             return normalizedaddress;
         }
 
@@ -162,5 +162,10 @@ namespace Corely.Common.Providers.Data
             new Tuple<string, string>("Armed Forces Europe", "AE"),
             new Tuple<string, string>("Armed Forces Pacific", "AP")
         ];
+
+        [GeneratedRegex(@"[^\w]")]
+        private static partial Regex WordRegex();
+        [GeneratedRegex(@"[^\w\s]")]
+        private static partial Regex WordAndSpaceRegex();
     }
 }

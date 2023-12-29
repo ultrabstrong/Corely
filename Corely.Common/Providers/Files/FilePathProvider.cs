@@ -24,7 +24,7 @@
             return newInfo.FullName;
         }
 
-        private string GetOverwriteProtectedFileName(FileInfo info, int appendCount)
+        private static string GetOverwriteProtectedFileName(FileInfo info, int appendCount)
         {
             if (string.IsNullOrWhiteSpace(info.Extension))
             {
@@ -34,7 +34,7 @@
             return $"{fileNameWithoutExtension}-[{appendCount}]{info.Extension}";
         }
 
-        private string RemoveLastExtensionOccurrence(FileInfo info)
+        private static string RemoveLastExtensionOccurrence(FileInfo info)
         {
             int place = info.Name.LastIndexOf(info.Extension);
             if (place == -1) { return info.Name; }

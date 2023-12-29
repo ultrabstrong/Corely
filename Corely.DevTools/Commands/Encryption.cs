@@ -62,7 +62,7 @@ namespace Corely.DevTools.Commands
             }
         }
 
-        private void CreateKey()
+        private static void CreateKey()
         {
             var key = new AesKeyProvider().CreateKey();
             Console.WriteLine(key);

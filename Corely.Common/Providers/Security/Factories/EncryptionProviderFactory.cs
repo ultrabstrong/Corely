@@ -48,7 +48,7 @@ namespace Corely.Common.Providers.Security.Factories
             _providers[providerCode] = provider;
         }
 
-        private void Validate(string providerCode)
+        private static void Validate(string providerCode)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
             if (providerCode.Contains(':'))

@@ -1,5 +1,4 @@
 ﻿using Corely.Common.Providers.Security.Encryption;
-using Corely.Common.Providers.Security.Exceptions;
 using Corely.Common.Providers.Security.Keys;
 
 namespace Corely.UnitTests.Common.Providers.Security.Encryption
@@ -64,29 +63,33 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
         [Fact]
         public void NullEncryptionTypeCode_ShouldThrowArgumentNullException_OnBuild()
         {
-            static void act() => new NullMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
-            Assert.Throws<ArgumentNullException>(act);
+            var exception = Record.Exception(() => new NullMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object));
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentNullException>(exception);
         }
 
         [Fact]
         public void EmptyEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            static void act() => new EmptyMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
-            Assert.Throws<ArgumentException>(act);
+            var exception = Record.Exception(() => new EmptyMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object));
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
         }
 
         [Fact]
         public void WhitespaceEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            static void act() => new WhitespaceMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
-            Assert.Throws<ArgumentException>(act);
+            var exception = Record.Exception(() => new WhitespaceMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object));
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
         }
 
         [Fact]
         public void ColonEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            static void act() => new ColonMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object);
-            Assert.Throws<EncryptionProviderException>(act);
+            var exception = Record.Exception(() => new ColonMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object));
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
         }
 
         [Fact]

@@ -2,7 +2,7 @@
 {
     public class TextComparisonProvider
     {
-        public int GetLevenshteinEditDistance(string str1, string str2)
+        public static int GetLevenshteinEditDistance(string str1, string str2)
         {
             ArgumentNullException.ThrowIfNull(str1, nameof(str1));
             ArgumentNullException.ThrowIfNull(str2, nameof(str2));
@@ -44,7 +44,7 @@
             return prevCost[str1.Length];
         }
 
-        public double GetJaroWinklerDistance(
+        public static double GetJaroWinklerDistance(
             string str1,
             string str2,
             double weightThreshold = 0.7,

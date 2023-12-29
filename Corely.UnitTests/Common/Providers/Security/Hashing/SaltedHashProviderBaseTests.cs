@@ -1,5 +1,4 @@
-﻿using Corely.Common.Providers.Security.Exceptions;
-using Corely.Common.Providers.Security.Hashing;
+﻿using Corely.Common.Providers.Security.Hashing;
 
 namespace Corely.UnitTests.Common.Providers.Security.Hashing
 {
@@ -46,29 +45,33 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         [Fact]
         public void NullHashTypeCode_ShouldThrowArgumentNullException_OnBuild()
         {
-            static void act() => new NullTypeCodeMockHashProvider();
-            Assert.Throws<ArgumentNullException>(act);
+            var exception = Record.Exception(() => new NullTypeCodeMockHashProvider());
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentNullException>(exception);
         }
 
         [Fact]
         public void EmptyHashTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            static void act() => new EmptyTypeCodeMockHashProvider();
-            Assert.Throws<ArgumentException>(act);
+            var exception = Record.Exception(() => new EmptyTypeCodeMockHashProvider());
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
         }
 
         [Fact]
         public void WhitespaceHashTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            static void act() => new WhitespaceTypeCodeMockHashProvider();
-            Assert.Throws<ArgumentException>(act);
+            var exception = Record.Exception(() => new WhitespaceTypeCodeMockHashProvider());
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
         }
 
         [Fact]
         public void ColonHashTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            static void act() => new ColonTypeCodeMockHashProvider();
-            Assert.Throws<HashProviderException>(act);
+            var exception = Record.Exception(() => new ColonTypeCodeMockHashProvider());
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
         }
 
         [Fact]

@@ -33,7 +33,7 @@ namespace Corely.Common.Providers.Security.Hashing
             return FormatHashedValue(salt, hashedValue);
         }
 
-        private byte[] CreateSalt()
+        private static byte[] CreateSalt()
         {
             byte[] salt = new byte[SALT_SIZE];
             using (var rng = RandomNumberGenerator.Create())

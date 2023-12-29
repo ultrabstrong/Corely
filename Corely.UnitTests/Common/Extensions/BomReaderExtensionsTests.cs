@@ -14,9 +14,6 @@ namespace Corely.UnitTests.Common.Extensions
 
         public static IEnumerable<object[]> GetEncodingTestData()
         {
-#pragma warning disable SYSLIB0001 // Type or member is obsolete
-            yield return new object[] { new byte[] { 0x2b, 0x2f, 0x76 }, Encoding.UTF7 };
-#pragma warning restore SYSLIB0001 // Type or member is obsolete
             yield return new object[] { new byte[] { 0xef, 0xbb, 0xbf }, new UTF8Encoding(true) };
             yield return new object[] { new byte[] { 0xff, 0xfe, 0x00, 0x00 }, Encoding.UTF32 }; //UTF-32LE
             yield return new object[] { new byte[] { 0xff, 0xfe }, Encoding.Unicode }; //UTF-16LE

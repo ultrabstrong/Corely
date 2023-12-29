@@ -5,6 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Private variables should begin with underscore", Scope = "module")]
-[assembly: SuppressMessage("Performance", "SYSLIB1045:Convert to 'GeneratedRegexAttribute'.", Justification = "This is less clear than just using Regex", Scope = "module")]
-[assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Marking method static just because it doesn't reference local variables provides more confusion than help", Scope = "module")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Private event field names should be prefixed with '_' to conform with private field naming conventions", Scope = "module")]

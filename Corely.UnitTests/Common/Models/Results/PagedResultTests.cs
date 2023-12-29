@@ -18,13 +18,14 @@ namespace Corely.UnitTests.Common.Models.Results
             _pagedResponse = new PagedResult<object>(0, 10);
         }
 
-        [Fact]
-        public void PagedResponse_ShouldThrowErrors_WithInvalidConstructorArgs()
+        [Theory]
+        [InlineData(-1, 10)]
+        [InlineData(0, 0)]
+        public void PagedResponse_ShouldThrowErrors_WithInvalidConstructorArgs(int skip, int take)
         {
-            void act1() => new PagedResult<object>(-1, 10);
-            Assert.Throws<ArgumentOutOfRangeException>(act1);
-            void act2() => new PagedResult<object>(0, 0);
-            Assert.Throws<ArgumentOutOfRangeException>(act2);
+            var exception = Record.Exception(() => new PagedResult<object>(skip, take));
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentOutOfRangeException>(exception);
         }
 
         [Fact]

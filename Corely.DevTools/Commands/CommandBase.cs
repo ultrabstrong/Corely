@@ -151,22 +151,22 @@ namespace Corely.DevTools.Commands
             this.Invoke(_helpFlag);
         }
 
-        protected void Success(string message)
+        protected static void Success(string message)
         {
             Console.WriteLine(message, ConsoleColor.Green);
         }
 
-        protected void Warn(string message)
+        protected static void Warn(string message)
         {
             WriteColored(message, ConsoleColor.Yellow);
         }
 
-        protected void Error(string message)
+        protected static void Error(string message)
         {
             Console.WriteLine(message, ConsoleColor.Red);
         }
 
-        protected void WriteColored(string message, ConsoleColor color)
+        protected static void WriteColored(string message, ConsoleColor color)
         {
             Console.ForegroundColor = color;
             Console.WriteLine(message);

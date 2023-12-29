@@ -29,26 +29,32 @@ namespace Corely.UnitTests.DataAccess
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
         public void GenericRepoFactoryConstructor_ThrowsException_WhenConnectionNameIsInvalid(string connectionName)
         {
-            void act() => new GenericRepoFactory<object>(
+            var exception = Record.Exception(() => new GenericRepoFactory<object>(
                 _loggerFactory,
                 new DataAccessConnection<object>(
                     connectionName,
-                    _fixture.Create<object>()));
+                    _fixture.Create<object>())));
+
+            Assert.NotNull(exception);
 
             if (connectionName == null)
-                Assert.Throws<ArgumentNullException>(act);
+            {
+                Assert.IsType<ArgumentNullException>(exception);
+            }
             else
-                Assert.Throws<ArgumentException>(act);
+            {
+                Assert.IsType<ArgumentException>(exception);
+            }
         }
 
         [Fact]
         public void GenericRepoFactoryConstructor_ThrowsException_WhenConnectionIsNull()
         {
-            void act() => new GenericRepoFactory<object>(
+            var exception = Record.Exception(() => new GenericRepoFactory<object>(
                 _loggerFactory,
-                null);
-
-            Assert.Throws<NullReferenceException>(act);
+                null));
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentNullException>(exception);
         }
 
         [Theory, MemberData(nameof(CreateAccountManagementRepoFactoryTestData))]

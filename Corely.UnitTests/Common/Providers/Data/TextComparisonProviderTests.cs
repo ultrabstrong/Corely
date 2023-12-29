@@ -4,13 +4,11 @@ namespace Corely.UnitTests.Common.Providers.Data
 {
     public class TextComparisonProviderTests
     {
-        private readonly TextComparisonProvider _textComparisonProvider = new();
-
         [Theory, MemberData(nameof(GetLevenshteinEditDistanceTestData))]
         public void GetLevenshteinEditDistance_ShouldReturnCorrectValue(
             string str1, string str2, int expected)
         {
-            var actual = _textComparisonProvider.GetLevenshteinEditDistance(str1, str2);
+            var actual = TextComparisonProvider.GetLevenshteinEditDistance(str1, str2);
             Assert.Equal(expected, actual);
         }
 
@@ -29,7 +27,7 @@ namespace Corely.UnitTests.Common.Providers.Data
         public void GetJaroWinklerDistance_ShouldReturnCorrectValue(
                        string str1, string str2, double expected)
         {
-            var actual = _textComparisonProvider.GetJaroWinklerDistance(str1, str2);
+            var actual = TextComparisonProvider.GetJaroWinklerDistance(str1, str2);
             Assert.Equal(expected, actual);
         }
 
