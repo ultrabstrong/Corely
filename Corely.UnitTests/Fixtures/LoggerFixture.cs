@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Serilog;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Corely.UnitTests.Fixtures
 {
@@ -9,8 +9,7 @@ namespace Corely.UnitTests.Fixtures
 
         public LoggerFixture()
         {
-            var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-            _loggerFactory = LoggerFactory.Create(builder => builder.AddSerilog(logger));
+            _loggerFactory = NullLoggerFactory.Instance;
         }
 
         public ILoggerFactory GetLoggerFactory()

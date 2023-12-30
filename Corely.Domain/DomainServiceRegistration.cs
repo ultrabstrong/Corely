@@ -1,6 +1,5 @@
-﻿using Corely.Domain.Services.Users;
-using Corely.Domain.Validators.FluentValidators.Users;
-using FluentValidation;
+﻿using Corely.Domain.Mappers;
+using Corely.Domain.Mappers.AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.Domain
@@ -10,9 +9,10 @@ namespace Corely.Domain
         public static void AddDomainServices(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(DomainServiceRegistration).Assembly);
-            services.AddValidatorsFromAssemblyContaining<UserValidator>(includeInternalTypes: true);
+            services.AddScoped<IMapProvider, AutoMapperMapProvider>();
+            //services.AddValidatorsFromAssemblyContaining<UserValidator>(includeInternalTypes: true);
 
-            services.AddTransient<IUserService, UserService>();
+            //services.AddScoped<IUserService, UserService>();
         }
     }
 }

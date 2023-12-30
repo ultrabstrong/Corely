@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Serilog.Core;
 
 namespace ConsoleTest
 {
@@ -7,7 +8,7 @@ namespace ConsoleTest
 #pragma warning disable IDE0052 // Remove unread private members
         private static readonly string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         private static readonly string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-        private static readonly ILogger logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+        private static readonly Logger logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 #pragma warning restore IDE0052 // Remove unread private members
 
 
@@ -15,13 +16,13 @@ namespace ConsoleTest
         {
             try
             {
-                Console.WriteLine("Done!");
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                logger.Error(ex, "An error occurred");
             }
-            Console.WriteLine("Press any key to exit...");
+            logger.Information("Program finished. Press any key to exit.");
             Console.ReadKey();
         }
     }
