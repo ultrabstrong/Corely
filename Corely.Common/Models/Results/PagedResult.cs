@@ -24,7 +24,7 @@
                 _onGetNextChunk -= value;
             }
         }
-        private event GetNextChunkDelegate _onGetNextChunk;
+        private event GetNextChunkDelegate _onGetNextChunk = null!;
 
         public PagedResult(int skip, int take)
         {

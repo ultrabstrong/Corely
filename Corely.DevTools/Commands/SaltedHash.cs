@@ -6,10 +6,10 @@ namespace Corely.DevTools.Commands
     internal class SaltedHash : CommandBase
     {
         [Argument("Hash type to use", false)]
-        private string HashType { get; init; }
+        private string HashType { get; init; } = null!;
 
         [Argument("Value to hash", false)]
-        private string Value { get; init; }
+        private string Value { get; init; } = null!;
 
         public SaltedHash() : base("shash", "Salted hash operations", "Default: List hash types if no argument or option is provided")
         {

@@ -16,7 +16,7 @@ namespace Corely.UnitTests.Common.Providers.Http.Builders
         [Fact]
         public void HttpContentBuilder_Build_ShouldThrowArgumentNullException()
         {
-            void act() => _builder.Build(null as IHttpContent<string>);
+            void act() => _builder.Build((null as IHttpContent<string>)!);
             Assert.Throws<ArgumentNullException>(act);
         }
 

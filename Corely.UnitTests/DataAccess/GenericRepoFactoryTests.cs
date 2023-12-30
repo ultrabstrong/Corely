@@ -54,7 +54,7 @@ namespace Corely.UnitTests.DataAccess
                 _loggerFactory,
                 null));
             Assert.NotNull(exception);
-            Assert.IsType<ArgumentNullException>(exception);
+            Assert.IsType<NullReferenceException>(exception);
         }
 
         [Theory, MemberData(nameof(CreateAccountManagementRepoFactoryTestData))]

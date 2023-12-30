@@ -9,8 +9,8 @@ namespace Corely.Common.Providers.Http.Models
         private readonly string _requestUri = requestUri.ThrowIfNullOrWhiteSpace(nameof(requestUri));
         private readonly HttpMethod _httpMethod = httpMethod.ThrowIfNull(nameof(httpMethod));
 
-        public IHttpParameters Parameters { get; set; }
-        public Dictionary<string, string> Headers { get; set; }
+        public IHttpParameters Parameters { get; set; } = null!;
+        public Dictionary<string, string> Headers { get; set; } = null!;
 
         public HttpRequestMessage CreateHttpRequestMessage()
         {

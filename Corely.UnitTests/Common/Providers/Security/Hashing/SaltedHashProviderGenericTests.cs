@@ -75,7 +75,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         [InlineData("", null)]
         public void Verify_ShouldThrowArgumentNullException_WithNull(string? value, string? hash)
         {
-            void act() => HashProvider.Verify(value, hash);
+            void act() => HashProvider.Verify(value!, hash!);
             Assert.Throws<ArgumentNullException>(act);
         }
 

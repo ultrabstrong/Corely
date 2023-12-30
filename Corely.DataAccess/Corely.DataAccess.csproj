@@ -6,6 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn />
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Corely.Common\Corely.Common.csproj" />
     <ProjectReference Include="..\Corely.Domain\Corely.Domain.csproj" />

@@ -4,7 +4,7 @@ namespace Corely.Domain.Exceptions
 {
     public sealed class ValidationException : Exception
     {
-        public ValidationResult ValidationResult { get; init; }
+        public ValidationResult? ValidationResult { get; init; }
 
         public ValidationException() : base()
         {

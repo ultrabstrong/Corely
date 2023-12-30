@@ -1,4 +1,5 @@
-﻿using Corely.Common.Providers.Security.Hashing;
+﻿using Corely.Common.Providers.Security.Exceptions;
+using Corely.Common.Providers.Security.Hashing;
 
 namespace Corely.UnitTests.Common.Providers.Security.Hashing
 {
@@ -12,9 +13,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
 
         private class NullTypeCodeMockHashProvider : SaltedHashProviderBase
         {
-#pragma warning disable CS8603 // Possible null reference return.
-            public override string HashTypeCode => null;
-#pragma warning restore CS8603 // Possible null reference return.
+            public override string HashTypeCode => null!;
             protected override byte[] HashInternal(byte[] value) => value;
         }
 
@@ -71,7 +70,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         {
             var exception = Record.Exception(() => new ColonTypeCodeMockHashProvider());
             Assert.NotNull(exception);
-            Assert.IsType<ArgumentException>(exception);
+            Assert.IsType<HashProviderException>(exception);
         }
 
         [Fact]

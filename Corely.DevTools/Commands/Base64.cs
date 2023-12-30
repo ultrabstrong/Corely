@@ -1,15 +1,15 @@
-﻿using Corely.DevTools.Attributes;
-using Corely.Common.Extensions;
+﻿using Corely.Common.Extensions;
+using Corely.DevTools.Attributes;
 
 namespace Corely.DevTools.Commands
 {
     internal class Base64 : CommandBase
     {
         [Option("-e", "--encode", Description = "Value to encode")]
-        private string Encode { get; init; }
+        private string Encode { get; init; } = null!;
 
         [Option("-d", "--decode", Description = "Value to decode")]
-        private string Decode { get; init; }
+        private string Decode { get; init; } = null!;
 
         public Base64() : base("base64", "Base64 operations")
         {

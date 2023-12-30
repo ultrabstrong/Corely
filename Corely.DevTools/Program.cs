@@ -13,7 +13,10 @@ namespace Corely.DevTools
                 var rootCommand = new RootCommand();
                 foreach (var command in GetCommands())
                 {
-                    rootCommand.AddCommand(command);
+                    if (command != null)
+                    {
+                        rootCommand.AddCommand(command);
+                    }
                 }
                 rootCommand.InvokeAsync(args).Wait();
             }
@@ -32,12 +35,14 @@ namespace Corely.DevTools
                     type.Namespace == "Corely.DevTools.Commands" &&
                     type.IsSubclassOf(typeof(CommandBase)))
                 .Select(type => Activator.CreateInstance(type) as CommandBase)
-                .Where(commandInstances => commandInstances != null)
                 .ToList();
 
             foreach (var command in commandInstances)
             {
-                AddSubCommands(command);
+                if (command != null)
+                {
+                    AddSubCommands(command);
+                }
             }
 
             return commandInstances;
@@ -50,13 +55,15 @@ namespace Corely.DevTools
                 .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(type => type.IsSubclassOf(typeof(CommandBase)))
                 .Select(type => Activator.CreateInstance(type) as CommandBase)
-                .Where(commandInstances => commandInstances != null)
                 .ToList();
 
             foreach (var subCommand in subCommandInstances)
             {
-                AddSubCommands(subCommand);
-                command.AddCommand(subCommand);
+                if (subCommand != null)
+                {
+                    AddSubCommands(subCommand);
+                    command.AddCommand(subCommand);
+                }
             }
         }
     }

@@ -23,7 +23,7 @@ namespace Corely.UnitTests.Common.Extensions
         [Fact]
         public void ThrowIfAnyNull_ShouldThrowException_WithNullString()
         {
-            string[] values = new[] { _fixture.Create<string>(), null };
+            string[] values = [_fixture.Create<string>(), null];
 
             void act() => values.ThrowIfAnyNull(nameof(values));
 
@@ -43,7 +43,7 @@ namespace Corely.UnitTests.Common.Extensions
         [Fact]
         public void ThrowIfAnyNull_ShouldThrowException_WithNullObject()
         {
-            TestClass[] values = new[] { _fixture.Create<TestClass>(), null };
+            TestClass?[] values = [_fixture.Create<TestClass>(), null];
 
             void act() => values.ThrowIfAnyNull(nameof(values));
 

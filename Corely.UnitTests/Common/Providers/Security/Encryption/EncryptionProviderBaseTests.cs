@@ -1,4 +1,5 @@
 ﻿using Corely.Common.Providers.Security.Encryption;
+using Corely.Common.Providers.Security.Exceptions;
 using Corely.Common.Providers.Security.Keys;
 
 namespace Corely.UnitTests.Common.Providers.Security.Encryption
@@ -19,8 +20,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
             IKeyStoreProvider keyStoreProvider)
             : EncryptionProviderBase(keyStoreProvider)
         {
-#pragma warning disable CS8603 // Possible null reference return.
-            public override string EncryptionTypeCode => null;
+            public override string EncryptionTypeCode => null!;
 
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
@@ -89,7 +89,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
         {
             var exception = Record.Exception(() => new ColonMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object));
             Assert.NotNull(exception);
-            Assert.IsType<ArgumentException>(exception);
+            Assert.IsType<EncryptionProviderException>(exception);
         }
 
         [Fact]

@@ -7,19 +7,19 @@ namespace Corely.DevTools.Commands
     internal class Encryption : CommandBase
     {
         [Argument("Key to validate. Also used for encryption and decryption.", false)]
-        private string Key { get; init; }
+        private string Key { get; init; } = null!;
 
         [Argument("Code for encryption type to use", false)]
-        private string EncryptionTypeCode { get; init; }
+        private string EncryptionTypeCode { get; init; } = null!;
 
         [Option("-c", "--create", Description = "Create a new key")]
         private bool Create { get; init; }
 
         [Option("-e", "--encrypt", Description = "Encrypt a value")]
-        private string ToEncrypt { get; init; }
+        private string ToEncrypt { get; init; } = null!;
 
         [Option("-d", "--decrypt", Description = "Decrypt a value")]
-        private string ToDecrypt { get; init; }
+        private string ToDecrypt { get; init; } = null!;
 
         public Encryption() : base("encrypt", "Encryption operations", "Default: List encryption types if no argument or option is provided")
         {
