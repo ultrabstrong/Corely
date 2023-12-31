@@ -6,11 +6,16 @@
         where TDestination : class
     {
         [Fact]
-        public void MapOtherDirectionWithoutThrowing()
+        public void ReverseMap_ShouldMapDestinationToSource()
         {
-            var destination = GetMock<TDestination>();
-            _mapper.Map<TSource>(destination);
+            var destination = GetDestination();
+            var modifiedDestination = ApplyDestinatonModifications(destination);
+            _mapper.Map<TSource>(modifiedDestination);
         }
+
+        protected virtual TDestination GetDestination() => GetMock<TDestination>();
+
+        protected virtual TDestination ApplyDestinatonModifications(TDestination destination) => destination;
 
         protected virtual object[] GetDestinationParams() => [];
     }

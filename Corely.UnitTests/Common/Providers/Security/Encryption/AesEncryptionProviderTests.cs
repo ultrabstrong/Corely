@@ -18,7 +18,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
         [Fact]
         public override void EncryptionTypeCode_ShouldReturnCorrectCode_ForImplementation()
         {
-            Assert.Equal(EncryptionProviderConstants.AES, _aesEncryptionProvider.EncryptionTypeCode);
+            Assert.Equal(EncryptionProviderConstants.AES_CODE, _aesEncryptionProvider.EncryptionTypeCode);
         }
 
         public override IEncryptionProvider GetEncryptionProvider(IKeyStoreProvider keyStoreProvider)

@@ -4,7 +4,7 @@ namespace Corely.Common.Providers.Security.Hashing
 {
     internal sealed class Sha512SaltedHashProvider : SaltedHashProviderBase
     {
-        public override string HashTypeCode => HashProviderConstants.SALTED_SHA512;
+        public override string HashTypeCode => HashProviderConstants.SALTED_SHA512_CODE;
 
         protected override byte[] HashInternal(byte[] value)
         {

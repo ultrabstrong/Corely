@@ -11,7 +11,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         [Fact]
         public override void HashTypeCode_ShouldReturnCorrectCode_ForImplementation()
         {
-            Assert.Equal(HashProviderConstants.SALTED_SHA512, _sha512SaltedHashProvider.HashTypeCode);
+            Assert.Equal(HashProviderConstants.SALTED_SHA512_CODE, _sha512SaltedHashProvider.HashTypeCode);
         }
     }
 }

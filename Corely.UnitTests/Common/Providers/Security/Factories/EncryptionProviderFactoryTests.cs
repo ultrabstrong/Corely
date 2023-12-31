@@ -123,7 +123,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         }
 
         [Theory]
-        [InlineData(EncryptionProviderConstants.AES, typeof(AesEncryptionProvider))]
+        [InlineData(EncryptionProviderConstants.AES_CODE, typeof(AesEncryptionProvider))]
         public void GetProvider_ShouldReturnEncryptionProvider(string code, Type expectedType)
         {
             var encryptionProvider = _encryptionProviderFactory.GetProvider(code);
@@ -145,7 +145,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         }
 
         [Theory]
-        [InlineData(EncryptionProviderConstants.AES, typeof(AesEncryptionProvider))]
+        [InlineData(EncryptionProviderConstants.AES_CODE, typeof(AesEncryptionProvider))]
         public void GetProviderForDecrypting_ShouldReturnEncryptionProvider(string code, Type expectedType)
         {
             var fixture = new Fixture();

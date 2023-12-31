@@ -8,8 +8,8 @@ namespace Corely.Common.Providers.Security.Factories
     {
         private readonly Dictionary<string, IHashProvider> _providers = new()
         {
-            { HashProviderConstants.SALTED_SHA256, new Sha256SaltedHashProvider() },
-            { HashProviderConstants.SALTED_SHA512, new Sha512SaltedHashProvider() }
+            { HashProviderConstants.SALTED_SHA256_CODE, new Sha256SaltedHashProvider() },
+            { HashProviderConstants.SALTED_SHA512_CODE, new Sha512SaltedHashProvider() }
         };
 
         public void AddProvider(string providerCode, IHashProvider provider)

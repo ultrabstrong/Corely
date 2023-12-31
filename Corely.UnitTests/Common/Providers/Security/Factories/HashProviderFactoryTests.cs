@@ -121,8 +121,8 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         }
 
         [Theory]
-        [InlineData(HashProviderConstants.SALTED_SHA256, typeof(Sha256SaltedHashProvider))]
-        [InlineData(HashProviderConstants.SALTED_SHA512, typeof(Sha512SaltedHashProvider))]
+        [InlineData(HashProviderConstants.SALTED_SHA256_CODE, typeof(Sha256SaltedHashProvider))]
+        [InlineData(HashProviderConstants.SALTED_SHA512_CODE, typeof(Sha512SaltedHashProvider))]
         public void GetProvider_ShouldReturnProvider(string providerCode, Type expectedType)
         {
             var hashProvider = _hashProviderFactory.GetProvider(providerCode);
@@ -144,8 +144,8 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         }
 
         [Theory]
-        [InlineData(HashProviderConstants.SALTED_SHA256, typeof(Sha256SaltedHashProvider))]
-        [InlineData(HashProviderConstants.SALTED_SHA512, typeof(Sha512SaltedHashProvider))]
+        [InlineData(HashProviderConstants.SALTED_SHA256_CODE, typeof(Sha256SaltedHashProvider))]
+        [InlineData(HashProviderConstants.SALTED_SHA512_CODE, typeof(Sha512SaltedHashProvider))]
         public void GetProviderToVerify_ShouldReturnHashProvider(string providerCode, Type expectedType)
         {
             var fixture = new Fixture();

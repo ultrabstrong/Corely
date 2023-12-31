@@ -5,7 +5,7 @@ namespace Corely.Common.Providers.Security.Encryption
 {
     internal sealed class AesEncryptionProvider : EncryptionProviderBase
     {
-        public override string EncryptionTypeCode => EncryptionProviderConstants.AES;
+        public override string EncryptionTypeCode => EncryptionProviderConstants.AES_CODE;
 
         public AesEncryptionProvider(IKeyStoreProvider keyStoreProvider)
             : base(keyStoreProvider) { }

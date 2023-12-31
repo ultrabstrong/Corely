@@ -74,12 +74,12 @@ namespace ConsoleTest
             services.AddScoped<IEncryptionProviderFactory, EncryptionProviderFactory>();
             services.AddScoped(serviceProvider => serviceProvider
                 .GetRequiredService<IEncryptionProviderFactory>()
-                .GetProvider(EncryptionProviderConstants.AES));
+                .GetProvider(EncryptionProviderConstants.AES_CODE));
 
             services.AddScoped<IHashProviderFactory, HashProviderFactory>();
             services.AddScoped(serviceProvider => serviceProvider
                 .GetRequiredService<IHashProviderFactory>()
-                .GetProvider(HashProviderConstants.SALTED_SHA256));
+                .GetProvider(HashProviderConstants.SALTED_SHA256_CODE));
         }
 
         private static void AddDataAccessServices(IServiceCollection services)

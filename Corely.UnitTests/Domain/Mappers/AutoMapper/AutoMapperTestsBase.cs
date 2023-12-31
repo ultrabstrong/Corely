@@ -1,6 +1,9 @@
 ﻿using AutoFixture;
 using AutoMapper;
-using Corely.Domain.Mappers.AutoMapper;
+using Corely.Common.Providers.Security.Factories;
+using Corely.Common.Providers.Security.Keys;
+using Corely.Domain.Mappers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper
 {
@@ -9,18 +12,39 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper
     {
         protected readonly IMapper _mapper;
 
+
         protected AutoMapperTestBase()
         {
-            var config = new MapperConfiguration(cfg => cfg.AddMaps(typeof(AutoMapperMapProvider)));
-            _mapper = config.CreateMapper();
+            var services = new ServiceCollection();
+
+            services.AddAutoMapper(typeof(IMapProvider).Assembly);
+            AddSecurityServices(services);
+
+            _mapper = services.BuildServiceProvider()
+                .GetRequiredService<IMapper>();
+        }
+
+        private static void AddSecurityServices(IServiceCollection services)
+        {
+            var key = new AesKeyProvider().CreateKey();
+            services.AddScoped<IKeyStoreProvider, InMemoryKeyStoreProvider>(_ =>
+                new InMemoryKeyStoreProvider(key));
+
+            services.AddScoped<IEncryptionProviderFactory, EncryptionProviderFactory>();
+            services.AddScoped<IHashProviderFactory, HashProviderFactory>();
         }
 
         [Fact]
-        public void MapWithoutThrowing()
+        public void Map_ShouldMapSourceToDestination()
         {
-            var source = GetMock<TSource>();
-            _mapper.Map<TDestination>(source);
+            var source = GetSource();
+            var modifiedSource = ApplySourceModifications(source);
+            _mapper.Map<TDestination>(modifiedSource);
         }
+
+        protected virtual TSource GetSource() => GetMock<TSource>();
+
+        protected virtual TSource ApplySourceModifications(TSource source) => source;
 
         protected T GetMock<T>() where T : class
         {
@@ -33,7 +57,7 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper
                 return new Fixture().Create<T>();
             }
         }
-
         protected virtual object[] GetSourceParams() => [];
+
     }
 }

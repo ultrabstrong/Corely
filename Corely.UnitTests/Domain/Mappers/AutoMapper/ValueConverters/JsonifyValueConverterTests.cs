@@ -8,7 +8,7 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper.ValueConverters
     {
         private class TestClass
         {
-            public string Name { get; set; }
+            public string? Name { get; set; }
         }
 
         private readonly JsonifyValueConverter<TestClass> _converter = new();

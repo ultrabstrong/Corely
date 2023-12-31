@@ -2,7 +2,7 @@
 {
     public static class HashProviderConstants
     {
-        public const string SALTED_SHA256 = "00";
-        public const string SALTED_SHA512 = "01";
+        public const string SALTED_SHA256_CODE = "00";
+        public const string SALTED_SHA512_CODE = "01";
     }
 }

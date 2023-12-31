@@ -13,7 +13,7 @@ namespace Corely.Common.Providers.Security.Factories
         public EncryptionProviderFactory(IKeyStoreProvider keyStoreProvider)
         {
             _keyStoreProvider = keyStoreProvider.ThrowIfNull(nameof(keyStoreProvider));
-            _providers.Add(EncryptionProviderConstants.AES, new AesEncryptionProvider(_keyStoreProvider));
+            _providers.Add(EncryptionProviderConstants.AES_CODE, new AesEncryptionProvider(_keyStoreProvider));
         }
 
         public void AddProvider(string providerCode, IEncryptionProvider provider)

@@ -2,6 +2,6 @@
 {
     public static class EncryptionProviderConstants
     {
-        public const string AES = "00";
+        public const string AES_CODE = "00";
     }
 }
