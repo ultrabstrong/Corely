@@ -3,10 +3,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories
 {
-    public class GenericRepoFactory<T>(
-        ILoggerFactory loggerFactory,
-        IDataAccessConnection<T> connection)
-        : GenericRepoFactoryBase<T>(loggerFactory, connection)
+    public class GenericRepoFactory<T> : GenericRepoFactoryBase<T>
     {
+        public GenericRepoFactory(
+            ILoggerFactory loggerFactory,
+            IDataAccessConnection<T> connection)
+            : base(loggerFactory, connection) { }
     }
 }

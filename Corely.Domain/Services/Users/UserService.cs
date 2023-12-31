@@ -10,17 +10,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.Domain.Services.Users
 {
-    internal class UserService(
-        IUserRepo userRepo,
-        IValidationProvider validationProvider,
-        IMapProvider mapProvider,
-        ILogger<UserService> logger)
-        : IUserService
+    internal class UserService : IUserService
     {
-        private readonly IUserRepo _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
-        private readonly IValidationProvider _validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
-        private readonly IMapProvider _mapProvider = mapProvider;
-        private readonly ILogger<UserService> _logger = logger;
+        private readonly IUserRepo _userRepo;
+        private readonly IValidationProvider _validationProvider;
+        private readonly IMapProvider _mapProvider;
+        private readonly ILogger<UserService> _logger;
+
+        public UserService(
+            IUserRepo userRepo,
+            IValidationProvider validationProvider,
+            IMapProvider mapProvider,
+            ILogger<UserService> logger)
+        {
+            _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
+            _validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
+            _mapProvider = mapProvider.ThrowIfNull(nameof(mapProvider));
+            _logger = logger.ThrowIfNull(nameof(logger));
+        }
 
         public void Create(User user, BasicAuth basicAuth)
         {

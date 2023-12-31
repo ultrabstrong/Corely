@@ -8,13 +8,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories.AccountManagement
 {
-    internal class EfMySqlAccountManagementRepoFactory(
-        ILoggerFactory loggerFactory,
-        string connection)
-        : IAccountManagementRepoFactory
+    internal class EfMySqlAccountManagementRepoFactory : IAccountManagementRepoFactory
     {
-        private readonly ILoggerFactory _loggerFactory = loggerFactory;
-        private readonly string _connection = connection;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly string _connection;
+
+        public EfMySqlAccountManagementRepoFactory(
+            ILoggerFactory loggerFactory,
+            string connection)
+        {
+            _loggerFactory = loggerFactory;
+            _connection = connection;
+        }
 
         private AccountManagementDbContext CreateDbContext()
         {

@@ -6,7 +6,7 @@ using FluentValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace Corely.Domain.Mappers.AutoMapper.Profiles
 {
-    public class ValidationResultProfile : Profile
+    public sealed class ValidationResultProfile : Profile
     {
         public ValidationResultProfile()
         {

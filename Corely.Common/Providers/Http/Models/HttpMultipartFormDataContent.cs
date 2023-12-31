@@ -1,8 +1,9 @@
-﻿namespace Corely.Common.Providers.Http.Models
+﻿
+namespace Corely.Common.Providers.Http.Models
 {
-    public sealed class HttpMultipartFormDataContent(
-        Dictionary<string, string> content)
-        : HttpDictionaryContentBase(content)
+    public sealed class HttpMultipartFormDataContent : HttpDictionaryContentBase
     {
+        public HttpMultipartFormDataContent(Dictionary<string, string> content)
+            : base(content) { }
     }
 }

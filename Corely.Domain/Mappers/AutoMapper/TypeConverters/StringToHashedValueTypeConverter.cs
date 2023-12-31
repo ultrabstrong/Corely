@@ -4,11 +4,14 @@ using Corely.Common.Providers.Security.Factories;
 
 namespace Corely.Domain.Mappers.AutoMapper.TypeConverters
 {
-    public class StringToHashedValueTypeConverter(
-        IHashProviderFactory hashProviderFactory)
-        : ITypeConverter<string, IHashedValue>
+    public class StringToHashedValueTypeConverter : ITypeConverter<string, IHashedValue>
     {
-        private readonly IHashProviderFactory _hashProviderFactory = hashProviderFactory;
+        private readonly IHashProviderFactory _hashProviderFactory;
+
+        public StringToHashedValueTypeConverter(IHashProviderFactory hashProviderFactory)
+        {
+            _hashProviderFactory = hashProviderFactory;
+        }
 
         public IHashedValue Convert(string source, IHashedValue destination, ResolutionContext context)
         {

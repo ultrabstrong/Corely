@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
-using Corely.Common.Extensions;
 using FluentValidation;
 
 namespace Corely.Domain.Validators.FluentValidators
 {
-    public class FluentValidationProvider(IServiceProvider serviceProvider,
-        IMapper mapper) : IValidationProvider
+    public class FluentValidationProvider : IValidationProvider
     {
-        private readonly IServiceProvider _serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
-        private readonly IMapper _mapper = mapper.ThrowIfNull(nameof(mapper));
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IMapper _mapper;
+
+        public FluentValidationProvider(IServiceProvider serviceProvider, IMapper mapper)
+        {
+            _serviceProvider = serviceProvider;
+            _mapper = mapper;
+        }
 
         public ValidationResult Validate<T>(T model)
         {

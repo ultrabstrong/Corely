@@ -33,7 +33,7 @@ namespace Corely.UnitTests.Common.Models.Security
             var encryptionProvider = new AesEncryptionProvider(keyStoreProvider);
             var value = _fixture.Create<string>();
 
-            var encryptedValue = new EncryptedValue(encryptionProvider, value);
+            var encryptedValue = new EncryptedValue(encryptionProvider) { Secret = value };
 
             Assert.Equal(value, encryptedValue.Secret);
         }

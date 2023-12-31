@@ -2,11 +2,18 @@
 
 namespace Corely.Domain.Mappers.AutoMapper
 {
-    public class AutoMapperMapProvider(IMapper mapper) : IMapProvider
+    public class AutoMapperMapProvider : IMapProvider
     {
+        private readonly IMapper _mapper;
+
+        public AutoMapperMapProvider(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         public TDestination Map<TDestination>(object source)
         {
-            return mapper.Map<TDestination>(source);
+            return _mapper.Map<TDestination>(source);
         }
     }
 }

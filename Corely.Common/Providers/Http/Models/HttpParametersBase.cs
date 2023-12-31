@@ -2,13 +2,17 @@
 
 namespace Corely.Common.Providers.Http.Models
 {
-    public abstract class HttpParametersBase(
-        Dictionary<string, string> parameters,
-        Dictionary<string, string> tempParameters)
-        : IHttpParameters
+    public abstract class HttpParametersBase : IHttpParameters
     {
-        private readonly Dictionary<string, string> _parameters = parameters.ThrowIfNull(nameof(parameters));
-        private readonly Dictionary<string, string> _tempParameters = tempParameters.ThrowIfNull(nameof(tempParameters));
+        private readonly Dictionary<string, string> _parameters;
+        private readonly Dictionary<string, string> _tempParameters;
+
+        public HttpParametersBase(Dictionary<string, string> parameters,
+            Dictionary<string, string> tempParameters)
+        {
+            _parameters = parameters.ThrowIfNull(nameof(parameters));
+            _tempParameters = tempParameters.ThrowIfNull(nameof(tempParameters));
+        }
 
         public HttpParametersBase()
             : this([])

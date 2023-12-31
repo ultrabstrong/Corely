@@ -4,7 +4,7 @@ using Corely.Domain.Mappers.AutoMapper.TypeConverters;
 
 namespace Corely.Domain.Mappers.AutoMapper.Profiles.Common
 {
-    public class HashedValueProfile : Profile
+    public sealed class HashedValueProfile : Profile
     {
         public HashedValueProfile()
         {

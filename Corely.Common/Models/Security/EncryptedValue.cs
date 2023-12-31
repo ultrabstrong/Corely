@@ -3,24 +3,29 @@ using Corely.Common.Providers.Security.Encryption;
 
 namespace Corely.Common.Models.Security
 {
-    public class EncryptedValue(
-        IEncryptionProvider encryptionProvider,
-        string secret)
-        : IEncryptedValue
+    public class EncryptedValue : IEncryptedValue
     {
         private readonly object _lock = new();
-        private readonly IEncryptionProvider _encryptionProvider = encryptionProvider.ThrowIfNull(nameof(encryptionProvider));
-        public string Secret { get; private set; } = secret;
+        private readonly IEncryptionProvider _encryptionProvider;
 
         public EncryptedValue(IEncryptionProvider encryptionProvider)
-            : this(encryptionProvider, "") { }
+        {
+            _encryptionProvider = encryptionProvider.ThrowIfNull(nameof(encryptionProvider));
+        }
+
+        public string Secret
+        {
+            get => _secret;
+            init => _secret = value;
+        }
+        private string _secret = "";
 
         public void Set(string decryptedValue)
         {
             var encryptedValue = _encryptionProvider.Encrypt(decryptedValue);
             lock (_lock)
             {
-                Secret = encryptedValue;
+                _secret = encryptedValue;
             }
         }
 
@@ -31,7 +36,7 @@ namespace Corely.Common.Models.Security
 
         public void ReEncrypt()
         {
-            Secret = _encryptionProvider.ReEncrypt(Secret);
+            _secret = _encryptionProvider.ReEncrypt(Secret);
         }
     }
 }

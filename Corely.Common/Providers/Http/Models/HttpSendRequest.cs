@@ -2,12 +2,16 @@
 
 namespace Corely.Common.Providers.Http.Models
 {
-    public class HttpSendRequest(
-        string requestUri,
-        HttpMethod httpMethod)
+    public class HttpSendRequest
     {
-        private readonly string _requestUri = requestUri.ThrowIfNullOrWhiteSpace(nameof(requestUri));
-        private readonly HttpMethod _httpMethod = httpMethod.ThrowIfNull(nameof(httpMethod));
+        private readonly string _requestUri;
+        private readonly HttpMethod _httpMethod;
+
+        public HttpSendRequest(string requestUri, HttpMethod httpMethod)
+        {
+            _requestUri = requestUri.ThrowIfNullOrWhiteSpace(nameof(requestUri));
+            _httpMethod = httpMethod.ThrowIfNull(nameof(httpMethod));
+        }
 
         public IHttpParameters Parameters { get; set; } = null!;
         public Dictionary<string, string> Headers { get; set; } = null!;
