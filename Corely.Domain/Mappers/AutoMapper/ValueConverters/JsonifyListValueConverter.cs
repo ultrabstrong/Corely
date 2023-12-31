@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Corely.Domain.Mappers.AutoMapper.ValueConverters
 {
-    public class JsonifyListValueConverter<T> : IValueConverter<IEnumerable<T>, List<string>?>
+    internal class JsonifyListValueConverter<T> : IValueConverter<IEnumerable<T>, List<string>?>
     {
         public List<string>? Convert(IEnumerable<T> sourceMember, ResolutionContext context)
         {

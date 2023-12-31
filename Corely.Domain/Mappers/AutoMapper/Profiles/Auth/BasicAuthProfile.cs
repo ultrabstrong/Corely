@@ -4,7 +4,7 @@ using Corely.Domain.Models.Auth;
 
 namespace Corely.Domain.Mappers.AutoMapper.Profiles.Auth
 {
-    public sealed class BasicAuthProfile : Profile
+    internal sealed class BasicAuthProfile : Profile
     {
         public BasicAuthProfile()
         {

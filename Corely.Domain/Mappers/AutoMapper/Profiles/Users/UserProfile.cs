@@ -4,7 +4,7 @@ using Corely.Domain.Models.Users;
 
 namespace Corely.Domain.Mappers.AutoMapper.Profiles.Users
 {
-    public sealed class UserProfile : Profile
+    internal sealed class UserProfile : Profile
     {
         public UserProfile()
         {
