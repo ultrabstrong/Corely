@@ -12,7 +12,8 @@ namespace Corely.Domain.Mappers.AutoMapper.Profiles
         {
             CreateMap<FluentValidationResult, CorelyValidationResult>()
                 .ForMember(dest => dest.Errors, opt => opt
-                    .ConvertUsing<JsonifyListValueConverter<ValidationFailure>, List<ValidationFailure>>(src => src.Errors));
+                    .ConvertUsing<JsonifyListValueConverter<ValidationFailure>, List<ValidationFailure>>(src => src.Errors))
+                .ForMember(dest => dest.Message, opt => opt.Ignore());
         }
     }
 }

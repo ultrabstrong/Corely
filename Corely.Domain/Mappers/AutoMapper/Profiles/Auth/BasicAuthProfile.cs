@@ -8,7 +8,7 @@ namespace Corely.Domain.Mappers.AutoMapper.Profiles.Auth
     {
         public BasicAuthProfile()
         {
-            CreateMap<BasicAuth, BasicAuthEntity>()
+            CreateMap<BasicAuth, BasicAuthEntity>(MemberList.Source)
                 .ReverseMap();
         }
     }

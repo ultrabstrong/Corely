@@ -12,7 +12,6 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper
     {
         protected readonly IMapper _mapper;
 
-
         protected AutoMapperTestBase()
         {
             var services = new ServiceCollection();
