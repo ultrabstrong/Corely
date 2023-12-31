@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Corely.Domain.Entities.Auth;
+using Corely.Domain.Models.Auth;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Auth
 {
-    internal class BasicAuthProfileTests
+    public class BasicAuthProfileTests
+        : BidirectionalAutoMapperTestsBase<BasicAuth, BasicAuthEntity>
     {
     }
 }
