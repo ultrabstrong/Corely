@@ -1,12 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoFixture;
+using Corely.Common.Providers.Security.Encryption;
+using Corely.Common.Providers.Security.Factories;
+using Corely.Domain.Mappers.AutoMapper.TypeConverters;
+using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.TypeConverters
 {
-    internal class StringToEncryptedValueTypeConverterTests
+    public class StringToEncryptedValueTypeConverterTests
     {
+        private readonly StringToEncryptedValueTypeConverter _converter;
+        private readonly Fixture _fixture = new();
+
+        public StringToEncryptedValueTypeConverterTests()
+        {
+            var encryptionProvider = Mock.Of<IEncryptionProvider>();
+            var encryptionProviderFactory = Mock.Of<IEncryptionProviderFactory>(
+                f => f.GetProviderForDecrypting(It.IsAny<string>()) == encryptionProvider);
+
+            _converter = new(encryptionProviderFactory);
+        }
+
+        [Fact]
+        public void Convert_ShouldReturnEncryptedValue()
+        {
+            var value = _fixture.Create<string>();
+
+            var result = _converter.Convert(value, default, default);
+
+            Assert.Equal(value, result.Secret);
+        }
+
+        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
+        public void Convert_ShouldReturnNullEmptyOrWhitespace(string value)
+        {
+            var result = _converter.Convert(value, default, default);
+
+            Assert.Equal(value, result.Secret);
+        }
     }
 }

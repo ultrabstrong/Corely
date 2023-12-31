@@ -38,8 +38,4 @@
     <ProjectReference Include="..\Corely.Domain\Corely.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Domain\" />
-  </ItemGroup>
-
 </Project>

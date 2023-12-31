@@ -8,7 +8,7 @@ namespace Corely.Domain.Mappers.AutoMapper.Profiles.Common
     {
         public HashedValueProfile()
         {
-            CreateMap<IHashedValue, string>().ConvertUsing<HashedValueToStringTypeConverter>();
+            CreateMap<IHashedValue, string?>().ConvertUsing<HashedValueToStringTypeConverter>();
             CreateMap<string, IHashedValue>().ConvertUsing<StringToHashedValueTypeConverter>();
         }
     }

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Corely.Common.Models.Security;
+using Corely.Common.Providers.Security.Encryption;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Common
 {
-    internal class EncryptedValueProfileTests
+    public class EncryptedValueProfileTests
+        : BidirectionalAutoMapperTestsBase<EncryptedValue, string>
     {
+        protected override object[] GetSourceParams() => [Mock.Of<IEncryptionProvider>()];
     }
 }

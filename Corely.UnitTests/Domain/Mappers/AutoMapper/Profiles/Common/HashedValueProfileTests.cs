@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Corely.Common.Models.Security;
+using Corely.Common.Providers.Security.Hashing;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Common
 {
-    internal class HashedValueProfileTests
+    public class HashedValueProfileTests
+        : BidirectionalAutoMapperTestsBase<HashedValue, string>
     {
+        protected override object[] GetSourceParams() => [Mock.Of<IHashProvider>()];
     }
 }

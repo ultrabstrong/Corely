@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Corely.Domain.Entities.Users;
+using Corely.Domain.Models.Users;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Users
 {
-    internal class UserProfileTests
+    public class UserProfileTests
+        : BidirectionalAutoMapperTestsBase<User, UserEntity>
     {
     }
 }
