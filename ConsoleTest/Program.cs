@@ -1,10 +1,13 @@
 ﻿using Corely.Common.Models.Security;
+using Corely.Common.Providers.Security.Encryption;
+using Corely.Common.Providers.Security.Factories;
+using Corely.Common.Providers.Security.Hashing;
 using Corely.Common.Providers.Security.Keys;
 using Corely.DataAccess.Factories;
-using Corely.Domain;
 using Corely.Domain.Connections;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Mappers;
+using Corely.Domain.Mappers.AutoMapper;
 using Corely.Domain.Models.Auth;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,12 +30,18 @@ namespace ConsoleTest
             {
                 using var serviceProvider = CreateServiceProvider();
                 var mapper = serviceProvider.GetRequiredService<IMapProvider>();
-                mapper.Map<BasicAuthEntity>(new BasicAuth()
+                var hashProvider = serviceProvider.GetRequiredService<IHashProvider>();
+
+                var originalBasicAuth = new BasicAuth()
                 {
                     ModifiedUtc = DateTime.UtcNow,
-                    //Password = new HashedValue("password"),
+                    Password = new HashedValue(hashProvider).Set("password"),
                     Username = "username"
-                });
+                };
+
+                var mappedBasicAuthEntity = mapper.Map<BasicAuthEntity>(originalBasicAuth);
+                var mappedBasicAuth = mapper.Map<BasicAuth>(mappedBasicAuthEntity);
+                var isVerified = mappedBasicAuth.Password.Verify("password");
             }
             catch (Exception ex)
             {
@@ -46,26 +55,44 @@ namespace ConsoleTest
         {
             var services = new ServiceCollection();
 
-            var key = new AesKeyProvider().CreateKey();
-            var keyProvider = new InMemoryKeyStoreProvider(key);
-            services.AddSingleton<IKeyStoreProvider>(keyProvider);
+            services.AddLogging(builder => builder.AddSerilog(logger));
+            services.AddAutoMapper(typeof(IMapProvider).Assembly);
+            services.AddScoped<IMapProvider, AutoMapperMapProvider>();
 
+            AddSecurityServices(services);
+            AddDataAccessServices(services);
+
+            return services.BuildServiceProvider();
+        }
+
+        private static void AddSecurityServices(IServiceCollection services)
+        {
+            var key = new AesKeyProvider().CreateKey();
+            services.AddScoped<IKeyStoreProvider, InMemoryKeyStoreProvider>(_ =>
+                new InMemoryKeyStoreProvider(key));
+
+            services.AddScoped<IEncryptionProviderFactory, EncryptionProviderFactory>();
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IEncryptionProviderFactory>()
+                .GetProvider(EncryptionProviderConstants.AES));
+
+            services.AddScoped<IHashProviderFactory, HashProviderFactory>();
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IHashProviderFactory>()
+                .GetProvider(HashProviderConstants.SALTED_SHA256));
+        }
+
+        private static void AddDataAccessServices(IServiceCollection services)
+        {
             var connection = new DataAccessConnection<string>(
                 ConnectionNames.EntityFrameworkMySql,
                 "mysql-connection-string");
             services.AddSingleton<IDataAccessConnection<string>>(connection);
 
             services.AddScoped<IGenericRepoFactory<string>>(serviceProvider =>
-            {
-                var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                var connection = serviceProvider.GetRequiredService<IDataAccessConnection<string>>();
-                return new GenericRepoFactory<string>(loggerFactory, connection);
-            });
-
-            services.AddLogging(builder => builder.AddSerilog(logger));
-            services.AddDomainServices();
-
-            return services.BuildServiceProvider();
+                new GenericRepoFactory<string>(
+                    serviceProvider.GetRequiredService<ILoggerFactory>(),
+                    serviceProvider.GetRequiredService<IDataAccessConnection<string>>()));
         }
     }
 }

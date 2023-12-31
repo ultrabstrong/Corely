@@ -27,7 +27,7 @@ namespace Corely.UnitTests.Common.Models.Security
             var hashProvider = new Sha256SaltedHashProvider();
             var value = _fixture.Create<string>();
 
-            var hashedValue = new HashedValue(hashProvider, value);
+            var hashedValue = new HashedValue(hashProvider) { Hash = value };
 
             Assert.Equal(value, hashedValue.Hash);
         }

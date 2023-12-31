@@ -2,8 +2,8 @@
 {
     public interface IHashedValue
     {
-        string Hash { get; }
-        void Set(string value);
+        string Hash { get; init; }
+        IHashedValue Set(string value);
         bool Verify(string value);
     }
 }
