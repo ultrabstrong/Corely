@@ -1,21 +1,16 @@
 ﻿using AutoMapper;
-using Corely.Domain.Mappers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper
 {
     public class AutoMapperPrebuiltConfigValidationTest
+        : IDisposable
     {
         private readonly IMapper _mapper;
+        private readonly ServiceFactory _serviceFactory = new();
 
         public AutoMapperPrebuiltConfigValidationTest()
         {
-            var services = new ServiceCollection();
-
-            services.AddAutoMapper(typeof(IMapProvider).Assembly);
-
-            _mapper = services.BuildServiceProvider()
-                .GetRequiredService<IMapper>();
+            _mapper = _serviceFactory.GetRequiredService<IMapper>();
         }
 
         [Fact]
@@ -23,5 +18,7 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper
         {
             _mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
+
+        public void Dispose() => _serviceFactory?.Dispose();
     }
 }

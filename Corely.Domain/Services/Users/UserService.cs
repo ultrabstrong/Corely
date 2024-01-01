@@ -34,8 +34,8 @@ namespace Corely.Domain.Services.Users
             _logger.LogInformation("Creating user {Username}", user.Username);
             try
             {
-                _validationProvider.Validate(user).ThrowIfInvalid();
-                _validationProvider.Validate(basicAuth).ThrowIfInvalid();
+                _validationProvider.ThrowIfInvalid(user);
+                _validationProvider.ThrowIfInvalid(basicAuth);
             }
             catch (ValidationException ex)
             {

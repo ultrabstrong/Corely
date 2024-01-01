@@ -20,5 +20,10 @@ namespace Corely.Domain.Validators.FluentValidators
 
             return _mapper.Map<ValidationResult>(result);
         }
+
+        public void ThrowIfInvalid<T>(T model)
+        {
+            Validate(model).ThrowIfInvalid();
+        }
     }
 }

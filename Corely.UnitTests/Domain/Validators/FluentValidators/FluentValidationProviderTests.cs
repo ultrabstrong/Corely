@@ -1,36 +1,44 @@
 ﻿using AutoFixture;
 using AutoMapper;
-using Corely.Domain.Validators;
 using Corely.Domain.Validators.FluentValidators;
 using FluentValidation;
+using CorelyValidationException = Corely.Domain.Exceptions.ValidationException;
+using FluentValidationFailure = FluentValidation.Results.ValidationFailure;
+using FluentValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace Corely.UnitTests.Domain.Validators.FluentValidators
 {
     public class FluentValidationProviderTests
+        : IDisposable
     {
+        private const string INVALID_STRING = "invalid string";
+
         private readonly FluentValidationProvider _provider;
         private readonly Fixture _fixture = new();
+        private readonly ServiceFactory _serviceFactory = new();
 
         public FluentValidationProviderTests()
         {
-            var mapperMock = new Mock<IMapper>();
-            mapperMock
-                .Setup(m => m.Map<ValidationResult>(
-                    It.IsAny<FluentValidation.Results.ValidationResult>()))
-                .Returns(new ValidationResult());
-
             var serviceProviderMock = GetMockServiceProvider();
             var fluentValidatorFactory = new FluentValidatorFactory(serviceProviderMock);
 
-            _provider = new FluentValidationProvider(fluentValidatorFactory, mapperMock.Object);
+            var mapper = _serviceFactory.GetRequiredService<IMapper>();
+
+            _provider = new FluentValidationProvider(fluentValidatorFactory, mapper);
         }
 
         private static IServiceProvider GetMockServiceProvider()
         {
             var validatorMock = new Mock<IValidator<string>>();
+
+            validatorMock.Setup(v => v.Validate(It.Is<string>(s => s == INVALID_STRING)))
+                .Returns(new FluentValidationResult(
+                    [new FluentValidationFailure("property", "error message")]
+                ));
+
             validatorMock
-                .Setup(v => v.Validate(It.IsAny<string>()))
-                .Returns(new FluentValidation.Results.ValidationResult());
+                .Setup(v => v.Validate(It.Is<string>(s => s != INVALID_STRING)))
+                .Returns(new FluentValidationResult());
 
             var serviceProviderMock = new Mock<IServiceProvider>();
             serviceProviderMock
@@ -54,5 +62,13 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators
             var toValidate = _fixture.Create<object>();
             Assert.Throws<InvalidOperationException>(() => _provider.Validate(toValidate));
         }
+
+        [Fact]
+        public void ThrowIfInvalid_ThrowsValidationException_WhenValidationFails()
+        {
+            Assert.Throws<CorelyValidationException>(() => _provider.ThrowIfInvalid(INVALID_STRING));
+        }
+
+        public void Dispose() => _serviceFactory?.Dispose();
     }
 }

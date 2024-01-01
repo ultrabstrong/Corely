@@ -1,36 +1,18 @@
 ﻿using AutoFixture;
 using AutoMapper;
-using Corely.Common.Providers.Security.Factories;
-using Corely.Common.Providers.Security.Keys;
-using Corely.Domain.Mappers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper
 {
     public abstract class AutoMapperTestBase<TSource, TDestination>
+        : IDisposable
         where TSource : class
     {
         protected readonly IMapper _mapper;
+        private readonly ServiceFactory _serviceFactory = new();
 
         protected AutoMapperTestBase()
         {
-            var services = new ServiceCollection();
-
-            services.AddAutoMapper(typeof(IMapProvider).Assembly);
-            AddSecurityServices(services);
-
-            _mapper = services.BuildServiceProvider()
-                .GetRequiredService<IMapper>();
-        }
-
-        private static void AddSecurityServices(IServiceCollection services)
-        {
-            var key = new AesKeyProvider().CreateKey();
-            services.AddScoped<IKeyStoreProvider, InMemoryKeyStoreProvider>(_ =>
-                new InMemoryKeyStoreProvider(key));
-
-            services.AddScoped<IEncryptionProviderFactory, EncryptionProviderFactory>();
-            services.AddScoped<IHashProviderFactory, HashProviderFactory>();
+            _mapper = _serviceFactory.GetRequiredService<IMapper>();
         }
 
         [Fact]
@@ -58,5 +40,6 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper
         }
         protected virtual object[] GetSourceParams() => [];
 
+        public void Dispose() => _serviceFactory?.Dispose();
     }
 }

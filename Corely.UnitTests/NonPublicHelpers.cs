@@ -6,7 +6,7 @@
 
     namespace AB.TestBase
     {
-        public static class NonPublicHelpers
+        internal static class NonPublicHelpers
         {
             private const BindingFlags BINDING_FLAGS = BindingFlags.Instance
                     | BindingFlags.NonPublic

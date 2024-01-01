@@ -87,11 +87,7 @@ namespace Corely.Common.Providers.Http
             {
                 if (disposing)
                 {
-                    try
-                    {
-                        _httpClient?.Dispose();
-                    }
-                    catch { }
+                    _httpClient?.Dispose();
                 }
                 _disposed = true;
             }

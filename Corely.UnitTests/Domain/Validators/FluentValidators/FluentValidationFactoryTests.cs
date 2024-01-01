@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using Corely.Domain.Validators.FluentValidators;
+﻿using Corely.Domain.Validators.FluentValidators;
 using FluentValidation;
 
 namespace Corely.UnitTests.Domain.Validators.FluentValidators
@@ -7,7 +6,6 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators
     public class FluentValidationFactoryTests
     {
         private readonly FluentValidatorFactory _factory;
-        private readonly Fixture _fixture = new();
 
         public FluentValidationFactoryTests()
         {
