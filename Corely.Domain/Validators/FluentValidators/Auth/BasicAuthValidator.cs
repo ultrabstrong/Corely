@@ -8,9 +8,15 @@ namespace Corely.Domain.Validators.FluentValidators.Auth
     {
         public BasicAuthValidator()
         {
-            RuleFor(m => m.Username).NotEmpty().MaximumLength(BasicAuthConstants.USERNAME_MAX_LENGTH);
-            RuleFor(m => m.Password).NotEmpty();
-            RuleFor(m => m.Password.Hash).NotEmpty().MaximumLength(BasicAuthConstants.PASSWORD_MAX_LENGTH);
+            ClassLevelCascadeMode = CascadeMode.Stop;
+            RuleFor(m => m.Username)
+                .NotEmpty().
+                MaximumLength(BasicAuthConstants.USERNAME_MAX_LENGTH);
+            RuleFor(m => m.Password)
+                .NotNull();
+            RuleFor(m => m.Password.Hash)
+                .NotEmpty()
+                .MaximumLength(BasicAuthConstants.PASSWORD_MAX_LENGTH);
         }
     }
 }

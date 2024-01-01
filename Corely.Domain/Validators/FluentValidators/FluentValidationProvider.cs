@@ -1,26 +1,21 @@
 ﻿using AutoMapper;
-using FluentValidation;
 
 namespace Corely.Domain.Validators.FluentValidators
 {
     public class FluentValidationProvider : IValidationProvider
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IFluentValidatorFactory _fluentValidatorFactory;
         private readonly IMapper _mapper;
 
-        public FluentValidationProvider(IServiceProvider serviceProvider, IMapper mapper)
+        public FluentValidationProvider(IFluentValidatorFactory fluentValidatorFactory, IMapper mapper)
         {
-            _serviceProvider = serviceProvider;
+            _fluentValidatorFactory = fluentValidatorFactory;
             _mapper = mapper;
         }
 
         public ValidationResult Validate<T>(T model)
         {
-            if (_serviceProvider.GetService(typeof(IValidator<T>)) is not IValidator<T> validator)
-            {
-                throw new InvalidOperationException($"No validator found for type {typeof(T).Name}");
-            }
-
+            var validator = _fluentValidatorFactory.GetValidator<T>();
             var result = validator.Validate(model);
 
             return _mapper.Map<ValidationResult>(result);
