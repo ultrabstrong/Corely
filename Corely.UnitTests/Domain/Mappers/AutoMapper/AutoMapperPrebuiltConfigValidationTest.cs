@@ -19,6 +19,10 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper
             _mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
 
-        public void Dispose() => _serviceFactory?.Dispose();
+        public void Dispose()
+        {
+            _serviceFactory?.Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
 }

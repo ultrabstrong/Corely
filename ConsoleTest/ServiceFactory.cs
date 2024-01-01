@@ -8,6 +8,7 @@ using Corely.Domain.Mappers;
 using Corely.Domain.Mappers.AutoMapper;
 using Corely.Domain.Validators;
 using Corely.Domain.Validators.FluentValidators;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -47,7 +48,7 @@ namespace ConsoleTest
         {
             services.AddScoped<IFluentValidatorFactory, FluentValidatorFactory>();
             services.AddScoped<IValidationProvider, FluentValidationProvider>();
-
+            services.AddValidatorsFromAssemblyContaining<FluentValidationProvider>(includeInternalTypes: true);
         }
 
         private static void AddSecurityServices(IServiceCollection services)

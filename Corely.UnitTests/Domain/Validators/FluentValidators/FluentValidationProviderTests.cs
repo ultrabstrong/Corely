@@ -69,6 +69,10 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators
             Assert.Throws<CorelyValidationException>(() => _provider.ThrowIfInvalid(INVALID_STRING));
         }
 
-        public void Dispose() => _serviceFactory?.Dispose();
+        public void Dispose()
+        {
+            _serviceFactory?.Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
 }

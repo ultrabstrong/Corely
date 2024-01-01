@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.Domain.Services.Users
 {
-    internal class UserService : IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepo _userRepo;
         private readonly IValidationProvider _validationProvider;

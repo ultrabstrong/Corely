@@ -4,11 +4,13 @@ using Corely.Domain.Constants.Auth;
 using Corely.Domain.Models.Auth;
 using Corely.Domain.Validators.FluentValidators.Auth;
 using Corely.UnitTests.ClassData;
+using FluentValidation.TestHelper;
 
 namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
 {
     public class BasicAuthValidatorTests
     {
+        private const string VALID_USERNAME = "username";
         private readonly BasicAuthValidator _validator = new();
 
         [Theory]
@@ -25,9 +27,9 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
                 }
             };
 
-            var result = _validator.Validate(basicAuth);
-            Assert.NotNull(result);
-            Assert.NotEmpty(result.Errors);
+            var result = _validator.TestValidate(basicAuth);
+            result.ShouldHaveValidationErrorFor(x => x.Username);
+            result.ShouldNotHaveValidationErrorFor(x => x.Password);
         }
 
         public static IEnumerable<object[]> InvalidUsernameData()
@@ -42,16 +44,17 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
         {
             var basicAuth = new BasicAuth
             {
-                Username = "",
+                Username = VALID_USERNAME,
                 Password = new HashedValue(Mock.Of<IHashProvider>())
                 {
                     Hash = password
                 }
             };
 
-            var result = _validator.Validate(basicAuth);
-            Assert.NotNull(result);
-            Assert.NotEmpty(result.Errors);
+            var result = _validator.TestValidate(basicAuth);
+            result.ShouldHaveValidationErrorFor(x => x.Password.Hash);
+            result.ShouldNotHaveValidationErrorFor(x => x.Password);
+            result.ShouldNotHaveValidationErrorFor(x => x.Username);
         }
 
         public static IEnumerable<object[]> InvalidPasswordData()
@@ -64,13 +67,13 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
         {
             var basicAuth = new BasicAuth
             {
-                Username = "",
+                Username = VALID_USERNAME,
                 Password = null
             };
 
-            var result = _validator.Validate(basicAuth);
-            Assert.NotNull(result);
-            Assert.NotEmpty(result.Errors);
+            var result = _validator.TestValidate(basicAuth);
+            result.ShouldHaveValidationErrorFor(x => x.Password);
+            result.ShouldNotHaveValidationErrorFor(x => x.Username);
         }
     }
 }

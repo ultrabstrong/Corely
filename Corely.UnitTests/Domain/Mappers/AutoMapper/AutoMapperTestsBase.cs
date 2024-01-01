@@ -40,6 +40,10 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper
         }
         protected virtual object[] GetSourceParams() => [];
 
-        public void Dispose() => _serviceFactory?.Dispose();
+        public void Dispose()
+        {
+            _serviceFactory?.Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
 }

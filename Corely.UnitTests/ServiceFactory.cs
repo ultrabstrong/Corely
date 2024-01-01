@@ -1,6 +1,10 @@
 ﻿using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Keys;
 using Corely.Domain.Mappers;
+using Corely.Domain.Mappers.AutoMapper;
+using Corely.Domain.Validators;
+using Corely.Domain.Validators.FluentValidators;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.UnitTests
@@ -14,10 +18,24 @@ namespace Corely.UnitTests
 
             var services = new ServiceCollection();
 
-            services.AddAutoMapper(typeof(IMapProvider).Assembly);
+            AddMapper(services);
+            AddValidator(services);
             AddSecurityServices(services);
 
             _serviceProvider = services.BuildServiceProvider();
+        }
+
+        private static void AddMapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(IMapProvider).Assembly);
+            services.AddScoped<IMapProvider, AutoMapperMapProvider>();
+        }
+
+        private static void AddValidator(IServiceCollection services)
+        {
+            services.AddScoped<IFluentValidatorFactory, FluentValidatorFactory>();
+            services.AddScoped<IValidationProvider, FluentValidationProvider>();
+            services.AddValidatorsFromAssemblyContaining<FluentValidationProvider>(includeInternalTypes: true);
         }
 
         private static void AddSecurityServices(IServiceCollection services)

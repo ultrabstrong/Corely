@@ -2,11 +2,14 @@
 using Corely.Domain.Models.Users;
 using Corely.Domain.Validators.FluentValidators.Users;
 using Corely.UnitTests.ClassData;
+using FluentValidation.TestHelper;
 
 namespace Corely.UnitTests.Domain.Validators.FluentValidators.Users
 {
     public class UserValidatorTests
     {
+        private const string VALID_USERNAME = "username";
+        private const string VALID_EMAIL = "username@x.y";
         private readonly UserValidator _validator = new();
 
         [Theory]
@@ -17,12 +20,12 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Users
             var user = new User
             {
                 Username = username,
-                Email = ""
+                Email = VALID_EMAIL
             };
 
-            var result = _validator.Validate(user);
-            Assert.NotNull(result);
-            Assert.NotEmpty(result.Errors);
+            var result = _validator.TestValidate(user);
+            result.ShouldHaveValidationErrorFor(x => x.Username);
+            result.ShouldNotHaveValidationErrorFor(x => x.Email);
         }
 
         public static IEnumerable<object[]> InvalidUsernameData()
@@ -37,13 +40,13 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Users
         {
             var user = new User
             {
-                Username = "",
+                Username = VALID_USERNAME,
                 Email = email
             };
 
-            var result = _validator.Validate(user);
-            Assert.NotNull(result);
-            Assert.NotEmpty(result.Errors);
+            var result = _validator.TestValidate(user);
+            result.ShouldHaveValidationErrorFor(x => x.Email);
+            result.ShouldNotHaveValidationErrorFor(x => x.Username);
         }
 
         public static IEnumerable<object[]> InvalidEmailData()
