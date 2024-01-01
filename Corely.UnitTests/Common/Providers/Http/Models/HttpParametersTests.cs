@@ -45,6 +45,18 @@ namespace Corely.UnitTests.Common.Providers.Http.Models
         public void HttpParametersDictionaryConstructors_ShouldSetProperties()
         {
             var parameters = new Dictionary<string, string>() { { "key1", "value1" } };
+
+            var httpParameters = new HttpParameters(parameters);
+
+            Assert.True(httpParameters.HasParameters());
+            Assert.Equal(1, httpParameters.GetParameterCount());
+            Assert.Equal("value1", httpParameters.GetParameterValue("key1"));
+        }
+
+        [Fact]
+        public void HttpParametersDictionaryConstructors_ShouldSetProperties_WithTempParams()
+        {
+            var parameters = new Dictionary<string, string>() { { "key1", "value1" } };
             var tempParameters = new Dictionary<string, string>() { { "key2", "value2" } };
 
             var httpParameters = new HttpParameters(parameters, tempParameters);

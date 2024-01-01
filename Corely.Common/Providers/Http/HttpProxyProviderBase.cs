@@ -41,7 +41,7 @@ namespace Corely.Common.Providers.Http
                 _logger.LogDebug("Sending HTTP request {Uri}", requestMessage.RequestUri);
             }
 
-            HttpResponseMessage result = await _httpClient.SendAsync(requestMessage);
+            HttpResponseMessage result = await _httpClient.SendAsync(requestMessage, CancellationToken.None);
 
             if (result.IsSuccessStatusCode)
             {

@@ -70,6 +70,7 @@ namespace Corely.UnitTests.Common.Converters.Json
             yield return new object[] { new DateTime(2020, 1, 1, 0, 0, 1), "\"2020-01-01\"" };
             yield return new object[] { new DateTime(2020, 1, 1, 0, 1, 0), "\"2020-01-01\"" };
             yield return new object[] { new DateTime(2020, 1, 1, 1, 0, 0), "\"2020-01-01\"" };
+            yield return new object[] { null, "\"0001-01-01\"" };
         }
     }
 }

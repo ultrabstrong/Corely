@@ -1,5 +1,7 @@
 ﻿using Corely.Common.Providers.Data;
+using Corely.Common.Providers.Data.Enums;
 using Corely.Common.Providers.Data.Models;
+using Corely.UnitTests.AB.TestBase;
 using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
@@ -17,6 +19,51 @@ namespace Corely.UnitTests.Common.Providers.Data
         {
             _logger = loggerFixture.CreateLogger<DelimitedTextProvider>();
             _delimitedTextDataProvider = new DelimitedTextProvider(_logger);
+        }
+
+        [Theory]
+        [InlineData(TokenDelimiter.Semicolon, ';', '"', "\r\n")]
+        [InlineData(TokenDelimiter.Pipe, '|', '"', "\r\n")]
+        [InlineData(TokenDelimiter.Tab, '\t', '"', "\r\n")]
+        [InlineData(TokenDelimiter.Comma, ',', '"', "\r\n")]
+        public void Constructor_ShouldCreateCorrectDelimiters_ForEnum(
+            TokenDelimiter tokenDelimiter,
+            char expectedTokenDelim,
+            char expectedTokenLiteral,
+            string expectedRecordDelim)
+        {
+            DelimitedTextProvider delimitedTextDataProvider = new(_logger, tokenDelimiter);
+
+            var tokenDelim = NonPublicHelpers.GetNonPublicField<char>(
+                delimitedTextDataProvider, "_tokenDelimiter");
+
+            var tokenLiteral = NonPublicHelpers.GetNonPublicField<char>(
+                delimitedTextDataProvider, "_tokenLiteral");
+
+            var recordDelim = NonPublicHelpers.GetNonPublicField<string>(
+                delimitedTextDataProvider, "_recordDelimiter");
+
+            Assert.Equal(expectedTokenDelim, tokenDelim);
+            Assert.Equal(expectedTokenLiteral, tokenLiteral);
+            Assert.Equal(expectedRecordDelim, recordDelim);
+        }
+
+        [Fact]
+        public void WriteRecord_ShouldWriteCorrectRecord()
+        {
+            string expected = "test1,te\"\"st2,\"te,st3\"";
+            string actual;
+            using (MemoryStream stream = new())
+            {
+                _delimitedTextDataProvider.WriteRecord(["test1", "te\"st2", "te,st3"], stream);
+                stream.Position = 0;
+                using (StreamReader reader = new(stream))
+                {
+                    actual = reader.ReadToEnd();
+                }
+            }
+
+            Assert.Equal(expected, actual);
         }
 
         [Theory, MemberData(nameof(WriteAllRecordsTestData))]

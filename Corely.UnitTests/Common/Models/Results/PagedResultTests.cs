@@ -123,5 +123,37 @@ namespace Corely.UnitTests.Common.Models.Results
             yield return new object[] { 101, 5 };
         }
 
+        [Fact]
+        public void PagedResult_ShouldReturnNull_WhenHasMoreFalse()
+        {
+            _pagedResponse = new PagedResult<object>(0, 1);
+
+            _pagedResponse.OnGetNextChunk += (pagedResponse) =>
+            {
+                pagedResponse.SetItems(_testData);
+                return pagedResponse;
+            };
+
+            _pagedResponse.GetNextChunk();
+            Assert.False(_pagedResponse.HasMore);
+            Assert.Null(_pagedResponse.GetNextChunk());
+        }
+
+        [Fact]
+        public void OnGetNextChunk_ShouldThrow_WhenSubscriberRemoved()
+        {
+            _pagedResponse = new PagedResult<object>(0, 1);
+
+            PagedResult<object> GetNextChunkHandler(PagedResult<object> pagedResponse)
+            {
+                pagedResponse.SetItems(_testData);
+                return pagedResponse;
+            }
+
+            _pagedResponse.OnGetNextChunk += GetNextChunkHandler;
+            _pagedResponse.OnGetNextChunk -= GetNextChunkHandler;
+
+            Assert.Throws<InvalidOperationException>(() => _pagedResponse.GetNextChunk());
+        }
     }
 }
