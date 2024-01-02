@@ -38,7 +38,8 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators
         [Fact]
         public void GetValidator_ThrowsInvalidOperationException_WhenValidatorIsNotRegistered()
         {
-            Assert.Throws<InvalidOperationException>(() => _factory.GetValidator<object>());
+            void act() => _factory.GetValidator<object>();
+            Assert.Throws<InvalidOperationException>(act);
         }
     }
 }

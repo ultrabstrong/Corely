@@ -83,8 +83,8 @@ namespace Corely.UnitTests.Common.Providers.Http
             var requestUri = _fixture.Create<string>();
             var request = new HttpSendRequest(requestUri, HttpMethod.Get);
 
-            await Assert.ThrowsAsync<HttpRequestException>(() =>
-                _httpProxyProvider.SendRequestForHttpResponse<string>(request));
+            async Task act() => await _httpProxyProvider.SendRequestForHttpResponse<string>(request);
+            await Assert.ThrowsAsync<HttpRequestException>(act);
         }
     }
 }

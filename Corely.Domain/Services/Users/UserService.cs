@@ -31,7 +31,6 @@ namespace Corely.Domain.Services.Users
 
         public void Create(User user, BasicAuth basicAuth)
         {
-            _logger.LogInformation("Creating user {Username}", user.Username);
             try
             {
                 _validationProvider.ThrowIfInvalid(user);
@@ -39,12 +38,14 @@ namespace Corely.Domain.Services.Users
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning("User creation args are not valid");
+                _logger.LogWarning("Arguments are not valid");
                 throw new UserServiceException(ex.Message, ex)
                 {
                     Reason = UserServiceException.ErrorReason.ValidationFailed
                 };
             }
+
+            _logger.LogInformation("Creating user {Username}", user.Username);
 
             try
             {

@@ -153,7 +153,7 @@ namespace Corely.UnitTests.Common.Models.Results
             _pagedResponse.OnGetNextChunk += GetNextChunkHandler;
             _pagedResponse.OnGetNextChunk -= GetNextChunkHandler;
 
-            Assert.Throws<InvalidOperationException>(() => _pagedResponse.GetNextChunk());
+            Assert.Throws<InvalidOperationException>(_pagedResponse.GetNextChunk);
         }
     }
 }

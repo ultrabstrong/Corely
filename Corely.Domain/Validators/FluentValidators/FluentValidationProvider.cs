@@ -15,10 +15,21 @@ namespace Corely.Domain.Validators.FluentValidators
 
         public ValidationResult Validate<T>(T model)
         {
-            var validator = _fluentValidatorFactory.GetValidator<T>();
-            var fluentResult = validator.Validate(model);
+            ValidationResult corelyResult = null!;
+            if (model == null)
+            {
+                corelyResult = new()
+                {
+                    Errors = ["Model is null"]
+                };
+            }
+            else
+            {
+                var validator = _fluentValidatorFactory.GetValidator<T>();
+                var fluentResult = validator.Validate(model);
+                corelyResult = _mapper.Map<ValidationResult>(fluentResult);
+            }
 
-            var corelyResult = _mapper.Map<ValidationResult>(fluentResult);
             corelyResult.Message = $"Validation for {typeof(T).Name} {(corelyResult.IsValid ? "succeeded" : "failed")}";
 
             return corelyResult;

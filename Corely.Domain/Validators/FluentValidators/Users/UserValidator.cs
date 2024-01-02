@@ -6,7 +6,7 @@ namespace Corely.Domain.Validators.FluentValidators.Users
 {
     internal class UserValidator : AbstractValidator<User>
     {
-        internal UserValidator()
+        public UserValidator()
         {
             RuleFor(m => m.Username)
                 .NotEmpty()

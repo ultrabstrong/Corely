@@ -36,7 +36,7 @@ namespace Corely.UnitTests.Domain.Validators
             };
 
             Assert.False(result.IsValid);
-            Assert.Throws<ValidationException>(() => result.ThrowIfInvalid());
+            Assert.Throws<ValidationException>(result.ThrowIfInvalid);
         }
 
         [Fact]
