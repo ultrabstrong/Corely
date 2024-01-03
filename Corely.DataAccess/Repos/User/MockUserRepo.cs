@@ -7,59 +7,58 @@ namespace Corely.DataAccess.Repos.User
     {
         private readonly List<UserEntity> _users = [];
 
-        public void Create(UserEntity entity)
+        public Task Create(UserEntity entity)
         {
             _users.Add(entity);
+            return Task.CompletedTask;
         }
 
-        public UserEntity? Get(int id)
+        public Task<UserEntity?> Get(int id)
         {
-            return _users.FirstOrDefault(u => u.Id == id);
+            return Task.FromResult(_users.FirstOrDefault(u => u.Id == id));
         }
 
-        public UserEntity? GetByEmail(string email)
+        public Task<UserEntity?> GetByEmail(string email)
         {
-            return _users.FirstOrDefault(u => u.Email == email);
+            return Task.FromResult(_users.FirstOrDefault(u => u.Email == email));
         }
 
-        public UserEntity? GetByUserName(string userName)
+        public Task<UserEntity?> GetByUserName(string userName)
         {
-            return _users.FirstOrDefault(u => u.Username == userName);
+            return Task.FromResult(_users.FirstOrDefault(u => u.Username == userName));
         }
 
-        public UserEntity? GetWithDetailsById(int userId)
+        public Task<UserEntity?> GetWithDetailsById(int userId)
         {
-            return _users.FirstOrDefault(u => u.Id == userId);
+            return Task.FromResult(_users.FirstOrDefault(u => u.Id == userId));
         }
 
-        public UserEntity? GetWithDetailsByEmail(string email)
+        public Task<UserEntity?> GetWithDetailsByEmail(string email)
         {
-            return _users.FirstOrDefault(u => u.Email == email);
+            return Task.FromResult(_users.FirstOrDefault(u => u.Email == email));
         }
 
-        public UserEntity? GetWithDetailsByUserName(string userName)
+        public Task<UserEntity?> GetWithDetailsByUserName(string userName)
         {
-            return _users.FirstOrDefault(u => u.Username == userName);
+            return Task.FromResult(_users.FirstOrDefault(u => u.Username == userName));
         }
 
-        public void Update(UserEntity entity)
+        public Task Update(UserEntity entity)
         {
-            var existing = _users.FirstOrDefault(u => u.Id == entity.Id);
-            if (existing != null)
-            {
-                _users.Remove(existing);
-                _users.Add(entity);
-            }
+            var index = _users.FindIndex(u => u.Id == entity.Id);
+            if (index > -1) { _users[index] = entity; }
+            return Task.CompletedTask;
         }
 
-        public void Delete(UserEntity entity)
+        public Task Delete(UserEntity entity)
         {
             _users.Remove(entity);
+            return Task.CompletedTask;
         }
 
-        public bool DoesUserExist(string userName, string email)
+        public Task<bool> DoesUserExist(string userName, string email)
         {
-            return _users.Any(u => u.Username == userName || u.Email == email);
+            return Task.FromResult(_users.Any(u => u.Username == userName || u.Email == email));
         }
     }
 }

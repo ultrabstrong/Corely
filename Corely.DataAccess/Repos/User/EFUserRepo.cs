@@ -1,4 +1,5 @@
-﻿using Corely.DataAccess.DataSources.EntityFramework;
+﻿using Corely.Common.Models;
+using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Repos.User
 {
-    internal class EFUserRepo : IUserRepo
+    internal class EFUserRepo : DisposeBase, IUserRepo
     {
         private readonly ILogger<EFUserRepo> _logger;
         private readonly AccountManagementDbContext _dbContext;
@@ -20,63 +21,70 @@ namespace Corely.DataAccess.Repos.User
             _logger.LogDebug("EFUserRepo created");
         }
 
-        public void Create(UserEntity entity)
+        public async Task Create(UserEntity entity)
         {
-            _dbContext.Users.Add(entity);
+            await _dbContext.Users.AddAsync(entity);
         }
 
-        public UserEntity? Get(int id)
+        public async Task<UserEntity?> Get(int id)
         {
-            return _dbContext.Users.Find(id);
+            return await _dbContext.Users.FindAsync(id);
         }
 
-        public UserEntity? GetByEmail(string email)
+        public async Task<UserEntity?> GetByEmail(string email)
         {
-            return _dbContext.Users
-                .FirstOrDefault(u => u.Email == email);
+            return await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public UserEntity? GetByUserName(string userName)
+        public async Task<UserEntity?> GetByUserName(string userName)
         {
-            return _dbContext.Users
-                .FirstOrDefault(u => u.Username == userName);
+            return await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Username == userName);
         }
 
-        public UserEntity? GetWithDetailsByEmail(string email)
+        public async Task<UserEntity?> GetWithDetailsByEmail(string email)
         {
-            return _dbContext.Users
+            return await _dbContext.Users
                 .Include(u => u.BasicAuth)
-                .FirstOrDefault(u => u.Email == email);
+                .FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public UserEntity? GetWithDetailsById(int userId)
+        public async Task<UserEntity?> GetWithDetailsById(int userId)
         {
-            return _dbContext.Users
+            return await _dbContext.Users
                 .Include(u => u.BasicAuth)
-                .FirstOrDefault(u => u.Id == userId);
+                .FirstOrDefaultAsync(u => u.Id == userId);
         }
 
-        public UserEntity? GetWithDetailsByUserName(string userName)
+        public async Task<UserEntity?> GetWithDetailsByUserName(string userName)
         {
-            return _dbContext.Users
+            return await _dbContext.Users
                 .Include(u => u.BasicAuth)
-                .FirstOrDefault(u => u.Username == userName);
+                .FirstOrDefaultAsync(u => u.Username == userName);
         }
 
-        public void Update(UserEntity entity)
+        public async Task Update(UserEntity entity)
         {
             _dbContext.Users.Update(entity);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void Delete(UserEntity entity)
+        public async Task Delete(UserEntity entity)
         {
             _dbContext.Users.Remove(entity);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public bool DoesUserExist(string userName, string email)
+        public async Task<bool> DoesUserExist(string userName, string email)
         {
-            return _dbContext.Users
-                .Any(u => u.Username == userName || u.Email == email);
+            return await _dbContext.Users
+                .AnyAsync(u => u.Username == userName || u.Email == email);
+        }
+
+        protected override void DisposeManagedResources()
+        {
+            _dbContext.Dispose();
         }
     }
 }

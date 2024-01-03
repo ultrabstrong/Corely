@@ -7,38 +7,38 @@ namespace Corely.DataAccess.Repos.Auth
     {
         private readonly List<BasicAuthEntity> _auths = [];
 
-        public void Create(BasicAuthEntity entity)
+        public Task Create(BasicAuthEntity entity)
         {
             _auths.Add(entity);
+            return Task.CompletedTask;
         }
 
-        public BasicAuthEntity? Get(int id)
+        public Task<BasicAuthEntity?> Get(int id)
         {
-            return _auths.FirstOrDefault(a => a.Id == id);
+            return Task.FromResult(_auths.FirstOrDefault(a => a.Id == id));
         }
 
-        public BasicAuthEntity? GetByUserId(int userId)
+        public Task<BasicAuthEntity?> GetByUserId(int userId)
         {
-            return _auths.FirstOrDefault(a => a.UserId == userId);
+            return Task.FromResult(_auths.FirstOrDefault(a => a.UserId == userId));
         }
 
-        public BasicAuthEntity? GetByUserName(string userName)
+        public Task<BasicAuthEntity?> GetByUserName(string userName)
         {
-            return _auths.FirstOrDefault(a => a.Username == userName);
+            return Task.FromResult(_auths.FirstOrDefault(a => a.Username == userName));
         }
 
-        public void Update(BasicAuthEntity entity)
+        public Task Update(BasicAuthEntity entity)
         {
-            var existing = _auths.FirstOrDefault(a => a.Id == entity.Id);
-            if (existing != null)
-            {
-                _auths.Remove(existing);
-                _auths.Add(entity);
-            }
+            var index = _auths.FindIndex(a => a.Id == entity.Id);
+            if (index > -1) { _auths[index] = entity; }
+            return Task.CompletedTask;
         }
-        public void Delete(BasicAuthEntity entity)
+
+        public Task Delete(BasicAuthEntity entity)
         {
             _auths.Remove(entity);
+            return Task.CompletedTask;
         }
     }
 }

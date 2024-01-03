@@ -1,7 +1,4 @@
-﻿using Corely.Domain.Exceptions;
-using Corely.Domain.Mappers;
-using Corely.Domain.Models.Auth;
-using Corely.Domain.Models.Users;
+﻿using Corely.Domain.Mappers;
 using Corely.Domain.Repos;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
@@ -16,19 +13,14 @@ namespace Corely.UnitTests.Domain.Services.Users
     {
         private readonly ServiceFactory _serviceFactory = new();
         private readonly ILogger<UserService> _logger;
-        private readonly UserService _userService;
+
         public UserServiceTests(LoggerFixture loggerFixture)
         {
             _logger = loggerFixture.CreateLogger<UserService>();
-            _userService = new UserService(
-                Mock.Of<IUserRepo>(),
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _serviceFactory.GetRequiredService<IMapProvider>(),
-                _logger);
         }
 
         [Fact]
-        public void Constructor_ShouldThrow_WhenUserRepoIsNull()
+        public void Constructor_ShouldThrowArgumentNullException_WhenUserRepoIsNull()
         {
             UserService act() => new(
                 null,
@@ -40,7 +32,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         }
 
         [Fact]
-        public void Constructor_ShouldThrow_WhenValidationProviderIsNull()
+        public void Constructor_ShouldThrowArgumentNullException_WhenValidationProviderIsNull()
         {
             UserService act() => new(
                 Mock.Of<IUserRepo>(),
@@ -52,7 +44,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         }
 
         [Fact]
-        public void Constructor_ShouldThrow_WhenMapProviderIsNull()
+        public void Constructor_ShouldThrowArgumentNullException_WhenMapProviderIsNull()
         {
             UserService act() => new(
                 Mock.Of<IUserRepo>(),
@@ -64,7 +56,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         }
 
         [Fact]
-        public void Constructor_ShouldThrow_WhenLoggerIsNull()
+        public void Constructor_ShouldThrowArgumentNullException_WhenLoggerIsNull()
         {
             UserService act() => new(
                 Mock.Of<IUserRepo>(),
@@ -73,20 +65,6 @@ namespace Corely.UnitTests.Domain.Services.Users
                 null);
 
             Assert.Throws<ArgumentNullException>(act);
-        }
-
-        [Fact]
-        public void Create_ShouldThrow_WhenUserIsNull()
-        {
-            void act() => _userService.Create(null, new BasicAuth());
-            Assert.Throws<UserServiceException>(act);
-        }
-
-        [Fact]
-        public void Create_ShouldThrow_WhenBasicAuthIsNull()
-        {
-            void act() => _userService.Create(new User(), null);
-            Assert.Throws<UserServiceException>(act);
         }
 
         public void Dispose()

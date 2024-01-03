@@ -1,16 +1,16 @@
 ﻿using Corely.Common.Extensions;
+using Corely.Common.Models;
 using Corely.Common.Providers.Http.Builders;
 using Corely.Common.Providers.Http.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.Common.Providers.Http
 {
-    public abstract class HttpProxyProviderBase : IHttpProxyProvider, IDisposable
+    public abstract class HttpProxyProviderBase : DisposeBase, IHttpProxyProvider
     {
         private readonly ILogger<HttpProxyProviderBase> _logger;
         private readonly IHttpContentBuilder _httpContentBuilder;
         private readonly HttpClient _httpClient;
-        private bool _disposed = false;
 
         public HttpProxyProviderBase(
             ILogger<HttpProxyProviderBase> logger,
@@ -75,22 +75,6 @@ namespace Corely.Common.Providers.Http
             return message;
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    _httpClient?.Dispose();
-                }
-                _disposed = true;
-            }
-        }
+        protected override void DisposeManagedResources() => _httpClient?.Dispose();
     }
 }

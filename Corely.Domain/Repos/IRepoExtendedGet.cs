@@ -4,7 +4,7 @@ namespace Corely.Domain.Repos
 {
     public interface IRepoExtendedGet<T> : IRepo<T>
     {
-        IEnumerable<T> GetAll();
-        PagedResult<T> GetPaged(PagedResult<T> curPage);
+        Task<IEnumerable<T>> GetAll();
+        Task<PagedResult<T>> GetPaged(PagedResult<T> curPage);
     }
 }

@@ -1,12 +1,14 @@
 ﻿using Corely.Common.Extensions;
+using Corely.Common.Models;
 using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Repos.Auth
 {
-    internal class EFBasicAuthRepo : IAuthRepo<BasicAuthEntity>
+    internal class EFBasicAuthRepo : DisposeBase, IAuthRepo<BasicAuthEntity>
     {
         private readonly ILogger<EFBasicAuthRepo> _logger;
         private readonly AccountManagementDbContext _dbContext;
@@ -20,35 +22,42 @@ namespace Corely.DataAccess.Repos.Auth
             _logger.LogDebug("EFBasicAuthRepo created");
         }
 
-        public void Create(BasicAuthEntity entity)
+        public async Task Create(BasicAuthEntity entity)
         {
-            _dbContext.BasicAuths.Add(entity);
+            await _dbContext.BasicAuths.AddAsync(entity);
         }
 
-        public BasicAuthEntity? Get(int id)
+        public async Task<BasicAuthEntity?> Get(int id)
         {
-            return _dbContext.BasicAuths.Find(id);
+            return await _dbContext.BasicAuths.FindAsync(id);
         }
 
-        public BasicAuthEntity? GetByUserId(int userId)
+        public async Task<BasicAuthEntity?> GetByUserId(int userId)
         {
-            return _dbContext.BasicAuths
-                .FirstOrDefault(a => a.UserId == userId);
+            return await _dbContext.BasicAuths
+                .FirstOrDefaultAsync(a => a.UserId == userId);
         }
 
-        public BasicAuthEntity? GetByUserName(string userName)
+        public async Task<BasicAuthEntity?> GetByUserName(string userName)
         {
-            return _dbContext.BasicAuths
-                .FirstOrDefault(a => a.Username == userName);
+            return await _dbContext.BasicAuths
+                .FirstOrDefaultAsync(a => a.Username == userName);
         }
 
-        public void Update(BasicAuthEntity entity)
+        public async Task Update(BasicAuthEntity entity)
         {
             _dbContext.BasicAuths.Update(entity);
+            await _dbContext.SaveChangesAsync();
         }
-        public void Delete(BasicAuthEntity entity)
+        public async Task Delete(BasicAuthEntity entity)
         {
             _dbContext.BasicAuths.Remove(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        protected override void DisposeManagedResources()
+        {
+            _dbContext.Dispose();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Corely.Domain.Services.Users
             _logger = logger.ThrowIfNull(nameof(logger));
         }
 
-        public void Create(User user, BasicAuth basicAuth)
+        public async Task Create(User user, BasicAuth basicAuth)
         {
             try
             {
@@ -50,13 +50,13 @@ namespace Corely.Domain.Services.Users
             try
             {
                 var userEntity = _mapProvider.Map<UserEntity>(user);
-                if (_userRepo.DoesUserExist(userEntity.Username, userEntity.Email))
+                if (await _userRepo.DoesUserExist(userEntity.Username, userEntity.Email))
                 {
                     _logger.LogWarning("User with username {Username} or email {Email} already exists",
                         userEntity.Username, userEntity.Email);
                     throw new UserServiceException() { Reason = UserServiceException.ErrorReason.UserAlreadyExists };
                 }
-                _userRepo.Create(userEntity);
+                await _userRepo.Create(userEntity);
                 _logger.LogInformation("User {Username} created", user.Username);
             }
             catch (Exception ex)

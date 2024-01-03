@@ -2,9 +2,9 @@
 {
     public interface IRepo<T>
     {
-        void Create(T entity);
-        T? Get(int id);
-        void Update(T entity);
-        void Delete(T entity);
+        Task Create(T entity);
+        Task<T?> Get(int id);
+        Task Update(T entity);
+        Task Delete(T entity);
     }
 }

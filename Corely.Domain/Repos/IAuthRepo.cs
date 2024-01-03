@@ -2,7 +2,7 @@
 {
     public interface IAuthRepo<T> : IRepo<T>
     {
-        T? GetByUserId(int userId);
-        T? GetByUserName(string userName);
+        Task<T?> GetByUserId(int userId);
+        Task<T?> GetByUserName(string userName);
     }
 }

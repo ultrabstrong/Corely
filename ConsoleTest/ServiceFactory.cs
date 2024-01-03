@@ -1,4 +1,5 @@
-﻿using Corely.Common.Providers.Security.Encryption;
+﻿using Corely.Common.Models;
+using Corely.Common.Providers.Security.Encryption;
 using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Hashing;
 using Corely.Common.Providers.Security.Keys;
@@ -15,7 +16,7 @@ using Serilog;
 
 namespace ConsoleTest
 {
-    internal class ServiceFactory : IDisposable
+    internal class ServiceFactory : DisposeBase
     {
         private readonly ServiceProvider _serviceProvider;
 
@@ -84,6 +85,6 @@ namespace ConsoleTest
         public T GetRequiredService<T>() where T : notnull
             => _serviceProvider.GetRequiredService<T>();
 
-        public void Dispose() => _serviceProvider?.Dispose();
+        protected override void DisposeManagedResources() => _serviceProvider?.Dispose();
     }
 }
