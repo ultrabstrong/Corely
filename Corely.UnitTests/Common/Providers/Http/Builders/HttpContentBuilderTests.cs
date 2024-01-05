@@ -16,8 +16,9 @@ namespace Corely.UnitTests.Common.Providers.Http.Builders
         [Fact]
         public void HttpContentBuilder_Build_ShouldThrowArgumentNullException()
         {
-            void act() => _builder.Build((null as IHttpContent<string>)!);
-            Assert.Throws<ArgumentNullException>(act);
+            var ex = Record.Exception(() => _builder.Build((null as IHttpContent<string>)!));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         private class TestHttpContent : IHttpContent<string>
@@ -28,8 +29,9 @@ namespace Corely.UnitTests.Common.Providers.Http.Builders
         [Fact]
         public void HttpContentBuilder_Build_ShouldThrowNotImplementedException()
         {
-            void act() => _builder.Build(new TestHttpContent());
-            Assert.Throws<NotImplementedException>(act);
+            var ex = Record.Exception(() => _builder.Build(new TestHttpContent()));
+            Assert.NotNull(ex);
+            Assert.IsType<NotImplementedException>(ex);
         }
 
         [Fact]

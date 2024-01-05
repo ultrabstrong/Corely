@@ -104,8 +104,11 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
             var testValue = prependTypeCode
                 ? $"{_encryptionProvider.EncryptionTypeCode}{value}"
                 : value;
-            void act() => _encryptionProvider.Decrypt(testValue);
-            Assert.Throws<EncryptionProviderException>(act);
+
+            var ex = Record.Exception(() => _encryptionProvider.Decrypt(testValue));
+
+            Assert.NotNull(ex);
+            Assert.IsType<EncryptionProviderException>(ex);
         }
 
         [Fact]

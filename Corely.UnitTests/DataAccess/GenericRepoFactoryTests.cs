@@ -84,9 +84,9 @@ namespace Corely.UnitTests.DataAccess
         [Fact]
         public void CreateAccountManagementRepoFactory_ThrowsException_WhenConnectionIsUnknown()
         {
-            void act() => _genericRepoFactory.CreateAccountManagementRepoFactory();
-
-            Assert.Throws<ArgumentOutOfRangeException>(act);
+            var ex = Record.Exception(() => _genericRepoFactory.CreateAccountManagementRepoFactory());
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentOutOfRangeException>(ex);
         }
 
         [Fact]
@@ -110,15 +110,16 @@ namespace Corely.UnitTests.DataAccess
         [Theory, MemberData(nameof(ThrowForInvalidDataTypeTestData))]
         public void ThrowForInvalidDataType_ThrowsException_WhenDataTypesAreInvalid<T1, T2>(bool shouldThrow, T1 _)
         {
-            void act() => _genericRepoFactory.ThrowForInvalidDataType<T1>();
+            var ex = Record.Exception(() => _genericRepoFactory.ThrowForInvalidDataType<T1>());
 
             if (shouldThrow)
             {
-                Assert.Throws<ArgumentException>(act);
+                Assert.NotNull(ex);
+                Assert.IsType<ArgumentException>(ex);
             }
             else
             {
-                Assert.Null(Record.Exception(act));
+                Assert.Null(ex);
             }
         }
 

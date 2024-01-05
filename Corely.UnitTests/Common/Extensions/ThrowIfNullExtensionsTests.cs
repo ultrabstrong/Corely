@@ -15,9 +15,10 @@ namespace Corely.UnitTests.Common.Extensions
         {
             string? value = null;
 
-            void act() => value.ThrowIfNull(nameof(value));
+            var ex = Record.Exception(() => value.ThrowIfNull(nameof(value)));
 
-            Assert.Throws<ArgumentNullException>(nameof(value), act);
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -25,9 +26,10 @@ namespace Corely.UnitTests.Common.Extensions
         {
             string[] values = [_fixture.Create<string>(), null];
 
-            void act() => values.ThrowIfAnyNull(nameof(values));
+            var ex = Record.Exception(() => values.ThrowIfAnyNull(nameof(values)));
 
-            Assert.Throws<ArgumentNullException>(nameof(values), act);
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -35,9 +37,10 @@ namespace Corely.UnitTests.Common.Extensions
         {
             TestClass? value = null;
 
-            void act() => value.ThrowIfNull(nameof(value));
+            var ex = Record.Exception(() => value.ThrowIfNull(nameof(value)));
 
-            Assert.Throws<ArgumentNullException>(nameof(value), act);
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -45,24 +48,26 @@ namespace Corely.UnitTests.Common.Extensions
         {
             TestClass?[] values = [_fixture.Create<TestClass>(), null];
 
-            void act() => values.ThrowIfAnyNull(nameof(values));
+            var ex = Record.Exception(() => values.ThrowIfAnyNull(nameof(values)));
 
-            Assert.Throws<ArgumentNullException>(nameof(values), act);
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         public void ThrowIfNullOrWhitespace_ShouldThrowException_WithInvalidValue(string value)
         {
-            void act() => value.ThrowIfNullOrWhiteSpace(nameof(value));
+            var ex = Record.Exception(() => value.ThrowIfNullOrWhiteSpace(nameof(value)));
 
+            Assert.NotNull(ex);
             if (value == null)
             {
-                Assert.Throws<ArgumentNullException>(nameof(value), act);
+                Assert.IsType<ArgumentNullException>(ex);
             }
             else
             {
-                Assert.Throws<ArgumentException>(nameof(value), act);
+                Assert.IsType<ArgumentException>(ex);
             }
         }
 
@@ -72,15 +77,16 @@ namespace Corely.UnitTests.Common.Extensions
         {
             string[] values = [_fixture.Create<string>(), value];
 
-            void act() => values.ThrowIfAnyNullOrWhiteSpace(nameof(values));
+            var ex = Record.Exception(() => values.ThrowIfAnyNullOrWhiteSpace(nameof(values)));
 
+            Assert.NotNull(ex);
             if (value == null)
             {
-                Assert.Throws<ArgumentNullException>(nameof(values), act);
+                Assert.IsType<ArgumentNullException>(ex);
             }
             else
             {
-                Assert.Throws<ArgumentException>(nameof(values), act);
+                Assert.IsType<ArgumentException>(ex);
             }
         }
 
@@ -88,15 +94,16 @@ namespace Corely.UnitTests.Common.Extensions
         [ClassData(typeof(NullAndEmpty))]
         public void ThrowIfNullOrEmpty_ShouldThrowException_WithInvalidValue(string value)
         {
-            void act() => value.ThrowIfNullOrEmpty(nameof(value));
+            var ex = Record.Exception(() => value.ThrowIfNullOrEmpty(nameof(value)));
 
+            Assert.NotNull(ex);
             if (value == null)
             {
-                Assert.Throws<ArgumentNullException>(nameof(value), act);
+                Assert.IsType<ArgumentNullException>(ex);
             }
             else
             {
-                Assert.Throws<ArgumentException>(nameof(value), act);
+                Assert.IsType<ArgumentException>(ex);
             }
         }
 
@@ -106,15 +113,16 @@ namespace Corely.UnitTests.Common.Extensions
         {
             string[] values = [_fixture.Create<string>(), value];
 
-            void act() => values.ThrowIfAnyNullOrEmpty(nameof(values));
+            var ex = Record.Exception(() => values.ThrowIfAnyNullOrEmpty(nameof(values)));
 
+            Assert.NotNull(ex);
             if (value == null)
             {
-                Assert.Throws<ArgumentNullException>(nameof(values), act);
+                Assert.IsType<ArgumentNullException>(ex);
             }
             else
             {
-                Assert.Throws<ArgumentException>(nameof(values), act);
+                Assert.IsType<ArgumentException>(ex);
             }
         }
 

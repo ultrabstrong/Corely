@@ -28,7 +28,10 @@ namespace Corely.UnitTests.Domain.Services.Users
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _logger);
 
-            Assert.Throws<ArgumentNullException>(act);
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -40,7 +43,10 @@ namespace Corely.UnitTests.Domain.Services.Users
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _logger);
 
-            Assert.Throws<ArgumentNullException>(act);
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -52,7 +58,10 @@ namespace Corely.UnitTests.Domain.Services.Users
                 null,
                 _logger);
 
-            Assert.Throws<ArgumentNullException>(act);
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -64,7 +73,10 @@ namespace Corely.UnitTests.Domain.Services.Users
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 null);
 
-            Assert.Throws<ArgumentNullException>(act);
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         public void Dispose()

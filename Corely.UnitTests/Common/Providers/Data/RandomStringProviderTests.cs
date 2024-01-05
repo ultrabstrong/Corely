@@ -10,8 +10,11 @@ namespace Corely.UnitTests.Common.Providers.Data
         public void GetString_ShouldThrowException_WhenLengthIsNegative()
         {
             var length = -1;
-            void act() => _randomStringProvider.GetString(length);
-            Assert.Throws<ArgumentOutOfRangeException>(act);
+
+            var ex = Record.Exception(() => _randomStringProvider.GetString(length));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentOutOfRangeException>(ex);
         }
 
         [Fact]

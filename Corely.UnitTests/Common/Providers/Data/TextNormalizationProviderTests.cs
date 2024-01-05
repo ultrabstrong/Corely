@@ -23,8 +23,9 @@ namespace Corely.UnitTests.Common.Providers.Data
         [Fact]
         public void BasicNormalize_ShouldThrowArgumentNullException()
         {
-            void act() => _textNormalizationProvider.BasicNormalize(null!);
-            Assert.Throws<ArgumentNullException>(act);
+            var ex = Record.Exception(() => _textNormalizationProvider.BasicNormalize(null!));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Theory, MemberData(nameof(NormalizeAddressTestData))]
@@ -45,8 +46,11 @@ namespace Corely.UnitTests.Common.Providers.Data
         public void NormalizeAddress_ShouldThrowArgumentNullException()
         {
             string[] additional = ["Apt. 1"];
-            void act() => _textNormalizationProvider.NormalizeAddress(null!, additional);
-            Assert.Throws<ArgumentNullException>(act);
+
+            var ex = Record.Exception(() => _textNormalizationProvider.NormalizeAddress(null!, additional));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Theory, MemberData(nameof(NormalizeAddressAndStateTestData))]
@@ -67,9 +71,11 @@ namespace Corely.UnitTests.Common.Providers.Data
         public void NormalizeAddressAndState_ShouldThrowArgumentNullException()
         {
             string[] additional = ["Apt. 1"];
-            void act() => _textNormalizationProvider.NormalizeAddressAndState(null!, additional);
-            Assert.Throws<ArgumentNullException>(act);
 
+            var ex = Record.Exception(() => _textNormalizationProvider.NormalizeAddressAndState(null!, additional));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
     }
 }

@@ -38,8 +38,9 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         [Fact]
         public void Hash_ShouldThrowArgumentNullException_WhenValueIsNull()
         {
-            void act() => HashProvider.Hash(null);
-            Assert.Throws<ArgumentNullException>(act);
+            var ex = Record.Exception(() => HashProvider.Hash(null));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -75,8 +76,9 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         [InlineData("", null)]
         public void Verify_ShouldThrowArgumentNullException_WithNull(string? value, string? hash)
         {
-            void act() => HashProvider.Verify(value!, hash!);
-            Assert.Throws<ArgumentNullException>(act);
+            var ex = Record.Exception(() => HashProvider.Verify(value!, hash!));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]

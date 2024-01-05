@@ -3,14 +3,14 @@ using AutoMapper;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper
 {
-    public abstract class AutoMapperTestBase<TSource, TDestination>
+    public abstract class AutoMapperTestsBase<TSource, TDestination>
         : IDisposable
         where TSource : class
     {
         protected readonly IMapper _mapper;
         private readonly ServiceFactory _serviceFactory = new();
 
-        protected AutoMapperTestBase()
+        protected AutoMapperTestsBase()
         {
             _mapper = _serviceFactory.GetRequiredService<IMapper>();
         }

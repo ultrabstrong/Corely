@@ -32,8 +32,6 @@ namespace ConsoleTest
                     Password = new HashedValue(hashProvider).Set("password")
                 };
 
-                validator.ThrowIfInvalid(originalBasicAuth);
-
                 var mappedBasicAuthEntity = mapper.Map<BasicAuthEntity>(originalBasicAuth);
                 var mappedBasicAuth = mapper.Map<BasicAuth>(mappedBasicAuthEntity);
                 var isVerified = mappedBasicAuth.Password.Verify("password");

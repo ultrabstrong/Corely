@@ -34,7 +34,10 @@ namespace Corely.UnitTests.Common.Models.Results
             Assert.True(_pagedResponse.HasMore);
             Assert.Equal(0, _pagedResponse.PageNum);
             Assert.Empty(_pagedResponse.Items);
-            Assert.Throws<InvalidOperationException>(_pagedResponse.GetNextChunk);
+
+            var ex = Record.Exception(() => _pagedResponse.GetNextChunk());
+            Assert.NotNull(ex);
+            Assert.IsType<InvalidOperationException>(ex);
         }
 
         [Theory, MemberData(nameof(SkipAndTakeTestData))]
@@ -153,7 +156,9 @@ namespace Corely.UnitTests.Common.Models.Results
             _pagedResponse.OnGetNextChunk += GetNextChunkHandler;
             _pagedResponse.OnGetNextChunk -= GetNextChunkHandler;
 
-            Assert.Throws<InvalidOperationException>(_pagedResponse.GetNextChunk);
+            var ex = Record.Exception(() => _pagedResponse.GetNextChunk());
+            Assert.NotNull(ex);
+            Assert.IsType<InvalidOperationException>(ex);
         }
     }
 }
