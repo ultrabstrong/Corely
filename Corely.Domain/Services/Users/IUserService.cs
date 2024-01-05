@@ -1,11 +1,10 @@
-﻿using Corely.Domain.Models.Auth;
-using Corely.Domain.Models.Users;
+﻿using Corely.Domain.Models.Users;
 
 namespace Corely.Domain.Services.Users
 {
     public interface IUserService
     {
-        Task Create(User user, BasicAuth basicAuth);
+        Task<CreateUserResult> Create(CreateUserRequest createUserRequest);
 
     }
 }

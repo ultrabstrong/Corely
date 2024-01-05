@@ -12,43 +12,35 @@ namespace Corely.Domain.Services.Users
 {
     public class UserService : IUserService
     {
+        protected readonly IValidationProvider _validationProvider;
+        protected readonly IMapProvider _mapProvider;
+        protected readonly ILogger _logger;
         private readonly IUserRepo _userRepo;
-        private readonly IValidationProvider _validationProvider;
-        private readonly IMapProvider _mapProvider;
-        private readonly ILogger<UserService> _logger;
 
         public UserService(
             IUserRepo userRepo,
-            IValidationProvider validationProvider,
             IMapProvider mapProvider,
+            IValidationProvider validationProvider,
             ILogger<UserService> logger)
         {
-            _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
             _validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
             _mapProvider = mapProvider.ThrowIfNull(nameof(mapProvider));
             _logger = logger.ThrowIfNull(nameof(logger));
+            _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
         }
 
-        public async Task Create(User user, BasicAuth basicAuth)
+        public async Task<CreateUserResult> Create(CreateUserRequest createUserRequest)
         {
             try
             {
+                _logger.LogInformation("Creating user {Username}", createUserRequest.Username);
+
+                var user = _mapProvider.Map<User>(createUserRequest);
                 _validationProvider.ThrowIfInvalid(user);
-                _validationProvider.ThrowIfInvalid(basicAuth);
-            }
-            catch (ValidationException ex)
-            {
-                _logger.LogWarning("Arguments are not valid");
-                throw new UserServiceException(ex.Message, ex)
-                {
-                    Reason = UserServiceException.ErrorReason.ValidationFailed
-                };
-            }
 
-            _logger.LogInformation("Creating user {Username}", user.Username);
+                var basicauth = _mapProvider.Map<BasicAuth>(createUserRequest);
+                _validationProvider.ThrowIfInvalid(basicauth);
 
-            try
-            {
                 var userEntity = _mapProvider.Map<UserEntity>(user);
                 if (await _userRepo.DoesUserExist(userEntity.Username, userEntity.Email))
                 {
@@ -58,10 +50,19 @@ namespace Corely.Domain.Services.Users
                 }
                 await _userRepo.Create(userEntity);
                 _logger.LogInformation("User {Username} created", user.Username);
+                return new CreateUserResult();
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning("Model is not valid");
+                throw new UserServiceException(ex.Message, ex)
+                {
+                    Reason = UserServiceException.ErrorReason.ValidationFailed
+                };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating user {Username}", user.Username);
+                _logger.LogError(ex, "Error creating user {Username}", createUserRequest.Username);
                 throw new UserServiceException(ex.Message, ex)
                 {
                     Reason = UserServiceException.ErrorReason.Unknown

@@ -2,8 +2,8 @@
 
 namespace Corely.UnitTests.Domain.Exceptions
 {
-    public class ServiceExceptionTests
-        : ExceptionTestsBase<ServiceException>
+    public class ValidationExceptionTests
+        : ExceptionTestsBase<ValidationException>
     {
     }
 }
