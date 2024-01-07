@@ -1,9 +1,4 @@
-﻿using Corely.Common.Models.Security;
-using Corely.Common.Providers.Security.Hashing;
-using Corely.Domain.Entities.Auth;
-using Corely.Domain.Mappers;
-using Corely.Domain.Models.Auth;
-using Corely.Domain.Validators;
+﻿using Corely.Domain.Services.Users;
 using Serilog;
 using Serilog.Core;
 
@@ -22,20 +17,15 @@ namespace ConsoleTest
             try
             {
                 using var serviceFactory = new ServiceFactory();
-                var mapper = serviceFactory.GetRequiredService<IMapProvider>();
-                var validator = serviceFactory.GetRequiredService<IValidationProvider>();
-                var hashProvider = serviceFactory.GetRequiredService<IHashProvider>();
+                var userService = serviceFactory.GetRequiredService<IUserService>();
 
-                var originalBasicAuth = new BasicAuth()
-                {
-                    ModifiedUtc = DateTime.UtcNow,
-                    Password = new HashedValue(hashProvider).Set("password")
-                };
+                var username = "bstrong";
+                var email = "ultrabstrong@gmail.com";
+                var password = "password";
 
-                var mappedBasicAuthEntity = mapper.Map<BasicAuthEntity>(originalBasicAuth);
-                var mappedBasicAuth = mapper.Map<BasicAuth>(mappedBasicAuthEntity);
-                var isVerified = mappedBasicAuth.Password.Verify("password");
+                userService.CreateUser(new(username, email, password));
 
+                userService.CreateUser(new(username, email, password));
             }
             catch (Exception ex)
             {

@@ -4,9 +4,11 @@ using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Hashing;
 using Corely.Common.Providers.Security.Keys;
 using Corely.DataAccess.Factories;
+using Corely.DataAccess.Factories.AccountManagement;
 using Corely.Domain.Connections;
 using Corely.Domain.Mappers;
 using Corely.Domain.Mappers.AutoMapper;
+using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
 using Corely.Domain.Validators.FluentValidators;
 using FluentValidation;
@@ -28,7 +30,8 @@ namespace ConsoleTest
             AddMapper(services);
             AddValidator(services);
             AddSecurityServices(services);
-            AddDataAccessServices(services);
+            AddDataAccessRepos(services);
+            AddDomainServices(services);
 
             _serviceProvider = services.BuildServiceProvider();
         }
@@ -41,8 +44,8 @@ namespace ConsoleTest
 
         private static void AddMapper(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(IMapProvider).Assembly);
             services.AddScoped<IMapProvider, AutoMapperMapProvider>();
+            services.AddAutoMapper(typeof(IMapProvider).Assembly);
         }
 
         private static void AddValidator(IServiceCollection services)
@@ -69,17 +72,45 @@ namespace ConsoleTest
                 .GetProvider(HashProviderConstants.SALTED_SHA256_CODE));
         }
 
-        private static void AddDataAccessServices(IServiceCollection services)
+        private static void AddDataAccessRepos(IServiceCollection services)
         {
             var connection = new DataAccessConnection<string>(
-                ConnectionNames.EntityFrameworkMySql,
-                "mysql-connection-string");
-            services.AddSingleton<IDataAccessConnection<string>>(connection);
+                ConnectionNames.Mock, "");
 
-            services.AddScoped<IGenericRepoFactory<string>>(serviceProvider =>
-                new GenericRepoFactory<string>(
+            // Keyed is used to allow multiple connections to be registered
+            services.AddKeyedSingleton<IDataAccessConnection<string>>(
+                connection.ConnectionName,
+                (serviceProvider, key) => connection);
+
+            // Keyed is to register generic repo factories for each connection
+            services.AddKeyedSingleton<IGenericRepoFactory<string>>(
+                connection.ConnectionName,
+                (serviceProvider, key) => new GenericRepoFactory<string>(
                     serviceProvider.GetRequiredService<ILoggerFactory>(),
-                    serviceProvider.GetRequiredService<IDataAccessConnection<string>>()));
+                    serviceProvider.GetRequiredKeyedService<IDataAccessConnection<string>>(key)));
+
+            AddAccountManagementDataAccessServices(services);
+        }
+
+        private static void AddAccountManagementDataAccessServices(IServiceCollection services)
+        {
+            // All 'Account management' should belong to one connection type
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredKeyedService<IGenericRepoFactory<string>>(ConnectionNames.Mock)
+                .CreateAccountManagementRepoFactory());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IAccountManagementRepoFactory>()
+                .CreateBasicAuthRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IAccountManagementRepoFactory>()
+                .CreateUserRepo());
+        }
+
+        private static void AddDomainServices(IServiceCollection services)
+        {
+            services.AddScoped<IUserService, UserService>();
         }
 
         public T GetRequiredService<T>() where T : notnull

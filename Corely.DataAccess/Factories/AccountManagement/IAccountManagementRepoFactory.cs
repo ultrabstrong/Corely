@@ -5,8 +5,8 @@ namespace Corely.DataAccess.Factories.AccountManagement
 {
     public interface IAccountManagementRepoFactory
     {
-        IUserRepo GetUserRepo();
+        IUserRepo CreateUserRepo();
 
-        IAuthRepo<BasicAuthEntity> GetBasicAuthRepo();
+        IAuthRepo<BasicAuthEntity> CreateBasicAuthRepo();
     }
 }

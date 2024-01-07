@@ -24,8 +24,8 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             UserService act() => new(
                 null,
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _logger);
 
             var ex = Record.Exception(act);
@@ -39,8 +39,8 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             UserService act() => new(
                 Mock.Of<IUserRepo>(),
-                null,
                 _serviceFactory.GetRequiredService<IMapProvider>(),
+                null,
                 _logger);
 
             var ex = Record.Exception(act);
@@ -54,8 +54,8 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             UserService act() => new(
                 Mock.Of<IUserRepo>(),
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
                 null,
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _logger);
 
             var ex = Record.Exception(act);
@@ -69,8 +69,8 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             UserService act() => new(
                 Mock.Of<IUserRepo>(),
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
                 null);
 
             var ex = Record.Exception(act);

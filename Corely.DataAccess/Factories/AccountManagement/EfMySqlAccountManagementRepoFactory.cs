@@ -28,12 +28,12 @@ namespace Corely.DataAccess.Factories.AccountManagement
             return new(optionsBuilder.Options);
         }
 
-        public IAuthRepo<BasicAuthEntity> GetBasicAuthRepo()
+        public IAuthRepo<BasicAuthEntity> CreateBasicAuthRepo()
         {
             return new EFBasicAuthRepo(_loggerFactory.CreateLogger<EFBasicAuthRepo>(), CreateDbContext());
         }
 
-        public IUserRepo GetUserRepo()
+        public IUserRepo CreateUserRepo()
         {
             return new EFUserRepo(_loggerFactory.CreateLogger<EFUserRepo>(), CreateDbContext());
         }

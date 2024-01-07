@@ -28,6 +28,9 @@ namespace Corely.DataAccess.Factories
                 case ConnectionNames.EntityFrameworkMySql:
                     ThrowForInvalidDataType<string>();
                     break;
+                case ConnectionNames.Mock:
+                    // Mock does not require a connection data type because there is no connection
+                    break;
                 default:
                     break;
             }
@@ -46,8 +49,11 @@ namespace Corely.DataAccess.Factories
             return _connection.ConnectionName switch
             {
                 ConnectionNames.EntityFrameworkMySql =>
-                    new EfMySqlAccountManagementRepoFactory(_loggerFactory,
+                    new EfMySqlAccountManagementRepoFactory(
+                        _loggerFactory,
                         ((IDataAccessConnection<string>)_connection).GetConnection()),
+                ConnectionNames.Mock =>
+                    new MockAccountManagementRepoFactory(),
                 _ =>
                     throw new ArgumentOutOfRangeException(_connection.ConnectionName),
             };

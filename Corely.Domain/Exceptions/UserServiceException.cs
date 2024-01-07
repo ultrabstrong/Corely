@@ -6,7 +6,6 @@
         {
             Unknown,
             UserAlreadyExists,
-            ValidationFailed
         }
 
         public ErrorReason Reason { get; set; } = ErrorReason.Unknown;

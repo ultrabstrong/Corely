@@ -4,7 +4,7 @@ namespace Corely.Domain.Services.Users
 {
     public interface IUserService
     {
-        Task<CreateUserResult> Create(CreateUserRequest createUserRequest);
+        Task<CreateUserResult> CreateUser(CreateUserRequest createUserRequest);
 
     }
 }
