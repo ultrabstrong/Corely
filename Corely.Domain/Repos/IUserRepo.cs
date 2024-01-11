@@ -6,9 +6,9 @@ namespace Corely.Domain.Repos
     {
         Task<UserEntity?> GetByUserName(string userName);
         Task<UserEntity?> GetByEmail(string email);
+        Task<UserEntity?> GetByUserNameOrEmail(string userName, string email);
         Task<UserEntity?> GetWithDetailsById(int userId);
         Task<UserEntity?> GetWithDetailsByUserName(string userName);
         Task<UserEntity?> GetWithDetailsByEmail(string email);
-        Task<bool> DoesUserExist(string userName, string email);
     }
 }

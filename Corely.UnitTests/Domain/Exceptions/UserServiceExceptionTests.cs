@@ -3,7 +3,7 @@
 namespace Corely.UnitTests.Domain.Exceptions
 {
     public class UserServiceExceptionTests
-        : ExceptionTestsBase<UserServiceException>
+        : ExceptionTestsBase<UserExistsException>
     {
     }
 }

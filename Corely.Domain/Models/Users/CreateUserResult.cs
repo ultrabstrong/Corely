@@ -1,6 +1,8 @@
 ﻿namespace Corely.Domain.Models.Users
 {
-    public class CreateUserResult
+    public record CreateUserResult : ResultBase
     {
+        public CreateUserResult(bool IsSuccess, string? Message)
+            : base(IsSuccess, Message) { }
     }
 }

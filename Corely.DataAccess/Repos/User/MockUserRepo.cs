@@ -18,14 +18,20 @@ namespace Corely.DataAccess.Repos.User
             return Task.FromResult(_users.FirstOrDefault(u => u.Id == id));
         }
 
+        public Task<UserEntity?> GetByUserName(string userName)
+        {
+            return Task.FromResult(_users.FirstOrDefault(u => u.Username == userName));
+        }
+
         public Task<UserEntity?> GetByEmail(string email)
         {
             return Task.FromResult(_users.FirstOrDefault(u => u.Email == email));
         }
 
-        public Task<UserEntity?> GetByUserName(string userName)
+        public Task<UserEntity?> GetByUserNameOrEmail(string userName, string email)
         {
-            return Task.FromResult(_users.FirstOrDefault(u => u.Username == userName));
+            return Task.FromResult(_users
+                .FirstOrDefault(u => u.Username == userName || u.Email == email));
         }
 
         public Task<UserEntity?> GetWithDetailsById(int userId)
@@ -54,11 +60,6 @@ namespace Corely.DataAccess.Repos.User
         {
             _users.Remove(entity);
             return Task.CompletedTask;
-        }
-
-        public Task<bool> DoesUserExist(string userName, string email)
-        {
-            return Task.FromResult(_users.Any(u => u.Username == userName || u.Email == email));
         }
     }
 }

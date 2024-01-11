@@ -43,6 +43,12 @@ namespace Corely.DataAccess.Repos.User
                 .FirstOrDefaultAsync(u => u.Username == userName);
         }
 
+        public async Task<UserEntity?> GetByUserNameOrEmail(string userName, string email)
+        {
+            return await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Username == userName || u.Email == email);
+        }
+
         public async Task<UserEntity?> GetWithDetailsByEmail(string email)
         {
             return await _dbContext.Users
@@ -74,12 +80,6 @@ namespace Corely.DataAccess.Repos.User
         {
             _dbContext.Users.Remove(entity);
             await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<bool> DoesUserExist(string userName, string email)
-        {
-            return await _dbContext.Users
-                .AnyAsync(u => u.Username == userName || u.Email == email);
         }
 
         protected override void DisposeManagedResources()

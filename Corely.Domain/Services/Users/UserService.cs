@@ -28,20 +28,33 @@ namespace Corely.Domain.Services.Users
             logger.LogInformation("Creating user {Username}", createUserRequest.Username);
 
             var user = MapToValid<User>(createUserRequest);
-            //var basicAuth = MapToValid<BasicAuth>(createUserRequest);
+            await ThrowIfUserExists(user.Username, user.Email);
 
             var userEntity = mapProvider.Map<UserEntity>(user);
-
-            if (await _userRepo.DoesUserExist(userEntity.Username, userEntity.Email))
-            {
-                logger.LogWarning("User with username {Username} or email {Email} already exists",
-                    userEntity.Username, userEntity.Email);
-                throw new UserServiceException() { Reason = UserServiceException.ErrorReason.UserAlreadyExists };
-            }
-
             await _userRepo.Create(userEntity);
+
             logger.LogInformation("User {Username} created", user.Username);
-            return new CreateUserResult();
+            return new CreateUserResult(true, "");
+        }
+
+        private async Task ThrowIfUserExists(string username, string email)
+        {
+            var existingUser = await _userRepo.GetByUserNameOrEmail(username, email);
+            if (existingUser != null)
+            {
+                bool usernameExists = existingUser.Username == username;
+                bool emailExists = existingUser.Email == email;
+
+                logger.LogWarning("User already exists. {MatchedOnUsername} {MatchedOnEmail}",
+                    usernameExists ? $"Matched username {existingUser.Username}" : "",
+                    emailExists ? $"Matched email {existingUser.Email}" : "");
+
+                throw new UserExistsException()
+                {
+                    UsernameExists = usernameExists,
+                    EmailExists = emailExists
+                };
+            }
         }
     }
 }

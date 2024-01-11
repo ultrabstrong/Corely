@@ -21,11 +21,10 @@ namespace ConsoleTest
 
                 var username = "bstrong";
                 var email = "ultrabstrong@gmail.com";
-                var password = "password";
 
-                userService.CreateUser(new(username, email, password));
+                userService.CreateUser(new(username, email));
 
-                userService.CreateUser(new(username, email, password));
+                userService.CreateUser(new(username, email));
             }
             catch (Exception ex)
             {
