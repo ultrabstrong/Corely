@@ -13,14 +13,10 @@ namespace Corely.UnitTests.Fixtures
         }
 
         public ILoggerFactory GetLoggerFactory()
-        {
-            return _loggerFactory;
-        }
+            => _loggerFactory;
 
         public ILogger<T> CreateLogger<T>()
-        {
-            return _loggerFactory.CreateLogger<T>();
-        }
+            => _loggerFactory.CreateLogger<T>();
 
         public void Dispose()
         {

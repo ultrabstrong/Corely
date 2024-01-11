@@ -39,7 +39,7 @@ namespace Corely.Domain.Services
                     { nameof(source), source }
                 });
 
-                logger.LogError("Error mapping {Source} to valid {Destination}", source.GetType().Name, typeof(T).Name);
+                logger.LogError("Error mapping {Source} to valid {Destination}", source?.GetType()?.Name, typeof(T)?.Name);
                 throw;
             }
         }

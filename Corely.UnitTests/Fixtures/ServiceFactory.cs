@@ -6,16 +6,18 @@ using Corely.Domain.Validators;
 using Corely.Domain.Validators.FluentValidators;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests
+namespace Corely.UnitTests.Fixtures
 {
-    internal class ServiceFactory : IDisposable
+    public class ServiceFactory : IDisposable
     {
+        private readonly LoggerFixture _loggerFixture = new();
         private readonly ServiceProvider _serviceProvider;
+
 
         public ServiceFactory()
         {
-
             var services = new ServiceCollection();
 
             AddMapper(services);
@@ -50,6 +52,11 @@ namespace Corely.UnitTests
 
         public T GetRequiredService<T>() where T : notnull
             => _serviceProvider.GetRequiredService<T>();
+
+        public LoggerFixture GetLoggerFixture() => _loggerFixture;
+
+        public ILogger<T> CreateLogger<T>()
+            => _loggerFixture.CreateLogger<T>();
 
         public void Dispose() => _serviceProvider?.Dispose();
     }

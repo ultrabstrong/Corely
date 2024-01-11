@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Corely.UnitTests.Fixtures;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper
 {

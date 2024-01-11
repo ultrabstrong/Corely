@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using Corely.Domain.Validators.FluentValidators;
+using Corely.UnitTests.Fixtures;
 using FluentValidation;
 using CorelyValidationException = Corely.Domain.Exceptions.ValidationException;
 using FluentValidationFailure = FluentValidation.Results.ValidationFailure;

@@ -8,15 +8,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.Domain.Services.Users
 {
-    [Collection(CollectionNames.LoggerCollection)]
+    [Collection(CollectionNames.ServiceFactory)]
     public class UserServiceTests : IDisposable
     {
-        private readonly ServiceFactory _serviceFactory = new();
+        private readonly ServiceFactory _serviceFactory;
         private readonly ILogger<UserService> _logger;
 
-        public UserServiceTests(LoggerFixture loggerFixture)
+        public UserServiceTests(ServiceFactory serviceFactory)
         {
-            _logger = loggerFixture.CreateLogger<UserService>();
+            _serviceFactory = serviceFactory;
+            _logger = _serviceFactory.CreateLogger<UserService>();
         }
 
         [Fact]
