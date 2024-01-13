@@ -10,7 +10,7 @@ namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Users
     {
         public void Configure(EntityTypeBuilder<UserEntity> builder)
         {
-            BaseEntityTypeConfiguration.Configure(builder);
+            GenericEntityTypeConfiguration.Configure(builder);
 
             builder.Property(e => e.Enabled)
                 .HasDefaultValue(true)

@@ -17,7 +17,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         private const string VALID_EMAIL = "email@x.y";
 
         private readonly ServiceFactory _serviceFactory;
-        private readonly IUserService _userService;
+        private readonly UserService _userService;
 
         public UserServiceTests(ServiceFactory serviceFactory)
         {

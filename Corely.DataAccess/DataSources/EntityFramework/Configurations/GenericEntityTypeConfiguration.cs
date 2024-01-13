@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.DataSources.EntityFramework.Configurations
 {
-    internal class BaseEntityTypeConfiguration
+    internal class GenericEntityTypeConfiguration
     {
         public static void Configure<T>(EntityTypeBuilder<T> builder) where T : class
         {
@@ -14,21 +14,21 @@ namespace Corely.DataAccess.DataSources.EntityFramework.Configurations
                 builder.ToTable(tableName);
             }
 
-            if (typeof(T) is IHasIdPk)
+            if (typeof(IHasIdPk).IsAssignableFrom(typeof(T)))
             {
                 builder.HasKey(e => ((IHasIdPk)e).Id);
                 builder.Property(e => ((IHasIdPk)e).Id)
                     .ValueGeneratedOnAdd();
             }
 
-            if (typeof(T) is IHasCreatedUtc)
+            if (typeof(IHasCreatedUtc).IsAssignableFrom(typeof(T)))
             {
                 builder.Property(e => ((IHasCreatedUtc)e).CreatedUtc)
                     .HasDefaultValueSql(SqlConstants.GETUTCDATE)
                     .IsRequired();
             }
 
-            if (typeof(T) is IHasModifiedUtc)
+            if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
             {
                 builder.Property(e => ((IHasModifiedUtc)e).ModifiedUtc)
                     .HasDefaultValueSql(SqlConstants.GETUTCDATE)

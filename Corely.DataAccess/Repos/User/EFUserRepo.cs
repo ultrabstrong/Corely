@@ -24,6 +24,7 @@ namespace Corely.DataAccess.Repos.User
         public async Task Create(UserEntity entity)
         {
             await _dbContext.Users.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<UserEntity?> Get(int id)

@@ -9,7 +9,7 @@ namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Auth
     {
         public void Configure(EntityTypeBuilder<BasicAuthEntity> builder)
         {
-            BaseEntityTypeConfiguration.Configure(builder);
+            GenericEntityTypeConfiguration.Configure(builder);
 
             builder.Property(x => x.Username)
                 .IsRequired()
