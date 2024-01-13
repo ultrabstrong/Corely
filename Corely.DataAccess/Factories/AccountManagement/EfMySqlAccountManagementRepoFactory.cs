@@ -21,11 +21,16 @@ namespace Corely.DataAccess.Factories.AccountManagement
             _connection = connection;
         }
 
-        private AccountManagementDbContext CreateDbContext()
+        internal virtual AccountManagementDbContext CreateDbContext()
         {
             DbContextOptionsBuilder<AccountManagementDbContext> optionsBuilder = new();
-            optionsBuilder.UseMySql(_connection, ServerVersion.AutoDetect(_connection));
+            optionsBuilder.UseMySql(_connection, GetServerVersion());
             return new(optionsBuilder.Options);
+        }
+
+        internal virtual ServerVersion GetServerVersion()
+        {
+            return ServerVersion.AutoDetect(_connection);
         }
 
         public IAuthRepo<BasicAuthEntity> CreateBasicAuthRepo()

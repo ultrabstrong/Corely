@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Corely.UnitTests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
