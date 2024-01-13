@@ -25,6 +25,7 @@ namespace Corely.DataAccess.Repos.Auth
         public async Task Create(BasicAuthEntity entity)
         {
             await _dbContext.BasicAuths.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<BasicAuthEntity?> Get(int id)
