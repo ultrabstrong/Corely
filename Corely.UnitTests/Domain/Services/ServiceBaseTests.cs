@@ -1,6 +1,9 @@
-﻿using Corely.Domain.Mappers;
+﻿using AutoFixture;
+using AutoMapper;
+using Corely.Domain.Exceptions;
+using Corely.Domain.Mappers;
+using Corely.Domain.Models.Users;
 using Corely.Domain.Services;
-using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
 using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
@@ -22,6 +25,10 @@ namespace Corely.UnitTests.Domain.Services
             }
         }
 
+        private const string VALID_USERNAME = "username";
+        private const string VALID_EMAIL = "email@x.y";
+
+        private readonly Fixture _fixutre = new();
         private readonly ServiceFactory _serviceFactory;
         private readonly MockServiceBase _mockServiceBase;
 
@@ -31,7 +38,7 @@ namespace Corely.UnitTests.Domain.Services
             _mockServiceBase = new MockServiceBase(
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _serviceFactory.CreateLogger<UserService>());
+                _serviceFactory.GetRequiredService<ILogger<ServiceBaseTests>>());
         }
 
         [Fact]
@@ -41,6 +48,37 @@ namespace Corely.UnitTests.Domain.Services
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public void MapToValid_ShouldThrowAutoMapperMappingException_IfDestinationIsInvalid()
+        {
+            var createUserRequest = _fixutre.Create<CreateUserRequest>();
+            var ex = Record.Exception(() => _mockServiceBase.MapToValid<CreateUserResult>(createUserRequest));
+
+            Assert.NotNull(ex);
+            Assert.IsType<AutoMapperMappingException>(ex);
+        }
+
+        [Fact]
+        public void MapToValid_ShouldThrowValidationException_IfDestinationIsInvalid()
+        {
+            var createUserRequest = _fixutre.Create<CreateUserRequest>();
+            var ex = Record.Exception(() => _mockServiceBase.MapToValid<User>(createUserRequest));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ValidationException>(ex);
+        }
+
+        [Fact]
+        public void MapToValid_ShouldReturnValidDestination_IfSourceIsValid()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var user = _mockServiceBase.MapToValid<User>(createUserRequest);
+
+            Assert.NotNull(user);
+            Assert.Equal(createUserRequest.Username, user.Username);
+            Assert.Equal(createUserRequest.Email, user.Email);
         }
     }
 }

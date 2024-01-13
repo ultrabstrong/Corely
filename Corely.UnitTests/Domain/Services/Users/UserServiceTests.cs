@@ -1,4 +1,6 @@
-﻿using Corely.Domain.Mappers;
+﻿using Corely.Domain.Exceptions;
+using Corely.Domain.Mappers;
+using Corely.Domain.Models.Users;
 using Corely.Domain.Repos;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
@@ -9,15 +11,22 @@ using Microsoft.Extensions.Logging;
 namespace Corely.UnitTests.Domain.Services.Users
 {
     [Collection(CollectionNames.ServiceFactory)]
-    public class UserServiceTests : IDisposable
+    public class UserServiceTests
     {
+        private const string VALID_USERNAME = "username";
+        private const string VALID_EMAIL = "email@x.y";
+
         private readonly ServiceFactory _serviceFactory;
-        private readonly ILogger<UserService> _logger;
+        private readonly IUserService _userService;
 
         public UserServiceTests(ServiceFactory serviceFactory)
         {
             _serviceFactory = serviceFactory;
-            _logger = _serviceFactory.CreateLogger<UserService>();
+            _userService = new UserService(
+                _serviceFactory.GetRequiredService<IUserRepo>(),
+                _serviceFactory.GetRequiredService<IMapProvider>(),
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
+                _serviceFactory.GetRequiredService<ILogger<UserService>>());
         }
 
         [Fact]
@@ -27,7 +36,7 @@ namespace Corely.UnitTests.Domain.Services.Users
                 null,
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _logger);
+                _serviceFactory.GetRequiredService<ILogger<UserService>>());
 
             var ex = Record.Exception(act);
 
@@ -42,7 +51,7 @@ namespace Corely.UnitTests.Domain.Services.Users
                 Mock.Of<IUserRepo>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 null,
-                _logger);
+                _serviceFactory.GetRequiredService<ILogger<UserService>>());
 
             var ex = Record.Exception(act);
 
@@ -57,7 +66,7 @@ namespace Corely.UnitTests.Domain.Services.Users
                 Mock.Of<IUserRepo>(),
                 null,
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _logger);
+                _serviceFactory.GetRequiredService<ILogger<UserService>>());
 
             var ex = Record.Exception(act);
 
@@ -80,10 +89,25 @@ namespace Corely.UnitTests.Domain.Services.Users
             Assert.IsType<ArgumentNullException>(ex);
         }
 
-        public void Dispose()
+        [Fact]
+        public async Task CreateUser_ShouldThrowUserExistsException_WhenUserExists()
         {
-            _serviceFactory.Dispose();
-            GC.SuppressFinalize(this);
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            await _userService.CreateUser(createUserRequest);
+
+            Exception ex = await Record.ExceptionAsync(() => _userService.CreateUser(createUserRequest));
+
+            Assert.NotNull(ex);
+            Assert.IsType<UserExistsException>(ex);
+        }
+
+        [Fact]
+        public async Task CreateUser_ShouldReturnCreateUserResult()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var res = await _userService.CreateUser(createUserRequest);
+
+            Assert.True(res.IsSuccess);
         }
     }
 }

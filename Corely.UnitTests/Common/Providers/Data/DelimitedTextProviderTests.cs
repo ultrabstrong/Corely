@@ -9,15 +9,15 @@ using System.Text;
 
 namespace Corely.UnitTests.Common.Providers.Data
 {
-    [Collection(CollectionNames.LoggerCollection)]
+    [Collection(CollectionNames.ServiceFactory)]
     public class DelimitedTextProviderTests
     {
         private readonly ILogger<DelimitedTextProvider> _logger;
         private readonly DelimitedTextProvider _delimitedTextDataProvider;
 
-        public DelimitedTextProviderTests(LoggerFixture loggerFixture)
+        public DelimitedTextProviderTests(ServiceFactory serviceFactory)
         {
-            _logger = loggerFixture.CreateLogger<DelimitedTextProvider>();
+            _logger = serviceFactory.GetRequiredService<ILogger<DelimitedTextProvider>>();
             _delimitedTextDataProvider = new DelimitedTextProvider(_logger);
         }
 

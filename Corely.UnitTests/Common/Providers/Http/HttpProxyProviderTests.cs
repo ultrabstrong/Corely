@@ -10,7 +10,7 @@ using System.Net;
 
 namespace Corely.UnitTests.Common.Providers.Http
 {
-    [Collection(nameof(CollectionNames.LoggerCollection))]
+    [Collection(nameof(CollectionNames.ServiceFactory))]
     public class HttpProxyProviderTests
     {
         private readonly ILogger<HttpProxyProvider> _logger;
@@ -19,9 +19,9 @@ namespace Corely.UnitTests.Common.Providers.Http
 
         private HttpStatusCode _httpStatusCode = HttpStatusCode.OK;
 
-        public HttpProxyProviderTests(LoggerFixture loggerFixture)
+        public HttpProxyProviderTests(ServiceFactory serviceFactory)
         {
-            _logger = loggerFixture.CreateLogger<HttpProxyProvider>();
+            _logger = serviceFactory.GetRequiredService<ILogger<HttpProxyProvider>>();
 
             _httpProxyProvider = new(
                 _logger,

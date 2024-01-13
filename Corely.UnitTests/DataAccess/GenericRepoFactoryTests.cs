@@ -9,16 +9,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess
 {
-    [Collection(nameof(CollectionNames.LoggerCollection))]
+    [Collection(nameof(CollectionNames.ServiceFactory))]
     public class GenericRepoFactoryTests
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly GenericRepoFactory<object> _genericRepoFactory;
         private readonly Fixture _fixture = new();
 
-        public GenericRepoFactoryTests(LoggerFixture loggerFixture)
+        public GenericRepoFactoryTests(ServiceFactory serviceFactory)
         {
-            _loggerFactory = loggerFixture.GetLoggerFactory();
+            _loggerFactory = serviceFactory.GetRequiredService<ILoggerFactory>();
             _genericRepoFactory = new(
                 _loggerFactory,
                 new DataAccessConnection<object>(
