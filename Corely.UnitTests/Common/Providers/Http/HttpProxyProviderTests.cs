@@ -4,7 +4,6 @@ using Corely.Common.Providers.Http.Builders;
 using Corely.Common.Providers.Http.Models;
 using Corely.UnitTests.AB.TestBase;
 using Corely.UnitTests.Collections;
-using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 using System.Net;
 

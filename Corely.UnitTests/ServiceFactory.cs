@@ -1,12 +1,13 @@
 ﻿using Corely.DataAccess.Repos.Auth;
 using Corely.DataAccess.Repos.User;
 using Corely.Domain;
+using Corely.Domain.Connections;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.Fixtures
+namespace Corely.UnitTests
 {
     public class ServiceFactory : ServiceFactoryBase
     {
@@ -20,6 +21,14 @@ namespace Corely.UnitTests.Fixtures
 
         protected override void AddDataAccessRepos(IServiceCollection services)
         {
+            var connection = new DataAccessConnection<string>(
+                ConnectionNames.Mock, "");
+
+            // Keyed is used to allow multiple connections to be registered
+            services.AddKeyedSingleton<IDataAccessConnection<string>>(
+                connection.ConnectionName,
+                (serviceProvider, key) => connection);
+
             services.AddTransient<IAuthRepo<BasicAuthEntity>, MockBasicAuthRepo>();
             services.AddTransient<IUserRepo, MockUserRepo>();
         }

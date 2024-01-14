@@ -9,7 +9,7 @@ namespace ConsoleTest
 #pragma warning disable IDE0052 // Remove unread private members
         private static readonly string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         private static readonly string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-        string localMySqlConnStr = "Server=localhost,3306;Database=maxstrongreporting;Uid=root;Pwd=admin;";
+        private static readonly string localMySqlConnStr = "Server=localhost,3306;Database=maxstrongreporting;Uid=root;Pwd=admin;";
 #pragma warning restore IDE0052 // Remove unread private members
         private static readonly Logger logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 

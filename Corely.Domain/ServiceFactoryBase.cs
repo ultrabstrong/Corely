@@ -30,9 +30,7 @@ namespace Corely.Domain
         }
 
         protected override void DisposeManagedResources()
-        {
-            _serviceProvider?.Dispose();
-        }
+            => _serviceProvider?.Dispose();
 
         private static void AddMapper(IServiceCollection services)
         {
@@ -42,9 +40,9 @@ namespace Corely.Domain
 
         private static void AddValidator(IServiceCollection services)
         {
+            services.AddValidatorsFromAssemblyContaining<FluentValidationProvider>(includeInternalTypes: true);
             services.AddScoped<IFluentValidatorFactory, FluentValidatorFactory>();
             services.AddScoped<IValidationProvider, FluentValidationProvider>();
-            services.AddValidatorsFromAssemblyContaining<FluentValidationProvider>(includeInternalTypes: true);
         }
 
         private static void AddSecurityServices(IServiceCollection services)
@@ -67,6 +65,9 @@ namespace Corely.Domain
 
         public T GetRequiredService<T>() where T : notnull
             => _serviceProvider.GetRequiredService<T>();
+
+        public T GetRequiredKeyedService<T>(string key) where T : notnull
+            => _serviceProvider.GetRequiredKeyedService<T>(key);
 
     }
 }

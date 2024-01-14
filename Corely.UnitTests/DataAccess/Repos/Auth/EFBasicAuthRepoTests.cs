@@ -4,7 +4,6 @@ using Corely.DataAccess.Repos.Auth;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
 using Corely.UnitTests.Collections;
-using Corely.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

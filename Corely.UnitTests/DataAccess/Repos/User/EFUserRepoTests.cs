@@ -3,7 +3,6 @@ using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.DataAccess.Repos.User;
 using Corely.Domain.Repos;
 using Corely.UnitTests.Collections;
-using Corely.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

@@ -3,7 +3,6 @@ using Corely.Common.Providers.Data.Enums;
 using Corely.Common.Providers.Data.Models;
 using Corely.UnitTests.AB.TestBase;
 using Corely.UnitTests.Collections;
-using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 using System.Text;
 

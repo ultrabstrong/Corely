@@ -5,7 +5,6 @@ using Corely.Domain.Repos;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
 using Corely.UnitTests.Collections;
-using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.Domain.Services.Users

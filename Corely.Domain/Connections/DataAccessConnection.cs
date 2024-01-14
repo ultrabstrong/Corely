@@ -8,8 +8,36 @@
 
         public DataAccessConnection(string name, T connection)
         {
-            _connection = connection;
+            ArgumentException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+            ArgumentNullException.ThrowIfNull(connection, nameof(connection));
+
             ConnectionName = name;
+            _connection = connection;
+
+            CheckKnownConnectionDataTypes();
+        }
+
+        protected internal virtual void CheckKnownConnectionDataTypes()
+        {
+            switch (ConnectionName)
+            {
+                case ConnectionNames.EntityFrameworkMySql:
+                    ThrowForInvalidDataType<string>();
+                    break;
+                case ConnectionNames.Mock:
+                    // Mock does not connect to anything
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        protected internal virtual void ThrowForInvalidDataType<T1>()
+        {
+            if (typeof(T1) != typeof(T))
+            {
+                throw new ArgumentException($"Invalid connection type for {ConnectionName}. Expected {typeof(T1)} and received {typeof(T)}");
+            }
         }
 
         public T GetConnection() => _connection;
