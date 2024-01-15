@@ -3,7 +3,7 @@ using Corely.Domain.Entities.Auth;
 
 namespace Corely.UnitTests.DataAccess.Repos.Auth
 {
-    public abstract class BasicAuthRepoTestsBase : RepoTestsBase<BasicAuthEntity>
+    public abstract class BasicAuthRepoTestsBase : RepoExtendedGetTestsBase<BasicAuthEntity>
     {
         public BasicAuthRepoTestsBase()
         {

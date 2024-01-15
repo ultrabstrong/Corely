@@ -8,7 +8,7 @@ namespace Corely.UnitTests.DataAccess.Repos
         where T : IHasIdPk
     {
         protected readonly Fixture fixture = new();
-        protected abstract IRepoExtendedGet<T> Repo { get; }
+        protected abstract IRepo<T> Repo { get; }
 
 
         [Fact]

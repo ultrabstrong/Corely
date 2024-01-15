@@ -3,7 +3,7 @@ using Corely.Domain.Entities.Users;
 
 namespace Corely.UnitTests.DataAccess.Repos.User
 {
-    public abstract class UserRepoTestsBase : RepoTestsBase<UserEntity>
+    public abstract class UserRepoTestsBase : RepoExtendedGetTestsBase<UserEntity>
     {
         public UserRepoTestsBase()
         {
