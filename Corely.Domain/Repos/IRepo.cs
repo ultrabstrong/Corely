@@ -2,9 +2,9 @@
 {
     public interface IRepo<T>
     {
-        Task Create(T entity);
-        Task<T?> Get(int id);
-        Task Update(T entity);
-        Task Delete(T entity);
+        Task CreateAsync(T entity);
+        Task<T?> GetAsync(int id);
+        Task UpdateAsync(T entity);
+        Task DeleteAsync(T entity);
     }
 }

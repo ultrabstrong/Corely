@@ -13,14 +13,14 @@ namespace Corely.UnitTests.DataAccess.Repos.User
     public class EFUserRepoTests : UserRepoTestsBase
     {
         private readonly ServiceFactory _serviceFactory;
-        private readonly EFUserRepo _mockEFUserRepo;
+        private readonly EFUserRepo _efUserRepo;
 
-        protected override IUserRepo MockUserRepo => _mockEFUserRepo;
+        protected override IRepoExtendedGet<UserEntity> UserRepo => _efUserRepo;
 
         public EFUserRepoTests(ServiceFactory serviceFactory)
         {
             _serviceFactory = serviceFactory;
-            _mockEFUserRepo = CreateEfUserRepo();
+            _efUserRepo = CreateEfUserRepo();
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Corely.UnitTests.DataAccess.Repos.User
             var user = fixture.Create<UserEntity>();
 
             mockEFUserRepo.Dispose();
-            var ex = await Record.ExceptionAsync(() => mockEFUserRepo.Create(user));
+            var ex = await Record.ExceptionAsync(() => mockEFUserRepo.CreateAsync(user));
 
             Assert.NotNull(ex);
             Assert.IsType<ObjectDisposedException>(ex);

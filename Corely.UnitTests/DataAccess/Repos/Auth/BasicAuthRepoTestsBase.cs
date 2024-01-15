@@ -7,7 +7,7 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
     public abstract class BasicAuthRepoTestsBase
     {
         protected readonly Fixture fixture = new();
-        protected abstract IAuthRepo<BasicAuthEntity> MockBasicAuthRepo { get; }
+        protected abstract IRepoExtendedGet<BasicAuthEntity> BasicAuthRepo { get; }
 
         public BasicAuthRepoTestsBase()
         {
@@ -20,8 +20,8 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
         {
             var basicAuth = fixture.Create<BasicAuthEntity>();
 
-            await MockBasicAuthRepo.Create(basicAuth);
-            var result = await MockBasicAuthRepo.Get(basicAuth.Id);
+            await BasicAuthRepo.CreateAsync(basicAuth);
+            var result = await BasicAuthRepo.GetAsync(basicAuth.Id);
 
             Assert.Equal(basicAuth, result);
         }
@@ -31,8 +31,8 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
         {
             var basicAuth = fixture.Create<BasicAuthEntity>();
 
-            await MockBasicAuthRepo.Create(basicAuth);
-            var result = await MockBasicAuthRepo.GetByUserId(basicAuth.UserId);
+            await BasicAuthRepo.CreateAsync(basicAuth);
+            var result = await BasicAuthRepo.GetAsync(a => a.UserId == basicAuth.UserId);
 
             Assert.Equal(basicAuth, result);
         }
@@ -42,8 +42,8 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
         {
             var basicAuth = fixture.Create<BasicAuthEntity>();
 
-            await MockBasicAuthRepo.Create(basicAuth);
-            var result = await MockBasicAuthRepo.GetByUserName(basicAuth.Username);
+            await BasicAuthRepo.CreateAsync(basicAuth);
+            var result = await BasicAuthRepo.GetAsync(a => a.Username == basicAuth.Username);
 
             Assert.Equal(basicAuth, result);
         }
@@ -53,10 +53,10 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
         {
             var basicAuth = fixture.Create<BasicAuthEntity>();
 
-            await MockBasicAuthRepo.Create(basicAuth);
+            await BasicAuthRepo.CreateAsync(basicAuth);
             basicAuth.Username = "newUsername";
-            await MockBasicAuthRepo.Update(basicAuth);
-            var result = await MockBasicAuthRepo.Get(basicAuth.Id);
+            await BasicAuthRepo.UpdateAsync(basicAuth);
+            var result = await BasicAuthRepo.GetAsync(basicAuth.Id);
 
             Assert.Equal(basicAuth, result);
         }
@@ -66,9 +66,9 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
         {
             var basicAuth = fixture.Create<BasicAuthEntity>();
 
-            await MockBasicAuthRepo.Create(basicAuth);
-            await MockBasicAuthRepo.Delete(basicAuth);
-            var result = await MockBasicAuthRepo.Get(basicAuth.Id);
+            await BasicAuthRepo.CreateAsync(basicAuth);
+            await BasicAuthRepo.DeleteAsync(basicAuth);
+            var result = await BasicAuthRepo.GetAsync(basicAuth.Id);
 
             Assert.Null(result);
         }

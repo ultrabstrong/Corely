@@ -2,6 +2,7 @@
 using Corely.DataAccess.Repos.Auth;
 using Corely.DataAccess.Repos.User;
 using Corely.Domain.Entities.Auth;
+using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -33,12 +34,12 @@ namespace Corely.DataAccess.Factories.AccountManagement
             return ServerVersion.AutoDetect(_connection);
         }
 
-        public IAuthRepo<BasicAuthEntity> CreateBasicAuthRepo()
+        public IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo()
         {
             return new EFBasicAuthRepo(_loggerFactory.CreateLogger<EFBasicAuthRepo>(), CreateDbContext());
         }
 
-        public IUserRepo CreateUserRepo()
+        public IRepoExtendedGet<UserEntity> CreateUserRepo()
         {
             return new EFUserRepo(_loggerFactory.CreateLogger<EFUserRepo>(), CreateDbContext());
         }

@@ -1,10 +1,10 @@
-﻿using Corely.Common.Models.Results;
+﻿using System.Linq.Expressions;
 
 namespace Corely.Domain.Repos
 {
     public interface IRepoExtendedGet<T> : IRepo<T>
     {
-        Task<IEnumerable<T>> GetAll();
-        Task<PagedResult<T>> GetPaged(PagedResult<T> curPage);
+        Task<T?> GetAsync(Expression<Func<T, bool>> query,
+            Expression<Func<T, object>>? include = null);
     }
 }

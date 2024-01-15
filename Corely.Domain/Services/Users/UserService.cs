@@ -11,10 +11,10 @@ namespace Corely.Domain.Services.Users
 {
     public class UserService : ServiceBase, IUserService
     {
-        private readonly IUserRepo _userRepo;
+        private readonly IRepoExtendedGet<UserEntity> _userRepo;
 
         public UserService(
-            IUserRepo userRepo,
+            IRepoExtendedGet<UserEntity> userRepo,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
             ILogger<UserService> logger)
@@ -31,7 +31,7 @@ namespace Corely.Domain.Services.Users
             await ThrowIfUserExists(user.Username, user.Email);
 
             var userEntity = mapProvider.Map<UserEntity>(user);
-            await _userRepo.Create(userEntity);
+            await _userRepo.CreateAsync(userEntity);
 
             logger.LogInformation("User {Username} created", user.Username);
             return new CreateUserResult(true, "");
@@ -39,7 +39,8 @@ namespace Corely.Domain.Services.Users
 
         private async Task ThrowIfUserExists(string username, string email)
         {
-            var existingUser = await _userRepo.GetByUserNameOrEmail(username, email);
+            var existingUser = await _userRepo.GetAsync(u =>
+                u.Username == username || u.Email == email);
             if (existingUser != null)
             {
                 bool usernameExists = existingUser.Username == username;

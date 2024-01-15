@@ -7,7 +7,7 @@ namespace Corely.UnitTests.DataAccess.Repos.User
     public abstract class UserRepoTestsBase
     {
         protected readonly Fixture fixture = new();
-        protected abstract IUserRepo MockUserRepo { get; }
+        protected abstract IRepoExtendedGet<UserEntity> UserRepo { get; }
 
         public UserRepoTestsBase()
         {
@@ -24,8 +24,8 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         {
             var user = fixture.Create<UserEntity>();
 
-            await MockUserRepo.Create(user);
-            var result = await MockUserRepo.Get(user.Id);
+            await UserRepo.CreateAsync(user);
+            var result = await UserRepo.GetAsync(user.Id);
 
             Assert.Equal(user, result);
         }
@@ -35,8 +35,8 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         {
             var user = fixture.Create<UserEntity>();
 
-            await MockUserRepo.Create(user);
-            var result = await MockUserRepo.GetByUserName(user.Username);
+            await UserRepo.CreateAsync(user);
+            var result = await UserRepo.GetAsync(u => u.Username == user.Username);
 
             Assert.Equal(user, result);
         }
@@ -46,8 +46,8 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         {
             var user = fixture.Create<UserEntity>();
 
-            await MockUserRepo.Create(user);
-            var result = await MockUserRepo.GetByEmail(user.Email);
+            await UserRepo.CreateAsync(user);
+            var result = await UserRepo.GetAsync(u => u.Email == user.Email);
 
             Assert.Equal(user, result);
         }
@@ -57,8 +57,9 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         {
             var user = fixture.Create<UserEntity>();
 
-            await MockUserRepo.Create(user);
-            var result = await MockUserRepo.GetByUserNameOrEmail(user.Username, user.Email);
+            await UserRepo.CreateAsync(user);
+            var result = await UserRepo.GetAsync(u
+                => u.Username == user.Username || u.Email == user.Email);
 
             Assert.Equal(user, result);
         }
@@ -68,8 +69,8 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         {
             var user = fixture.Create<UserEntity>();
 
-            await MockUserRepo.Create(user);
-            var result = await MockUserRepo.GetWithDetailsById(user.Id);
+            await UserRepo.CreateAsync(user);
+            var result = await UserRepo.GetAsync(user.Id);
 
             Assert.Equal(user, result);
         }
@@ -79,8 +80,8 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         {
             var user = fixture.Create<UserEntity>();
 
-            await MockUserRepo.Create(user);
-            var result = await MockUserRepo.GetWithDetailsByEmail(user.Email);
+            await UserRepo.CreateAsync(user);
+            var result = await UserRepo.GetAsync(u => u.Email == user.Email, u => u.Details!);
 
             Assert.Equal(user, result);
         }
@@ -90,8 +91,8 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         {
             var user = fixture.Create<UserEntity>();
 
-            await MockUserRepo.Create(user);
-            var result = await MockUserRepo.GetWithDetailsByUserName(user.Username);
+            await UserRepo.CreateAsync(user);
+            var result = await UserRepo.GetAsync(u => u.Username == user.Username, u => u.Details!);
 
             Assert.Equal(user, result);
         }
@@ -101,10 +102,10 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         {
             var user = fixture.Create<UserEntity>();
 
-            await MockUserRepo.Create(user);
+            await UserRepo.CreateAsync(user);
             user.Username = fixture.Create<string>();
-            await MockUserRepo.Update(user);
-            var result = await MockUserRepo.Get(user.Id);
+            await UserRepo.UpdateAsync(user);
+            var result = await UserRepo.GetAsync(user.Id);
 
             Assert.Equal(user, result);
         }
@@ -114,9 +115,9 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         {
             var user = fixture.Create<UserEntity>();
 
-            await MockUserRepo.Create(user);
-            await MockUserRepo.Delete(user);
-            var result = await MockUserRepo.Get(user.Id);
+            await UserRepo.CreateAsync(user);
+            await UserRepo.DeleteAsync(user);
+            var result = await UserRepo.GetAsync(user.Id);
 
             Assert.Null(result);
         }

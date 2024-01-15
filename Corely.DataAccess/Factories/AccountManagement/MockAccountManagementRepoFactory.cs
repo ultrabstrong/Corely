@@ -1,6 +1,7 @@
 ﻿using Corely.DataAccess.Repos.Auth;
 using Corely.DataAccess.Repos.User;
 using Corely.Domain.Entities.Auth;
+using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 
 namespace Corely.DataAccess.Factories.AccountManagement
@@ -11,12 +12,12 @@ namespace Corely.DataAccess.Factories.AccountManagement
         private readonly MockBasicAuthRepo _basicAuthRepo = new();
         private readonly MockUserRepo _userRepo = new();
 
-        public IAuthRepo<BasicAuthEntity> CreateBasicAuthRepo()
+        public IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo()
         {
             return _basicAuthRepo;
         }
 
-        public IUserRepo CreateUserRepo()
+        public IRepoExtendedGet<UserEntity> CreateUserRepo()
         {
             return _userRepo;
         }

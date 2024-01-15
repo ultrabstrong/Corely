@@ -13,14 +13,14 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
     public class EFBasicAuthRepoTests : BasicAuthRepoTestsBase
     {
         private readonly ServiceFactory _serviceFactory;
-        private readonly EFBasicAuthRepo _mockEFBasicAuthRepo;
+        private readonly EFBasicAuthRepo _efBasicAuthRepo;
 
-        protected override IAuthRepo<BasicAuthEntity> MockBasicAuthRepo => _mockEFBasicAuthRepo;
+        protected override IRepoExtendedGet<BasicAuthEntity> BasicAuthRepo => _efBasicAuthRepo;
 
         public EFBasicAuthRepoTests(ServiceFactory serviceFactory)
         {
             _serviceFactory = serviceFactory;
-            _mockEFBasicAuthRepo = CreateEfBasicAuthRepo();
+            _efBasicAuthRepo = CreateEfBasicAuthRepo();
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
             var basicAuth = fixture.Create<BasicAuthEntity>();
 
             mockEFBasicAuthRepo.Dispose();
-            var ex = await Record.ExceptionAsync(() => mockEFBasicAuthRepo.Create(basicAuth));
+            var ex = await Record.ExceptionAsync(() => mockEFBasicAuthRepo.CreateAsync(basicAuth));
 
             Assert.NotNull(ex);
             Assert.IsType<ObjectDisposedException>(ex);

@@ -1,4 +1,5 @@
-﻿using Corely.Domain.Exceptions;
+﻿using Corely.Domain.Entities.Users;
+using Corely.Domain.Exceptions;
 using Corely.Domain.Mappers;
 using Corely.Domain.Models.Users;
 using Corely.Domain.Repos;
@@ -22,7 +23,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             _serviceFactory = serviceFactory;
             _userService = new UserService(
-                _serviceFactory.GetRequiredService<IUserRepo>(),
+                _serviceFactory.GetRequiredService<IRepoExtendedGet<UserEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
@@ -47,7 +48,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         public void Constructor_ShouldThrowArgumentNullException_WhenValidationProviderIsNull()
         {
             UserService act() => new(
-                Mock.Of<IUserRepo>(),
+                Mock.Of<IRepoExtendedGet<UserEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 null,
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
@@ -62,7 +63,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         public void Constructor_ShouldThrowArgumentNullException_WhenMapProviderIsNull()
         {
             UserService act() => new(
-                Mock.Of<IUserRepo>(),
+                Mock.Of<IRepoExtendedGet<UserEntity>>(),
                 null,
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
@@ -77,7 +78,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         public void Constructor_ShouldThrowArgumentNullException_WhenLoggerIsNull()
         {
             UserService act() => new(
-                Mock.Of<IUserRepo>(),
+                Mock.Of<IRepoExtendedGet<UserEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 null);
