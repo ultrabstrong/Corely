@@ -39,27 +39,28 @@ namespace Corely.UnitTests.Common.Providers.Http.Models
             Assert.Equal(expected, httpJsonContent.Content);
         }
 
-        public static IEnumerable<object[]> HttpJsonContentTestData()
-        {
-            yield return new object[] { new { Test = "test" }, "{\"Test\":\"test\"}" };
-            yield return new object[] { new { Test = 1 }, "{\"Test\":1}" };
-            yield return new object[] { new { Test = 1.1 }, "{\"Test\":1.1}" };
-            yield return new object[] { new { Test = true }, "{\"Test\":true}" };
-            yield return new object[] { new { Test = new { Test = "test" } }, "{\"Test\":{\"Test\":\"test\"}}" };
-            yield return new object[] { new { Test = new { Test = 1 } }, "{\"Test\":{\"Test\":1}}" };
-            yield return new object[] { new { Test = new { Test = 1.1 } }, "{\"Test\":{\"Test\":1.1}}" };
-            yield return new object[] { new { Test = new { Test = true } }, "{\"Test\":{\"Test\":true}}" };
-            yield return new object[] { new object[] { "test" }, "[\"test\"]" };
-            yield return new object[] { new object[] { 1 }, "[1]" };
-            yield return new object[] { new object[] { 1.1 }, "[1.1]" };
-            yield return new object[] { new object[] { true }, "[true]" };
-            yield return new object[] { new object[] { new { Test = "test" } }, "[{\"Test\":\"test\"}]" };
-            yield return new object[] { new object[] { new { Test = 1 } }, "[{\"Test\":1}]" };
-            yield return new object[] { new object[] { new { Test = 1.1 } }, "[{\"Test\":1.1}]" };
-            yield return new object[] { new object[] { new { Test = true } }, "[{\"Test\":true}]" };
-            yield return new object[] { null, "null" };
-            yield return new object[] { new { Test = (object?)null }, "{\"Test\":null}" };
-            yield return new object[] { new { Test = new { Test = (object?)null } }, "{\"Test\":{\"Test\":null}}" };
-        }
+        public static IEnumerable<object[]> HttpJsonContentTestData() =>
+        [
+            [new { Test = "test" }, "{\"Test\":\"test\"}"],
+            [new { Test = 1 }, "{\"Test\":1}"],
+            [new { Test = 1.1 }, "{\"Test\":1.1}"],
+            [new { Test = true }, "{\"Test\":true}"],
+            [new { Test = new { Test = "test" } }, "{\"Test\":{\"Test\":\"test\"}}"],
+            [new { Test = new { Test = 1 } }, "{\"Test\":{\"Test\":1}}"],
+            [new { Test = new { Test = 1.1 } }, "{\"Test\":{\"Test\":1.1}}"],
+            [new { Test = new { Test = true } }, "{\"Test\":{\"Test\":true}}"],
+            [new[] { "test" }, "[\"test\"]"],
+            [new[] { 1 }, "[1]"],
+            [new[] { 1.1 }, "[1.1]"],
+            [new[] { true }, "[true]"],
+            [new[] { new { Test = "test" } }, "[{\"Test\":\"test\"}]"],
+            [new[] { new { Test = 1 } }, "[{\"Test\":1}]"],
+            [new[] { new { Test = 1.1 } }, "[{\"Test\":1.1}]"],
+            [new[] { new { Test = true } }, "[{\"Test\":true}]"],
+            [null, "null"],
+            [new { Test = (object?)null }, "{\"Test\":null}"],
+            [new { Test = new { Test = (object?)null } }, "{\"Test\":{\"Test\":null}}"],
+            [new { Test = new { Test = (object?)null } }, "{\"Test\":{\"Test\":null}}"]
+        ];
     }
 }

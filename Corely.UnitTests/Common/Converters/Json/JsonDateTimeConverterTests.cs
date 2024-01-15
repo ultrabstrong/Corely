@@ -30,14 +30,14 @@ namespace Corely.UnitTests.Common.Converters.Json
             Assert.Equal(expected, result);
         }
 
-        public static IEnumerable<object[]> ReadTestData()
-        {
-            yield return new object[] { "2020-01-01", new DateTime(2020, 1, 1) };
-            yield return new object[] { "2020-01-01T00:00:00", new DateTime(2020, 1, 1) };
-            yield return new object[] { "2020-01-01T00:00:01", new DateTime(2020, 1, 1, 0, 0, 1) };
-            yield return new object[] { "2020-01-01T00:01:00", new DateTime(2020, 1, 1, 0, 1, 0) };
-            yield return new object[] { "2020-01-01T01:00:00", new DateTime(2020, 1, 1, 1, 0, 0) };
-        }
+        public static IEnumerable<object[]> ReadTestData() =>
+        [
+            ["2020-01-01", new DateTime(2020, 1, 1)],
+            ["2020-01-01T00:00:00", new DateTime(2020, 1, 1)],
+            ["2020-01-01T00:00:01", new DateTime(2020, 1, 1, 0, 0, 1)],
+            ["2020-01-01T00:01:00", new DateTime(2020, 1, 1, 0, 1, 0)],
+            ["2020-01-01T01:00:00", new DateTime(2020, 1, 1, 1, 0, 0)]
+        ];
 
         private static Utf8JsonReader GetReader(string input)
         {
@@ -64,12 +64,12 @@ namespace Corely.UnitTests.Common.Converters.Json
             Assert.Equal(expected, result);
         }
 
-        public static IEnumerable<object[]> WriteTestData()
-        {
-            yield return new object[] { new DateTime(2020, 1, 1), "\"2020-01-01T00:00:00\"" };
-            yield return new object[] { new DateTime(2020, 1, 1, 0, 0, 1), "\"2020-01-01T00:00:01\"" };
-            yield return new object[] { new DateTime(2020, 1, 1, 0, 1, 0), "\"2020-01-01T00:01:00\"" };
-            yield return new object[] { new DateTime(2020, 1, 1, 1, 0, 0), "\"2020-01-01T01:00:00\"" };
-        }
+        public static IEnumerable<object[]> WriteTestData() =>
+        [
+            [new DateTime(2020, 1, 1), "\"2020-01-01T00:00:00\""],
+            [new DateTime(2020, 1, 1, 0, 0, 1), "\"2020-01-01T00:00:01\""],
+            [new DateTime(2020, 1, 1, 0, 1, 0), "\"2020-01-01T00:01:00\""],
+            [new DateTime(2020, 1, 1, 1, 0, 0), "\"2020-01-01T01:00:00\""]
+        ];
     }
 }

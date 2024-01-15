@@ -84,12 +84,12 @@ namespace Corely.UnitTests.Common.Providers.Http.Models
             Assert.IsType<ArgumentNullException>(ex);
         }
 
-        public static IEnumerable<object[]> CreateParametersInvalidTestData()
-        {
-            yield return new object[] { null, "value" };
-            yield return new object[] { "key", null };
-            yield return new object[] { null, null };
-        }
+        public static IEnumerable<object[]> CreateParametersInvalidTestData() =>
+        [
+            [null, "value"],
+            ["key", null],
+            [null, null]
+        ];
 
         [Theory, MemberData(nameof(CreateParametersTestData))]
         public void CreateParameters_ShouldReturnExpectedString_WhenParametersAreAdded((string key, string value) keyValuePairs, string expected)
@@ -116,19 +116,19 @@ namespace Corely.UnitTests.Common.Providers.Http.Models
             Assert.Equal($"{expected}&{expected}", _httpParameters.CreateParameters());
         }
 
-        public static IEnumerable<object[]> CreateParametersTestData()
-        {
-            yield return new object[] { ("!@#$%^&*()_+", "+_)(*&^%$#@!"), "%21%40%23%24%25%5E%26%2A%28%29_%2B=%2B_%29%28%2A%26%5E%25%24%23%40%21" };
-            yield return new object[] { ("!@#$%^&*()_+", "test"), "%21%40%23%24%25%5E%26%2A%28%29_%2B=test" };
-            yield return new object[] { ("test", "!@#$%^&*()_+"), "test=%21%40%23%24%25%5E%26%2A%28%29_%2B" };
-            yield return new object[] { ("test", "test"), "test=test" };
-            yield return new object[] { ("", "test"), "=test" };
-            yield return new object[] { ("test", ""), "test=" };
-            yield return new object[] { ("", ""), "=" };
-            yield return new object[] { (" ", "test"), "%20=test" };
-            yield return new object[] { ("test", " "), "test=%20" };
-            yield return new object[] { (" ", " "), "%20=%20" };
-        }
+        public static IEnumerable<object[]> CreateParametersTestData() =>
+        [
+            [("!@#$%^&*()_+", "+_)(*&^%$#@!"), "%21%40%23%24%25%5E%26%2A%28%29_%2B=%2B_%29%28%2A%26%5E%25%24%23%40%21"],
+            [("!@#$%^&*()_+", "test"), "%21%40%23%24%25%5E%26%2A%28%29_%2B=test"],
+            [("test", "!@#$%^&*()_+"), "test=%21%40%23%24%25%5E%26%2A%28%29_%2B"],
+            [("test", "test"), "test=test"],
+            [("", "test"), "=test"],
+            [("test", ""), "test="],
+            [("", ""), "="],
+            [(" ", "test"), "%20=test"],
+            [("test", " "), "test=%20"],
+            [(" ", " "), "%20=%20"]
+        ];
 
         [Fact]
         public void CreateParameters_ShouldChainParameters_WhenMoreThanOneAdded()

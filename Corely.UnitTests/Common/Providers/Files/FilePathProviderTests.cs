@@ -68,14 +68,14 @@ namespace Corely.UnitTests.Common.Providers.Files
         {
             static string append(int i) => i < 1 ? "" : $"-[{i}]";
 
-            yield return new object[] { number, "C:\\file_that_exists.txt", $"C:\\file_that_exists{append(number)}.txt" };
-            yield return new object[] { number, "C:\\config.json.sample", $"C:\\config.json{append(number)}.sample" };
-            yield return new object[] { number, "C:\\config", $"C:\\config{append(number)}" };
-            yield return new object[] { number, "C:\\test.txt.txt", $"C:\\test.txt{append(number)}.txt" };
-            yield return new object[] { number, "C:\\nest1\\nest2\\file_that_exists.txt", $"C:\\nest1\\nest2\\file_that_exists{append(number)}.txt" };
-            yield return new object[] { number, "C:\\nest1\\nest2\\config.json.sample", $"C:\\nest1\\nest2\\config.json{append(number)}.sample" };
-            yield return new object[] { number, "C:\\nest1\\nest2\\config", $"C:\\nest1\\nest2\\config{append(number)}" };
-            yield return new object[] { number, "C:\\nest1\\nest2\\test.txt.txt", $"C:\\nest1\\nest2\\test.txt{append(number)}.txt" };
+            yield return [number, "C:\\file_that_exists.txt", $"C:\\file_that_exists{append(number)}.txt"];
+            yield return [number, "C:\\config.json.sample", $"C:\\config.json{append(number)}.sample"];
+            yield return [number, "C:\\config", $"C:\\config{append(number)}"];
+            yield return [number, "C:\\test.txt.txt", $"C:\\test.txt{append(number)}.txt"];
+            yield return [number, "C:\\nest1\\nest2\\file_that_exists.txt", $"C:\\nest1\\nest2\\file_that_exists{append(number)}.txt"];
+            yield return [number, "C:\\nest1\\nest2\\config.json.sample", $"C:\\nest1\\nest2\\config.json{append(number)}.sample"];
+            yield return [number, "C:\\nest1\\nest2\\config", $"C:\\nest1\\nest2\\config{append(number)}"];
+            yield return [number, "C:\\nest1\\nest2\\test.txt.txt", $"C:\\nest1\\nest2\\test.txt{append(number)}.txt"];
         }
 
         private void SetupDoesFileExistForGetOverwriteProtectedPath(int number)
@@ -96,17 +96,17 @@ namespace Corely.UnitTests.Common.Providers.Files
             Assert.Equal(expected, _filePathProviderMock.Object.GetFileNameWithExtension(path));
         }
 
-        public static IEnumerable<object[]> GetFileNameWithExtensionTestData()
-        {
-            yield return new object[] { "C:\\file_that_exists.txt", "file_that_exists.txt" };
-            yield return new object[] { "C:\\config.json.sample", "config.json.sample" };
-            yield return new object[] { "C:\\config", "config" };
-            yield return new object[] { "C:\\test.txt.txt", "test.txt.txt" };
-            yield return new object[] { "C:\\nest1\\nest2\\file_that_exists.txt", "file_that_exists.txt" };
-            yield return new object[] { "C:\\nest1\\nest2\\config.json.sample", "config.json.sample" };
-            yield return new object[] { "C:\\nest1\\nest2\\config", "config" };
-            yield return new object[] { "C:\\nest1\\nest2\\test.txt.txt", "test.txt.txt" };
-        }
+        public static IEnumerable<object[]> GetFileNameWithExtensionTestData() =>
+        [
+            ["C:\\file_that_exists.txt", "file_that_exists.txt"],
+            ["C:\\config.json.sample", "config.json.sample"],
+            ["C:\\config", "config"],
+            ["C:\\test.txt.txt", "test.txt.txt"],
+            ["C:\\nest1\\nest2\\file_that_exists.txt", "file_that_exists.txt"],
+            ["C:\\nest1\\nest2\\config.json.sample", "config.json.sample"],
+            ["C:\\nest1\\nest2\\config", "config"],
+            ["C:\\nest1\\nest2\\test.txt.txt", "test.txt.txt"]
+        ];
 
         [Theory, MemberData(nameof(GetFileNameWithoutExtensionTestData))]
         public void GetFileNameWithoutExtension_WhenPathIsValid_ReturnsFileNameWithoutExtension(string path, string expected)
@@ -114,16 +114,16 @@ namespace Corely.UnitTests.Common.Providers.Files
             Assert.Equal(expected, _filePathProviderMock.Object.GetFileNameWithoutExtension(path));
         }
 
-        public static IEnumerable<object[]> GetFileNameWithoutExtensionTestData()
-        {
-            yield return new object[] { "C:\\file_that_exists.txt", "file_that_exists" };
-            yield return new object[] { "C:\\config.json.sample", "config.json" };
-            yield return new object[] { "C:\\config", "config" };
-            yield return new object[] { "C:\\test.txt.txt", "test.txt" };
-            yield return new object[] { "C:\\nest1\\nest2\\file_that_exists.txt", "file_that_exists" };
-            yield return new object[] { "C:\\nest1\\nest2\\config.json.sample", "config.json" };
-            yield return new object[] { "C:\\nest1\\nest2\\config", "config" };
-            yield return new object[] { "C:\\nest1\\nest2\\test.txt.txt", "test.txt" };
-        }
+        public static IEnumerable<object[]> GetFileNameWithoutExtensionTestData() =>
+        [
+            ["C:\\file_that_exists.txt", "file_that_exists"],
+            ["C:\\config.json.sample", "config.json"],
+            ["C:\\config", "config"],
+            ["C:\\test.txt.txt", "test.txt"],
+            ["C:\\nest1\\nest2\\file_that_exists.txt", "file_that_exists"],
+            ["C:\\nest1\\nest2\\config.json.sample", "config.json"],
+            ["C:\\nest1\\nest2\\config", "config"],
+            ["C:\\nest1\\nest2\\test.txt.txt", "test.txt"]
+        ];
     }
 }

@@ -37,17 +37,17 @@ namespace Corely.UnitTests.Common.Extensions
         {
             Assert.Equal(source, source.UrlEncode().UrlDecode());
         }
-        public static IEnumerable<object[]> GetUrlEncodeDecodeTestData()
-        {
-            yield return new object[] { "http://www.google.com" };
-            yield return new object[] { "http://www.google.com?query=hello world" };
-            yield return new object[] { "http://www.google.com?query=hello+world" };
-            yield return new object[] { "http://www.google.com?query=hello%20world" };
-            yield return new object[] { "http://www.google.com?query=hello%2Bworld" };
-            yield return new object[] { "http://www.google.com?query=hello%2520world" };
-            yield return new object[] { "http://www.google.com?query=hello%252Bworld" };
-            yield return new object[] { "http://www.google.com?query=hello%252520world" };
-        }
+        public static IEnumerable<object[]> GetUrlEncodeDecodeTestData() =>
+        [
+            ["http://www.google.com"],
+            ["http://www.google.com?query=hello world"],
+            ["http://www.google.com?query=hello+world"],
+            ["http://www.google.com?query=hello%20world"],
+            ["http://www.google.com?query=hello%2Bworld"],
+            ["http://www.google.com?query=hello%2520world"],
+            ["http://www.google.com?query=hello%252Bworld"],
+            ["http://www.google.com?query=hello%252520world"]
+        ];
 
         [Fact]
         public void UrlEncode_ShouldEncodeSpecialCharacters()

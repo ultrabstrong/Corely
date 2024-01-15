@@ -35,12 +35,11 @@ namespace Corely.UnitTests.Common.Providers.Http.Models
             Assert.Equal(content, httpFormUrlEncodedContent.Content);
         }
 
-        public static IEnumerable<object[]> HttpMultipartFormDataContentTestData()
-        {
-            yield return new object[] { new Dictionary<string, string> { } };
-            yield return new object[] { new Dictionary<string, string> { { "key", "value" } } };
-            yield return new object[] { new Dictionary<string, string> { { "key", "value" }, { "key2", "value2" } } };
-        }
-
+        public static IEnumerable<object[]> HttpMultipartFormDataContentTestData() =>
+        [
+            [new Dictionary<string, string> { }],
+            [new Dictionary<string, string> { { "key", "value" } }],
+            [new Dictionary<string, string> { { "key", "value" }, { "key2", "value2" } }]
+        ];
     }
 }

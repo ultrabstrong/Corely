@@ -106,25 +106,25 @@ namespace Corely.UnitTests.Common.Models.Results
             _pagedResponse = new PagedResult<object>(skip, take);
             Assert.Equal((int)Math.Ceiling((decimal)skip / take), _pagedResponse.PageNum);
         }
-        public static IEnumerable<object[]> SkipAndTakeTestData()
-        {
-            yield return new object[] { 0, 1 };
-            yield return new object[] { 0, 10 };
-            yield return new object[] { 0, 17 };
-            yield return new object[] { 7, 17 };
-            yield return new object[] { 0, 50 };
-            yield return new object[] { 13, 50 };
-            yield return new object[] { 0, 99 };
-            yield return new object[] { 13, 99 };
-            yield return new object[] { 0, 100 };
-            yield return new object[] { 5, 100 };
-            yield return new object[] { 0, 101 };
-            yield return new object[] { 16, 101 };
-            yield return new object[] { 99, 1 };
-            yield return new object[] { 99, 2 };
-            yield return new object[] { 100, 1 };
-            yield return new object[] { 101, 5 };
-        }
+        public static IEnumerable<object[]> SkipAndTakeTestData() =>
+        [
+            [0, 1],
+            [0, 10],
+            [0, 17],
+            [7, 17],
+            [0, 50],
+            [13, 50],
+            [0, 99],
+            [13, 99],
+            [0, 100],
+            [5, 100],
+            [0, 101],
+            [16, 101],
+            [99, 1],
+            [99, 2],
+            [100, 1],
+            [101, 5]
+        ];
 
         [Fact]
         public void PagedResult_ShouldReturnNull_WhenHasMoreFalse()

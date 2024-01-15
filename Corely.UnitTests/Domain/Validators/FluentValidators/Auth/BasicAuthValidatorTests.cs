@@ -32,10 +32,11 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
             result.ShouldNotHaveValidationErrorFor(x => x.Password);
         }
 
-        public static IEnumerable<object[]> InvalidUsernameData()
-        {
-            yield return new object[] { new string('a', BasicAuthConstants.USERNAME_MAX_LENGTH + 1) };
-        }
+        public static IEnumerable<object[]> InvalidUsernameData() =>
+        [
+            [new string('a', BasicAuthConstants.USERNAME_MIN_LENGTH - 1)],
+            [new string('a', BasicAuthConstants.USERNAME_MAX_LENGTH + 1)]
+        ];
 
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
@@ -57,10 +58,10 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
             result.ShouldNotHaveValidationErrorFor(x => x.Username);
         }
 
-        public static IEnumerable<object[]> InvalidPasswordData()
-        {
-            yield return new object[] { new string('a', BasicAuthConstants.PASSWORD_MAX_LENGTH + 1) };
-        }
+        public static IEnumerable<object[]> InvalidPasswordData() =>
+        [
+            [new string('a', BasicAuthConstants.PASSWORD_MAX_LENGTH + 1)]
+        ];
 
         [Fact]
         public void BasicAuthValidator_ShouldHaveValidationError_WhenPasswordIsNull()

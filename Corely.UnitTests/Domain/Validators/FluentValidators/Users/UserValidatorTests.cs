@@ -28,10 +28,11 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Users
             result.ShouldNotHaveValidationErrorFor(x => x.Email);
         }
 
-        public static IEnumerable<object[]> InvalidUsernameData()
-        {
-            yield return new object[] { new string('a', UserConstants.USERNAME_MAX_LENGTH + 1) };
-        }
+        public static IEnumerable<object[]> InvalidUsernameData() =>
+        [
+            [new string('a', UserConstants.USERNAME_MIN_LENGTH - 1)],
+            [new string('a', UserConstants.USERNAME_MAX_LENGTH + 1)]
+        ];
 
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
@@ -49,10 +50,10 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Users
             result.ShouldNotHaveValidationErrorFor(x => x.Username);
         }
 
-        public static IEnumerable<object[]> InvalidEmailData()
-        {
-            yield return new object[] { new string('a', UserConstants.EMAIL_MAX_LENGTH + 1) };
-            yield return new object[] { "invalid" };
-        }
+        public static IEnumerable<object[]> InvalidEmailData() =>
+        [
+            [new string('a', UserConstants.EMAIL_MAX_LENGTH + 1)],
+            ["invalid"]
+        ];
     }
 }

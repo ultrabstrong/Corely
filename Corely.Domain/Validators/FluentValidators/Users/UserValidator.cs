@@ -10,6 +10,7 @@ namespace Corely.Domain.Validators.FluentValidators.Users
         {
             RuleFor(m => m.Username)
                 .NotEmpty()
+                .MinimumLength(UserConstants.USERNAME_MIN_LENGTH)
                 .MaximumLength(UserConstants.USERNAME_MAX_LENGTH);
             RuleFor(m => m.Email)
                 .NotEmpty()

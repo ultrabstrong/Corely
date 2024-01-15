@@ -34,7 +34,7 @@ namespace Corely.UnitTests.DataAccess.Factories
             Assert.True(ex is ArgumentNullException);
         }
 
-        [Theory, MemberData(nameof(CreateAccountManagementRepoFactoryData))]
+        [Theory, MemberData(nameof(CreateAccountManagementRepoFactoryTestData))]
         public void CreateAccountManagementRepoFactory_ShouldReturnCorrectType(
             string connectionName,
             string connectionString,
@@ -69,7 +69,7 @@ namespace Corely.UnitTests.DataAccess.Factories
             Assert.True(ex is ArgumentOutOfRangeException);
         }
 
-        public static IEnumerable<object[]> CreateAccountManagementRepoFactoryData =>
+        public static IEnumerable<object[]> CreateAccountManagementRepoFactoryTestData =>
             [
                 [ConnectionNames.EntityFrameworkMySql,
                     _fixture.Create<string>(),

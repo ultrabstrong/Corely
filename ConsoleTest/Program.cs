@@ -6,13 +6,10 @@ namespace ConsoleTest
 {
     internal class Program
     {
-#pragma warning disable IDE0052 // Remove unread private members
-#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0052 // Remove unused private members
         private static readonly string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         private static readonly string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-        private static readonly string localMySqlConnStr = "Server=localhost,3306;Database=maxstrongreporting;Uid=root;Pwd=admin;";
-#pragma warning restore IDE0051 // Remove unused private members
-#pragma warning restore IDE0052 // Remove unread private members
+#pragma warning restore IDE0052 // Remove unused private members
         private static readonly Logger logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 
         static void Main()
