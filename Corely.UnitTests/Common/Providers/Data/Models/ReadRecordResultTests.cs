@@ -9,7 +9,7 @@ namespace Corely.UnitTests.Common.Providers.Data.Models
         [Fact]
         public void ToString_ShouldReturnCommaDelimitedTokens()
         {
-            _readRecordResult.Tokens = new List<string> { "a", "b", "c" };
+            _readRecordResult.Tokens = ["a", "b", "c"];
             Assert.Equal("a,b,c", _readRecordResult.ToString());
         }
     }
