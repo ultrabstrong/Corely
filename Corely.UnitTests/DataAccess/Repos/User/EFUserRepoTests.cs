@@ -15,7 +15,7 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         private readonly ServiceFactory _serviceFactory;
         private readonly EFUserRepo _efUserRepo;
 
-        protected override IRepoExtendedGet<UserEntity> UserRepo => _efUserRepo;
+        protected override IRepoExtendedGet<UserEntity> Repo => _efUserRepo;
 
         public EFUserRepoTests(ServiceFactory serviceFactory)
         {

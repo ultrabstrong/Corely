@@ -7,6 +7,6 @@ namespace Corely.UnitTests.DataAccess.Repos.User
     public class MockUserRepoTests : UserRepoTestsBase
     {
         private readonly MockUserRepo _mockUserRepo = new();
-        protected override IRepoExtendedGet<UserEntity> UserRepo => _mockUserRepo;
+        protected override IRepoExtendedGet<UserEntity> Repo => _mockUserRepo;
     }
 }
