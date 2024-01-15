@@ -15,7 +15,7 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
         private readonly ServiceFactory _serviceFactory;
         private readonly EFBasicAuthRepo _efBasicAuthRepo;
 
-        protected override IRepoExtendedGet<BasicAuthEntity> BasicAuthRepo => _efBasicAuthRepo;
+        protected override IRepoExtendedGet<BasicAuthEntity> Repo => _efBasicAuthRepo;
 
         public EFBasicAuthRepoTests(ServiceFactory serviceFactory)
         {

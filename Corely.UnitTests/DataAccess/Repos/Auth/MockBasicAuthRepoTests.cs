@@ -7,6 +7,6 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
     public class MockBasicAuthRepoTests : BasicAuthRepoTestsBase
     {
         private readonly MockBasicAuthRepo _mockBasicAuthRepo = new();
-        protected override IRepoExtendedGet<BasicAuthEntity> BasicAuthRepo => _mockBasicAuthRepo;
+        protected override IRepoExtendedGet<BasicAuthEntity> Repo => _mockBasicAuthRepo;
     }
 }
