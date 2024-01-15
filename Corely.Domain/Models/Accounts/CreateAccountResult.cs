@@ -1,9 +1,10 @@
 ﻿namespace Corely.Domain.Models.Accounts
 {
-    public record CreateAccountResult : ResultBase
+    public record CreateAccountResult(
+        bool IsSuccess,
+        string? Message,
+        int CreatedId)
+        : CreatedResultBase(IsSuccess, Message, CreatedId)
     {
-        public CreateAccountResult(bool IsSuccess, string? Message)
-            : base(IsSuccess, Message)
-        { }
     }
 }

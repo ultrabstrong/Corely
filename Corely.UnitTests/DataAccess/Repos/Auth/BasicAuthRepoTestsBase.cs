@@ -8,7 +8,7 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
         public BasicAuthRepoTestsBase()
         {
             fixture.Customize<BasicAuthEntity>(c => c
-                .Without(x => x.User));
+                .Without(e => e.User));
         }
 
         [Fact]

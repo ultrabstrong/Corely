@@ -20,6 +20,5 @@ namespace Corely.UnitTests.DataAccess.Repos
 
             Assert.Equal(entity, result);
         }
-
     }
 }

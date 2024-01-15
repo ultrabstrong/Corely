@@ -1,7 +1,9 @@
-﻿using Corely.DataAccess.Repos.Auth;
+﻿using Corely.DataAccess.Repos.Accounts;
+using Corely.DataAccess.Repos.Auth;
 using Corely.DataAccess.Repos.User;
 using Corely.Domain;
 using Corely.Domain.Connections;
+using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
@@ -30,8 +32,9 @@ namespace Corely.UnitTests
                 connection.ConnectionName,
                 (serviceProvider, key) => connection);
 
-            services.AddTransient<IRepoExtendedGet<BasicAuthEntity>, MockBasicAuthRepo>();
+            services.AddTransient<IRepoExtendedGet<AccountEntity>, MockAccountRepo>();
             services.AddTransient<IRepoExtendedGet<UserEntity>, MockUserRepo>();
+            services.AddTransient<IRepoExtendedGet<BasicAuthEntity>, MockBasicAuthRepo>();
         }
     }
 }

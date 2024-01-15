@@ -45,12 +45,12 @@ namespace Corely.UnitTests.Domain.Services.Users
         }
 
         [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenValidationProviderIsNull()
+        public void Constructor_ShouldThrowArgumentNullException_WhenMapProviderIsNull()
         {
             UserService act() => new(
                 Mock.Of<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IMapProvider>(),
                 null,
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
 
             var ex = Record.Exception(act);
@@ -60,12 +60,12 @@ namespace Corely.UnitTests.Domain.Services.Users
         }
 
         [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenMapProviderIsNull()
+        public void Constructor_ShouldThrowArgumentNullException_WhenValidationProviderIsNull()
         {
             UserService act() => new(
                 Mock.Of<IRepoExtendedGet<UserEntity>>(),
+                _serviceFactory.GetRequiredService<IMapProvider>(),
                 null,
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
 
             var ex = Record.Exception(act);
@@ -90,12 +90,12 @@ namespace Corely.UnitTests.Domain.Services.Users
         }
 
         [Fact]
-        public async Task CreateUser_ShouldThrowUserExistsException_WhenUserExists()
+        public async Task CreateUserAsync_ShouldThrowUserExistsException_WhenUserExists()
         {
             var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            await _userService.CreateUser(createUserRequest);
+            await _userService.CreateUserAsync(createUserRequest);
 
-            Exception ex = await Record.ExceptionAsync(() => _userService.CreateUser(createUserRequest));
+            Exception ex = await Record.ExceptionAsync(() => _userService.CreateUserAsync(createUserRequest));
 
             Assert.NotNull(ex);
             Assert.IsType<UserExistsException>(ex);
@@ -105,7 +105,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         public async Task CreateUser_ShouldReturnCreateUserResult()
         {
             var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var res = await _userService.CreateUser(createUserRequest);
+            var res = await _userService.CreateUserAsync(createUserRequest);
 
             Assert.True(res.IsSuccess);
         }

@@ -18,11 +18,11 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Accounts
         {
             var account = new Account
             {
-                Name = accountName
+                AccountName = accountName
             };
 
             var result = _validator.TestValidate(account);
-            result.ShouldHaveValidationErrorFor(x => x.Name);
+            result.ShouldHaveValidationErrorFor(x => x.AccountName);
         }
 
         public static IEnumerable<object[]> InvalidAccountTestData =>

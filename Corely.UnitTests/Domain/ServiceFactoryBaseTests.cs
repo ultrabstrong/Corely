@@ -5,6 +5,7 @@ using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Mappers;
 using Corely.Domain.Repos;
+using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
 using Corely.UnitTests.Collections;
@@ -49,6 +50,7 @@ namespace Corely.UnitTests.Domain
             [typeof(IRepoExtendedGet<BasicAuthEntity>)],
             [typeof(IRepoExtendedGet<UserEntity>)],
 
+            [typeof(IAccountService)],
             [typeof(IUserService)]
         ];
 

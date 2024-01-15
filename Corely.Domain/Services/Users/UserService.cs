@@ -23,7 +23,7 @@ namespace Corely.Domain.Services.Users
             _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
         }
 
-        public async Task<CreateUserResult> CreateUser(CreateUserRequest createUserRequest)
+        public async Task<CreateUserResult> CreateUserAsync(CreateUserRequest createUserRequest)
         {
             logger.LogInformation("Creating user {Username}", createUserRequest.Username);
 
@@ -31,10 +31,10 @@ namespace Corely.Domain.Services.Users
             await ThrowIfUserExists(user.Username, user.Email);
 
             var userEntity = mapProvider.Map<UserEntity>(user);
-            await _userRepo.CreateAsync(userEntity);
+            var createdId = await _userRepo.CreateAsync(userEntity);
 
-            logger.LogInformation("User {Username} created", user.Username);
-            return new CreateUserResult(true, "");
+            logger.LogInformation("User {Username} created with Id {Id}", user.Username, createdId);
+            return new CreateUserResult(true, "", createdId);
         }
 
         private async Task ThrowIfUserExists(string username, string email)

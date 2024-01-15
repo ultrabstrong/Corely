@@ -12,10 +12,11 @@ namespace Corely.DataAccess.Repos
         protected abstract DbContext DbContext { get; }
         protected abstract DbSet<T> Entities { get; }
 
-        public async Task CreateAsync(T entity)
+        public async Task<int> CreateAsync(T entity)
         {
-            await Entities.AddAsync(entity);
+            var newEntity = await Entities.AddAsync(entity);
             await DbContext.SaveChangesAsync();
+            return newEntity.Entity.Id;
         }
 
         public async Task<T?> GetAsync(int id)

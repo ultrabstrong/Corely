@@ -1,4 +1,5 @@
-﻿using Corely.Domain.Services.Users;
+﻿using Corely.Domain.Services.Accounts;
+using Corely.Domain.Services.Users;
 using Serilog;
 using Serilog.Core;
 
@@ -17,14 +18,20 @@ namespace ConsoleTest
             try
             {
                 using var serviceFactory = new ServiceFactory();
+
+                var accountService = serviceFactory.GetRequiredService<IAccountService>();
+
+                var accountName = "12";
+                accountService.CreateAccountAsync(new(accountName));
+                accountService.CreateAccountAsync(new(accountName));
+
                 var userService = serviceFactory.GetRequiredService<IUserService>();
 
                 var username = "bstrong";
                 var email = "ultrabstrong@gmail.com";
 
-                userService.CreateUser(new(username, email));
-
-                userService.CreateUser(new(username, email));
+                userService.CreateUserAsync(new(username, email));
+                userService.CreateUserAsync(new(username, "asdf"));
             }
             catch (Exception ex)
             {

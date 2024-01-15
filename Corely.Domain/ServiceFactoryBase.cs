@@ -3,6 +3,7 @@ using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Keys;
 using Corely.Domain.Mappers;
 using Corely.Domain.Mappers.AutoMapper;
+using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
 using Corely.Domain.Validators.FluentValidators;
@@ -57,6 +58,7 @@ namespace Corely.Domain
 
         private static void AddDomainServices(IServiceCollection services)
         {
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
         }
 

@@ -9,10 +9,10 @@ namespace Corely.DataAccess.Repos
     {
         protected readonly List<T> Entities = [];
 
-        public Task CreateAsync(T entity)
+        public Task<int> CreateAsync(T entity)
         {
             Entities.Add(entity);
-            return Task.CompletedTask;
+            return Task.FromResult(entity.Id);
         }
 
         public Task<T?> GetAsync(int id)

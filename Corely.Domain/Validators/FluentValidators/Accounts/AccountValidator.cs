@@ -8,7 +8,7 @@ namespace Corely.Domain.Validators.FluentValidators.Accounts
     {
         public AccountValidator()
         {
-            RuleFor(x => x.Name)
+            RuleFor(x => x.AccountName)
                 .NotEmpty()
                 .MinimumLength(AccountConstants.ACCOUNT_NAME_MIN_LENGTH)
                 .MaximumLength(AccountConstants.ACCOUNT_NAME_MAX_LENGTH);

@@ -1,4 +1,5 @@
-﻿using Corely.Domain.Entities.Auth;
+﻿using Corely.Domain.Entities.Accounts;
+using Corely.Domain.Entities.Auth;
 
 namespace Corely.Domain.Entities.Users
 {
@@ -11,5 +12,6 @@ namespace Corely.Domain.Entities.Users
         public DateTime CreatedUtc { get; set; }
         public virtual UserDetailsEntity? Details { get; set; }
         public virtual BasicAuthEntity? BasicAuth { get; set; }
+        public virtual ICollection<AccountEntity>? Accounts { get; set; }
     }
 }

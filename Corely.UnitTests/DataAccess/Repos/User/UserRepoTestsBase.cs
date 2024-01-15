@@ -8,11 +8,12 @@ namespace Corely.UnitTests.DataAccess.Repos.User
         public UserRepoTestsBase()
         {
             fixture.Customize<UserEntity>(c => c
-                .Without(x => x.Details)
-                .Without(x => x.BasicAuth));
+                .Without(e => e.Details)
+                .Without(e => e.BasicAuth)
+                .Without(e => e.Accounts));
 
             fixture.Customize<UserDetailsEntity>(c => c
-                .Without(x => x.User));
+                .Without(e => e.User));
         }
 
         [Fact]
