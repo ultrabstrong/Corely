@@ -5,7 +5,7 @@ using Corely.Common.Providers.Security.Hashing;
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Common
 {
     public class HashedValueProfileTests
-        : BidirectionalAutoMapperTestsBase<HashedValue, string>
+        : BidirectionalProfileTestsBase<HashedValue, string>
     {
         protected override string GetDestination()
             => $"{HashProviderConstants.SALTED_SHA256_CODE}:{new Fixture().Create<string>()}";

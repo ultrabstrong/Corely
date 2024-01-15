@@ -1,7 +1,7 @@
-﻿namespace Corely.UnitTests.Domain.Mappers.AutoMapper
+﻿namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles
 {
-    public abstract class BidirectionalAutoMapperTestsBase<TSource, TDestination>
-        : AutoMapperTestsBase<TSource, TDestination>
+    public abstract class BidirectionalProfileTestsBase<TSource, TDestination>
+        : ProfileTestsBase<TSource, TDestination>
         where TSource : class
         where TDestination : class
     {

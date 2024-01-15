@@ -148,9 +148,9 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         [InlineData(EncryptionProviderConstants.AES_CODE, typeof(AesEncryptionProvider))]
         public void GetProviderForDecrypting_ShouldReturnEncryptionProvider(string code, Type expectedType)
         {
-            var fixture = new Fixture();
-            var encryptedValue = $"{code}:1:{fixture.Create<string>()}";
+            var encryptedValue = $"{code}:1:{_fixture.Create<string>()}";
             var encryptionProvider = _encryptionProviderFactory.GetProviderForDecrypting(encryptedValue);
+
             Assert.NotNull(encryptionProvider);
             Assert.IsType(expectedType, encryptionProvider);
         }

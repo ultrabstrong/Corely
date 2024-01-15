@@ -33,6 +33,17 @@ namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
             _factory = mockFactory.Object;
         }
 
+        [Fact]
+        public void CreateDbContext_ShouldReturnAccountManagementDbContext()
+        {
+            var factory = GetMockFactory();
+            factory.Setup(f => f.GetServerVersion())
+                .Returns(ServerVersion.Create(new Version(), ServerType.MySql));
+
+            var accountManagementDbContext = factory.Object.CreateDbContext();
+            Assert.NotNull(accountManagementDbContext);
+        }
+
         private Mock<EfMySqlAccountManagementRepoFactory> GetMockFactory()
         {
             var mockFactory = new Mock<EfMySqlAccountManagementRepoFactory>(
@@ -43,17 +54,6 @@ namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
             };
 
             return mockFactory;
-        }
-
-        [Fact]
-        public void CreateDbContext_ShouldReturnAccountManagementDbContext()
-        {
-            var factory = GetMockFactory();
-            factory.Setup(f => f.GetServerVersion())
-                .Returns(ServerVersion.Create(new Version(), ServerType.MySql));
-
-            var accountManagementDbContext = factory.Object.CreateDbContext();
-            Assert.NotNull(accountManagementDbContext);
         }
     }
 }

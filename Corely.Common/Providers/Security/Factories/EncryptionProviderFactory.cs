@@ -80,23 +80,15 @@ namespace Corely.Common.Providers.Security.Factories
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
 
             string[] parts = value.Split(':');
-            if (parts.Length < 1)
-            {
-                throw new EncryptionProviderException("Value must be in format encryptionTypeCode:integer:encryptedValue")
-                {
-                    Reason = EncryptionProviderException.ErrorReason.InvalidFormat
-                };
-            }
-
             return GetProvider(parts[0]);
         }
 
-        public List<(string ProviderCode, Type ProviderType)> ListProviders()
+        public List<(string providerCode, Type providerType)> ListProviders()
         {
             return _providers
                 .Select(kvp => (
-                    ProviderCode: kvp.Key,
-                    ProviderType: kvp.Value.GetType()))
+                    providerCode: kvp.Key,
+                    providerType: kvp.Value.GetType()))
                 .ToList();
         }
     }

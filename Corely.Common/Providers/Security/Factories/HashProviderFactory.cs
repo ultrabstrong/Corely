@@ -76,23 +76,15 @@ namespace Corely.Common.Providers.Security.Factories
             ArgumentException.ThrowIfNullOrWhiteSpace(hash, nameof(hash));
 
             string[] parts = hash.Split(':');
-            if (parts.Length < 1)
-            {
-                throw new HashProviderException($"Hash must be in format hashTypeCode:hashedValue")
-                {
-                    Reason = HashProviderException.ErrorReason.InvalidFormat
-                };
-            }
-
             return GetProvider(parts[0]);
         }
 
-        public List<(string ProviderCode, Type ProviderType)> ListProviders()
+        public List<(string providerCode, Type providerType)> ListProviders()
         {
             return _providers
                 .Select(kvp => (
-                    ProviderCode: kvp.Key,
-                    ProviderType: kvp.Value.GetType()))
+                    providerCode: kvp.Key,
+                    providerType: kvp.Value.GetType()))
                 .ToList();
         }
     }

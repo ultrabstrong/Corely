@@ -53,6 +53,22 @@ namespace Corely.UnitTests.DataAccess.Factories
             Assert.IsType(expectedType, accountManagementRepoFactory);
         }
 
+        [Fact]
+        public void CreateAccountManagementRepoFactory_ShouldThrowArgumentOutOfRangeException_WithInvalidConnectionName()
+        {
+            var dataAccessConnection = new DataAccessConnection<string>(
+                _fixture.Create<string>(), _fixture.Create<string>());
+
+            var genericRepoFactory = new GenericRepoFactory<string>(
+                new Mock<ILoggerFactory>().Object,
+                dataAccessConnection);
+
+            var ex = Record.Exception(() => genericRepoFactory.CreateAccountManagementRepoFactory());
+
+            Assert.NotNull(ex);
+            Assert.True(ex is ArgumentOutOfRangeException);
+        }
+
         public static IEnumerable<object[]> CreateAccountManagementRepoFactoryData =>
             [
                 [ConnectionNames.EntityFrameworkMySql,

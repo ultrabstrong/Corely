@@ -5,7 +5,7 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Users
     public class CreateUserRequestTests
     {
         public class ToUserTests
-            : AutoMapperTestsBase<CreateUserRequest, User>
+            : ProfileTestsBase<CreateUserRequest, User>
         {
         }
     }

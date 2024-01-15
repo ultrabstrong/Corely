@@ -1,16 +1,16 @@
 ﻿using AutoFixture;
 using AutoMapper;
 
-namespace Corely.UnitTests.Domain.Mappers.AutoMapper
+namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles
 {
-    public abstract class AutoMapperTestsBase<TSource, TDestination>
+    public abstract class ProfileTestsBase<TSource, TDestination>
         : IDisposable
         where TSource : class
     {
         protected readonly IMapper _mapper;
         private readonly ServiceFactory _serviceFactory = new();
 
-        protected AutoMapperTestsBase()
+        protected ProfileTestsBase()
         {
             _mapper = _serviceFactory.GetRequiredService<IMapper>();
         }

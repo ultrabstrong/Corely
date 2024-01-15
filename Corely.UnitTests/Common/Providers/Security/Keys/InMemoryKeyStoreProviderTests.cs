@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Corely.Common.Providers.Security.Exceptions;
 using Corely.Common.Providers.Security.Keys;
 
 namespace Corely.UnitTests.Common.Providers.Security.Keys
@@ -45,6 +46,17 @@ namespace Corely.UnitTests.Common.Providers.Security.Keys
             var keyForVersion = keyStoreProvider.Get(2);
 
             Assert.Equal(key, keyForVersion);
+        }
+
+        [Fact]
+        public void Get_ShouldThrowException_WhenVersionIsInvalid()
+        {
+            var keyStoreProvider = new InMemoryKeyStoreProvider(_fixture.Create<string>());
+
+            var ex = Record.Exception(() => keyStoreProvider.Get(2));
+
+            Assert.NotNull(ex);
+            Assert.IsType<KeyStoreProviderException>(ex);
         }
     }
 }

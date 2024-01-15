@@ -4,7 +4,7 @@ using Corely.Domain.Models.Users;
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Users
 {
     public class UserProfileTests
-        : BidirectionalAutoMapperTestsBase<User, UserEntity>
+        : BidirectionalProfileTestsBase<User, UserEntity>
     {
     }
 }

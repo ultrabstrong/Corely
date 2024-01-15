@@ -2,13 +2,13 @@
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper
 {
-    public class AutoMapperPrebuiltConfigValidationTest
+    public class AutoMapperAssertConfigurationIsValidTest
         : IDisposable
     {
         private readonly IMapper _mapper;
         private readonly ServiceFactory _serviceFactory = new();
 
-        public AutoMapperPrebuiltConfigValidationTest()
+        public AutoMapperAssertConfigurationIsValidTest()
         {
             _mapper = _serviceFactory.GetRequiredService<IMapper>();
         }

@@ -1,4 +1,5 @@
-﻿using Corely.Common.Providers.Security.Exceptions;
+﻿using AutoFixture;
+using Corely.Common.Providers.Security.Exceptions;
 using Corely.Common.Providers.Security.Hashing;
 
 namespace Corely.UnitTests.Common.Providers.Security.Hashing
@@ -77,6 +78,16 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         public override void HashTypeCode_ShouldReturnCorrectCode_ForImplementation()
         {
             Assert.Equal(TEST_HASH_TYPE_CODE, _mockHashProvider.HashTypeCode);
+        }
+
+        [Theory]
+        [InlineData("asdf")]
+        [InlineData(TEST_HASH_TYPE_CODE)]
+        [InlineData($"{TEST_HASH_TYPE_CODE}:asdf")]
+        public void Verify_ShouldReturnFalse_WithInvalidHash(string hash)
+        {
+            var fixture = new Fixture();
+            Assert.False(_mockHashProvider.Verify(fixture.Create<string>(), hash));
         }
     }
 }
