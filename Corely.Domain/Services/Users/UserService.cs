@@ -2,6 +2,7 @@
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Exceptions;
 using Corely.Domain.Mappers;
+using Corely.Domain.Models;
 using Corely.Domain.Models.Users;
 using Corely.Domain.Repos;
 using Corely.Domain.Validators;
@@ -23,7 +24,7 @@ namespace Corely.Domain.Services.Users
             _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
         }
 
-        public async Task<CreateUserResult> CreateUserAsync(CreateUserRequest createUserRequest)
+        public async Task<CreateResult> CreateUserAsync(CreateUserRequest createUserRequest)
         {
             logger.LogInformation("Creating user {Username}", createUserRequest.Username);
 
@@ -34,7 +35,7 @@ namespace Corely.Domain.Services.Users
             var createdId = await _userRepo.CreateAsync(userEntity);
 
             logger.LogInformation("User {Username} created with Id {Id}", user.Username, createdId);
-            return new CreateUserResult(true, "", createdId);
+            return new CreateResult(true, "", createdId);
         }
 
         private async Task ThrowIfUserExists(string username, string email)

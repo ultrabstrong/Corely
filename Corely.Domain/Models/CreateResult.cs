@@ -1,6 +1,6 @@
 ﻿namespace Corely.Domain.Models
 {
-    public abstract record CreatedResultBase(
+    public record CreateResult(
         bool IsSuccess,
         string? Message,
         int CreatedId)

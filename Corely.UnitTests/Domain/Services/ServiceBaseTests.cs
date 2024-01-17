@@ -2,6 +2,7 @@
 using AutoMapper;
 using Corely.Domain.Exceptions;
 using Corely.Domain.Mappers;
+using Corely.Domain.Models;
 using Corely.Domain.Models.Users;
 using Corely.Domain.Services;
 using Corely.Domain.Validators;
@@ -53,7 +54,7 @@ namespace Corely.UnitTests.Domain.Services
         public void MapToValid_ShouldThrowAutoMapperMappingException_IfDestinationIsInvalid()
         {
             var createUserRequest = _fixutre.Create<CreateUserRequest>();
-            var ex = Record.Exception(() => _mockServiceBase.MapToValid<CreateUserResult>(createUserRequest));
+            var ex = Record.Exception(() => _mockServiceBase.MapToValid<CreateResult>(createUserRequest));
 
             Assert.NotNull(ex);
             Assert.IsType<AutoMapperMappingException>(ex);
