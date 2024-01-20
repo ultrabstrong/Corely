@@ -10,12 +10,9 @@ namespace ConsoleTest
 {
     internal class ServiceFactory : ServiceFactoryBase
     {
-        public ServiceFactory() : base() { }
-
         protected override void AddLogger(IServiceCollection services)
         {
-            var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-            services.AddLogging(builder => builder.AddSerilog(logger: logger, dispose: true));
+            services.AddLogging(builder => builder.AddSerilog(logger: Log.Logger, dispose: false));
         }
 
         protected override void AddDataAccessRepos(IServiceCollection services)

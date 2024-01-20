@@ -49,9 +49,7 @@ namespace Corely.Domain.Services.Users
                 bool usernameExists = existingUser.Username == username;
                 bool emailExists = existingUser.Email == email;
 
-                logger.LogWarning("User already exists. {MatchedOnUsername} {MatchedOnEmail}",
-                    usernameExists ? $"Matched username {existingUser.Username}." : "",
-                    emailExists ? $"Matched email {existingUser.Email}." : "");
+                logger.LogWarning("User already exists with Username {ExistingUsername} and Email {ExistingEmail}", existingUser.Username, existingUser.Email);
 
                 throw new UserExistsException()
                 {

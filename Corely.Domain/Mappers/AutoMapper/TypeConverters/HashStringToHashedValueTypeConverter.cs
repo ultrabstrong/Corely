@@ -4,7 +4,7 @@ using Corely.Common.Providers.Security.Factories;
 
 namespace Corely.Domain.Mappers.AutoMapper.TypeConverters
 {
-    internal class HashStringToHashedValueTypeConverter : ITypeConverter<string, IHashedValue>
+    internal sealed class HashStringToHashedValueTypeConverter : ITypeConverter<string, IHashedValue>
     {
         private readonly IHashProviderFactory _hashProviderFactory;
 

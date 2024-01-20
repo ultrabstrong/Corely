@@ -17,7 +17,7 @@ namespace Corely.Domain.Services.Auth
             IRepoExtendedGet<BasicAuthEntity> basicAuthRepo,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
-            ILogger logger)
+            ILogger<AuthService> logger)
             : base(mapProvider, validationProvider, logger)
         {
             _basicAuthRepo = basicAuthRepo.ThrowIfNull(nameof(basicAuthRepo));

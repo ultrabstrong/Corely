@@ -1,4 +1,5 @@
 ﻿using Corely.Common.Extensions;
+using Corely.Domain.Exceptions;
 using Corely.Domain.Mappers;
 using Corely.Domain.Validators;
 using Microsoft.Extensions.Logging;
@@ -32,12 +33,22 @@ namespace Corely.Domain.Services
 
                 return destination;
             }
-            catch
+            catch (Exception ex)
             {
-                using var scope = logger.BeginScope(new Dictionary<string, object?>
+                var state = new Dictionary<string, object?>
                 {
                     { nameof(source), source }
-                });
+                };
+
+                if (ex is ValidationException validationException
+                    && validationException.ValidationResult != null)
+                {
+                    state.Add("VREX", validationException.ValidationResult);
+                    state.Add(nameof(validationException.ValidationResult),
+                        mapProvider.Map<string>(validationException.ValidationResult));
+                }
+
+                using var scope = logger.BeginScope(state);
 
                 logger.LogError("Error mapping {Source} to valid {Destination}", source?.GetType()?.Name, typeof(T)?.Name);
                 throw;

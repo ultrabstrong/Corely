@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using System.Text.Json;
 
-namespace Corely.Domain.Mappers.AutoMapper.ValueConverters
+namespace Corely.Domain.Mappers.AutoMapper.TypeConverters
 {
-    internal sealed class JsonifyValueConverter<T> : IValueConverter<T, string>
+    internal sealed class JsonifyTypeConverter<T> : ITypeConverter<T, string>
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        public JsonifyValueConverter()
+        public JsonifyTypeConverter()
         {
             _jsonSerializerOptions = new JsonSerializerOptions
             {
@@ -15,9 +15,9 @@ namespace Corely.Domain.Mappers.AutoMapper.ValueConverters
             };
         }
 
-        public string Convert(T sourceMember, ResolutionContext context)
+        public string Convert(T source, string destination, ResolutionContext context)
         {
-            return JsonSerializer.Serialize(sourceMember, _jsonSerializerOptions);
+            return JsonSerializer.Serialize(source, _jsonSerializerOptions);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Corely.Domain.Mappers.AutoMapper.TypeConverters;
 using Corely.Domain.Mappers.AutoMapper.ValueConverters;
 using FluentValidation.Results;
 using CorelyValidationResult = Corely.Domain.Validators.ValidationResult;
@@ -14,6 +15,9 @@ namespace Corely.Domain.Mappers.AutoMapper.Profiles
                 .ForMember(dest => dest.Errors, opt => opt
                     .ConvertUsing<JsonifyListValueConverter<ValidationFailure>, List<ValidationFailure>>(src => src.Errors))
                 .ForMember(dest => dest.Message, opt => opt.Ignore());
+
+            CreateMap<CorelyValidationResult, string>()
+                .ConvertUsing(new JsonifyTypeConverter<CorelyValidationResult>());
         }
     }
 }
