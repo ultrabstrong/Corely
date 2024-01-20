@@ -1,9 +1,18 @@
-﻿using Corely.Domain.Validators;
+﻿using CorelyValidationResult = Corely.Domain.Validators.ValidationResult;
+using FluentValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles
 {
     public class ValidationResultProfileTests
-        : ProfileTestsBase<ValidationResult, string>
     {
+        public class ToCorelyValidationResult
+            : ProfileTestsBase<FluentValidationResult, CorelyValidationResult>
+        {
+        }
+
+        public class ToJsonString
+            : ProfileTestsBase<CorelyValidationResult, string>
+        {
+        }
     }
 }

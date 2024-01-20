@@ -5,7 +5,7 @@ namespace Corely.Domain.Validators
     public class ValidationResult
     {
         public string Message { get; set; } = null!;
-        public List<string>? Errors { get; init; }
+        public List<ValidationError>? Errors { get; init; }
         public bool IsValid => Errors == null || Errors.Count == 0;
 
         public void ThrowIfInvalid()

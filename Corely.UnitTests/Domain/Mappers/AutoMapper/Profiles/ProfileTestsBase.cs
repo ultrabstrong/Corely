@@ -7,12 +7,12 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles
         : IDisposable
         where TSource : class
     {
-        protected readonly IMapper _mapper;
+        protected readonly IMapper mapper;
         private readonly ServiceFactory _serviceFactory = new();
 
         protected ProfileTestsBase()
         {
-            _mapper = _serviceFactory.GetRequiredService<IMapper>();
+            mapper = _serviceFactory.GetRequiredService<IMapper>();
         }
 
         [Fact]
@@ -20,7 +20,7 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles
         {
             var source = GetSource();
             var modifiedSource = ApplySourceModifications(source);
-            _mapper.Map<TDestination>(modifiedSource);
+            mapper.Map<TDestination>(modifiedSource);
         }
 
         protected virtual TSource GetSource() => GetMock<TSource>();

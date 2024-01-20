@@ -10,7 +10,7 @@
         {
             var destination = GetDestination();
             var modifiedDestination = ApplyDestinatonModifications(destination);
-            _mapper.Map<TSource>(modifiedDestination);
+            mapper.Map<TSource>(modifiedDestination);
         }
 
         protected virtual TDestination GetDestination() => GetMock<TDestination>();

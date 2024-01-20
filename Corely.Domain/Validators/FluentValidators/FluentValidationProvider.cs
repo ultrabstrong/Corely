@@ -20,7 +20,11 @@ namespace Corely.Domain.Validators.FluentValidators
             {
                 corelyResult = new()
                 {
-                    Errors = ["Model is null"]
+                    Errors = [new()
+                    {
+                        Message = "Model is null",
+                        PropertyName = typeof(T).Name
+                    }]
                 };
             }
             else

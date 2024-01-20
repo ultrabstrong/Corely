@@ -10,7 +10,7 @@ namespace Corely.UnitTests.Domain.Validators
         {
             var result = new ValidationResult
             {
-                Errors = ["error"]
+                Errors = [new()]
             };
 
             Assert.False(result.IsValid);
@@ -32,7 +32,7 @@ namespace Corely.UnitTests.Domain.Validators
         {
             var result = new ValidationResult
             {
-                Errors = ["error"]
+                Errors = [new()]
             };
 
             var ex = Record.Exception(result.ThrowIfInvalid);
