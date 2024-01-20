@@ -9,6 +9,13 @@ namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
         protected abstract IAccountManagementRepoFactory AccountManagementRepoFactory { get; }
 
         [Fact]
+        public void CreateAccountRepo_ShouldReturnMockAccountRepo()
+        {
+            var accountRepo = AccountManagementRepoFactory.CreateAccountRepo();
+            Assert.NotNull(accountRepo);
+        }
+
+        [Fact]
         public void CreateBasicAuthRepo_ShouldReturnMockBasicAuthRepo()
         {
             var basicAuthRepo = AccountManagementRepoFactory.CreateBasicAuthRepo();
