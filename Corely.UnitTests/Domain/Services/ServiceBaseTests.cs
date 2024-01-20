@@ -45,7 +45,6 @@ namespace Corely.UnitTests.Domain.Services
         public void MapToValid_ShouldThrowIfSourceIsNull()
         {
             var ex = Record.Exception(() => _mockServiceBase.MapToValid<object>(null!));
-
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
@@ -54,6 +53,7 @@ namespace Corely.UnitTests.Domain.Services
         public void MapToValid_ShouldThrowAutoMapperMappingException_IfDestinationIsInvalid()
         {
             var createUserRequest = _fixutre.Create<CreateUserRequest>();
+
             var ex = Record.Exception(() => _mockServiceBase.MapToValid<CreateResult>(createUserRequest));
 
             Assert.NotNull(ex);
@@ -64,6 +64,7 @@ namespace Corely.UnitTests.Domain.Services
         public void MapToValid_ShouldThrowValidationException_IfDestinationIsInvalid()
         {
             var createUserRequest = _fixutre.Create<CreateUserRequest>();
+
             var ex = Record.Exception(() => _mockServiceBase.MapToValid<User>(createUserRequest));
 
             Assert.NotNull(ex);

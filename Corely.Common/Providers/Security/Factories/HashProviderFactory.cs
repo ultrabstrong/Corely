@@ -11,6 +11,12 @@ namespace Corely.Common.Providers.Security.Factories
             { HashProviderConstants.SALTED_SHA256_CODE, new Sha256SaltedHashProvider() },
             { HashProviderConstants.SALTED_SHA512_CODE, new Sha512SaltedHashProvider() }
         };
+        private readonly string _defaultProviderCode;
+
+        public HashProviderFactory(string defaultProviderCode)
+        {
+            _defaultProviderCode = defaultProviderCode;
+        }
 
         public void AddProvider(string providerCode, IHashProvider provider)
         {
@@ -55,6 +61,8 @@ namespace Corely.Common.Providers.Security.Factories
                 };
             }
         }
+
+        public IHashProvider GetDefaultProvider() => GetProvider(_defaultProviderCode);
 
         public IHashProvider GetProvider(string providerCode)
         {

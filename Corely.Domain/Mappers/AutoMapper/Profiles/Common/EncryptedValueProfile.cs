@@ -9,7 +9,7 @@ namespace Corely.Domain.Mappers.AutoMapper.Profiles.Common
         public EncryptedValueProfile()
         {
             CreateMap<IEncryptedValue, string?>().ConvertUsing<EncryptedValueToStringTypeConverter>();
-            CreateMap<string, IEncryptedValue>().ConvertUsing<StringToEncryptedValueTypeConverter>();
+            CreateMap<string, IEncryptedValue>().ConvertUsing<EncryptedStringToEncryptedValueTypeConverter>();
         }
     }
 }

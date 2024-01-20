@@ -32,6 +32,15 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
             Assert.NotEqual(decrypted, encrypted);
         }
 
+        [Theory, ClassData(typeof(EmptyAndWhitespace))]
+        public void Encrypt_ShouldReturnCorrectlyFormattedValue_WithEmptyAndWhitespace(string value)
+        {
+            var encrypted = _encryptionProvider.Encrypt(value);
+            Assert.StartsWith(_encryptionProvider.EncryptionTypeCode, encrypted);
+            Assert.Matches(@"^.+:\d+:.+", encrypted);
+            Assert.NotEqual(value, encrypted);
+        }
+
         [Fact]
         public void Encrypt_ShouldProduceDifferentEncryptedStrings()
         {
@@ -41,11 +50,12 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
             Assert.NotEqual(encrypted1, encrypted2);
         }
 
-        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void Encrypt_ShouldArgumentExceptionThrow_WithNullOrWhiteSpace(string value)
+        [Fact]
+        public void Encrypt_ShouldArgumentNullExceptionThrow_WithNullInput()
         {
-            var exception = Record.Exception(() => _encryptionProvider.Encrypt(value));
-            Assert.True(exception is ArgumentNullException || exception is ArgumentException);
+            var ex = Record.Exception(() => _encryptionProvider.Encrypt(null!));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -84,8 +94,8 @@ namespace Corely.UnitTests.Common.Providers.Security.Encryption
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
         public void Decrypt_ShouldThrowArgumentException_WithNullOrWhiteSpace(string value)
         {
-            var exception = Record.Exception(() => _encryptionProvider.Decrypt(value));
-            Assert.True(exception is ArgumentNullException || exception is ArgumentException);
+            var ex = Record.Exception(() => _encryptionProvider.Decrypt(value));
+            Assert.True(ex is ArgumentNullException || ex is ArgumentException);
         }
 
         [Theory]

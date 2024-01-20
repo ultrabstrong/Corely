@@ -6,7 +6,7 @@ namespace Corely.Domain.Models.Auth
     {
         public int Id { get; init; }
         public string Username { get; init; } = null!;
-        public IHashedValue Password { get; init; } = null!;
+        public IHashedValue Password { get; set; } = null!;
         public DateTime ModifiedUtc { get; init; }
     }
 }

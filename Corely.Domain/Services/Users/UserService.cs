@@ -24,11 +24,13 @@ namespace Corely.Domain.Services.Users
             _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
         }
 
-        public async Task<CreateResult> CreateUserAsync(CreateUserRequest createUserRequest)
+        public async Task<CreateResult> CreateUserAsync(CreateUserRequest request)
         {
-            logger.LogInformation("Creating user {Username}", createUserRequest.Username);
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-            var user = MapToValid<User>(createUserRequest);
+            logger.LogInformation("Creating user {Username}", request.Username);
+
+            var user = MapToValid<User>(request);
             await ThrowIfUserExists(user.Username, user.Email);
 
             var userEntity = mapProvider.Map<UserEntity>(user);

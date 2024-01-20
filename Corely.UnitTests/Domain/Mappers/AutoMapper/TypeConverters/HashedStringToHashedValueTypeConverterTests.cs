@@ -6,12 +6,12 @@ using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.TypeConverters
 {
-    public class StringToHashedValueTypeConverterTests
+    public class HashedStringToHashedValueTypeConverterTests
     {
-        private readonly StringToHashedValueTypeConverter _converter;
+        private readonly HashStringToHashedValueTypeConverter _converter;
         private readonly Fixture _fixture = new();
 
-        public StringToHashedValueTypeConverterTests()
+        public HashedStringToHashedValueTypeConverterTests()
         {
             var hashProvider = Mock.Of<IHashProvider>();
             var hashProviderFactory = Mock.Of<IHashProviderFactory>(

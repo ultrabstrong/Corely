@@ -30,7 +30,7 @@ namespace Corely.UnitTests.Domain.Connections
                 new InvalidDataType()));
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentException);
+            Assert.IsType<ArgumentException>(ex);
         }
 
         [Fact]

@@ -5,6 +5,5 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Accounts
 {
     public class AccountProfileTests
         : BidirectionalProfileTestsBase<Account, AccountEntity>
-    {
-    }
+    { }
 }

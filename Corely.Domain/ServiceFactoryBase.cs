@@ -1,9 +1,12 @@
 ﻿using Corely.Common.Models;
+using Corely.Common.Providers.Security.Encryption;
 using Corely.Common.Providers.Security.Factories;
+using Corely.Common.Providers.Security.Hashing;
 using Corely.Common.Providers.Security.Keys;
 using Corely.Domain.Mappers;
 using Corely.Domain.Mappers.AutoMapper;
 using Corely.Domain.Services.Accounts;
+using Corely.Domain.Services.Auth;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
 using Corely.Domain.Validators.FluentValidators;
@@ -52,14 +55,19 @@ namespace Corely.Domain
             services.AddScoped<IKeyStoreProvider, InMemoryKeyStoreProvider>(_ =>
                 new InMemoryKeyStoreProvider(key));
 
-            services.AddScoped<IEncryptionProviderFactory, EncryptionProviderFactory>();
-            services.AddScoped<IHashProviderFactory, HashProviderFactory>();
+            services.AddScoped<IEncryptionProviderFactory, EncryptionProviderFactory>(serviceProvider =>
+                new EncryptionProviderFactory(EncryptionProviderConstants.AES_CODE,
+                    serviceProvider.GetRequiredService<IKeyStoreProvider>()));
+
+            services.AddScoped<IHashProviderFactory, HashProviderFactory>(_ =>
+                new HashProviderFactory(HashProviderConstants.SALTED_SHA256_CODE));
         }
 
         private static void AddDomainServices(IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
         }
 
         protected abstract void AddLogger(IServiceCollection services);

@@ -53,7 +53,7 @@ namespace Corely.UnitTests.Common.Models.Security
         {
             var value = _fixture.Create<string>();
             _encryptedValue.Set(value);
-            var decryptedValue = _encryptedValue.Get();
+            var decryptedValue = _encryptedValue.GetDecrypted();
             Assert.Equal(value, decryptedValue);
         }
 

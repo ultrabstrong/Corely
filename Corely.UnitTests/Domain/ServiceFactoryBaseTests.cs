@@ -80,7 +80,7 @@ namespace Corely.UnitTests.Domain
             serviceFactory.Dispose();
             var ex = Record.Exception(() => serviceFactory.GetRequiredService<ILogger>());
 
-            Assert.True(ex is ObjectDisposedException);
+            Assert.IsType<ObjectDisposedException>(ex);
         }
     }
 }

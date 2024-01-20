@@ -24,11 +24,13 @@ namespace Corely.Domain.Services.Accounts
             _accountRepo = accountRepo.ThrowIfNull(nameof(accountRepo));
         }
 
-        public async Task<CreateResult> CreateAccountAsync(CreateAccountRequest createAccountRequest)
+        public async Task<CreateResult> CreateAccountAsync(CreateAccountRequest request)
         {
-            logger.LogInformation("Creating account {Account}", createAccountRequest.AccountName);
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-            var account = MapToValid<Account>(createAccountRequest);
+            logger.LogInformation("Creating account {Account}", request.AccountName);
+
+            var account = MapToValid<Account>(request);
             await ThrowIfAccountExists(account.AccountName);
 
             var accountEntity = mapProvider.Map<AccountEntity>(account);

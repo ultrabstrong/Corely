@@ -29,7 +29,7 @@ namespace Corely.Common.Models.Security
             }
         }
 
-        public string Get()
+        public string GetDecrypted()
         {
             return _encryptionProvider.Decrypt(Secret);
         }

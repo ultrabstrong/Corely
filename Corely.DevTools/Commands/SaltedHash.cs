@@ -6,7 +6,7 @@ namespace Corely.DevTools.Commands
     internal class SaltedHash : CommandBase
     {
         [Argument("Hash type to use", false)]
-        private string HashType { get; init; } = null!;
+        private string HashTypeCode { get; init; } = null!;
 
         [Argument("Value to hash", false)]
         private string Value { get; init; } = null!;
@@ -17,7 +17,7 @@ namespace Corely.DevTools.Commands
 
         public override void Execute()
         {
-            if (string.IsNullOrWhiteSpace(HashType))
+            if (string.IsNullOrWhiteSpace(HashTypeCode))
             {
                 ListProviders();
             }
@@ -27,9 +27,9 @@ namespace Corely.DevTools.Commands
             }
         }
 
-        private static void ListProviders()
+        private void ListProviders()
         {
-            var hashProviderFactor = new HashProviderFactory();
+            var hashProviderFactor = new HashProviderFactory(HashTypeCode);
             var providers = hashProviderFactor.ListProviders();
             foreach (var (ProviderCode, ProviderType) in providers)
             {
@@ -39,8 +39,8 @@ namespace Corely.DevTools.Commands
 
         private void Hash()
         {
-            var hashProviderFactor = new HashProviderFactory();
-            var hashProvider = hashProviderFactor.GetProvider(HashType);
+            var hashProviderFactor = new HashProviderFactory(HashTypeCode);
+            var hashProvider = hashProviderFactor.GetProvider(HashTypeCode);
             var hash = hashProvider.Hash(Value);
             Console.WriteLine($"Hashed value: {hash}");
         }

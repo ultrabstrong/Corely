@@ -40,7 +40,7 @@ namespace Corely.UnitTests.Domain.Services.Accounts
             var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentNullException);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace Corely.UnitTests.Domain.Services.Accounts
             var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentNullException);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace Corely.UnitTests.Domain.Services.Accounts
             var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentNullException);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace Corely.UnitTests.Domain.Services.Accounts
             var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentNullException);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -107,6 +107,15 @@ namespace Corely.UnitTests.Domain.Services.Accounts
             var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
 
             Assert.True(createAccountResult.IsSuccess);
+        }
+
+        [Fact]
+        public async Task CreateAccount_ShouldThrowArgumentNullException_WithNullRequest()
+        {
+            var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(null!));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
     }
 }

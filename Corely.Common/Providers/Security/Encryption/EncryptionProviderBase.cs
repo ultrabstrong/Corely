@@ -25,7 +25,7 @@ namespace Corely.Common.Providers.Security.Encryption
 
         public string Encrypt(string value)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
             (var key, var version) = _keyStoreProvider.GetCurrentVersion();
             var encryptedValue = EncryptInternal(value, key);
             return FormatEncryptedValue(encryptedValue, version);

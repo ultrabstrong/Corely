@@ -18,7 +18,7 @@ namespace Corely.UnitTests.DataAccess.Extensions
             var ex = await Record.ExceptionAsync(() => DbSetExtensions.GetAsync((DbSet<object>?)null, null));
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentNullException);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -27,7 +27,7 @@ namespace Corely.UnitTests.DataAccess.Extensions
             var ex = await Record.ExceptionAsync(() => _dbSet.Object.GetAsync(null));
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentNullException);
+            Assert.IsType<ArgumentNullException>(ex);
         }
     }
 }

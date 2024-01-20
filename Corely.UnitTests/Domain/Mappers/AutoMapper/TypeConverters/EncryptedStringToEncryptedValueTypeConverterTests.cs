@@ -6,12 +6,12 @@ using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.TypeConverters
 {
-    public class StringToEncryptedValueTypeConverterTests
+    public class EncryptedStringToEncryptedValueTypeConverterTests
     {
-        private readonly StringToEncryptedValueTypeConverter _converter;
+        private readonly EncryptedStringToEncryptedValueTypeConverter _converter;
         private readonly Fixture _fixture = new();
 
-        public StringToEncryptedValueTypeConverterTests()
+        public EncryptedStringToEncryptedValueTypeConverterTests()
         {
             var encryptionProvider = Mock.Of<IEncryptionProvider>();
             var encryptionProviderFactory = Mock.Of<IEncryptionProviderFactory>(

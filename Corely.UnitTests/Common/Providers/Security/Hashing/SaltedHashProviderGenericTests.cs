@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using Corely.Common.Providers.Security.Hashing;
+using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Common.Providers.Security.Hashing
 {
@@ -27,7 +28,7 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         }
 
         [Fact]
-        public void Hash_ShouldReturnHashedString_WithHashTypePrepended()
+        public void Hash_ShouldReturnCorrectlyFormattedValue()
         {
             var value = _fixture.Create<string>();
             var hashed = HashProvider.Hash(value);
@@ -35,8 +36,16 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
             Assert.NotEqual(value, hashed[hashed.IndexOf(':')..]);
         }
 
+        [Theory, ClassData(typeof(EmptyAndWhitespace))]
+        public void Hash_ShouldReturnCorrectlyFormattedValue_WithEmptyAndWhitespace(string value)
+        {
+            var hashed = HashProvider.Hash(value);
+            Assert.StartsWith(HashProvider.HashTypeCode, hashed);
+            Assert.NotEqual(value, hashed[hashed.IndexOf(':')..]);
+        }
+
         [Fact]
-        public void Hash_ShouldThrowArgumentNullException_WhenValueIsNull()
+        public void Hash_ShouldThrowArgumentNullException_WithNullInput()
         {
             var ex = Record.Exception(() => HashProvider.Hash(null));
             Assert.NotNull(ex);

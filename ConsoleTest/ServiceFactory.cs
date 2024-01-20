@@ -51,11 +51,11 @@ namespace ConsoleTest
 
             services.AddScoped(serviceProvider => serviceProvider
                 .GetRequiredService<IAccountManagementRepoFactory>()
-                .CreateBasicAuthRepo());
+                .CreateUserRepo());
 
             services.AddScoped(serviceProvider => serviceProvider
                 .GetRequiredService<IAccountManagementRepoFactory>()
-                .CreateUserRepo());
+                .CreateBasicAuthRepo());
         }
     }
 }

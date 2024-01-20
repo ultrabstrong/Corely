@@ -8,8 +8,14 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
 {
     public class HashProviderFactoryTests
     {
-        private readonly HashProviderFactory _hashProviderFactory = new();
+        private readonly string _defaultProviderCode = HashProviderConstants.SALTED_SHA256_CODE;
         private readonly Fixture _fixture = new();
+        private readonly HashProviderFactory _hashProviderFactory;
+
+        public HashProviderFactoryTests()
+        {
+            _hashProviderFactory = new HashProviderFactory(_defaultProviderCode);
+        }
 
         [Fact]
         public void AddProvider_ShouldAddProvider()
@@ -31,10 +37,10 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
 
             _hashProviderFactory.AddProvider(providerCode, provider);
             void act() => _hashProviderFactory.AddProvider(providerCode, provider);
-            var exception = Record.Exception(() => act());
+            var ex = Record.Exception(() => act());
 
-            Assert.NotNull(exception);
-            Assert.IsType<HashProviderException>(exception);
+            Assert.NotNull(ex);
+            Assert.IsType<HashProviderException>(ex);
         }
 
         [Theory]
@@ -45,12 +51,12 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
             var provider = new Mock<IHashProvider>().Object;
 
             void act() => _hashProviderFactory.AddProvider(providerCode, provider);
-            var exception = Record.Exception(() => act());
+            var ex = Record.Exception(() => act());
 
-            Assert.NotNull(exception);
-            Assert.True(exception is ArgumentNullException
-                || exception is ArgumentException
-                || exception is HashProviderException);
+            Assert.NotNull(ex);
+            Assert.True(ex is ArgumentNullException
+                || ex is ArgumentException
+                || ex is HashProviderException);
         }
 
         [Fact]
@@ -59,10 +65,10 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
             var providerCode = _fixture.Create<string>();
 
             void act() => _hashProviderFactory.AddProvider(providerCode, null);
-            var exception = Record.Exception(() => act());
+            var ex = Record.Exception(() => act());
 
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentNullException>(exception);
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -86,10 +92,10 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
             var provider = new Mock<IHashProvider>().Object;
 
             void act() => _hashProviderFactory.UpdateProvider(providerCode, provider);
-            var exception = Record.Exception(() => act());
+            var ex = Record.Exception(() => act());
 
-            Assert.NotNull(exception);
-            Assert.IsType<HashProviderException>(exception);
+            Assert.NotNull(ex);
+            Assert.IsType<HashProviderException>(ex);
         }
 
         [Theory]
@@ -100,12 +106,12 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
             var provider = new Mock<IHashProvider>().Object;
 
             void act() => _hashProviderFactory.UpdateProvider(providerCode, provider);
-            var exception = Record.Exception(() => act());
+            var ex = Record.Exception(() => act());
 
-            Assert.NotNull(exception);
-            Assert.True(exception is ArgumentNullException
-                || exception is ArgumentException
-                || exception is HashProviderException);
+            Assert.NotNull(ex);
+            Assert.True(ex is ArgumentNullException
+                || ex is ArgumentException
+                || ex is HashProviderException);
         }
 
         [Fact]
@@ -114,10 +120,18 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
             var providerCode = _fixture.Create<string>();
 
             void act() => _hashProviderFactory.UpdateProvider(providerCode, null);
-            var exception = Record.Exception(() => act());
+            var ex = Record.Exception(() => act());
 
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentNullException>(exception);
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public void GetDefaultProvider_ShouldReturnDefaultProvider()
+        {
+            var hashProvider = _hashProviderFactory.GetDefaultProvider();
+            Assert.NotNull(hashProvider);
+            Assert.Equal(_defaultProviderCode, hashProvider.HashTypeCode);
         }
 
         [Theory]
@@ -137,10 +151,12 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         public void GetProvider_ShouldThrow_WithInvalidCode(string providerCode)
         {
             void act() => _hashProviderFactory.GetProvider(providerCode);
-            var exception = Record.Exception(() => act());
-            Assert.True(exception is ArgumentNullException
-                || exception is ArgumentException
-                || exception is HashProviderException);
+            var ex = Record.Exception(() => act());
+
+            Assert.NotNull(ex);
+            Assert.True(ex is ArgumentNullException
+                || ex is ArgumentException
+                || ex is HashProviderException);
         }
 
         [Theory]
@@ -162,10 +178,12 @@ namespace Corely.UnitTests.Common.Providers.Security.Factories
         public void GetProviderToVerify_ShouldThrow_WithInvalidCode(string providerCode)
         {
             void act() => _hashProviderFactory.GetProviderToVerify(providerCode);
-            var exception = Record.Exception(() => act());
-            Assert.True(exception is ArgumentNullException
-                || exception is ArgumentException
-                || exception is HashProviderException);
+            var ex = Record.Exception(() => act());
+
+            Assert.NotNull(ex);
+            Assert.True(ex is ArgumentNullException
+                || ex is ArgumentException
+                || ex is HashProviderException);
         }
 
         [Fact]

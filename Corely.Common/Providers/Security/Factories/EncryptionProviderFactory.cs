@@ -7,11 +7,13 @@ namespace Corely.Common.Providers.Security.Factories
 {
     public class EncryptionProviderFactory : IEncryptionProviderFactory
     {
-        private protected readonly IKeyStoreProvider _keyStoreProvider;
-        private protected readonly Dictionary<string, IEncryptionProvider> _providers = [];
+        private readonly string _defaultProviderCode;
+        private readonly IKeyStoreProvider _keyStoreProvider;
+        private readonly Dictionary<string, IEncryptionProvider> _providers = [];
 
-        public EncryptionProviderFactory(IKeyStoreProvider keyStoreProvider)
+        public EncryptionProviderFactory(string defaultProviderCode, IKeyStoreProvider keyStoreProvider)
         {
+            _defaultProviderCode = defaultProviderCode;
             _keyStoreProvider = keyStoreProvider.ThrowIfNull(nameof(keyStoreProvider));
             _providers.Add(EncryptionProviderConstants.AES_CODE, new AesEncryptionProvider(_keyStoreProvider));
         }
@@ -59,6 +61,8 @@ namespace Corely.Common.Providers.Security.Factories
                 };
             }
         }
+
+        public IEncryptionProvider GetDefaultProvider() => GetProvider(_defaultProviderCode);
 
         public IEncryptionProvider GetProvider(string providerCode)
         {

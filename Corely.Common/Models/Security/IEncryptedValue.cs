@@ -4,7 +4,7 @@
     {
         string Secret { get; }
         void Set(string decryptedValue);
-        string Get();
+        string GetDecrypted();
         void ReEncrypt();
     }
 }

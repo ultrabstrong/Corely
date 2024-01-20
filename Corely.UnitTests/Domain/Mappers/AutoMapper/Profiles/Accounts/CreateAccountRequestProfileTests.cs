@@ -4,6 +4,5 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Accounts
 {
     public class CreateAccountRequestProfileTests
         : ProfileTestsBase<CreateAccountRequest, Account>
-    {
-    }
+    { }
 }

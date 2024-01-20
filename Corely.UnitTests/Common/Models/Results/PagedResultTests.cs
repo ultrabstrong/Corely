@@ -23,9 +23,9 @@ namespace Corely.UnitTests.Common.Models.Results
         [InlineData(0, 0)]
         public void PagedResponse_ShouldThrowErrors_WithInvalidConstructorArgs(int skip, int take)
         {
-            var exception = Record.Exception(() => new PagedResult<object>(skip, take));
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentOutOfRangeException>(exception);
+            var ex = Record.Exception(() => new PagedResult<object>(skip, take));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentOutOfRangeException>(ex);
         }
 
         [Fact]
@@ -36,6 +36,7 @@ namespace Corely.UnitTests.Common.Models.Results
             Assert.Empty(_pagedResponse.Items);
 
             var ex = Record.Exception(() => _pagedResponse.GetNextChunk());
+
             Assert.NotNull(ex);
             Assert.IsType<InvalidOperationException>(ex);
         }
@@ -157,6 +158,7 @@ namespace Corely.UnitTests.Common.Models.Results
             _pagedResponse.OnGetNextChunk -= GetNextChunkHandler;
 
             var ex = Record.Exception(() => _pagedResponse.GetNextChunk());
+
             Assert.NotNull(ex);
             Assert.IsType<InvalidOperationException>(ex);
         }

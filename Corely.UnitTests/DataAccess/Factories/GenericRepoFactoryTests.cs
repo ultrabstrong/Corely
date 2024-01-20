@@ -20,7 +20,7 @@ namespace Corely.UnitTests.DataAccess.Factories
                 Mock.Of<IDataAccessConnection<string>>()));
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentNullException);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace Corely.UnitTests.DataAccess.Factories
                 null));
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentNullException);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Theory, MemberData(nameof(CreateAccountManagementRepoFactoryTestData))]
@@ -66,7 +66,7 @@ namespace Corely.UnitTests.DataAccess.Factories
             var ex = Record.Exception(() => genericRepoFactory.CreateAccountManagementRepoFactory());
 
             Assert.NotNull(ex);
-            Assert.True(ex is ArgumentOutOfRangeException);
+            Assert.IsType<ArgumentOutOfRangeException>(ex);
         }
 
         public static IEnumerable<object[]> CreateAccountManagementRepoFactoryTestData =>

@@ -109,5 +109,14 @@ namespace Corely.UnitTests.Domain.Services.Users
 
             Assert.True(res.IsSuccess);
         }
+
+        [Fact]
+        public async Task CreateUser_ShouldThrowArgumentNullException_WithNullRequest()
+        {
+            var ex = await Record.ExceptionAsync(() => _userService.CreateUserAsync(null!));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
     }
 }

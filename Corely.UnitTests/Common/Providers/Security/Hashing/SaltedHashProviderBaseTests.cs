@@ -45,33 +45,33 @@ namespace Corely.UnitTests.Common.Providers.Security.Hashing
         [Fact]
         public void NullHashTypeCode_ShouldThrowArgumentNullException_OnBuild()
         {
-            var exception = Record.Exception(() => new NullTypeCodeMockHashProvider());
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentNullException>(exception);
+            var ex = Record.Exception(() => new NullTypeCodeMockHashProvider());
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
         public void EmptyHashTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            var exception = Record.Exception(() => new EmptyTypeCodeMockHashProvider());
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentException>(exception);
+            var ex = Record.Exception(() => new EmptyTypeCodeMockHashProvider());
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentException>(ex);
         }
 
         [Fact]
         public void WhitespaceHashTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            var exception = Record.Exception(() => new WhitespaceTypeCodeMockHashProvider());
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentException>(exception);
+            var ex = Record.Exception(() => new WhitespaceTypeCodeMockHashProvider());
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentException>(ex);
         }
 
         [Fact]
         public void ColonHashTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            var exception = Record.Exception(() => new ColonTypeCodeMockHashProvider());
-            Assert.NotNull(exception);
-            Assert.IsType<HashProviderException>(exception);
+            var ex = Record.Exception(() => new ColonTypeCodeMockHashProvider());
+            Assert.NotNull(ex);
+            Assert.IsType<HashProviderException>(ex);
         }
 
         [Fact]
