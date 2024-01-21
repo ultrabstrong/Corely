@@ -9,10 +9,5 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles
             : ProfileTestsBase<FluentValidationResult, CorelyValidationResult>
         {
         }
-
-        public class ToJsonString
-            : ProfileTestsBase<CorelyValidationResult, string>
-        {
-        }
     }
 }

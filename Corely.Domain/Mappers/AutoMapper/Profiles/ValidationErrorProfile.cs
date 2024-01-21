@@ -9,8 +9,7 @@ namespace Corely.Domain.Mappers.AutoMapper.Profiles
         public ValidationErrorProfile()
         {
             CreateMap<ValidationFailure, ValidationError>()
-                .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.ErrorMessage))
-                .ForMember(dest => dest.PropertyValue, opt => opt.MapFrom(src => src.AttemptedValue));
+                .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.ErrorMessage));
         }
     }
 }

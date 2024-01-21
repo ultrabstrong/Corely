@@ -34,9 +34,8 @@ namespace ConsoleTest
 
                 var userService = serviceFactory.GetRequiredService<IUserService>();
                 var username = "bstrong";
-                var email = "ultrabstrong";
+                var email = "ultrabstrong@gmail.com";
                 var createResult = await userService.CreateUserAsync(new(username, email));
-                await userService.CreateUserAsync(new(username, email));
 
                 var authService = serviceFactory.GetRequiredService<IAuthService>();
                 var password = "asdf";

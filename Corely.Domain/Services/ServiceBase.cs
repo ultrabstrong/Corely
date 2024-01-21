@@ -3,11 +3,14 @@ using Corely.Domain.Exceptions;
 using Corely.Domain.Mappers;
 using Corely.Domain.Validators;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Corely.Domain.Services
 {
     public abstract class ServiceBase
     {
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
+
         protected readonly IValidationProvider validationProvider;
         protected readonly IMapProvider mapProvider;
         protected readonly ILogger logger;
@@ -17,6 +20,11 @@ namespace Corely.Domain.Services
             IValidationProvider validationProvider,
             ILogger logger)
         {
+            _jsonSerializerOptions = new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+
             this.validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
             this.mapProvider = mapProvider.ThrowIfNull(nameof(mapProvider));
             this.logger = logger.ThrowIfNull(nameof(logger));
@@ -37,20 +45,19 @@ namespace Corely.Domain.Services
             {
                 var state = new Dictionary<string, object?>
                 {
-                    { nameof(source), source }
+                    { "MapSource", JsonSerializer.Serialize(source, _jsonSerializerOptions) }
                 };
 
                 if (ex is ValidationException validationException
                     && validationException.ValidationResult != null)
                 {
-                    state.Add("VREX", validationException.ValidationResult);
-                    state.Add(nameof(validationException.ValidationResult),
-                        mapProvider.Map<string>(validationException.ValidationResult));
+                    state.Add("ValidationResult",
+                        JsonSerializer.Serialize(validationException.ValidationResult, _jsonSerializerOptions));
                 }
 
                 using var scope = logger.BeginScope(state);
 
-                logger.LogError("Error mapping {Source} to valid {Destination}", source?.GetType()?.Name, typeof(T)?.Name);
+                logger.LogWarning("Failed to map {MapSourceType} to valid {MapDestinationType}", source?.GetType()?.Name, typeof(T)?.Name);
                 throw;
             }
         }
