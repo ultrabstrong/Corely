@@ -4,19 +4,11 @@ namespace Corely.Common.Providers.Redaction
 {
     public partial class PasswordRedactionProvider : RedactionProviderBase
     {
-        protected override List<Regex> GetReplacePatterns()
-        {
-            return [
-                JsonPasswordProperty(),
-                JsonPwdProperty()
-            ];
-        }
+        protected override List<Regex> GetReplacePatterns() => [
+            JsonPasswordProperty()
+        ];
 
-        [GeneratedRegex(@"\""password\"".*?\""((?:[^\""\\]|\\.)+)\""", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
+        [GeneratedRegex(@"\""(?:password|pwd)\"".*?\""((?:[^\""\\]|\\.)+)\""", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
         private static partial Regex JsonPasswordProperty();
-
-
-        [GeneratedRegex(@"\""pwd\"".*?\""((?:[^\""\\]|\\.)+)\""", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
-        private static partial Regex JsonPwdProperty();
     }
 }

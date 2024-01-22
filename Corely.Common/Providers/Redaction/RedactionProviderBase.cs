@@ -15,8 +15,9 @@ namespace Corely.Common.Providers.Redaction
 
         protected abstract List<Regex> GetReplacePatterns();
 
-        public string Redact(string input)
+        public string? Redact(string? input)
         {
+            if (input == null) { return input; }
             string output = input;
             foreach (var regex in _regexPatterns)
             {

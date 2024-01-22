@@ -22,6 +22,8 @@ namespace ConsoleTest
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", "ConsoleTest")
                 .Enrich.WithProperty("CorrelationId", Guid.NewGuid())
+                .Enrich.With(new RedactionEnricher([
+                    new PasswordRedactionProvider()]))
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
                 .WriteTo.Seq("http://localhost:5341")
@@ -31,17 +33,14 @@ namespace ConsoleTest
             {
                 var basicAuthRequest = new UpsertBasicAuthRequest(1, "username", "as@#$%#$^   09u09a8s09fj;qo34\"808+_)(*&^%$@!$#@^");
                 string json = JsonSerializer.Serialize(basicAuthRequest, jsonSerializerOptions);
-                json = @"{""UserId"":1,""Username"":""username"",""UserId"":1,""Username"":""username""}";
-                // Todo : Test with multiple instances of Password in multiple places
-                string pwdjson = json.Replace("Password", "Pwd");
-                Console.WriteLine(json);
+                //json = @"{""UserId"":1,""Username"":""username"",""Password"":""as@#$%#$^   09u09a8s09fj;qo34\""808+_)(*&^%$@!$#@^"",""UserId"":1,""Username"":""username"",""Password"":""as@#$%#$^   09u09a8s09fj;qo34\""808+_)(*&^%$@!$#@^""}";
 
-                var passwordRedactionProvider = new PasswordRedactionProvider();
-                var redacted = passwordRedactionProvider.Redact(json);
-                Console.WriteLine(redacted);
+                Log.Logger.Information(json);
 
-                var redacted2 = passwordRedactionProvider.Redact(pwdjson);
-                Console.WriteLine(redacted2);
+                var jsonContextLogger = Log.Logger
+                    .ForContext("basicAuth", basicAuthRequest)
+                    .ForContext("json", json);
+                jsonContextLogger.Information("New json context logger");
 
                 /*
                 using var serviceFactory = new ServiceFactory();

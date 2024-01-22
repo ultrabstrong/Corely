@@ -2,6 +2,6 @@
 {
     public interface IRedactionProvider
     {
-        string Redact(string value);
+        string? Redact(string? value);
     }
 }
