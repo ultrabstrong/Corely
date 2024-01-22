@@ -27,8 +27,6 @@ namespace Corely.Domain.Services.Auth
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-            logger.LogInformation("Upserting basic auth for UserId {UserId}", request.UserId);
-
             var basicAuth = MapToValid<BasicAuth>(request);
 
             var basicAuthEntity = mapProvider.Map<BasicAuthEntity>(basicAuth);

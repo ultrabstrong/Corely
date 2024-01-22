@@ -23,6 +23,14 @@ namespace Corely.UnitTests.Common.Providers.Redaction
             [
                 @"{""UserId"":1,""Username"":""username"",""Pwd"":""as@#$%#$^   09u09a8s09fj;qo34\""808+_)(*&^%$@!$#@^""",
                 @"{""UserId"":1,""Username"":""username"",""Pwd"":""REDACTED"""
+            ],
+            [
+                @"{ UserId: 0, Username: ""bstrong"", Password: ""as@#$%#$^   09u09a8s09fj;qo34\u0022808\u002B_)(*\u0026^%$@!$#@^"" }",
+                @"{ UserId: 0, Username: ""bstrong"", Password: ""REDACTED"" }"
+            ],
+            [
+                @"""UpsertBasicAuthRequest { UserId = 0, Username = bstrong, Password = as@#$%#$^09u09a8s09fj;qo34\u0022808\u002B_)(*\u0026^%$@!$#@^ }""",
+                @"""UpsertBasicAuthRequest { UserId = 0, Username = bstrong, Password = REDACTED }"""
             ]
         ];
     }
