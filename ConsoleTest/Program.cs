@@ -1,7 +1,7 @@
-﻿using Corely.Domain.Services.Accounts;
-using Corely.Domain.Services.Auth;
-using Corely.Domain.Services.Users;
+﻿using Corely.Common.Providers.Redaction;
+using Corely.Domain.Models.Auth;
 using Serilog;
+using System.Text.Json;
 
 namespace ConsoleTest
 {
@@ -11,7 +11,10 @@ namespace ConsoleTest
         private static readonly string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         private static readonly string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
 #pragma warning restore IDE0052 // Remove unused private members
-
+        private static readonly JsonSerializerOptions jsonSerializerOptions = new()
+        {
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
 
         static async Task Main()
         {
@@ -26,6 +29,21 @@ namespace ConsoleTest
 
             try
             {
+                var basicAuthRequest = new UpsertBasicAuthRequest(1, "username", "as@#$%#$^   09u09a8s09fj;qo34\"808+_)(*&^%$@!$#@^");
+                string json = JsonSerializer.Serialize(basicAuthRequest, jsonSerializerOptions);
+                json = @"{""UserId"":1,""Username"":""username"",""UserId"":1,""Username"":""username""}";
+                // Todo : Test with multiple instances of Password in multiple places
+                string pwdjson = json.Replace("Password", "Pwd");
+                Console.WriteLine(json);
+
+                var passwordRedactionProvider = new PasswordRedactionProvider();
+                var redacted = passwordRedactionProvider.Redact(json);
+                Console.WriteLine(redacted);
+
+                var redacted2 = passwordRedactionProvider.Redact(pwdjson);
+                Console.WriteLine(redacted2);
+
+                /*
                 using var serviceFactory = new ServiceFactory();
 
                 var accountService = serviceFactory.GetRequiredService<IAccountService>();
@@ -38,9 +56,15 @@ namespace ConsoleTest
                 var createResult = await userService.CreateUserAsync(new(username, email));
 
                 var authService = serviceFactory.GetRequiredService<IAuthService>();
-                var password = "asdf";
+                var password = "asdfsadf";
+                var basicAuthRequest = new UpsertBasicAuthRequest(createResult.CreatedId, username, password);
+
+                Console.WriteLine(JsonSerializer.Serialize(basicAuthRequest));
+
+
                 await authService.UpsertBasicAuthAsync(new(createResult.CreatedId, username, password));
                 await authService.UpsertBasicAuthAsync(new(createResult.CreatedId, username, password));
+                */
             }
             catch (Exception ex)
             {
