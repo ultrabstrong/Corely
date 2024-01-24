@@ -1,11 +1,13 @@
 ﻿using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Keys;
 using Corely.Domain.Connections;
+using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Mappers;
 using Corely.Domain.Repos;
 using Corely.Domain.Services.Accounts;
+using Corely.Domain.Services.Auth;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
 using Corely.UnitTests.Collections;
@@ -48,8 +50,10 @@ namespace Corely.UnitTests.Domain
 
             [typeof(IDataAccessConnection<string>), ConnectionNames.Mock],
             [typeof(IRepoExtendedGet<BasicAuthEntity>)],
+            [typeof(IRepoExtendedGet<AccountEntity>)],
             [typeof(IRepoExtendedGet<UserEntity>)],
 
+            [typeof(IAuthService)],
             [typeof(IAccountService)],
             [typeof(IUserService)]
         ];
