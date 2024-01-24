@@ -27,14 +27,11 @@ namespace Corely.Domain
             AddMapper(services);
             AddValidator(services);
             AddSecurityServices(services);
-            AddDataAccessRepos(services);
+            AddDataAccessServices(services);
             AddDomainServices(services);
 
             _serviceProvider = services.BuildServiceProvider();
         }
-
-        protected override void DisposeManagedResources()
-            => _serviceProvider?.Dispose();
 
         private static void AddMapper(IServiceCollection services)
         {
@@ -71,13 +68,16 @@ namespace Corely.Domain
         }
 
         protected abstract void AddLogger(IServiceCollection services);
-        protected abstract void AddDataAccessRepos(IServiceCollection services);
+        protected abstract void AddDataAccessServices(IServiceCollection services);
 
         public T GetRequiredService<T>() where T : notnull
             => _serviceProvider.GetRequiredService<T>();
 
         public T GetRequiredKeyedService<T>(string key) where T : notnull
             => _serviceProvider.GetRequiredKeyedService<T>(key);
+
+        protected override void DisposeManagedResources()
+            => _serviceProvider?.Dispose();
 
     }
 }

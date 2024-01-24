@@ -22,7 +22,7 @@ namespace Corely.UnitTests
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
         }
 
-        protected override void AddDataAccessRepos(IServiceCollection services)
+        protected override void AddDataAccessServices(IServiceCollection services)
         {
             var connection = new DataAccessConnection<string>(
                 ConnectionNames.Mock, "");
