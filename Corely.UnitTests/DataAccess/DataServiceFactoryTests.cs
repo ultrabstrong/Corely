@@ -1,9 +1,7 @@
-﻿using Corely.DataAccess;
+﻿using AutoFixture;
+using Corely.DataAccess;
+using Corely.DataAccess.Factories;
 using Corely.Domain.Connections;
-using Corely.Domain.Entities.Accounts;
-using Corely.Domain.Entities.Auth;
-using Corely.Domain.Entities.Users;
-using Corely.Domain.Repos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -11,70 +9,30 @@ namespace Corely.UnitTests.DataAccess
 {
     public class DataServiceFactoryTests
     {
-        private class TestDataServiceFactory : DataServiceFactory<string>
-        {
-            private readonly IServiceProvider _serviceProvider;
-
-            public TestDataServiceFactory(IDataAccessConnection<string> connection)
-                : base(connection)
-            {
-                var services = new ServiceCollection();
-                services.AddSingleton<ILoggerFactory, LoggerFactory>();
-                services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
-                AddDataServices(services);
-                _serviceProvider = services.BuildServiceProvider();
-            }
-
-            public T GetRequiredService<T>() where T : notnull
-                => _serviceProvider.GetRequiredService<T>();
-
-            public T GetRequiredKeyedService<T>(string key) where T : notnull
-                => _serviceProvider.GetRequiredKeyedService<T>(key);
-        }
-
-        private readonly TestDataServiceFactory _testDataServiceFactory;
+        private readonly Fixture _fixture = new();
+        private readonly ServiceCollection _serviceCollection = new();
+        private readonly DataAccessConnection<string> _connection;
 
         public DataServiceFactoryTests()
         {
-            var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
-            _testDataServiceFactory = new TestDataServiceFactory(connection);
+            _serviceCollection.AddScoped<ILoggerFactory, LoggerFactory>();
+            _connection = new DataAccessConnection<string>(_fixture.Create<string>(), _fixture.Create<string>());
         }
 
         [Theory, MemberData(nameof(GetRequiredServiceData))]
-        public void ServiceFactoryBase_ShouldProvideService(Type serviceType, string key = null)
+        public void RegisterConnection_ShouldRegisterConnection(Type serviceType)
         {
-            var service = key == null
-                ? GetRequiredService(serviceType)
-                : GetRequiredKeyedService(serviceType, key);
+            DataServiceFactory.RegisterConnection(_connection, _serviceCollection);
+            var serviceProvider = _serviceCollection.BuildServiceProvider();
+            var service = serviceProvider.GetRequiredKeyedService(serviceType, _connection.ConnectionName);
 
             Assert.NotNull(service);
         }
 
         public static IEnumerable<object[]> GetRequiredServiceData =>
         [
-            [typeof(IDataAccessConnection<string>), ConnectionNames.Mock],
-            [typeof(IRepoExtendedGet<BasicAuthEntity>)],
-            [typeof(IRepoExtendedGet<AccountEntity>)],
-            [typeof(IRepoExtendedGet<UserEntity>)]
+            [typeof(IDataAccessConnection<string>)],
+            [typeof(IGenericRepoFactory<string>)]
         ];
-
-        private object? GetRequiredService(Type serviceType)
-        {
-            var methodInfo = _testDataServiceFactory.GetType()
-                .GetMethod(nameof(TestDataServiceFactory.GetRequiredService));
-
-            return methodInfo?.MakeGenericMethod(serviceType)
-                .Invoke(_testDataServiceFactory, null);
-        }
-
-        private object? GetRequiredKeyedService(Type serviceType, string key)
-        {
-            var methodInfo = _testDataServiceFactory.GetType()
-                .GetMethod(nameof(TestDataServiceFactory.GetRequiredKeyedService));
-
-            return methodInfo?.MakeGenericMethod(serviceType)
-                .Invoke(_testDataServiceFactory, [key]);
-        }
-
     }
 }

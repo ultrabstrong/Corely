@@ -16,8 +16,8 @@ namespace ConsoleTest
         protected override void AddDataAccessServices(IServiceCollection services)
         {
             var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
-            var dataServiceFactory = new DataServiceFactory<string>(connection);
-            dataServiceFactory.AddDataServices(services);
+            var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
+            keyedDataServiceFactory.AddAllDataServices(services);
         }
     }
 }

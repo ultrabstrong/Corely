@@ -1,29 +1,37 @@
 ﻿using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Keys;
+using Corely.DataAccess;
+using Corely.Domain;
 using Corely.Domain.Connections;
-using Corely.Domain.Entities.Accounts;
-using Corely.Domain.Entities.Auth;
-using Corely.Domain.Entities.Users;
 using Corely.Domain.Mappers;
-using Corely.Domain.Repos;
 using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Auth;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
-using Corely.UnitTests.Collections;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.Domain
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class ServiceFactoryBaseTests
     {
-        private readonly ServiceFactory _serviceFactory;
-
-        public ServiceFactoryBaseTests(ServiceFactory serviceFactory)
+        private class MockServiceFactory : ServiceFactoryBase
         {
-            _serviceFactory = serviceFactory;
+            protected override void AddLogger(IServiceCollection services)
+            {
+                services.AddSingleton<ILoggerFactory, LoggerFactory>();
+                services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+            }
+
+            protected override void AddDataAccessServices(IServiceCollection services)
+            {
+                var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
+                var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
+                keyedDataServiceFactory.AddAllDataServices(services);
+            }
         }
+
+        private readonly MockServiceFactory _mockServiceFactory = new();
 
         [Theory, MemberData(nameof(GetRequiredServiceData))]
         public void ServiceFactoryBase_ShouldProvideService(Type serviceType, string key = null)
@@ -37,9 +45,6 @@ namespace Corely.UnitTests.Domain
 
         public static IEnumerable<object[]> GetRequiredServiceData =>
         [
-            [typeof(ILoggerFactory)],
-            [typeof(ILogger<ServiceFactoryBaseTests>)],
-
             [typeof(IMapProvider)],
 
             [typeof(IValidationProvider)],
@@ -48,11 +53,6 @@ namespace Corely.UnitTests.Domain
             [typeof(IEncryptionProviderFactory)],
             [typeof(IHashProviderFactory)],
 
-            [typeof(IDataAccessConnection<string>), ConnectionNames.Mock],
-            [typeof(IRepoExtendedGet<BasicAuthEntity>)],
-            [typeof(IRepoExtendedGet<AccountEntity>)],
-            [typeof(IRepoExtendedGet<UserEntity>)],
-
             [typeof(IAuthService)],
             [typeof(IAccountService)],
             [typeof(IUserService)]
@@ -60,29 +60,29 @@ namespace Corely.UnitTests.Domain
 
         private object? GetRequiredService(Type serviceType)
         {
-            var methodInfo = _serviceFactory.GetType()
-                .GetMethod(nameof(ServiceFactory.GetRequiredService));
+            var methodInfo = _mockServiceFactory.GetType()
+                .GetMethod(nameof(MockServiceFactory.GetRequiredService));
 
             return methodInfo?.MakeGenericMethod(serviceType)
-                .Invoke(_serviceFactory, null);
+                .Invoke(_mockServiceFactory, null);
         }
 
         private object? GetRequiredKeyedService(Type serviceType, string key)
         {
-            var methodInfo = _serviceFactory.GetType()
-                .GetMethod(nameof(ServiceFactory.GetRequiredKeyedService));
+            var methodInfo = _mockServiceFactory.GetType()
+                .GetMethod(nameof(MockServiceFactory.GetRequiredKeyedService));
 
             return methodInfo?.MakeGenericMethod(serviceType)
-                .Invoke(_serviceFactory, [key]);
+                .Invoke(_mockServiceFactory, [key]);
         }
 
         [Fact]
         public void ServiceFactoryBase_ShouldDisposeServiceProviderCorrectly()
         {
-            var serviceFactory = new ServiceFactory();
+            var mockServiceFactory = new MockServiceFactory();
 
-            serviceFactory.Dispose();
-            var ex = Record.Exception(() => serviceFactory.GetRequiredService<ILogger>());
+            mockServiceFactory.Dispose();
+            var ex = Record.Exception(() => mockServiceFactory.GetRequiredService<ILogger>());
 
             Assert.IsType<ObjectDisposedException>(ex);
         }
