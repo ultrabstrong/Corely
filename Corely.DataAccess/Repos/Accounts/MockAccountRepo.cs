@@ -2,7 +2,7 @@
 
 namespace Corely.DataAccess.Repos.Accounts
 {
-    internal class MockAccountRepo
+    internal sealed class MockAccountRepo
         : MockRepoExtendedGetBase<AccountEntity>
     { }
 }

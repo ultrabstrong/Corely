@@ -2,7 +2,7 @@
 
 namespace Corely.DataAccess.Repos.Auth
 {
-    internal class MockBasicAuthRepo
+    internal sealed class MockBasicAuthRepo
         : MockRepoExtendedGetBase<BasicAuthEntity>
     { }
 }

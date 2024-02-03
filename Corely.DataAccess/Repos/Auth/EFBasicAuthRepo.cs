@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Repos.Auth
 {
-    internal class EFBasicAuthRepo : EFRepoExtendedGetBase<BasicAuthEntity>
+    internal sealed class EFBasicAuthRepo : EFRepoExtendedGetBase<BasicAuthEntity>
     {
         private readonly ILogger<EFBasicAuthRepo> _logger;
         private readonly AccountManagementDbContext _dbContext;

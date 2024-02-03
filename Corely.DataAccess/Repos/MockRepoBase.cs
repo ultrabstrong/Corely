@@ -15,19 +15,19 @@ namespace Corely.DataAccess.Repos
             return Task.FromResult(entity.Id);
         }
 
-        public Task<T?> GetAsync(int id)
+        public virtual Task<T?> GetAsync(int id)
         {
             return Task.FromResult(Entities.FirstOrDefault(u => u.Id == id));
         }
 
-        public Task UpdateAsync(T entity)
+        public virtual Task UpdateAsync(T entity)
         {
             var index = Entities.FindIndex(u => u.Id == entity.Id);
             if (index > -1) { Entities[index] = entity; }
             return Task.CompletedTask;
         }
 
-        public Task DeleteAsync(T entity)
+        public virtual Task DeleteAsync(T entity)
         {
             Entities.Remove(entity);
             return Task.CompletedTask;

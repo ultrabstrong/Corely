@@ -8,7 +8,7 @@ namespace Corely.DataAccess.Repos
         : MockRepoBase<T>, IRepoExtendedGet<T>
         where T : IHasIdPk
     {
-        public Task<T?> GetAsync(Expression<Func<T, bool>> query,
+        public virtual Task<T?> GetAsync(Expression<Func<T, bool>> query,
             Expression<Func<T, object>>? include = null)
         {
             ArgumentNullException.ThrowIfNull(query);

@@ -9,7 +9,7 @@ namespace Corely.DataAccess.Repos
         : EFRepoBase<T>, IRepoExtendedGet<T>
         where T : class, IHasIdPk
     {
-        public async Task<T?> GetAsync(Expression<Func<T, bool>> query,
+        public virtual async Task<T?> GetAsync(Expression<Func<T, bool>> query,
             Expression<Func<T, object>>? include = null)
         {
             return await Entities.GetAsync(query, include);

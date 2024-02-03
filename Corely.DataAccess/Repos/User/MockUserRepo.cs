@@ -2,7 +2,7 @@
 
 namespace Corely.DataAccess.Repos.User
 {
-    internal class MockUserRepo
+    internal sealed class MockUserRepo
         : MockRepoExtendedGetBase<UserEntity>
     { }
 }

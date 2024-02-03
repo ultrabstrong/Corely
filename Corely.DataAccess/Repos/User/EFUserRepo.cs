@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Repos.User
 {
-    internal class EFUserRepo : EFRepoExtendedGetBase<UserEntity>
+    internal sealed class EFUserRepo : EFRepoExtendedGetBase<UserEntity>
     {
         private readonly ILogger<EFUserRepo> _logger;
         private readonly AccountManagementDbContext _dbContext;

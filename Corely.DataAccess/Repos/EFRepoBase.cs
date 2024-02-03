@@ -12,25 +12,25 @@ namespace Corely.DataAccess.Repos
         protected abstract DbContext DbContext { get; }
         protected abstract DbSet<T> Entities { get; }
 
-        public async Task<int> CreateAsync(T entity)
+        public virtual async Task<int> CreateAsync(T entity)
         {
             var newEntity = await Entities.AddAsync(entity);
             await DbContext.SaveChangesAsync();
             return newEntity.Entity.Id;
         }
 
-        public async Task<T?> GetAsync(int id)
+        public virtual async Task<T?> GetAsync(int id)
         {
             return await Entities.FindAsync(id);
         }
 
-        public async Task UpdateAsync(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
             Entities.Update(entity);
             await DbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(T entity)
+        public virtual async Task DeleteAsync(T entity)
         {
             Entities.Remove(entity);
             await DbContext.SaveChangesAsync();
