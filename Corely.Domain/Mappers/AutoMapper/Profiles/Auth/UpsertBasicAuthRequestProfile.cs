@@ -9,7 +9,6 @@ namespace Corely.Domain.Mappers.AutoMapper.Profiles.Auth
         public UpsertBasicAuthRequestProfile()
         {
             CreateMap<UpsertBasicAuthRequest, BasicAuth>(MemberList.Source)
-                .ForSourceMember(m => m.UserId, opt => opt.DoNotValidate())
                 .ForMember(dest => dest.Password,
                     opt => opt.ConvertUsing<PlainStringToHashedValueValueConverter, string>());
         }

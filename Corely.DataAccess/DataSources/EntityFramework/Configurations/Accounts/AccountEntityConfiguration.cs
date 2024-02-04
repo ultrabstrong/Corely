@@ -1,12 +1,13 @@
 ﻿using Corely.Domain.Constants.Accounts;
 using Corely.Domain.Entities.Accounts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Accounts
 {
     internal class AccountEntityConfiguration : IEntityTypeConfiguration<AccountEntity>
     {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<AccountEntity> builder)
+        public void Configure(EntityTypeBuilder<AccountEntity> builder)
         {
             GenericEntityTypeConfiguration.Configure(builder);
 
@@ -16,6 +17,9 @@ namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Accounts
 
             builder.HasIndex(e => e.AccountName)
                 .IsUnique();
+
+            builder.HasMany(e => e.Users)
+                .WithMany(e => e.Accounts);
         }
     }
 }

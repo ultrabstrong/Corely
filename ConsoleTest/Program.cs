@@ -31,12 +31,12 @@ namespace ConsoleTest
 
                 var accountService = serviceFactory.GetRequiredService<IAccountService>();
                 var accountName = "1232";
-                await accountService.CreateAccountAsync(new(accountName));
+                var acctResult = await accountService.CreateAccountAsync(new(accountName));
 
                 var userService = serviceFactory.GetRequiredService<IUserService>();
                 var username = "bstrong";
                 var email = "ultrabstrong@gmail.com";
-                var createResult = await userService.CreateUserAsync(new(username, email));
+                var createResult = await userService.CreateUserAsync(new(acctResult.CreatedId, username, email));
 
                 var authService = serviceFactory.GetRequiredService<IAuthService>();
                 var password = "asdfsadf";

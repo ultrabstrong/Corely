@@ -1,4 +1,5 @@
-﻿using Corely.Domain.Entities.Users;
+﻿using AutoFixture;
+using Corely.Domain.Entities.Users;
 using Corely.Domain.Exceptions;
 using Corely.Domain.Mappers;
 using Corely.Domain.Models.Users;
@@ -16,6 +17,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         private const string VALID_USERNAME = "username";
         private const string VALID_EMAIL = "email@x.y";
 
+        private readonly Fixture _fixture = new();
         private readonly ServiceFactory _serviceFactory;
         private readonly UserService _userService;
 
@@ -92,7 +94,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         [Fact]
         public async Task CreateUserAsync_ShouldThrowUserExistsException_WhenUserExists()
         {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
             await _userService.CreateUserAsync(createUserRequest);
 
             Exception ex = await Record.ExceptionAsync(() => _userService.CreateUserAsync(createUserRequest));
@@ -104,7 +106,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         [Fact]
         public async Task CreateUser_ShouldReturnCreateUserResult()
         {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
             var res = await _userService.CreateUserAsync(createUserRequest);
 
             Assert.True(res.IsSuccess);

@@ -74,7 +74,7 @@ namespace Corely.UnitTests.Domain.Services
         [Fact]
         public void MapToValid_ShouldReturnValidDestination_IfSourceIsValid()
         {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(_fixutre.Create<int>(), VALID_USERNAME, VALID_EMAIL);
             var user = _mockServiceBase.MapToValid<User>(createUserRequest);
 
             Assert.NotNull(user);
