@@ -4,7 +4,7 @@ using Corely.DataAccess.Repos.User;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 using Corely.UnitTests.Collections;
-using Microsoft.EntityFrameworkCore;
+using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess.Repos.User
@@ -38,13 +38,9 @@ namespace Corely.UnitTests.DataAccess.Repos.User
 
         private EFUserRepo CreateEfUserRepo()
         {
-            var options = new DbContextOptionsBuilder<AccountManagementDbContext>()
-                .UseInMemoryDatabase(databaseName: fixture.Create<string>())
-                .Options;
-
             return new EFUserRepo(
             _serviceFactory.GetRequiredService<ILogger<EFUserRepo>>(),
-            new AccountManagementDbContext(options));
+            new AccountManagementDbContext(new EFConfigurationFixture()));
         }
     }
 }

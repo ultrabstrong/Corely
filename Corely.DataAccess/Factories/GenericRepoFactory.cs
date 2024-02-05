@@ -1,4 +1,4 @@
-﻿using Corely.Domain.Connections;
+﻿using Corely.DataAccess.Connections;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories

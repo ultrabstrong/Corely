@@ -4,7 +4,7 @@ using Corely.DataAccess.Repos.Accounts;
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Repos;
 using Corely.UnitTests.Collections;
-using Microsoft.EntityFrameworkCore;
+using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess.Repos.Accounts
@@ -38,13 +38,9 @@ namespace Corely.UnitTests.DataAccess.Repos.Accounts
 
         private EFAccountRepo CreateEfAccountRepo()
         {
-            var options = new DbContextOptionsBuilder<AccountManagementDbContext>()
-                .UseInMemoryDatabase(databaseName: fixture.Create<string>())
-                .Options;
-
             return new EFAccountRepo(
                 _serviceFactory.GetRequiredService<ILogger<EFAccountRepo>>(),
-                new AccountManagementDbContext(options));
+                new AccountManagementDbContext(new EFConfigurationFixture()));
         }
 
     }

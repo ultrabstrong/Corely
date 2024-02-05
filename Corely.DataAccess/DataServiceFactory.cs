@@ -1,5 +1,5 @@
-﻿using Corely.DataAccess.Factories;
-using Corely.Domain.Connections;
+﻿using Corely.DataAccess.Connections;
+using Corely.DataAccess.Factories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

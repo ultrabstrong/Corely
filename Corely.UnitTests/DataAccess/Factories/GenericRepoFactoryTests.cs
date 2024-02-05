@@ -1,9 +1,11 @@
 ﻿using AutoFixture;
+using Corely.DataAccess.Connections;
 using Corely.DataAccess.Factories;
 using Corely.DataAccess.Factories.AccountManagement;
-using Corely.Domain.Connections;
 using Corely.UnitTests.Collections;
+using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace Corely.UnitTests.DataAccess.Factories
 {
@@ -34,24 +36,42 @@ namespace Corely.UnitTests.DataAccess.Factories
             Assert.IsType<ArgumentNullException>(ex);
         }
 
-        [Theory, MemberData(nameof(CreateAccountManagementRepoFactoryTestData))]
+        [Theory]
+        [MemberData(nameof(CreateAccountManagementRepoFactoryTestData))]
         public void CreateAccountManagementRepoFactory_ShouldReturnCorrectType(
             string connectionName,
-            string connectionString,
+            object connection,
+            Type connectionType,
             Type expectedType)
         {
-            var dataAccessConnection = new DataAccessConnection<string>(
-                connectionName, connectionString);
+            Type dataAccessConnectionGenericType = typeof(DataAccessConnection<>).MakeGenericType(connectionType);
+            object[] constructorArgs = [connectionName, connection];
+            var dataAccessConnectionInstance = Activator.CreateInstance(dataAccessConnectionGenericType, constructorArgs);
 
-            var genericRepoFactory = new GenericRepoFactory<string>(
-                new Mock<ILoggerFactory>().Object,
-                dataAccessConnection);
+            Type genericRepoFactoryType = typeof(GenericRepoFactory<>).MakeGenericType(connectionType);
+            object[] repoFactoryArgs = [new Mock<ILoggerFactory>().Object, dataAccessConnectionInstance!];
+            var genericRepoFactoryInstance = Activator.CreateInstance(genericRepoFactoryType, repoFactoryArgs);
 
-            var accountManagementRepoFactory = genericRepoFactory.CreateAccountManagementRepoFactory();
+            MethodInfo? createRepoMethod = genericRepoFactoryType.GetMethod("CreateAccountManagementRepoFactory");
+            var accountManagementRepoFactory = createRepoMethod?.Invoke(genericRepoFactoryInstance, null);
 
+            // Assertions
             Assert.NotNull(accountManagementRepoFactory);
             Assert.IsType(expectedType, accountManagementRepoFactory);
         }
+
+
+        public static IEnumerable<object[]> CreateAccountManagementRepoFactoryTestData =>
+            [
+                [ConnectionNames.EntityFramework,
+                    new EFConfigurationFixture(),
+                    typeof(IEFConfiguration),
+                    typeof(EFAccountManagementRepoFactory)],
+                [ConnectionNames.Mock,
+                    _fixture.Create<string>(),
+                    typeof(string),
+                    typeof(MockAccountManagementRepoFactory)],
+            ];
 
         [Fact]
         public void CreateAccountManagementRepoFactory_ShouldThrowArgumentOutOfRangeException_WithInvalidConnectionName()
@@ -68,15 +88,5 @@ namespace Corely.UnitTests.DataAccess.Factories
             Assert.NotNull(ex);
             Assert.IsType<ArgumentOutOfRangeException>(ex);
         }
-
-        public static IEnumerable<object[]> CreateAccountManagementRepoFactoryTestData =>
-            [
-                [ConnectionNames.EntityFrameworkMySql,
-                    _fixture.Create<string>(),
-                    typeof(EfMySqlAccountManagementRepoFactory)],
-                [ConnectionNames.Mock,
-                    _fixture.Create<string>(),
-                    typeof(MockAccountManagementRepoFactory)],
-            ];
     }
 }

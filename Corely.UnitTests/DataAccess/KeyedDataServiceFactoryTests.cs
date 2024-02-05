@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using Corely.DataAccess;
+using Corely.DataAccess.Connections;
 using Corely.DataAccess.Factories.AccountManagement;
-using Corely.Domain.Connections;
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;

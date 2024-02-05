@@ -1,8 +1,8 @@
 ﻿using AutoFixture;
-using Corely.Domain.Connections;
+using Corely.DataAccess.Connections;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.UnitTests.Domain.Connections
+namespace Corely.UnitTests.DataAccess.Connections
 {
     public class DataAccessConnectionTests
     {
@@ -22,7 +22,7 @@ namespace Corely.UnitTests.Domain.Connections
         }
 
         [Theory]
-        [InlineData(ConnectionNames.EntityFrameworkMySql)]
+        [InlineData(ConnectionNames.EntityFramework)]
         public void Constructor_ShouldThrowArgumentException_WithInvalidConnectionType(string connectionName)
         {
             var ex = Record.Exception(() => new DataAccessConnection<InvalidDataType>(

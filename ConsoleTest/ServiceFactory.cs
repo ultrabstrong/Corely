@@ -1,6 +1,6 @@
 ﻿using Corely.DataAccess;
+using Corely.DataAccess.Connections;
 using Corely.Domain;
-using Corely.Domain.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
@@ -15,6 +15,7 @@ namespace ConsoleTest
 
         protected override void AddDataAccessServices(IServiceCollection services)
         {
+
             var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
             var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
             keyedDataServiceFactory.AddAllDataServices(services);

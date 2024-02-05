@@ -1,4 +1,4 @@
-﻿namespace Corely.Domain.Connections
+﻿namespace Corely.DataAccess.Connections
 {
     public interface IDataAccessConnection<T>
     {

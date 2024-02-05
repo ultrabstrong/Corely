@@ -1,4 +1,4 @@
-﻿namespace Corely.Domain.Connections
+﻿namespace Corely.DataAccess.Connections
 {
     public class DataAccessConnection<T> : IDataAccessConnection<T>
     {
@@ -21,8 +21,8 @@
         {
             switch (ConnectionName)
             {
-                case ConnectionNames.EntityFrameworkMySql:
-                    ThrowForInvalidDataType<string>();
+                case ConnectionNames.EntityFramework:
+                    ThrowForInvalidDataType<IEFConfiguration>();
                     break;
                 case ConnectionNames.Mock:
                     // Mock does not connect to anything

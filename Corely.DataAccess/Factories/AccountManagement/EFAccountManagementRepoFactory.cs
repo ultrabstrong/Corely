@@ -1,4 +1,5 @@
-﻿using Corely.DataAccess.DataSources.EntityFramework;
+﻿using Corely.DataAccess.Connections;
+using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.DataAccess.Repos.Accounts;
 using Corely.DataAccess.Repos.Auth;
 using Corely.DataAccess.Repos.User;
@@ -6,34 +7,26 @@ using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories.AccountManagement
 {
-    internal class EfMySqlAccountManagementRepoFactory : IAccountManagementRepoFactory
+    internal class EFAccountManagementRepoFactory : IAccountManagementRepoFactory
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly string _connection;
+        private readonly IEFConfiguration _configuration;
 
-        public EfMySqlAccountManagementRepoFactory(
+        public EFAccountManagementRepoFactory(
             ILoggerFactory loggerFactory,
-            string connection)
+            IEFConfiguration configuration)
         {
             _loggerFactory = loggerFactory;
-            _connection = connection;
+            _configuration = configuration;
         }
 
         internal virtual AccountManagementDbContext CreateDbContext()
         {
-            DbContextOptionsBuilder<AccountManagementDbContext> optionsBuilder = new();
-            optionsBuilder.UseMySql(_connection, GetServerVersion());
-            return new(optionsBuilder.Options);
-        }
-
-        internal virtual ServerVersion GetServerVersion()
-        {
-            return ServerVersion.AutoDetect(_connection);
+            return new(_configuration);
         }
 
         public IRepoExtendedGet<AccountEntity> CreateAccountRepo()

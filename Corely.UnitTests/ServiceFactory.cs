@@ -1,7 +1,7 @@
 ﻿using Corely.DataAccess;
+using Corely.DataAccess.Connections;
 using Corely.DataAccess.Repos;
 using Corely.Domain;
-using Corely.Domain.Connections;
 using Corely.Domain.Repos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

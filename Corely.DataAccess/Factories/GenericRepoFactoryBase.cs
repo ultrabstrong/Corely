@@ -1,6 +1,6 @@
 ﻿using Corely.Common.Extensions;
+using Corely.DataAccess.Connections;
 using Corely.DataAccess.Factories.AccountManagement;
-using Corely.Domain.Connections;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories
@@ -22,10 +22,10 @@ namespace Corely.DataAccess.Factories
         {
             return _connection.ConnectionName switch
             {
-                ConnectionNames.EntityFrameworkMySql =>
-                    new EfMySqlAccountManagementRepoFactory(
+                ConnectionNames.EntityFramework =>
+                    new EFAccountManagementRepoFactory(
                         _loggerFactory,
-                        ((IDataAccessConnection<string>)_connection).GetConnection()),
+                        ((IDataAccessConnection<IEFConfiguration>)_connection).GetConnection()),
                 ConnectionNames.Mock =>
                     new MockAccountManagementRepoFactory(),
                 _ =>

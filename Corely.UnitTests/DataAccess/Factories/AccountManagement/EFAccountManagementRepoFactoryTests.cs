@@ -1,0 +1,48 @@
+﻿using Corely.DataAccess.DataSources.EntityFramework;
+using Corely.DataAccess.Factories.AccountManagement;
+using Corely.UnitTests.Collections;
+using Corely.UnitTests.Fixtures;
+using Microsoft.Extensions.Logging;
+
+namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
+{
+    [Collection(CollectionNames.ServiceFactory)]
+    public class EFAccountManagementRepoFactoryTests : AccountManagementRepoFactoryTestsBase
+    {
+        private readonly EFAccountManagementRepoFactory _factory;
+        private readonly ServiceFactory _serviceFactory;
+
+        protected override IAccountManagementRepoFactory AccountManagementRepoFactory => _factory;
+
+        public EFAccountManagementRepoFactoryTests(ServiceFactory serviceFactory)
+        {
+            _serviceFactory = serviceFactory;
+
+            var mockFactory = GetMockFactory();
+            mockFactory.Setup(f => f.CreateDbContext())
+                .Returns(new AccountManagementDbContext(new EFConfigurationFixture()));
+
+            _factory = mockFactory.Object;
+        }
+
+        [Fact]
+        public void CreateDbContext_ShouldReturnAccountManagementDbContext()
+        {
+            var factory = GetMockFactory();
+            var accountManagementDbContext = factory.Object.CreateDbContext();
+            Assert.NotNull(accountManagementDbContext);
+        }
+
+        private Mock<EFAccountManagementRepoFactory> GetMockFactory()
+        {
+            var mockFactory = new Mock<EFAccountManagementRepoFactory>(
+                _serviceFactory.GetRequiredService<ILoggerFactory>(),
+                new EFConfigurationFixture())
+            {
+                CallBase = true
+            };
+
+            return mockFactory;
+        }
+    }
+}

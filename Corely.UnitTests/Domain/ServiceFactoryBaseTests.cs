@@ -1,8 +1,8 @@
 ﻿using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Keys;
 using Corely.DataAccess;
+using Corely.DataAccess.Connections;
 using Corely.Domain;
-using Corely.Domain.Connections;
 using Corely.Domain.Mappers;
 using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Auth;

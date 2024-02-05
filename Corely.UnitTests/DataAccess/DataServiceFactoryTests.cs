@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using Corely.DataAccess;
+using Corely.DataAccess.Connections;
 using Corely.DataAccess.Factories;
-using Corely.Domain.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
