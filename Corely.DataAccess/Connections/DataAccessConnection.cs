@@ -22,7 +22,7 @@
             switch (ConnectionName)
             {
                 case ConnectionNames.EntityFramework:
-                    ThrowForInvalidDataType<IEFConfiguration>();
+                    ThrowForInvalidDataType<EFConnection>();
                     break;
                 case ConnectionNames.Mock:
                     // Mock does not connect to anything
@@ -34,7 +34,7 @@
 
         protected internal virtual void ThrowForInvalidDataType<T1>()
         {
-            if (typeof(T1) != typeof(T))
+            if (!typeof(T1).IsAssignableFrom(typeof(T)))
             {
                 throw new ArgumentException($"Invalid connection type for {ConnectionName}. Expected {typeof(T1)} and received {typeof(T)}");
             }
