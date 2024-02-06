@@ -25,7 +25,7 @@ namespace Corely.DataAccess.Factories
                 ConnectionNames.EntityFramework =>
                     new EFAccountManagementRepoFactory(
                         _loggerFactory,
-                        ((IDataAccessConnection<EFConnection>)_connection).GetConnection().Configuration),
+                        ((IDataAccessConnection<EFConnection>)_connection).GetConnection()),
                 ConnectionNames.Mock =>
                     new MockAccountManagementRepoFactory(),
                 _ =>

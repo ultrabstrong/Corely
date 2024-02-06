@@ -1,4 +1,5 @@
-﻿using Corely.DataAccess.DataSources.EntityFramework;
+﻿using Corely.DataAccess.Connections;
+using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.DataAccess.Factories.AccountManagement;
 using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
@@ -37,7 +38,7 @@ namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
         {
             var mockFactory = new Mock<EFAccountManagementRepoFactory>(
                 _serviceFactory.GetRequiredService<ILoggerFactory>(),
-                new EFConfigurationFixture())
+                new Mock<EFConnection>(new EFConfigurationFixture()).Object)
             {
                 CallBase = true
             };

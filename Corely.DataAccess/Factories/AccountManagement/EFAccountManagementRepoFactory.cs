@@ -14,19 +14,19 @@ namespace Corely.DataAccess.Factories.AccountManagement
     internal class EFAccountManagementRepoFactory : IAccountManagementRepoFactory
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly IEFConfiguration _configuration;
+        private readonly EFConnection _connection;
 
         public EFAccountManagementRepoFactory(
             ILoggerFactory loggerFactory,
-            IEFConfiguration configuration)
+            EFConnection connection)
         {
             _loggerFactory = loggerFactory;
-            _configuration = configuration;
+            _connection = connection;
         }
 
         internal virtual AccountManagementDbContext CreateDbContext()
         {
-            return new(_configuration);
+            return new(_connection.Configuration);
         }
 
         public IRepoExtendedGet<AccountEntity> CreateAccountRepo()
