@@ -15,6 +15,7 @@ namespace Corely.DataAccess.Factories.AccountManagement
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly EFConnection _connection;
+        private readonly AccountManagementDbContext _accountManagementDbContext;
 
         public EFAccountManagementRepoFactory(
             ILoggerFactory loggerFactory,
@@ -22,6 +23,7 @@ namespace Corely.DataAccess.Factories.AccountManagement
         {
             _loggerFactory = loggerFactory;
             _connection = connection;
+            _accountManagementDbContext = CreateDbContext();
         }
 
         internal virtual AccountManagementDbContext CreateDbContext()
@@ -31,16 +33,22 @@ namespace Corely.DataAccess.Factories.AccountManagement
 
         public IRepoExtendedGet<AccountEntity> CreateAccountRepo()
         {
-            return new EFAccountRepo(_loggerFactory.CreateLogger<EFAccountRepo>(), CreateDbContext());
+            return new EFAccountRepo(_loggerFactory.CreateLogger<EFAccountRepo>(), _accountManagementDbContext);
         }
 
         public IRepoExtendedGet<UserEntity> CreateUserRepo()
         {
-            return new EFUserRepo(_loggerFactory.CreateLogger<EFUserRepo>(), CreateDbContext());
+            return new EFUserRepo(_loggerFactory.CreateLogger<EFUserRepo>(), _accountManagementDbContext);
         }
+
         public IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo()
         {
-            return new EFBasicAuthRepo(_loggerFactory.CreateLogger<EFBasicAuthRepo>(), CreateDbContext());
+            return new EFBasicAuthRepo(_loggerFactory.CreateLogger<EFBasicAuthRepo>(), _accountManagementDbContext);
+        }
+
+        public IUnitOfWorkProvider CreateTransactionProvider()
+        {
+            return new EFAccountManagementUoWProvider(_accountManagementDbContext);
         }
     }
 }

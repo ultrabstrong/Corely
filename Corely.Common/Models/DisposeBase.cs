@@ -1,6 +1,6 @@
 ﻿namespace Corely.Common.Models
 {
-    public abstract class DisposeBase : IDisposable
+    public abstract class DisposeBase : IDisposable, IAsyncDisposable
     {
         private bool _disposed;
 
@@ -29,7 +29,15 @@
             GC.SuppressFinalize(this);
         }
 
+        public async ValueTask DisposeAsync()
+        {
+            Dispose(disposing: false);
+            await DisposeAsyncCore();
+            GC.SuppressFinalize(this);
+        }
+
         protected abstract void DisposeManagedResources();
         protected virtual void DisposeUnmanagedResources() { }
+        protected virtual ValueTask DisposeAsyncCore() => new();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Corely.DataAccess.Factories;
 using Corely.DataAccess.Factories.AccountManagement;
+using Corely.Domain.Services.AccountManagement;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.DataAccess
@@ -36,6 +37,10 @@ namespace Corely.DataAccess
             services.AddScoped(serviceProvider => serviceProvider
                 .GetRequiredService<IAccountManagementRepoFactory>()
                 .CreateBasicAuthRepo());
+
+            services.AddKeyedScoped(nameof(AccountManagementService), (serviceProvider, _) => serviceProvider
+                .GetRequiredService<IAccountManagementRepoFactory>()
+                .CreateTransactionProvider());
         }
     }
 }
