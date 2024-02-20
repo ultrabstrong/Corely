@@ -79,6 +79,7 @@ namespace Corely.Domain.Services.AccountManagement
                     await _transactionProvider.RollbackAsync();
                 }
             }
+            // BHS writing this from Peurto Morelos, 2024!
         }
 
         private SignUpResult FailSignUpResult()

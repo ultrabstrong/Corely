@@ -1,4 +1,5 @@
-﻿using Corely.DataAccess.Repos.Accounts;
+﻿using Corely.DataAccess.DataSources.Mock;
+using Corely.DataAccess.Repos.Accounts;
 using Corely.DataAccess.Repos.Auth;
 using Corely.DataAccess.Repos.User;
 using Corely.Domain.Entities.Accounts;
@@ -14,6 +15,7 @@ namespace Corely.DataAccess.Factories.AccountManagement
         private readonly MockAccountRepo _accountRepo = new();
         private readonly MockUserRepo _userRepo = new();
         private readonly MockBasicAuthRepo _basicAuthRepo = new();
+        private readonly MockUoWProvider _mockUoWProvider = new();
 
         public IRepoExtendedGet<AccountEntity> CreateAccountRepo()
         {
@@ -28,6 +30,11 @@ namespace Corely.DataAccess.Factories.AccountManagement
         public IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo()
         {
             return _basicAuthRepo;
+        }
+
+        public IUnitOfWorkProvider CreateTransactionProvider()
+        {
+            return _mockUoWProvider;
         }
     }
 }

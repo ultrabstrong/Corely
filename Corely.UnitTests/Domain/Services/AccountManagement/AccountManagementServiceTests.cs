@@ -6,6 +6,7 @@ using Corely.Domain.Models.AccountManagement;
 using Corely.Domain.Models.Accounts;
 using Corely.Domain.Models.Auth;
 using Corely.Domain.Models.Users;
+using Corely.Domain.Repos;
 using Corely.Domain.Services.AccountManagement;
 using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Auth;
@@ -34,12 +35,11 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
             _authServiceMock = GetMockAuthService();
 
             _accountManagementService = new AccountManagementService(
-                serviceFactory.GetRequiredService<IMapProvider>(),
-                serviceFactory.GetRequiredService<IValidationProvider>(),
                 serviceFactory.GetRequiredService<ILogger<AccountManagementService>>(),
                 _accountServiceMock.Object,
                 _userServiceMock.Object,
-                _authServiceMock.Object);
+                _authServiceMock.Object,
+                Mock.Of<IUnitOfWorkProvider>());
         }
 
         private Mock<IAccountService> GetMockAccountService()
