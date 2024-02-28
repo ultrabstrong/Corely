@@ -1,8 +1,10 @@
 ﻿using Corely.DataAccess.Connections;
 using Corely.DataAccess.DataSources.EntityFramework;
+using Corely.DataAccess.DataSources.Mock;
 using Corely.DataAccess.Factories.AccountManagement;
 using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
@@ -32,6 +34,15 @@ namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
             var factory = GetMockFactory();
             var accountManagementDbContext = factory.Object.CreateDbContext();
             Assert.NotNull(accountManagementDbContext);
+        }
+
+        [Fact]
+        public void CreateUnitOfWorkProvider_ShouldReturnMockUow_WithInMemoryDb()
+        {
+            var factory = GetMockFactory();
+            var uowProvider = factory.Object.CreateUnitOfWorkProvider();
+            Assert.NotNull(uowProvider);
+            Assert.IsType<MockUoWProvider>(uowProvider);
         }
 
         private Mock<EFAccountManagementRepoFactory> GetMockFactory()

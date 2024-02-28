@@ -40,7 +40,7 @@ namespace Corely.DataAccess
 
             services.AddKeyedScoped(nameof(AccountManagementService), (serviceProvider, _) => serviceProvider
                 .GetRequiredService<IAccountManagementRepoFactory>()
-                .CreateTransactionProvider());
+                .CreateUnitOfWorkProvider());
         }
     }
 }

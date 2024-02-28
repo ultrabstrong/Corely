@@ -28,5 +28,12 @@ namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
             var userRepo = AccountManagementRepoFactory.CreateUserRepo();
             Assert.NotNull(userRepo);
         }
+
+        [Fact]
+        public void CreateUnitOfWorkProvider_ShouldReturnUowProvider()
+        {
+            var uowProvider = AccountManagementRepoFactory.CreateUnitOfWorkProvider();
+            Assert.NotNull(uowProvider);
+        }
     }
 }

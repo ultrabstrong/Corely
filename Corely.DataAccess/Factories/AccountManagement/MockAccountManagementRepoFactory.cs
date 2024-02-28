@@ -32,7 +32,7 @@ namespace Corely.DataAccess.Factories.AccountManagement
             return _basicAuthRepo;
         }
 
-        public IUnitOfWorkProvider CreateTransactionProvider()
+        public IUnitOfWorkProvider CreateUnitOfWorkProvider()
         {
             return _mockUoWProvider;
         }

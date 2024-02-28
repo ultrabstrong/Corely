@@ -13,6 +13,6 @@ namespace Corely.DataAccess.Factories.AccountManagement
 
         IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo();
 
-        IUnitOfWorkProvider CreateTransactionProvider();
+        IUnitOfWorkProvider CreateUnitOfWorkProvider();
     }
 }

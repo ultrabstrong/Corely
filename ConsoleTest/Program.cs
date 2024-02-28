@@ -1,5 +1,7 @@
 ﻿using Corely.Common.Providers.Redaction;
+using Corely.Domain.Models.AccountManagement;
 using Corely.Domain.Models.Auth;
+using Corely.Domain.Services.AccountManagement;
 using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Auth;
 using Corely.Domain.Services.Users;
@@ -29,21 +31,11 @@ namespace ConsoleTest
             {
                 using var serviceFactory = new ServiceFactory();
 
-                var accountService = serviceFactory.GetRequiredService<IAccountService>();
-                var accountName = "1232";
-                var acctResult = await accountService.CreateAccountAsync(new(accountName));
+                var signUpRequest = new SignUpRequest("accountName", "username", "email@x.y", "password");
 
-                var userService = serviceFactory.GetRequiredService<IUserService>();
-                var username = "bstrong";
-                var email = "ultrabstrong@gmail.com";
-                var createResult = await userService.CreateUserAsync(new(acctResult.CreatedId, username, email));
+                var acctMgmtService = serviceFactory.GetRequiredService<IAccountManagementService>();
+                var signUpResult = await acctMgmtService.SignUpAsync(signUpRequest);
 
-                var authService = serviceFactory.GetRequiredService<IAuthService>();
-                var password = "asdfsadf";
-                var basicAuthRequest = new UpsertBasicAuthRequest(createResult.CreatedId, username, password);
-
-                await authService.UpsertBasicAuthAsync(new(createResult.CreatedId, username, password));
-                await authService.UpsertBasicAuthAsync(new(createResult.CreatedId, username, password));
             }
             catch (Exception ex)
             {

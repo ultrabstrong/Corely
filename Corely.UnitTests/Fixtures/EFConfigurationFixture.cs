@@ -10,5 +10,4 @@ namespace Corely.UnitTests.Fixtures
             optionsBuilder.UseInMemoryDatabase("EFAccountRepoTests");
         }
     }
-
 }

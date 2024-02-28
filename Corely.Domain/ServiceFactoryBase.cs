@@ -5,6 +5,7 @@ using Corely.Common.Providers.Security.Hashing;
 using Corely.Common.Providers.Security.Keys;
 using Corely.Domain.Mappers;
 using Corely.Domain.Mappers.AutoMapper;
+using Corely.Domain.Services.AccountManagement;
 using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Auth;
 using Corely.Domain.Services.Users;
@@ -65,6 +66,7 @@ namespace Corely.Domain
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAccountManagementService, AccountManagementService>();
         }
 
         protected abstract void AddLogger(IServiceCollection services);

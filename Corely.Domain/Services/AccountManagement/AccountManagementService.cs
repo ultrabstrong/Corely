@@ -11,25 +11,25 @@ namespace Corely.Domain.Services.AccountManagement
 {
     public class AccountManagementService : IAccountManagementService
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<AccountManagementService> _logger;
         private readonly IAccountService _accountService;
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
-        private readonly IUnitOfWorkProvider _transactionProvider;
+        private readonly IUnitOfWorkProvider _uowProvider;
 
         public AccountManagementService(
-            ILogger logger,
+            ILogger<AccountManagementService> logger,
             IAccountService accountService,
             IUserService userService,
             IAuthService authService,
             [FromKeyedServices(nameof(AccountManagementService))]
-            IUnitOfWorkProvider transactionProvider)
+            IUnitOfWorkProvider uowProvider)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
             _accountService = accountService.ThrowIfNull(nameof(accountService));
             _userService = userService.ThrowIfNull(nameof(userService));
             _authService = authService.ThrowIfNull(nameof(authService));
-            _transactionProvider = transactionProvider.ThrowIfNull(nameof(transactionProvider));
+            _uowProvider = uowProvider.ThrowIfNull(nameof(uowProvider));
         }
 
         public async Task<SignUpResult> SignUpAsync(SignUpRequest request)
@@ -40,7 +40,7 @@ namespace Corely.Domain.Services.AccountManagement
             bool operationSucceeded = false;
             try
             {
-                await _transactionProvider.BeginAsync();
+                await _uowProvider.BeginAsync();
                 var createAccountResult = await _accountService.CreateAccountAsync(new(request.AccountName));
                 if (!createAccountResult.IsSuccess)
                 {
@@ -62,7 +62,7 @@ namespace Corely.Domain.Services.AccountManagement
                     return FailSignUpResult();
                 }
 
-                await _transactionProvider.CommitAsync();
+                await _uowProvider.CommitAsync();
                 operationSucceeded = true;
                 _logger.LogInformation("Account {Account} signed up with Id {Id}", request.AccountName, createAccountResult.CreatedId);
                 return new SignUpResult(true, "", createAccountResult.CreatedId, createUserResult.CreatedId, createAuthResult.CreatedId);
@@ -76,7 +76,7 @@ namespace Corely.Domain.Services.AccountManagement
             {
                 if (!operationSucceeded)
                 {
-                    await _transactionProvider.RollbackAsync();
+                    await _uowProvider.RollbackAsync();
                 }
             }
             // BHS writing this from Peurto Morelos, 2024!

@@ -1,5 +1,6 @@
 ﻿using Corely.DataAccess.Connections;
 using Corely.DataAccess.DataSources.EntityFramework;
+using Corely.DataAccess.DataSources.Mock;
 using Corely.DataAccess.Repos.Accounts;
 using Corely.DataAccess.Repos.Auth;
 using Corely.DataAccess.Repos.User;
@@ -7,6 +8,7 @@ using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories.AccountManagement
@@ -16,6 +18,12 @@ namespace Corely.DataAccess.Factories.AccountManagement
         private readonly ILoggerFactory _loggerFactory;
         private readonly EFConnection _connection;
         private readonly AccountManagementDbContext _accountManagementDbContext;
+        private readonly bool _supportsTransactions;
+
+        private static string[] ProvidersWithoutTransactionSupport =>
+        [
+            "Microsoft.EntityFrameworkCore.InMemory",
+        ];
 
         public EFAccountManagementRepoFactory(
             ILoggerFactory loggerFactory,
@@ -24,6 +32,9 @@ namespace Corely.DataAccess.Factories.AccountManagement
             _loggerFactory = loggerFactory;
             _connection = connection;
             _accountManagementDbContext = CreateDbContext();
+
+            _supportsTransactions = !ProvidersWithoutTransactionSupport
+                .Contains(_accountManagementDbContext.Database.ProviderName);
         }
 
         internal virtual AccountManagementDbContext CreateDbContext()
@@ -46,9 +57,11 @@ namespace Corely.DataAccess.Factories.AccountManagement
             return new EFBasicAuthRepo(_loggerFactory.CreateLogger<EFBasicAuthRepo>(), _accountManagementDbContext);
         }
 
-        public IUnitOfWorkProvider CreateTransactionProvider()
+        public IUnitOfWorkProvider CreateUnitOfWorkProvider()
         {
-            return new EFAccountManagementUoWProvider(_accountManagementDbContext);
+            return _supportsTransactions
+                ? new EFAccountManagementUoWProvider(_accountManagementDbContext)
+                : new MockUoWProvider();
         }
     }
 }

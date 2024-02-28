@@ -4,6 +4,7 @@ using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.Domain;
 using Corely.Domain.Mappers;
+using Corely.Domain.Services.AccountManagement;
 using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Auth;
 using Corely.Domain.Services.Users;
@@ -55,7 +56,8 @@ namespace Corely.UnitTests.Domain
 
             [typeof(IAuthService)],
             [typeof(IAccountService)],
-            [typeof(IUserService)]
+            [typeof(IUserService)],
+            [typeof(IAccountManagementService)]
         ];
 
         private object? GetRequiredService(Type serviceType)
