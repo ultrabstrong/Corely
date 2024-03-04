@@ -8,7 +8,6 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Accounts
 {
     public class AccountValidatorTests
     {
-        private const string VALID_ACCOUNT_NAME = "account";
         private readonly AccountValidator _validator = new();
 
         [Theory]

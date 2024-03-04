@@ -15,7 +15,7 @@ namespace Corely.Domain.Validators.FluentValidators
 
         public ValidationResult Validate<T>(T model)
         {
-            ValidationResult corelyResult = null!;
+            ValidationResult corelyResult;
             if (model == null)
             {
                 corelyResult = new()

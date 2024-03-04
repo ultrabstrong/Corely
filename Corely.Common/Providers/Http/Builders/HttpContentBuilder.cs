@@ -17,7 +17,7 @@ namespace Corely.Common.Providers.Http.Builders
             };
         }
 
-        private MultipartFormDataContent BuildMultipartFormDataContent(HttpDictionaryContentBase content)
+        private static MultipartFormDataContent BuildMultipartFormDataContent(HttpDictionaryContentBase content)
         {
             MultipartFormDataContent result = [];
 

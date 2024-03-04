@@ -14,6 +14,7 @@ namespace ConsoleTest
             public void Configure(DbContextOptionsBuilder optionsBuilder)
             {
                 optionsBuilder.UseInMemoryDatabase("TestDb");
+                optionsBuilder.LogTo(Log.Logger.Debug);
             }
         }
 

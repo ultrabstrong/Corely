@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
+using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Enums;
-using Corely.Domain.Mappers;
 using Corely.Domain.Models;
 using Corely.Domain.Models.AccountManagement;
 using Corely.Domain.Models.Accounts;
@@ -11,7 +11,6 @@ using Corely.Domain.Services.AccountManagement;
 using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Auth;
 using Corely.Domain.Services.Users;
-using Corely.Domain.Validators;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.Domain.Services.AccountManagement
@@ -50,7 +49,7 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
                 .Setup(m => m.CreateAccountAsync(
                     It.IsAny<CreateAccountRequest>()))
                 .ReturnsAsync(() =>
-                    new CreateResult(_createAccountSuccess, "", _fixture.Create<int>()));
+                    new CreateAccountResult(_createAccountSuccess, "", new AccountEntity() { Id = _fixture.Create<int>() }));
 
             return accountServiceMock;
         }

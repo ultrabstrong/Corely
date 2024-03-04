@@ -34,7 +34,7 @@ namespace Corely.Domain.Services.Users
             await ThrowIfUserExists(user.Username, user.Email);
 
             var userEntity = mapProvider.Map<UserEntity>(user);
-            userEntity.Accounts = [new() { Id = request.AccountId }];
+            userEntity.Accounts = [request.AccountEntity];
             var createdId = await _userRepo.CreateAsync(userEntity);
 
             logger.LogInformation("User {Username} created with Id {Id}", user.Username, createdId);

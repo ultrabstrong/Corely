@@ -43,7 +43,7 @@ namespace Corely.Common.Providers.Security.Hashing
             return salt;
         }
 
-        private byte[] CreateSaltedValue(byte[] salt, string value)
+        private static byte[] CreateSaltedValue(byte[] salt, string value)
         {
             return [.. salt, .. Encoding.UTF8.GetBytes(value)];
         }

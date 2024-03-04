@@ -48,7 +48,7 @@ namespace Corely.Domain.Services.AccountManagement
                     return FailSignUpResult();
                 }
 
-                var createUserResult = await _userService.CreateUserAsync(new(createAccountResult.CreatedId, request.Username, request.Email));
+                var createUserResult = await _userService.CreateUserAsync(new(createAccountResult.AccountEntity, request.Username, request.Email));
                 if (!createUserResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating user failed for account {Account}", request.AccountName);

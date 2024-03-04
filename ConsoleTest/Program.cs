@@ -1,10 +1,6 @@
 ﻿using Corely.Common.Providers.Redaction;
 using Corely.Domain.Models.AccountManagement;
-using Corely.Domain.Models.Auth;
 using Corely.Domain.Services.AccountManagement;
-using Corely.Domain.Services.Accounts;
-using Corely.Domain.Services.Auth;
-using Corely.Domain.Services.Users;
 using Serilog;
 
 namespace ConsoleTest
@@ -35,7 +31,6 @@ namespace ConsoleTest
 
                 var acctMgmtService = serviceFactory.GetRequiredService<IAccountManagementService>();
                 var signUpResult = await acctMgmtService.SignUpAsync(signUpRequest);
-
             }
             catch (Exception ex)
             {

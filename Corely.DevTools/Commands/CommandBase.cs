@@ -59,11 +59,10 @@ namespace Corely.DevTools.Commands
 
             var argumentInstance = Activator.CreateInstance(
                 argumentGenericType,
-                new object[]
-                {
+                [
                     property.Name,
                     $"{optionalText}{argumentAttribute?.Description}"
-                });
+                ]);
 
             if (argumentInstance is Argument arg)
             {
@@ -92,9 +91,10 @@ namespace Corely.DevTools.Commands
             var optionGenericType = typeof(Option<>).MakeGenericType(property.PropertyType);
             var optionInstance = Activator.CreateInstance(
                 optionGenericType,
-                new object[] {
+                [
                     optionAttribute.Aliases,
-                    optionAttribute.Description});
+                    optionAttribute.Description
+                ]);
 
             if (optionInstance is Option opt)
             {
