@@ -19,8 +19,8 @@ namespace Corely.UnitTests.DataAccess.Repos
             {
                 var fixture = new Fixture();
                 var options = new DbContextOptionsBuilder<DbContextFixture>()
-                .UseInMemoryDatabase(databaseName: fixture.Create<string>())
-                .Options;
+                    .UseInMemoryDatabase(databaseName: fixture.Create<string>())
+                    .Options;
 
                 _dbContext = new DbContextFixture(options);
             }

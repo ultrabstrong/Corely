@@ -7,8 +7,10 @@ namespace ConsoleTest
 {
     internal class Program
     {
+#pragma warning disable IDE0052 // Remove unread private members
         private static readonly string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         private static readonly string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+#pragma warning restore IDE0052 // Remove unread private members
 
         static async Task Main()
         {

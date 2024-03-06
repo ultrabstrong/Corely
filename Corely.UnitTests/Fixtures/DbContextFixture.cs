@@ -8,6 +8,7 @@ namespace Corely.UnitTests.Fixtures
             : base(options)
         {
         }
-        public DbSet<EntityFixture> Entities { get; set; }
+
+        public DbSet<EntityFixture> Entities { get; set; } = null!;
     }
 }

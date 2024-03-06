@@ -1,13 +1,14 @@
 ﻿using Corely.Common.Models;
 using Corely.Domain.Repos;
+using Microsoft.EntityFrameworkCore;
 
 namespace Corely.DataAccess.DataSources.EntityFramework
 {
-    internal class EFAccountManagementUoWProvider : DisposeBase, IUnitOfWorkProvider
+    internal class EFUoWProvider : DisposeBase, IUnitOfWorkProvider
     {
-        private readonly AccountManagementDbContext _dbContext;
+        private readonly DbContext _dbContext;
 
-        public EFAccountManagementUoWProvider(AccountManagementDbContext dbContext)
+        public EFUoWProvider(DbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -28,8 +29,6 @@ namespace Corely.DataAccess.DataSources.EntityFramework
         }
 
         protected override void DisposeManagedResources()
-        {
-            _dbContext.Dispose();
-        }
+            => _dbContext.Dispose();
     }
 }

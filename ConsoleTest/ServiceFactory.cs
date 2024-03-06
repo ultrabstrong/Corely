@@ -14,7 +14,10 @@ namespace ConsoleTest
             public void Configure(DbContextOptionsBuilder optionsBuilder)
             {
                 optionsBuilder.UseInMemoryDatabase("TestDb");
-                optionsBuilder.LogTo(Log.Logger.Debug);
+                optionsBuilder.LogTo(
+                    Log.Logger.Debug,
+                    new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuted }
+                );
             }
         }
 
@@ -25,7 +28,8 @@ namespace ConsoleTest
 
         protected override void AddDataAccessServices(IServiceCollection services)
         {
-            //var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
+            // Uncomment to use the Corely mock data access
+            // var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
             var connection = new DataAccessConnection<EFConnection>(ConnectionNames.EntityFramework, new EFConnection(new InMemoryConfig()));
             var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
             keyedDataServiceFactory.AddAllDataServices(services);

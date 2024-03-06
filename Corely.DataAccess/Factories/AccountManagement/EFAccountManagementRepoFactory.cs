@@ -8,7 +8,6 @@ using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories.AccountManagement
@@ -60,7 +59,7 @@ namespace Corely.DataAccess.Factories.AccountManagement
         public IUnitOfWorkProvider CreateUnitOfWorkProvider()
         {
             return _supportsTransactions
-                ? new EFAccountManagementUoWProvider(_accountManagementDbContext)
+                ? new EFUoWProvider(_accountManagementDbContext)
                 : new MockUoWProvider();
         }
     }

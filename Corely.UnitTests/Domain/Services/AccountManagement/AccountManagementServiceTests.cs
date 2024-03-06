@@ -135,5 +135,27 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
+
+        [Fact]
+        public async Task SignUpAsync_ShouldReturnFalseResult_OnError()
+        {
+            var unitOfWorkProviderMock = new Mock<IUnitOfWorkProvider>();
+            unitOfWorkProviderMock
+                .Setup(m => m.BeginAsync())
+                .ThrowsAsync(new Exception());
+
+            var accountManagementServiceFactory = new AccountManagementService(
+                Mock.Of<ILogger<AccountManagementService>>(),
+                _accountServiceMock.Object,
+                _userServiceMock.Object,
+                _authServiceMock.Object,
+                unitOfWorkProviderMock.Object);
+
+            var request = _fixture.Create<SignUpRequest>();
+
+            var result = await accountManagementServiceFactory.SignUpAsync(request);
+
+            Assert.False(result.IsSuccess);
+        }
     }
 }

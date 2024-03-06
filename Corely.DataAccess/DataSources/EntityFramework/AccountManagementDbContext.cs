@@ -18,10 +18,10 @@ namespace Corely.DataAccess.DataSources.EntityFramework
             _configuration = configuration;
         }
 
-        public DbSet<AccountEntity> Accounts { get; set; }
-        public DbSet<UserEntity> Users { get; set; }
-        public DbSet<UserDetailsEntity> UserDetails { get; set; }
-        public DbSet<BasicAuthEntity> BasicAuths { get; set; }
+        public DbSet<AccountEntity> Accounts { get; set; } = null!;
+        public DbSet<UserEntity> Users { get; set; } = null!;
+        public DbSet<UserDetailsEntity> UserDetails { get; set; } = null!;
+        public DbSet<BasicAuthEntity> BasicAuths { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
