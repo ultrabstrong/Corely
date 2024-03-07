@@ -3,23 +3,20 @@ using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.DataAccess.Repos.Auth;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Repos;
-using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess.Repos.Auth
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class EFBasicAuthRepoTests : BasicAuthRepoTestsBase
     {
-        private readonly ServiceFactory _serviceFactory;
+        private readonly ServiceFactory _serviceFactory = new();
         private readonly EFBasicAuthRepo _efBasicAuthRepo;
 
         protected override IRepoExtendedGet<BasicAuthEntity> Repo => _efBasicAuthRepo;
 
-        public EFBasicAuthRepoTests(ServiceFactory serviceFactory)
+        public EFBasicAuthRepoTests()
         {
-            _serviceFactory = serviceFactory;
             _efBasicAuthRepo = CreateEfBasicAuthRepo();
         }
 

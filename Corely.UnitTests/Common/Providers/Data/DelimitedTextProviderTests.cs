@@ -2,20 +2,19 @@
 using Corely.Common.Providers.Data.Enums;
 using Corely.Common.Providers.Data.Models;
 using Corely.UnitTests.AB.TestBase;
-using Corely.UnitTests.Collections;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
 namespace Corely.UnitTests.Common.Providers.Data
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class DelimitedTextProviderTests
     {
         private readonly ILogger<DelimitedTextProvider> _logger;
         private readonly DelimitedTextProvider _delimitedTextDataProvider;
 
-        public DelimitedTextProviderTests(ServiceFactory serviceFactory)
+        public DelimitedTextProviderTests()
         {
+            var serviceFactory = new ServiceFactory();
             _logger = serviceFactory.GetRequiredService<ILogger<DelimitedTextProvider>>();
             _delimitedTextDataProvider = new DelimitedTextProvider(_logger);
         }

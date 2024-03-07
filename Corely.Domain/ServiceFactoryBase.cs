@@ -3,8 +3,10 @@ using Corely.Common.Providers.Security.Encryption;
 using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Hashing;
 using Corely.Common.Providers.Security.Keys;
+using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Mappers;
 using Corely.Domain.Mappers.AutoMapper;
+using Corely.Domain.Services;
 using Corely.Domain.Services.AccountManagement;
 using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Auth;
@@ -64,6 +66,7 @@ namespace Corely.Domain
         private static void AddDomainServices(IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IEntityGetterService<AccountEntity>, AccountEntityGetterService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAccountManagementService, AccountManagementService>();

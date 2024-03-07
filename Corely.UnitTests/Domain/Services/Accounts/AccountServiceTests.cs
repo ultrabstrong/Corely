@@ -5,22 +5,19 @@ using Corely.Domain.Models.Accounts;
 using Corely.Domain.Repos;
 using Corely.Domain.Services.Accounts;
 using Corely.Domain.Validators;
-using Corely.UnitTests.Collections;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.Domain.Services.Accounts
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class AccountServiceTests
     {
         private const string VALID_ACCOUNT_NAME = "accountname";
 
-        private readonly ServiceFactory _serviceFactory;
+        private readonly ServiceFactory _serviceFactory = new();
         private readonly AccountService _accountService;
 
-        public AccountServiceTests(ServiceFactory serviceFactory)
+        public AccountServiceTests()
         {
-            _serviceFactory = serviceFactory;
             _accountService = new AccountService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),

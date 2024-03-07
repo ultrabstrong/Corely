@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Enums;
 using Corely.Domain.Models;
 using Corely.Domain.Models.AccountManagement;
@@ -26,15 +25,14 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
         private bool _createUserSuccess = true;
         private bool _createAuthSuccess = true;
 
-        public AccountManagementServiceTests(ServiceFactory serviceFactory)
-            : base(serviceFactory)
+        public AccountManagementServiceTests() : base()
         {
             _accountServiceMock = GetMockAccountService();
             _userServiceMock = GetMockUserService();
             _authServiceMock = GetMockAuthService();
 
             _accountManagementService = new AccountManagementService(
-                serviceFactory.GetRequiredService<ILogger<AccountManagementService>>(),
+                _serviceFactory.GetRequiredService<ILogger<AccountManagementService>>(),
                 _accountServiceMock.Object,
                 _userServiceMock.Object,
                 _authServiceMock.Object,
@@ -49,7 +47,7 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
                 .Setup(m => m.CreateAccountAsync(
                     It.IsAny<CreateAccountRequest>()))
                 .ReturnsAsync(() =>
-                    new CreateAccountResult(_createAccountSuccess, "", new AccountEntity() { Id = _fixture.Create<int>() }));
+                    new CreateResult(_createAccountSuccess, "", _fixture.Create<int>()));
 
             return accountServiceMock;
         }

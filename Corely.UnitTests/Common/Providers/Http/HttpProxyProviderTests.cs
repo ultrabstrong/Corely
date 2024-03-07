@@ -3,13 +3,11 @@ using Corely.Common.Providers.Http;
 using Corely.Common.Providers.Http.Builders;
 using Corely.Common.Providers.Http.Models;
 using Corely.UnitTests.AB.TestBase;
-using Corely.UnitTests.Collections;
 using Microsoft.Extensions.Logging;
 using System.Net;
 
 namespace Corely.UnitTests.Common.Providers.Http
 {
-    [Collection(nameof(CollectionNames.ServiceFactory))]
     public class HttpProxyProviderTests
     {
         private readonly ILogger<HttpProxyProvider> _logger;
@@ -18,8 +16,9 @@ namespace Corely.UnitTests.Common.Providers.Http
 
         private HttpStatusCode _httpStatusCode = HttpStatusCode.OK;
 
-        public HttpProxyProviderTests(ServiceFactory serviceFactory)
+        public HttpProxyProviderTests()
         {
+            var serviceFactory = new ServiceFactory();
             _logger = serviceFactory.GetRequiredService<ILogger<HttpProxyProvider>>();
 
             _httpProxyProvider = new(

@@ -5,20 +5,17 @@ using Corely.Domain.Models.Auth;
 using Corely.Domain.Repos;
 using Corely.Domain.Services.Auth;
 using Corely.Domain.Validators;
-using Corely.UnitTests.Collections;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.Domain.Services.Auth
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class AuthServiceTests
     {
-        private readonly ServiceFactory _serviceFactory;
+        private readonly ServiceFactory _serviceFactory = new();
         private readonly AuthService _authService;
 
-        public AuthServiceTests(ServiceFactory serviceFactory)
+        public AuthServiceTests()
         {
-            _serviceFactory = serviceFactory;
             _authService = new AuthService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<BasicAuthEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),

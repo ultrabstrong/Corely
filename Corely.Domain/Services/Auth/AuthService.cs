@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.Domain.Services.Auth
 {
-    public class AuthService : ServiceBase, IAuthService
+    internal class AuthService : ServiceBase, IAuthService
     {
         private readonly IRepoExtendedGet<BasicAuthEntity> _basicAuthRepo;
 

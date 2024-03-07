@@ -8,7 +8,7 @@ namespace Corely.Domain.Mappers.AutoMapper.Profiles.Users
         public CreateUserRequestProfile()
         {
             CreateMap<CreateUserRequest, User>(MemberList.Source)
-                .ForSourceMember(m => m.AccountEntity, opt => opt.DoNotValidate());
+                .ForSourceMember(m => m.AccountId, opt => opt.DoNotValidate());
         }
     }
 }

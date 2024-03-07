@@ -2,13 +2,11 @@
 using Corely.DataAccess.Connections;
 using Corely.DataAccess.Factories;
 using Corely.DataAccess.Factories.AccountManagement;
-using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess.Factories
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class GenericRepoFactoryTests
     {
         private static readonly Fixture _fixture = new();

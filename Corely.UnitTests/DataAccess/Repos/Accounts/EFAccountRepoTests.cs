@@ -3,23 +3,20 @@ using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.DataAccess.Repos.Accounts;
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Repos;
-using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess.Repos.Accounts
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class EFAccountRepoTests : AccountRepoTestsBase
     {
-        private readonly ServiceFactory _serviceFactory;
+        private readonly ServiceFactory _serviceFactory = new();
         private readonly EFAccountRepo _efAccountRepo;
 
         protected override IRepoExtendedGet<AccountEntity> Repo => _efAccountRepo;
 
-        public EFAccountRepoTests(ServiceFactory serviceFactory)
+        public EFAccountRepoTests()
         {
-            _serviceFactory = serviceFactory;
             _efAccountRepo = CreateEfAccountRepo();
         }
 

@@ -51,7 +51,7 @@ namespace Corely.UnitTests
 
                 if (interfaceType != null)
                 {
-                    services.AddTransient(interfaceType, type);
+                    services.AddScoped(interfaceType, type);
                 }
             }
         }

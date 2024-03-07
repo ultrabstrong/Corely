@@ -6,7 +6,7 @@ namespace Corely.UnitTests.DataAccess.DataSources.EntityFramework
 {
     public class EFUoWProviderTests
     {
-        Mock<AccountManagementDbContext> _accountManagementDbContextMock;
+        private readonly Mock<AccountManagementDbContext> _accountManagementDbContextMock;
         private readonly EFUoWProvider _efUoWProvider;
 
         public EFUoWProviderTests()

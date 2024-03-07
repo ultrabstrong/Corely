@@ -2,25 +2,20 @@
 using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.DataAccess.DataSources.Mock;
 using Corely.DataAccess.Factories.AccountManagement;
-using Corely.UnitTests.Collections;
 using Corely.UnitTests.Fixtures;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class EFAccountManagementRepoFactoryTests : AccountManagementRepoFactoryTestsBase
     {
+        private readonly ServiceFactory _serviceFactory = new();
         private readonly EFAccountManagementRepoFactory _factory;
-        private readonly ServiceFactory _serviceFactory;
 
         protected override IAccountManagementRepoFactory AccountManagementRepoFactory => _factory;
 
-        public EFAccountManagementRepoFactoryTests(ServiceFactory serviceFactory)
+        public EFAccountManagementRepoFactoryTests()
         {
-            _serviceFactory = serviceFactory;
-
             var mockFactory = GetMockFactory();
             mockFactory.Setup(f => f.CreateDbContext())
                 .Returns(new AccountManagementDbContext(new EFConfigurationFixture()));

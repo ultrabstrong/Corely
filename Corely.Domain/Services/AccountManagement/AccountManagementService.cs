@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.Domain.Services.AccountManagement
 {
-    public class AccountManagementService : IAccountManagementService
+    internal class AccountManagementService : IAccountManagementService
     {
         private readonly ILogger<AccountManagementService> _logger;
         private readonly IAccountService _accountService;
@@ -22,7 +22,7 @@ namespace Corely.Domain.Services.AccountManagement
             IAccountService accountService,
             IUserService userService,
             IAuthService authService,
-            [FromKeyedServices(nameof(AccountManagementService))]
+            [FromKeyedServices(nameof(IAccountManagementService))]
             IUnitOfWorkProvider uowProvider)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
@@ -48,7 +48,7 @@ namespace Corely.Domain.Services.AccountManagement
                     return FailSignUpResult();
                 }
 
-                var createUserResult = await _userService.CreateUserAsync(new(createAccountResult.AccountEntity, request.Username, request.Email));
+                var createUserResult = await _userService.CreateUserAsync(new(createAccountResult.CreatedId, request.Username, request.Email));
                 if (!createUserResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating user failed for account {Account}", request.AccountName);
@@ -70,7 +70,7 @@ namespace Corely.Domain.Services.AccountManagement
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error signing up account {Account}", request.AccountName);
-                return new SignUpResult(false, ex.Message, -1, -1, -1);
+                return new SignUpResult(false, ex.Message, 0, 0, 0);
             }
             finally
             {

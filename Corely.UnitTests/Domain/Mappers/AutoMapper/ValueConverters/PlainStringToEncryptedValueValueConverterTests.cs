@@ -2,18 +2,17 @@
 using Corely.Common.Providers.Security.Factories;
 using Corely.Domain.Mappers.AutoMapper.ValueConverters;
 using Corely.UnitTests.ClassData;
-using Corely.UnitTests.Collections;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.ValueConverters
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class PlainStringToEncryptedValueValueConverterTests
     {
         private readonly Fixture _fixture = new();
         private readonly PlainStringToEncryptedValueValueConverter _converter;
 
-        public PlainStringToEncryptedValueValueConverterTests(ServiceFactory serviceFactory)
+        public PlainStringToEncryptedValueValueConverterTests()
         {
+            var serviceFactory = new ServiceFactory();
             _converter = new(serviceFactory.GetRequiredService<IEncryptionProviderFactory>());
         }
 

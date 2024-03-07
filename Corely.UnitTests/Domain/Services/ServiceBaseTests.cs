@@ -6,12 +6,10 @@ using Corely.Domain.Models;
 using Corely.Domain.Models.Users;
 using Corely.Domain.Services;
 using Corely.Domain.Validators;
-using Corely.UnitTests.Collections;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.Domain.Services
 {
-    [Collection(CollectionNames.ServiceFactory)]
     public class ServiceBaseTests
     {
         private class MockServiceBase : ServiceBase
@@ -28,13 +26,13 @@ namespace Corely.UnitTests.Domain.Services
         private const string VALID_USERNAME = "username";
         private const string VALID_EMAIL = "email@x.y";
 
+        protected readonly ServiceFactory _serviceFactory = new();
+
         private readonly Fixture _fixutre = new();
-        private readonly ServiceFactory _serviceFactory;
         private readonly MockServiceBase _mockServiceBase;
 
-        public ServiceBaseTests(ServiceFactory serviceFactory)
+        public ServiceBaseTests()
         {
-            _serviceFactory = serviceFactory;
             _mockServiceBase = new MockServiceBase(
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),

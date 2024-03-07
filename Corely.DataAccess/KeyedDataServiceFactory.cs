@@ -38,7 +38,7 @@ namespace Corely.DataAccess
                 .GetRequiredService<IAccountManagementRepoFactory>()
                 .CreateBasicAuthRepo());
 
-            services.AddKeyedScoped(nameof(AccountManagementService), (serviceProvider, _) => serviceProvider
+            services.AddKeyedScoped(nameof(IAccountManagementService), (serviceProvider, _) => serviceProvider
                 .GetRequiredService<IAccountManagementRepoFactory>()
                 .CreateUnitOfWorkProvider());
         }

@@ -2,6 +2,7 @@
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Exceptions;
 using Corely.Domain.Mappers;
+using Corely.Domain.Models;
 using Corely.Domain.Models.Accounts;
 using Corely.Domain.Repos;
 using Corely.Domain.Validators;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.Domain.Services.Accounts
 {
-    public class AccountService : ServiceBase, IAccountService
+    internal class AccountService : ServiceBase, IAccountService
     {
         private readonly IRepoExtendedGet<AccountEntity> _accountRepo;
 
@@ -23,7 +24,7 @@ namespace Corely.Domain.Services.Accounts
             _accountRepo = accountRepo.ThrowIfNull(nameof(accountRepo));
         }
 
-        public async Task<CreateAccountResult> CreateAccountAsync(CreateAccountRequest request)
+        public async Task<CreateResult> CreateAccountAsync(CreateAccountRequest request)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
 
@@ -36,7 +37,7 @@ namespace Corely.Domain.Services.Accounts
             var createdId = await _accountRepo.CreateAsync(accountEntity);
 
             logger.LogInformation("Account {Account} created with Id {Id}", account.AccountName, createdId);
-            return new CreateAccountResult(true, "", accountEntity);
+            return new CreateResult(true, "", createdId);
         }
 
         private async Task ThrowIfAccountExists(string accountName)
