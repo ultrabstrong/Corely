@@ -4,11 +4,11 @@ using Corely.Domain.Repos;
 
 namespace Corely.Domain.Services.Accounts
 {
-    internal class AccountEntityGetterService : IEntityGetterService<AccountEntity>
+    internal class AccountEntityReadonlyService : IEntityReadonlyService<AccountEntity>
     {
         private readonly IRepoExtendedGet<AccountEntity> _accountRepo;
 
-        public AccountEntityGetterService(IRepoExtendedGet<AccountEntity> accountRepo)
+        public AccountEntityReadonlyService(IRepoExtendedGet<AccountEntity> accountRepo)
         {
             _accountRepo = accountRepo.ThrowIfNull(nameof(accountRepo));
         }

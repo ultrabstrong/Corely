@@ -25,7 +25,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             _userService = new UserService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IEntityGetterService<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
@@ -36,7 +36,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             UserService act() => new(
                 null,
-                _serviceFactory.GetRequiredService<IEntityGetterService<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
@@ -48,7 +48,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         }
 
         [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenMapEntityGetterServiceIsNull()
+        public void Constructor_ShouldThrowArgumentNullException_WhenMapEntityReadonlyServiceIsNull()
         {
             UserService act() => new(
                 Mock.Of<IRepoExtendedGet<UserEntity>>(),
@@ -68,7 +68,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             UserService act() => new(
                 Mock.Of<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IEntityGetterService<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
                 null,
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
@@ -84,7 +84,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             UserService act() => new(
                 Mock.Of<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IEntityGetterService<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 null,
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
@@ -100,7 +100,7 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             UserService act() => new(
                 Mock.Of<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IEntityGetterService<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 null);

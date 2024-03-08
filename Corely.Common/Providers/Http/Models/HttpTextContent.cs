@@ -1,8 +1,7 @@
 ﻿namespace Corely.Common.Providers.Http.Models
 {
-    public sealed class HttpTextContent : HttpStringContentBase
+    public sealed record HttpTextContent(string Content)
+        : HttpStringContentBase(Content)
     {
-        public HttpTextContent(string content)
-            : base(content) { }
     }
 }

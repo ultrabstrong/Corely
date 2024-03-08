@@ -66,7 +66,7 @@ namespace Corely.Domain
         private static void AddDomainServices(IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IEntityGetterService<AccountEntity>, AccountEntityGetterService>();
+            services.AddScoped<IEntityReadonlyService<AccountEntity>, AccountEntityReadonlyService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAccountManagementService, AccountManagementService>();

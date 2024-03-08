@@ -5,21 +5,21 @@ using Corely.Domain.Services.Accounts;
 
 namespace Corely.UnitTests.Domain.Services.Accounts
 {
-    public class AccountEntityGetterServiceTests
+    public class AccountEntityReadonlyServiceTests
     {
         private readonly Fixture _fixture = new();
         private readonly Mock<IRepoExtendedGet<AccountEntity>> _accountRepoMock = new();
-        private readonly AccountEntityGetterService _accountEntityGetterService;
+        private readonly AccountEntityReadonlyService _accountEntityReadonlyService;
 
-        public AccountEntityGetterServiceTests()
+        public AccountEntityReadonlyServiceTests()
         {
-            _accountEntityGetterService = new AccountEntityGetterService(_accountRepoMock.Object);
+            _accountEntityReadonlyService = new AccountEntityReadonlyService(_accountRepoMock.Object);
         }
 
         [Fact]
         public void Constructor_ShouldThrowArgumentNullException_WhenAccountRepoIsNull()
         {
-            var ex = Record.Exception(() => new AccountEntityGetterService(null));
+            var ex = Record.Exception(() => new AccountEntityReadonlyService(null));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
@@ -30,7 +30,7 @@ namespace Corely.UnitTests.Domain.Services.Accounts
         {
             var id = _fixture.Create<int>();
 
-            await _accountEntityGetterService.GetAsync(id);
+            await _accountEntityReadonlyService.GetAsync(id);
 
             _accountRepoMock.Verify(r => r.GetAsync(It.IsAny<int>()), Times.Once);
         }
