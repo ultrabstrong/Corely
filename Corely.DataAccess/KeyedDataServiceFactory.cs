@@ -32,6 +32,10 @@ namespace Corely.DataAccess
 
             services.AddScoped(serviceProvider => serviceProvider
                 .GetRequiredService<IAccountManagementRepoFactory>()
+                .CreateReadonlyAccountRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IAccountManagementRepoFactory>()
                 .CreateUserRepo());
 
             services.AddScoped(serviceProvider => serviceProvider

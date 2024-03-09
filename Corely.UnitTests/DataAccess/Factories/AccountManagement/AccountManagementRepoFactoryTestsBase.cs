@@ -16,6 +16,13 @@ namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
         }
 
         [Fact]
+        public void CreateReadonlyAccountRepo_ShouldReturnMockReadonlyAccountRepo()
+        {
+            var readonlyAccountRepo = AccountManagementRepoFactory.CreateReadonlyAccountRepo();
+            Assert.NotNull(readonlyAccountRepo);
+        }
+
+        [Fact]
         public void CreateBasicAuthRepo_ShouldReturnMockBasicAuthRepo()
         {
             var basicAuthRepo = AccountManagementRepoFactory.CreateBasicAuthRepo();

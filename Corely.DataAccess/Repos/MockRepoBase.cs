@@ -32,5 +32,7 @@ namespace Corely.DataAccess.Repos
             Entities.Remove(entity);
             return Task.CompletedTask;
         }
+
+        internal List<T> GetEntities() => Entities;
     }
 }

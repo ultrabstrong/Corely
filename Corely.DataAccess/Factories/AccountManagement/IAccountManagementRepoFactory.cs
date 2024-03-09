@@ -9,6 +9,8 @@ namespace Corely.DataAccess.Factories.AccountManagement
     {
         IRepoExtendedGet<AccountEntity> CreateAccountRepo();
 
+        IReadonlyRepo<AccountEntity> CreateReadonlyAccountRepo();
+
         IRepoExtendedGet<UserEntity> CreateUserRepo();
 
         IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo();

@@ -46,6 +46,11 @@ namespace Corely.DataAccess.Factories.AccountManagement
             return new EFAccountRepo(_loggerFactory.CreateLogger<EFAccountRepo>(), _accountManagementDbContext);
         }
 
+        public IReadonlyRepo<AccountEntity> CreateReadonlyAccountRepo()
+        {
+            return new EFReadonlyAccountRepo(_loggerFactory.CreateLogger<EFReadonlyAccountRepo>(), _accountManagementDbContext);
+        }
+
         public IRepoExtendedGet<UserEntity> CreateUserRepo()
         {
             return new EFUserRepo(_loggerFactory.CreateLogger<EFUserRepo>(), _accountManagementDbContext);

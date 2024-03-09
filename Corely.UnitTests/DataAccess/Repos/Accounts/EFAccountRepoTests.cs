@@ -39,6 +39,5 @@ namespace Corely.UnitTests.DataAccess.Repos.Accounts
                 _serviceFactory.GetRequiredService<ILogger<EFAccountRepo>>(),
                 new AccountManagementDbContext(new EFConfigurationFixture()));
         }
-
     }
 }

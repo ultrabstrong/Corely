@@ -37,10 +37,10 @@ namespace Corely.UnitTests.DataAccess
         public static IEnumerable<object[]> GetRequiredServiceData =>
         [
             [typeof(IAccountManagementRepoFactory)],
-            [typeof(IRepoExtendedGet<BasicAuthEntity>)],
             [typeof(IRepoExtendedGet<AccountEntity>)],
+            [typeof(IReadonlyRepo<AccountEntity>)],
             [typeof(IRepoExtendedGet<UserEntity>)],
-
+            [typeof(IRepoExtendedGet<BasicAuthEntity>)],
         ];
     }
 }

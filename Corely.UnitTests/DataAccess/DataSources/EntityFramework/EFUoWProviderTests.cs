@@ -15,7 +15,7 @@ namespace Corely.UnitTests.DataAccess.DataSources.EntityFramework
             _efUoWProvider = new(_accountManagementDbContextMock.Object);
         }
 
-        private Mock<AccountManagementDbContext> GetMockAccountManagementDbContext()
+        private static Mock<AccountManagementDbContext> GetMockAccountManagementDbContext()
         {
             var accountManagementDbContextMock = new Mock<AccountManagementDbContext>(new EFConfigurationFixture());
             var mockDatabaseFacade = new Mock<DatabaseFacade>(accountManagementDbContextMock.Object);

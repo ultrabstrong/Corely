@@ -28,7 +28,7 @@ namespace Corely.UnitTests.Domain.Services
 
         protected readonly ServiceFactory _serviceFactory = new();
 
-        private readonly Fixture _fixutre = new();
+        private readonly Fixture _fixture = new();
         private readonly MockServiceBase _mockServiceBase;
 
         public ServiceBaseTests()
@@ -50,7 +50,7 @@ namespace Corely.UnitTests.Domain.Services
         [Fact]
         public void MapToValid_ShouldThrowAutoMapperMappingException_IfDestinationIsInvalid()
         {
-            var createUserRequest = _fixutre.Create<CreateUserRequest>();
+            var createUserRequest = _fixture.Create<CreateUserRequest>();
 
             var ex = Record.Exception(() => _mockServiceBase.MapToValid<CreateResult>(createUserRequest));
 
@@ -61,7 +61,7 @@ namespace Corely.UnitTests.Domain.Services
         [Fact]
         public void MapToValid_ShouldThrowValidationException_IfDestinationIsInvalid()
         {
-            var createUserRequest = _fixutre.Create<CreateUserRequest>();
+            var createUserRequest = _fixture.Create<CreateUserRequest>();
 
             var ex = Record.Exception(() => _mockServiceBase.MapToValid<User>(createUserRequest));
 
@@ -72,7 +72,7 @@ namespace Corely.UnitTests.Domain.Services
         [Fact]
         public void MapToValid_ShouldReturnValidDestination_IfSourceIsValid()
         {
-            var createUserRequest = new CreateUserRequest(_fixutre.Create<int>(), VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
             var user = _mockServiceBase.MapToValid<User>(createUserRequest);
 
             Assert.NotNull(user);
