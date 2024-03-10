@@ -40,5 +40,16 @@ namespace Corely.UnitTests.DataAccess.Repos
         protected override IReadonlyRepo<EntityFixture> Repo => _efReadonlyRepoFixture;
 
         protected override int GetId => _getId;
+
+        [Fact]
+        public async Task Dispose_ShouldDisposeAsync()
+        {
+            _efReadonlyRepoFixture.Dispose();
+
+            var ex = await Record.ExceptionAsync(() => _efReadonlyRepoFixture.GetAsync(_getId));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ObjectDisposedException>(ex);
+        }
     }
 }

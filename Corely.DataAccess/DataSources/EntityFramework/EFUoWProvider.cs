@@ -29,6 +29,6 @@ namespace Corely.DataAccess.DataSources.EntityFramework
         }
 
         protected override void DisposeManagedResources()
-            => _dbContext.Dispose();
+            => _dbContext?.Dispose();
     }
 }

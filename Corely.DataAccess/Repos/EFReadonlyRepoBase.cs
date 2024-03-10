@@ -18,6 +18,6 @@ namespace Corely.DataAccess.Repos
         }
 
         protected override void DisposeManagedResources()
-            => DbContext.Dispose();
+            => DbContext?.Dispose();
     }
 }

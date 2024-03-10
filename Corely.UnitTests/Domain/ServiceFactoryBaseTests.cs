@@ -86,6 +86,7 @@ namespace Corely.UnitTests.Domain
             mockServiceFactory.Dispose();
             var ex = Record.Exception(() => mockServiceFactory.GetRequiredService<ILogger>());
 
+            Assert.NotNull(ex);
             Assert.IsType<ObjectDisposedException>(ex);
         }
     }
