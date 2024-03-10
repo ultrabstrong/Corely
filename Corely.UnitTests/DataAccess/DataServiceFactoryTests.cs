@@ -32,7 +32,7 @@ namespace Corely.UnitTests.DataAccess
         public static IEnumerable<object[]> GetRequiredServiceData =>
         [
             [typeof(IDataAccessConnection<string>)],
-            [typeof(IGenericRepoFactory<string>)]
+            [typeof(IGenericRepoFactory)]
         ];
     }
 }

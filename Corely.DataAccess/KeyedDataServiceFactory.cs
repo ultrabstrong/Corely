@@ -23,7 +23,7 @@ namespace Corely.DataAccess
         {
             // All 'Account management' should belong to one connection type
             services.AddScoped(serviceProvider => serviceProvider
-                .GetRequiredKeyedService<IGenericRepoFactory<T>>(_connectionKey)
+                .GetRequiredKeyedService<IGenericRepoFactory>(_connectionKey)
                 .CreateAccountManagementRepoFactory());
 
             services.AddScoped(serviceProvider => serviceProvider

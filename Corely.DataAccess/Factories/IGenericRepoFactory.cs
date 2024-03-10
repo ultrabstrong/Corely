@@ -2,7 +2,7 @@
 
 namespace Corely.DataAccess.Factories
 {
-    public interface IGenericRepoFactory<T>
+    public interface IGenericRepoFactory
     {
         public IAccountManagementRepoFactory CreateAccountManagementRepoFactory();
     }

@@ -14,7 +14,7 @@ namespace Corely.DataAccess
                 (serviceProvider, key) => connection);
 
             // Keyed is to register generic repo factories for each connection
-            services.AddKeyedSingleton<IGenericRepoFactory<T>>(
+            services.AddKeyedSingleton<IGenericRepoFactory>(
                 connection.ConnectionName,
                 (serviceProvider, key) => new GenericRepoFactory<T>(
                     serviceProvider.GetRequiredService<ILoggerFactory>(),

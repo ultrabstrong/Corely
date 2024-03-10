@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.Factories
 {
-    public abstract class GenericRepoFactoryBase<T> : IGenericRepoFactory<T>
+    public abstract class GenericRepoFactoryBase<T> : IGenericRepoFactory
     {
         protected readonly ILoggerFactory _loggerFactory;
         private readonly IDataAccessConnection<T> _connection;
