@@ -1,4 +1,5 @@
-﻿using Corely.DataAccess.Connections;
+﻿using AutoFixture;
+using Corely.DataAccess.Connections;
 using Microsoft.EntityFrameworkCore;
 
 namespace Corely.UnitTests.Fixtures
@@ -7,7 +8,8 @@ namespace Corely.UnitTests.Fixtures
     {
         public void Configure(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseInMemoryDatabase("EFAccountRepoTests");
+            var fixture = new Fixture();
+            optionsBuilder.UseInMemoryDatabase(fixture.Create<string>());
         }
     }
 }
