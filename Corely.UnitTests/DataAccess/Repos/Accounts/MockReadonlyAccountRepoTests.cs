@@ -12,8 +12,13 @@ namespace Corely.UnitTests.DataAccess.Repos.Accounts
 
         public MockReadonlyAccountRepoTests()
         {
+            var mockAccountRepo = new MockAccountRepo();
             var entityList = fixture.CreateMany<AccountEntity>(5).ToList();
-            _mockReadonlyAccountRepo = new MockReadonlyAccountRepo(entityList);
+            foreach (var entity in entityList)
+            {
+                mockAccountRepo.CreateAsync(entity);
+            }
+            _mockReadonlyAccountRepo = new MockReadonlyAccountRepo(mockAccountRepo);
             _getId = entityList[2].Id;
         }
 

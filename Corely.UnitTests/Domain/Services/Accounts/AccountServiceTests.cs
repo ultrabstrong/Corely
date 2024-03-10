@@ -26,6 +26,36 @@ namespace Corely.UnitTests.Domain.Services.Accounts
         }
 
         [Fact]
+        public async Task CreateAccountAsync_ShouldReturnAccountEntity_WhenValidAccountName()
+        {
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
+            await _accountService.CreateAccountAsync(createAccountRequest);
+
+            var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(createAccountRequest));
+
+            Assert.NotNull(ex);
+            Assert.IsType<AccountExistsException>(ex);
+        }
+
+        [Fact]
+        public async Task CreateAccount_ShouldReturnCreateAccountResult()
+        {
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
+            var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
+
+            Assert.True(createAccountResult.IsSuccess);
+        }
+
+        [Fact]
+        public async Task CreateAccount_ShouldThrowArgumentNullException_WithNullRequest()
+        {
+            var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(null!));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
         public void Constructor_ShouldThrowArgumentNullException_WhenAccountRepoIsNull()
         {
             AccountService act() => new(
@@ -80,36 +110,6 @@ namespace Corely.UnitTests.Domain.Services.Accounts
                 null);
 
             var ex = Record.Exception(act);
-
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
-
-        [Fact]
-        public async Task CreateAccountAsync_ShouldReturnAccountEntity_WhenValidAccountName()
-        {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
-            await _accountService.CreateAccountAsync(createAccountRequest);
-
-            var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(createAccountRequest));
-
-            Assert.NotNull(ex);
-            Assert.IsType<AccountExistsException>(ex);
-        }
-
-        [Fact]
-        public async Task CreateAccount_ShouldReturnCreateAccountResult()
-        {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
-            var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
-
-            Assert.True(createAccountResult.IsSuccess);
-        }
-
-        [Fact]
-        public async Task CreateAccount_ShouldThrowArgumentNullException_WithNullRequest()
-        {
-            var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(null!));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);

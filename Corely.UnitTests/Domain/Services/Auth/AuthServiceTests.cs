@@ -24,6 +24,38 @@ namespace Corely.UnitTests.Domain.Services.Auth
         }
 
         [Fact]
+        public async Task UpsertBasicAuthAsync_ShouldReturnCreateResult_WhenBasicAuthDoesNotExist()
+        {
+            var request = new UpsertBasicAuthRequest(1, "username", "password");
+            var result = await _authService.UpsertBasicAuthAsync(request);
+
+            Assert.NotNull(result);
+            Assert.True(result.IsSuccess);
+            Assert.Equal(UpsertType.Create, result.UpsertType);
+        }
+
+        [Fact]
+        public async Task UpsertBasicAuthAsync_ShouldReturnUpdateResult_WhenBasicAuthExists()
+        {
+            var request = new UpsertBasicAuthRequest(1, "username", "password");
+            await _authService.UpsertBasicAuthAsync(request);
+            var result = await _authService.UpsertBasicAuthAsync(request);
+
+            Assert.NotNull(result);
+            Assert.True(result.IsSuccess);
+            Assert.Equal(UpsertType.Update, result.UpsertType);
+        }
+
+        [Fact]
+        public async Task UpsertBasicAuthAsync_ShouldThrowArgumentNullException_WithNullRequest()
+        {
+            var ex = await Record.ExceptionAsync(() => _authService.UpsertBasicAuthAsync(null!));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
         public void Constructor_ShouldThrowArgumentNullException_WhenBasicAuthRepoIsNull()
         {
             AuthService act() => new(
@@ -78,38 +110,6 @@ namespace Corely.UnitTests.Domain.Services.Auth
                 null);
 
             var ex = Record.Exception(act);
-
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
-
-        [Fact]
-        public async Task UpsertBasicAuthAsync_ShouldReturnCreateResult_WhenBasicAuthDoesNotExist()
-        {
-            var request = new UpsertBasicAuthRequest(1, "username", "password");
-            var result = await _authService.UpsertBasicAuthAsync(request);
-
-            Assert.NotNull(result);
-            Assert.True(result.IsSuccess);
-            Assert.Equal(UpsertType.Create, result.UpsertType);
-        }
-
-        [Fact]
-        public async Task UpsertBasicAuthAsync_ShouldReturnUpdateResult_WhenBasicAuthExists()
-        {
-            var request = new UpsertBasicAuthRequest(1, "username", "password");
-            await _authService.UpsertBasicAuthAsync(request);
-            var result = await _authService.UpsertBasicAuthAsync(request);
-
-            Assert.NotNull(result);
-            Assert.True(result.IsSuccess);
-            Assert.Equal(UpsertType.Update, result.UpsertType);
-        }
-
-        [Fact]
-        public async Task UpsertBasicAuthAsync_ShouldThrowArgumentNullException_WithNullRequest()
-        {
-            var ex = await Record.ExceptionAsync(() => _authService.UpsertBasicAuthAsync(null!));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);

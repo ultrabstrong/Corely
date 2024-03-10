@@ -1,7 +1,9 @@
 ﻿using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.DataAccess.Repos;
+using Corely.DataAccess.Repos.Accounts;
 using Corely.Domain;
+using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Repos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,10 +25,12 @@ namespace Corely.UnitTests
         {
             var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
             DataServiceFactory.RegisterConnection(connection, services);
-            AddMockReposFromAssembly(services, typeof(MockRepoBase<>).Assembly);
+
+            AutoAddMockReposFromAssembly(services, typeof(MockRepoBase<>).Assembly);
+            ManualAddReadonlyMockRepos(services);
         }
 
-        private static void AddMockReposFromAssembly(IServiceCollection services, Assembly assembly)
+        private static void AutoAddMockReposFromAssembly(IServiceCollection services, Assembly assembly)
         {
             var repoTypes = assembly.GetTypes().Where(type =>
                 type.Namespace != null
@@ -54,6 +58,15 @@ namespace Corely.UnitTests
                     services.AddScoped(interfaceType, type);
                 }
             }
+        }
+
+        private static void ManualAddReadonlyMockRepos(IServiceCollection services)
+        {
+            services.AddScoped<IReadonlyRepo<AccountEntity>>(serviceProvider =>
+            {
+                var repo = serviceProvider.GetRequiredService<IRepoExtendedGet<AccountEntity>>();
+                return new MockReadonlyAccountRepo((MockAccountRepo)repo);
+            });
         }
     }
 }

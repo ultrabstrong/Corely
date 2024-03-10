@@ -5,7 +5,6 @@ using Corely.Domain.Exceptions;
 using Corely.Domain.Mappers;
 using Corely.Domain.Models.Users;
 using Corely.Domain.Repos;
-using Corely.Domain.Services;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
 using Microsoft.Extensions.Logging;
@@ -25,90 +24,10 @@ namespace Corely.UnitTests.Domain.Services.Users
         {
             _userService = new UserService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());
-        }
-
-        [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenUserRepoIsNull()
-        {
-            UserService act() => new(
-                null,
-                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
-                _serviceFactory.GetRequiredService<IMapProvider>(),
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _serviceFactory.GetRequiredService<ILogger<UserService>>());
-
-            var ex = Record.Exception(act);
-
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
-
-        [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenMapEntityReadonlyServiceIsNull()
-        {
-            UserService act() => new(
-                Mock.Of<IRepoExtendedGet<UserEntity>>(),
-                null,
-                _serviceFactory.GetRequiredService<IMapProvider>(),
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _serviceFactory.GetRequiredService<ILogger<UserService>>());
-
-            var ex = Record.Exception(act);
-
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
-
-        [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenMapProviderIsNull()
-        {
-            UserService act() => new(
-                Mock.Of<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
-                null,
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _serviceFactory.GetRequiredService<ILogger<UserService>>());
-
-            var ex = Record.Exception(act);
-
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
-
-        [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenValidationProviderIsNull()
-        {
-            UserService act() => new(
-                Mock.Of<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
-                _serviceFactory.GetRequiredService<IMapProvider>(),
-                null,
-                _serviceFactory.GetRequiredService<ILogger<UserService>>());
-
-            var ex = Record.Exception(act);
-
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
-
-        [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WhenLoggerIsNull()
-        {
-            UserService act() => new(
-                Mock.Of<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IEntityReadonlyService<AccountEntity>>(),
-                _serviceFactory.GetRequiredService<IMapProvider>(),
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
-                null);
-
-            var ex = Record.Exception(act);
-
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
         }
 
         [Fact]
@@ -157,6 +76,86 @@ namespace Corely.UnitTests.Domain.Services.Users
         public async Task CreateUser_ShouldThrowArgumentNullException_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _userService.CreateUserAsync(null!));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public void Constructor_ShouldThrowArgumentNullException_WhenUserRepoIsNull()
+        {
+            UserService act() => new(
+                null,
+                _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IMapProvider>(),
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
+                _serviceFactory.GetRequiredService<ILogger<UserService>>());
+
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public void Constructor_ShouldThrowArgumentNullException_WhenReadonlyAccountRepoIsNull()
+        {
+            UserService act() => new(
+                Mock.Of<IRepoExtendedGet<UserEntity>>(),
+                null,
+                _serviceFactory.GetRequiredService<IMapProvider>(),
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
+                _serviceFactory.GetRequiredService<ILogger<UserService>>());
+
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public void Constructor_ShouldThrowArgumentNullException_WhenMapProviderIsNull()
+        {
+            UserService act() => new(
+                Mock.Of<IRepoExtendedGet<UserEntity>>(),
+                _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
+                null,
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
+                _serviceFactory.GetRequiredService<ILogger<UserService>>());
+
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public void Constructor_ShouldThrowArgumentNullException_WhenValidationProviderIsNull()
+        {
+            UserService act() => new(
+                Mock.Of<IRepoExtendedGet<UserEntity>>(),
+                _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IMapProvider>(),
+                null,
+                _serviceFactory.GetRequiredService<ILogger<UserService>>());
+
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public void Constructor_ShouldThrowArgumentNullException_WhenLoggerIsNull()
+        {
+            UserService act() => new(
+                Mock.Of<IRepoExtendedGet<UserEntity>>(),
+                _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IMapProvider>(),
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
+                null);
+
+            var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);

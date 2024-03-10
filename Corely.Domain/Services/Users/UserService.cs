@@ -14,18 +14,18 @@ namespace Corely.Domain.Services.Users
     internal class UserService : ServiceBase, IUserService
     {
         private readonly IRepoExtendedGet<UserEntity> _userRepo;
-        private readonly IEntityReadonlyService<AccountEntity> _accountEntityReadonlyService;
+        private readonly IReadonlyRepo<AccountEntity> _readonlyAccountRepo;
 
         public UserService(
             IRepoExtendedGet<UserEntity> userRepo,
-            IEntityReadonlyService<AccountEntity> accountEntityReadonlyService,
+            IReadonlyRepo<AccountEntity> readonlyAccountRepo,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
             ILogger<UserService> logger)
             : base(mapProvider, validationProvider, logger)
         {
             _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
-            _accountEntityReadonlyService = accountEntityReadonlyService.ThrowIfNull(nameof(accountEntityReadonlyService));
+            _readonlyAccountRepo = readonlyAccountRepo.ThrowIfNull(nameof(readonlyAccountRepo));
         }
 
         public async Task<CreateResult> CreateUserAsync(CreateUserRequest request)
@@ -37,7 +37,7 @@ namespace Corely.Domain.Services.Users
             var user = MapToValid<User>(request);
             await ThrowIfUserExists(user.Username, user.Email);
 
-            var accountEntity = await _accountEntityReadonlyService.GetAsync(request.AccountId);
+            var accountEntity = await _readonlyAccountRepo.GetAsync(request.AccountId);
             if (accountEntity == null)
             {
                 logger.LogWarning("Account with Id {AccountId} not found", request.AccountId);

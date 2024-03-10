@@ -5,13 +5,13 @@ namespace Corely.DataAccess.Repos.Accounts
     internal sealed class MockReadonlyAccountRepo
         : MockReadonlyRepoBase<AccountEntity>
     {
-        private readonly List<AccountEntity> _accounts;
+        private readonly MockAccountRepo _mockAccountRepo;
 
-        public MockReadonlyAccountRepo(List<AccountEntity> accounts)
+        public MockReadonlyAccountRepo(MockAccountRepo mockAccountRepo)
         {
-            _accounts = accounts;
+            _mockAccountRepo = mockAccountRepo;
         }
 
-        protected override List<AccountEntity> Entities => _accounts;
+        protected override List<AccountEntity> Entities => _mockAccountRepo.GetEntities();
     }
 }

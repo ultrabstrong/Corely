@@ -24,7 +24,7 @@ namespace Corely.DataAccess.Factories.AccountManagement
 
         public IReadonlyRepo<AccountEntity> CreateReadonlyAccountRepo()
         {
-            return new MockReadonlyAccountRepo(_accountRepo.GetEntities());
+            return new MockReadonlyAccountRepo(_accountRepo);
         }
 
         public IRepoExtendedGet<UserEntity> CreateUserRepo()
