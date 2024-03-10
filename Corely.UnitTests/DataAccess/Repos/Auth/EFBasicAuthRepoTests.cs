@@ -17,13 +17,13 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
 
         public EFBasicAuthRepoTests()
         {
-            _efBasicAuthRepo = CreateEfBasicAuthRepo();
+            _efBasicAuthRepo = CreateEFBasicAuthRepo();
         }
 
         [Fact]
         public async Task Dispose_ShouldDisposeDbContext()
         {
-            var mockEFBasicAuthRepo = CreateEfBasicAuthRepo();
+            var mockEFBasicAuthRepo = CreateEFBasicAuthRepo();
             var basicAuth = fixture.Create<BasicAuthEntity>();
 
             mockEFBasicAuthRepo.Dispose();
@@ -33,7 +33,7 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
             Assert.IsType<ObjectDisposedException>(ex);
         }
 
-        private EFBasicAuthRepo CreateEfBasicAuthRepo()
+        private EFBasicAuthRepo CreateEFBasicAuthRepo()
         {
             return new EFBasicAuthRepo(
                 _serviceFactory.GetRequiredService<ILogger<EFBasicAuthRepo>>(),

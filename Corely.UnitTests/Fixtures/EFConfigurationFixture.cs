@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corely.UnitTests.Fixtures
 {
-    public class EFConfigurationFixture : IEFConfiguration
+    public class EFConfigurationFixture : InMemoryEFConfigurationBase
     {
-        public void Configure(DbContextOptionsBuilder optionsBuilder)
+        public override void Configure(DbContextOptionsBuilder optionsBuilder)
         {
             var fixture = new Fixture();
             optionsBuilder.UseInMemoryDatabase(fixture.Create<string>());

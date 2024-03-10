@@ -1,15 +1,19 @@
-﻿using Corely.Domain.Constants.Users;
+﻿using Corely.DataAccess.Connections;
+using Corely.Domain.Constants.Users;
 using Corely.Domain.Entities.Users;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Users
 {
-    internal class UserDetailsEntityConfiguration : IEntityTypeConfiguration<UserDetailsEntity>
+    internal class UserDetailsEntityConfiguration : EntityConfigurationBase<UserDetailsEntity>
     {
-        public void Configure(EntityTypeBuilder<UserDetailsEntity> builder)
+        public UserDetailsEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
         {
-            GenericEntityTypeConfiguration.Configure(builder);
+        }
+
+        public override void Configure(EntityTypeBuilder<UserDetailsEntity> builder)
+        {
+            ConfigureGenericTypes(builder);
 
             builder.HasKey(e => e.UserId);
             builder.Property(e => e.UserId)

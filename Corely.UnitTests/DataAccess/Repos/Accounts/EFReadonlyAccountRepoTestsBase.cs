@@ -17,7 +17,7 @@ namespace Corely.UnitTests.DataAccess.Repos.Accounts
         public EFReadonlyAccountRepoTestsBase()
         {
             var entityList = fixture.CreateMany<AccountEntity>(5).ToList();
-            _efReadonlyAccountRepo = CreateEfReadonlyAccountRepo(entityList);
+            _efReadonlyAccountRepo = CreateEFReadonlyAccountRepo(entityList);
             _getId = entityList[2].Id;
         }
 
@@ -25,7 +25,7 @@ namespace Corely.UnitTests.DataAccess.Repos.Accounts
 
         protected override int GetId => _getId;
 
-        private EFReadonlyAccountRepo CreateEfReadonlyAccountRepo(IEnumerable<AccountEntity> accountEntities)
+        private EFReadonlyAccountRepo CreateEFReadonlyAccountRepo(IEnumerable<AccountEntity> accountEntities)
         {
             var accountManagementDbContext = new AccountManagementDbContext(new EFConfigurationFixture());
             accountManagementDbContext.Accounts.AddRange(accountEntities);

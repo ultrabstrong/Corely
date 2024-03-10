@@ -17,13 +17,13 @@ namespace Corely.UnitTests.DataAccess.Repos.User
 
         public EFUserRepoTests()
         {
-            _efUserRepo = CreateEfUserRepo();
+            _efUserRepo = CreateEFUserRepo();
         }
 
         [Fact]
         public async Task Dispose_ShouldDisposeDbContext()
         {
-            var mockEFUserRepo = CreateEfUserRepo();
+            var mockEFUserRepo = CreateEFUserRepo();
             var user = fixture.Create<UserEntity>();
 
             mockEFUserRepo.Dispose();
@@ -33,7 +33,7 @@ namespace Corely.UnitTests.DataAccess.Repos.User
             Assert.IsType<ObjectDisposedException>(ex);
         }
 
-        private EFUserRepo CreateEfUserRepo()
+        private EFUserRepo CreateEFUserRepo()
         {
             return new EFUserRepo(
             _serviceFactory.GetRequiredService<ILogger<EFUserRepo>>(),

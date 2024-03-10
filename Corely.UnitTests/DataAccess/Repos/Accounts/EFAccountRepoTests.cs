@@ -17,13 +17,13 @@ namespace Corely.UnitTests.DataAccess.Repos.Accounts
 
         public EFAccountRepoTests()
         {
-            _efAccountRepo = CreateEfAccountRepo();
+            _efAccountRepo = CreateEFAccountRepo();
         }
 
         [Fact]
         public async Task Dispose_ShouldDisposeDbContext()
         {
-            var mockEFAccountAuthRepo = CreateEfAccountRepo();
+            var mockEFAccountAuthRepo = CreateEFAccountRepo();
             var account = fixture.Create<AccountEntity>();
 
             mockEFAccountAuthRepo.Dispose();
@@ -33,7 +33,7 @@ namespace Corely.UnitTests.DataAccess.Repos.Accounts
             Assert.IsType<ObjectDisposedException>(ex);
         }
 
-        private EFAccountRepo CreateEfAccountRepo()
+        private EFAccountRepo CreateEFAccountRepo()
         {
             return new EFAccountRepo(
                 _serviceFactory.GetRequiredService<ILogger<EFAccountRepo>>(),

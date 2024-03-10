@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.Domain", "Corely.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.DevTools", "Corely.DevTools\Corely.DevTools.csproj", "{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.DataAccessMigrations", "Corely.DataAccessMigrations\Corely.DataAccessMigrations.csproj", "{792DE99D-F0A7-47B9-85F6-B566B04CF643}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{792DE99D-F0A7-47B9-85F6-B566B04CF643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{792DE99D-F0A7-47B9-85F6-B566B04CF643}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{792DE99D-F0A7-47B9-85F6-B566B04CF643}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{792DE99D-F0A7-47B9-85F6-B566B04CF643}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

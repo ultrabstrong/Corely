@@ -1,4 +1,5 @@
-﻿using Corely.Domain.Constants.Users;
+﻿using Corely.DataAccess.Connections;
+using Corely.Domain.Constants.Users;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
@@ -6,11 +7,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Users
 {
-    internal class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
+    internal class UserEntityConfiguration : EntityConfigurationBase<UserEntity>
     {
-        public void Configure(EntityTypeBuilder<UserEntity> builder)
+        public UserEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
         {
-            GenericEntityTypeConfiguration.Configure(builder);
+        }
+
+        public override void Configure(EntityTypeBuilder<UserEntity> builder)
+        {
+            ConfigureGenericTypes(builder);
 
             builder.Property(e => e.Enabled)
                 .HasDefaultValue(true)

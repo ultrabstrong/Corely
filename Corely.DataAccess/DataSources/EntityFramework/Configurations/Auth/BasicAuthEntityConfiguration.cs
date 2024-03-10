@@ -1,15 +1,19 @@
-﻿using Corely.Domain.Constants.Auth;
+﻿using Corely.DataAccess.Connections;
+using Corely.Domain.Constants.Auth;
 using Corely.Domain.Entities.Auth;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Auth
 {
-    internal class BasicAuthEntityConfiguration : IEntityTypeConfiguration<BasicAuthEntity>
+    internal class BasicAuthEntityConfiguration : EntityConfigurationBase<BasicAuthEntity>
     {
-        public void Configure(EntityTypeBuilder<BasicAuthEntity> builder)
+        public BasicAuthEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
         {
-            GenericEntityTypeConfiguration.Configure(builder);
+        }
+
+        public override void Configure(EntityTypeBuilder<BasicAuthEntity> builder)
+        {
+            ConfigureGenericTypes(builder);
 
             builder.Property(x => x.Username)
                 .IsRequired()

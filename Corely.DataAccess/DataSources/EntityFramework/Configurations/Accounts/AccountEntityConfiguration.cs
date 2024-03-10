@@ -1,15 +1,19 @@
-﻿using Corely.Domain.Constants.Accounts;
+﻿using Corely.DataAccess.Connections;
+using Corely.Domain.Constants.Accounts;
 using Corely.Domain.Entities.Accounts;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.DataSources.EntityFramework.Configurations.Accounts
 {
-    internal class AccountEntityConfiguration : IEntityTypeConfiguration<AccountEntity>
+    internal class AccountEntityConfiguration : EntityConfigurationBase<AccountEntity>
     {
-        public void Configure(EntityTypeBuilder<AccountEntity> builder)
+        public AccountEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
         {
-            GenericEntityTypeConfiguration.Configure(builder);
+        }
+
+        public override void Configure(EntityTypeBuilder<AccountEntity> builder)
+        {
+            ConfigureGenericTypes(builder);
 
             builder.Property(e => e.AccountName)
                 .IsRequired()

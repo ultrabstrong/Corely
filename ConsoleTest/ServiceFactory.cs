@@ -9,9 +9,9 @@ namespace ConsoleTest
 {
     internal class ServiceFactory : ServiceFactoryBase
     {
-        private class InMemoryConfig : IEFConfiguration
+        private class InMemoryConfig : InMemoryEFConfigurationBase
         {
-            public void Configure(DbContextOptionsBuilder optionsBuilder)
+            public override void Configure(DbContextOptionsBuilder optionsBuilder)
             {
                 optionsBuilder.UseInMemoryDatabase("TestDb");
                 optionsBuilder.LogTo(

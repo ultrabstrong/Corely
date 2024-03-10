@@ -1,4 +1,5 @@
 ﻿using Corely.DataAccess.Connections;
+using Corely.DataAccess.DataSources.EntityFramework.Configurations.Accounts;
 using Corely.DataAccess.DataSources.EntityFramework.Configurations.Auth;
 using Corely.DataAccess.DataSources.EntityFramework.Configurations.Users;
 using Corely.Domain.Entities.Accounts;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corely.DataAccess.DataSources.EntityFramework
 {
-    internal class AccountManagementDbContext : DbContext
+    public class AccountManagementDbContext : DbContext
     {
         private readonly IEFConfiguration _configuration;
 
@@ -30,10 +31,12 @@ namespace Corely.DataAccess.DataSources.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new UserDetailsEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountEntityConfiguration(_configuration.GetDbTypes()));
 
-            modelBuilder.ApplyConfiguration(new BasicAuthEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new UserEntityConfiguration(_configuration.GetDbTypes()));
+            modelBuilder.ApplyConfiguration(new UserDetailsEntityConfiguration(_configuration.GetDbTypes()));
+
+            modelBuilder.ApplyConfiguration(new BasicAuthEntityConfiguration(_configuration.GetDbTypes()));
         }
     }
 }
