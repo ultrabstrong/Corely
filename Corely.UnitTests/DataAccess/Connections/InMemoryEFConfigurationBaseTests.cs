@@ -14,11 +14,6 @@ namespace Corely.UnitTests.DataAccess.Connections
 
         private readonly MockInMemoryEFConfiguration _mockInMemoryEFConfiguration = new();
 
-        [Fact]
-        public void GetDbTypes_ReturnsEFDbTypes()
-        {
-            var dbTypes = _mockInMemoryEFConfiguration.GetDbTypes();
-            VerifyDbTypes(dbTypes);
-        }
+        protected override IEFConfiguration EFConfiguration => _mockInMemoryEFConfiguration;
     }
 }

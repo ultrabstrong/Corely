@@ -25,11 +25,6 @@ namespace Corely.UnitTests.DataAccess.Connections
             _mockMySqlEFConfiguration = new(_fixture.Create<string>());
         }
 
-        [Fact]
-        public void GetDbTypes_ReturnsEFDbTypes()
-        {
-            var dbTypes = _mockMySqlEFConfiguration.GetDbTypes();
-            VerifyDbTypes(dbTypes);
-        }
+        protected override IEFConfiguration EFConfiguration => _mockMySqlEFConfiguration;
     }
 }
