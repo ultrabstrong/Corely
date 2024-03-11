@@ -2,7 +2,7 @@
   "profiles": {
     "Corely.DevTools": {
       "commandName": "Project",
-      "commandLineArgs": "encrypt -c"
+      "commandLineArgs": "account signup C:\\Users\\ultra\\Downloads\\sampleRequests\\signUpRequest.json"
     }
   }
 }

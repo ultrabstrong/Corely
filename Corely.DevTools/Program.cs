@@ -1,4 +1,6 @@
-﻿using Corely.DevTools.Commands;
+﻿using Corely.Common.Providers.Redaction;
+using Corely.DevTools.Commands;
+using Serilog;
 using System.CommandLine;
 using System.Reflection;
 
@@ -8,6 +10,17 @@ namespace Corely.DevTools
     {
         static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("Application", "ConsoleTest")
+                .Enrich.WithProperty("CorrelationId", Guid.NewGuid())
+                .Enrich.With(new RedactionEnricher([
+                    new PasswordRedactionProvider()]))
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.Seq("http://localhost:5341")
+                .CreateLogger();
+
             try
             {
                 var rootCommand = new RootCommand();
@@ -22,8 +35,10 @@ namespace Corely.DevTools
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception caught:{Environment.NewLine}{ex}");
+                Log.Logger.Error(ex, "An error occurred");
             }
+            Log.CloseAndFlush();
+            Log.Logger.Information("Program finished.");
         }
 
         static List<CommandBase?> GetCommands()
@@ -32,7 +47,9 @@ namespace Corely.DevTools
                 .GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
                 .Where(type =>
-                    type.Namespace == "Corely.DevTools.Commands" &&
+                    !type.IsNested &&
+                    type.Namespace != null &&
+                    type.Namespace.StartsWith("Corely.DevTools.Commands") &&
                     type.IsSubclassOf(typeof(CommandBase)))
                 .Select(type => Activator.CreateInstance(type) as CommandBase)
                 .ToList();

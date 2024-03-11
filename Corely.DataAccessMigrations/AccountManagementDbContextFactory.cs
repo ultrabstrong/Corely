@@ -9,7 +9,7 @@ namespace Corely.DataAccessMigrations
 
         public AccountManagementDbContext CreateDbContext(string[] args)
         {
-            var configuration = new EFConfiguration(AppSettingsProvider.GetConnectionString());
+            var configuration = new EFConfiguration(ConfigurationProvider.GetConnectionString());
             var optionsBuilder = new DbContextOptionsBuilder<AccountManagementDbContext>();
             configuration.Configure(optionsBuilder);
             return new AccountManagementDbContext(configuration);

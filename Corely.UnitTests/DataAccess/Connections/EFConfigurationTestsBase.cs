@@ -6,10 +6,6 @@ namespace Corely.UnitTests.DataAccess.Connections
     {
         protected abstract IEFConfiguration EFConfiguration { get; }
 
-        protected static void VerifyDbTypes(IEFDbTypes dbTypes)
-        {
-        }
-
         [Fact]
         public void GetDbTypes_ReturnsEFDbTypes()
         {

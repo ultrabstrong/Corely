@@ -2,13 +2,13 @@
 
 namespace Corely.DataAccessMigrations
 {
-    internal static class AppSettingsProvider
+    internal static class ConfigurationProvider
     {
         private const string SETTINGS_FILE_NAME = "migrationsettings.json";
 
         private static readonly IConfigurationRoot _configuration;
 
-        static AppSettingsProvider()
+        static ConfigurationProvider()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
