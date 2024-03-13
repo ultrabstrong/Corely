@@ -67,11 +67,6 @@ namespace Corely.Domain.Services.AccountManagement
                 _logger.LogInformation("Account {Account} signed up with Id {Id}", request.AccountName, createAccountResult.CreatedId);
                 return new SignUpResult(true, "", createAccountResult.CreatedId, createUserResult.CreatedId, createAuthResult.CreatedId);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error signing up account {Account}", request.AccountName);
-                return new SignUpResult(false, ex.Message, 0, 0, 0);
-            }
             finally
             {
                 if (!operationSucceeded)

@@ -70,7 +70,9 @@ namespace Corely.DevTools.Commands.AccountManagement
                     return;
                 }
 
-                await _accountManagementService.SignUpAsync(signUpRequest);
+                var result = await _accountManagementService.SignUpAsync(signUpRequest);
+
+                Console.WriteLine(JsonSerializer.Serialize(result));
             }
         }
     }

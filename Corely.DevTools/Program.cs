@@ -17,7 +17,6 @@ namespace Corely.DevTools
                 .Enrich.With(new RedactionEnricher([
                     new PasswordRedactionProvider()]))
                 .MinimumLevel.Debug()
-                .WriteTo.Console()
                 .WriteTo.Seq("http://localhost:5341")
                 .CreateLogger();
 
