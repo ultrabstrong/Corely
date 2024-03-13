@@ -4,11 +4,27 @@ using Corely.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using System.Reflection;
 
 namespace ConsoleTest
 {
     internal class ServiceFactory : ServiceFactoryBase
     {
+        private class MySqlEFConfiguration(string connectionString) : MySqlEFConfigurationBase(connectionString)
+        {
+            public override void Configure(DbContextOptionsBuilder optionsBuilder)
+            {
+                optionsBuilder.UseMySql(
+                    connectionString,
+                    ServerVersion.AutoDetect(connectionString),
+                    b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
+                optionsBuilder.LogTo(
+                    Log.Logger.Debug,
+                    new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuted }
+                );
+            }
+        }
+
         private class InMemoryConfig : InMemoryEFConfigurationBase
         {
             public override void Configure(DbContextOptionsBuilder optionsBuilder)
@@ -28,9 +44,17 @@ namespace ConsoleTest
 
         protected override void AddDataAccessServices(IServiceCollection services)
         {
-            // Uncomment to use the Corely mock data access
+            // Corely mock db connection
             // var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
-            var connection = new DataAccessConnection<EFConnection>(ConnectionNames.EntityFramework, new EFConnection(new InMemoryConfig()));
+
+            // EF in memory db connection
+            //var connection = new DataAccessConnection<EFConnection>(ConnectionNames.EntityFramework, new EFConnection(new InMemoryConfig()));
+
+            // EF mysql db connection
+            var connection = new DataAccessConnection<EFConnection>(
+                ConnectionNames.EntityFramework,
+                new EFConnection(new MySqlEFConfiguration(ConfigurationProvider.GetConnectionString())));
+
             var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
             keyedDataServiceFactory.AddAllDataServices(services);
         }

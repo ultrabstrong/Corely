@@ -15,7 +15,7 @@ namespace Corely.DevTools.Commands
         {
         }
 
-        public override void Execute()
+        protected override void Execute()
         {
             if (!string.IsNullOrEmpty(Encode))
             {

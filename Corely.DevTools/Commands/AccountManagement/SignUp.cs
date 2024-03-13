@@ -23,7 +23,7 @@ namespace Corely.DevTools.Commands.AccountManagement
                 _accountManagementService = serviceFactory.GetRequiredService<IAccountManagementService>();
             }
 
-            public override void Execute()
+            protected async override Task ExecuteAsync()
             {
                 if (Create)
                 {
@@ -31,7 +31,7 @@ namespace Corely.DevTools.Commands.AccountManagement
                 }
                 else
                 {
-                    SignUpUser();
+                    await SignUpUserAsync();
                 }
             }
 
@@ -52,7 +52,7 @@ namespace Corely.DevTools.Commands.AccountManagement
                 Console.WriteLine($"Sample json file created at: {JsonSignupRequestFile}");
             }
 
-            private void SignUpUser()
+            private async Task SignUpUserAsync()
             {
                 if (!File.Exists(JsonSignupRequestFile))
                 {
@@ -70,7 +70,7 @@ namespace Corely.DevTools.Commands.AccountManagement
                     return;
                 }
 
-                _accountManagementService.SignUpAsync(signUpRequest);
+                await _accountManagementService.SignUpAsync(signUpRequest);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Corely.DataAccess.DataSources.EntityFramework;
+﻿using Corely.Common.Extensions;
+using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -17,8 +18,8 @@ namespace Corely.DataAccess.Repos.User
             ILogger<EFUserRepo> logger,
             AccountManagementDbContext dbContext)
         {
-            _logger = logger;
-            _dbContext = dbContext;
+            _logger = logger.ThrowIfNull(nameof(logger));
+            _dbContext = dbContext.ThrowIfNull(nameof(dbContext));
             _logger.LogDebug("EFUserRepo created");
         }
     }

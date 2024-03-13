@@ -8,7 +8,7 @@ namespace Corely.DevTools
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
@@ -31,7 +31,7 @@ namespace Corely.DevTools
                         rootCommand.AddCommand(command);
                     }
                 }
-                rootCommand.InvokeAsync(args).Wait();
+                await rootCommand.InvokeAsync(args);
             }
             catch (Exception ex)
             {

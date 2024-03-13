@@ -1,8 +1,7 @@
 {
   "profiles": {
     "Corely.DevTools": {
-      "commandName": "Project",
-      "commandLineArgs": "account signup C:\\Users\\ultra\\Downloads\\sampleRequests\\signUpRequest.json"
+      "commandName": "Project"
     }
   }
 }

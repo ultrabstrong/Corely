@@ -112,7 +112,7 @@ namespace Corely.DevTools.Commands
             return false;
         }
 
-        private void InvokeExecute(BindingContext context)
+        private async Task InvokeExecute(BindingContext context)
         {
             var type = GetType();
             foreach (var property in type.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly))
@@ -129,7 +129,7 @@ namespace Corely.DevTools.Commands
 
             try
             {
-                Execute();
+                await ExecuteAsync();
             }
             catch (Exception ex) when (ex is ArgumentException
                 || ex is ArgumentNullException
@@ -139,7 +139,13 @@ namespace Corely.DevTools.Commands
             }
         }
 
-        public abstract void Execute();
+        protected virtual Task ExecuteAsync()
+        {
+            Execute();
+            return Task.CompletedTask;
+        }
+
+        protected virtual void Execute() { }
 
         protected void ShowHelp(string message = null)
         {
