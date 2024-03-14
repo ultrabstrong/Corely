@@ -1,4 +1,5 @@
 ﻿using Corely.Common.Extensions;
+using Corely.Common.Providers.Security.Password;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Enums;
 using Corely.Domain.Mappers;
@@ -12,20 +13,30 @@ namespace Corely.Domain.Services.Auth
     internal class AuthService : ServiceBase, IAuthService
     {
         private readonly IRepoExtendedGet<BasicAuthEntity> _basicAuthRepo;
+        private readonly IPasswordValidationProvider _passwordValidationProvider;
 
         public AuthService(
             IRepoExtendedGet<BasicAuthEntity> basicAuthRepo,
+            IPasswordValidationProvider passwordValidationProvider,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
             ILogger<AuthService> logger)
             : base(mapProvider, validationProvider, logger)
         {
             _basicAuthRepo = basicAuthRepo.ThrowIfNull(nameof(basicAuthRepo));
+            _passwordValidationProvider = passwordValidationProvider.ThrowIfNull(nameof(passwordValidationProvider));
         }
 
         public async Task<UpsertBasicAuthResult> UpsertBasicAuthAsync(UpsertBasicAuthRequest request)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+            var passwordValidationResults = _passwordValidationProvider.ValidatePassword(request.Password);
+            if (passwordValidationResults.Any(r => r != ValidatePasswordResult.Success))
+            {
+                logger.LogWarning("Password validation failed for UserId {UserId}", request.UserId);
+                return new UpsertBasicAuthResult(false, "Password validation failed", 0, UpsertType.None, passwordValidationResults);
+            }
 
             var basicAuth = MapToValid<BasicAuth>(request);
 
@@ -38,13 +49,13 @@ namespace Corely.Domain.Services.Auth
             {
                 logger.LogDebug("No existing basic auth for UserId {UserId}. Creating new", request.UserId);
                 var newId = await _basicAuthRepo.CreateAsync(basicAuthEntity);
-                result = new UpsertBasicAuthResult(true, "", newId, UpsertType.Create);
+                result = new UpsertBasicAuthResult(true, "", newId, UpsertType.Create, passwordValidationResults);
             }
             else
             {
                 logger.LogDebug("Found existing basic auth for UserId {UserId}. Updating", request.UserId);
                 await _basicAuthRepo.UpdateAsync(basicAuthEntity);
-                result = new UpsertBasicAuthResult(true, "", existingAuth.Id, UpsertType.Update);
+                result = new UpsertBasicAuthResult(true, "", existingAuth.Id, UpsertType.Update, passwordValidationResults);
             }
 
             logger.LogInformation("Upserted basic auth for UserId {UserId}", request.UserId);

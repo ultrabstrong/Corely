@@ -1,5 +1,6 @@
 ﻿using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Keys;
+using Corely.Common.Providers.Security.Password;
 using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.Domain;
@@ -46,6 +47,8 @@ namespace Corely.UnitTests.Domain
 
         public static IEnumerable<object[]> GetRequiredServiceData =>
         [
+            [typeof(IPasswordValidationProvider)],
+
             [typeof(IMapProvider)],
 
             [typeof(IValidationProvider)],

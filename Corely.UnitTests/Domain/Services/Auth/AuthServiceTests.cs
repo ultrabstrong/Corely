@@ -1,4 +1,5 @@
-﻿using Corely.Domain.Entities.Auth;
+﻿using Corely.Common.Providers.Security.Password;
+using Corely.Domain.Entities.Auth;
 using Corely.Domain.Enums;
 using Corely.Domain.Mappers;
 using Corely.Domain.Models.Auth;
@@ -11,6 +12,8 @@ namespace Corely.UnitTests.Domain.Services.Auth
 {
     public class AuthServiceTests
     {
+        private const string VALID_PASSWORD = "Password1!";
+
         private readonly ServiceFactory _serviceFactory = new();
         private readonly AuthService _authService;
 
@@ -18,6 +21,7 @@ namespace Corely.UnitTests.Domain.Services.Auth
         {
             _authService = new AuthService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<BasicAuthEntity>>(),
+                _serviceFactory.GetRequiredService<IPasswordValidationProvider>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<AuthService>>());
@@ -26,7 +30,7 @@ namespace Corely.UnitTests.Domain.Services.Auth
         [Fact]
         public async Task UpsertBasicAuthAsync_ShouldReturnCreateResult_WhenBasicAuthDoesNotExist()
         {
-            var request = new UpsertBasicAuthRequest(1, "username", "password");
+            var request = new UpsertBasicAuthRequest(1, "username", VALID_PASSWORD);
             var result = await _authService.UpsertBasicAuthAsync(request);
 
             Assert.NotNull(result);
@@ -37,7 +41,7 @@ namespace Corely.UnitTests.Domain.Services.Auth
         [Fact]
         public async Task UpsertBasicAuthAsync_ShouldReturnUpdateResult_WhenBasicAuthExists()
         {
-            var request = new UpsertBasicAuthRequest(1, "username", "password");
+            var request = new UpsertBasicAuthRequest(1, "username", VALID_PASSWORD);
             await _authService.UpsertBasicAuthAsync(request);
             var result = await _authService.UpsertBasicAuthAsync(request);
 
@@ -45,6 +49,19 @@ namespace Corely.UnitTests.Domain.Services.Auth
             Assert.True(result.IsSuccess);
             Assert.Equal(UpsertType.Update, result.UpsertType);
         }
+
+        [Fact]
+        public async Task UpsertBasicAuthAsync_ShouldReturnFailureResult_WhenPasswordValidationFails()
+        {
+            var request = new UpsertBasicAuthRequest(1, "username", "password");
+            var result = await _authService.UpsertBasicAuthAsync(request);
+
+            Assert.NotNull(result);
+            Assert.False(result.IsSuccess);
+            Assert.Equal(UpsertType.None, result.UpsertType);
+            Assert.All(result.ValidatePasswordResults, r => Assert.NotEqual(ValidatePasswordResult.Success, r));
+        }
+
 
         [Fact]
         public async Task UpsertBasicAuthAsync_ShouldThrowArgumentNullException_WithNullRequest()
@@ -59,6 +76,23 @@ namespace Corely.UnitTests.Domain.Services.Auth
         public void Constructor_ShouldThrowArgumentNullException_WhenBasicAuthRepoIsNull()
         {
             AuthService act() => new(
+                null,
+                _serviceFactory.GetRequiredService<IPasswordValidationProvider>(),
+                _serviceFactory.GetRequiredService<IMapProvider>(),
+                _serviceFactory.GetRequiredService<IValidationProvider>(),
+                _serviceFactory.GetRequiredService<ILogger<AuthService>>());
+
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public void Constructor_ShouldThrowArgumentNullException_WhenPasswordValidationProviderIsNull()
+        {
+            AuthService act() => new(
+                _serviceFactory.GetRequiredService<IRepoExtendedGet<BasicAuthEntity>>(),
                 null,
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
@@ -75,6 +109,7 @@ namespace Corely.UnitTests.Domain.Services.Auth
         {
             AuthService act() => new(
                 Mock.Of<IRepoExtendedGet<BasicAuthEntity>>(),
+                _serviceFactory.GetRequiredService<IPasswordValidationProvider>(),
                 null,
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<AuthService>>());
@@ -90,6 +125,7 @@ namespace Corely.UnitTests.Domain.Services.Auth
         {
             AuthService act() => new(
                 Mock.Of<IRepoExtendedGet<BasicAuthEntity>>(),
+                _serviceFactory.GetRequiredService<IPasswordValidationProvider>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 null,
                 _serviceFactory.GetRequiredService<ILogger<AuthService>>());
@@ -105,6 +141,7 @@ namespace Corely.UnitTests.Domain.Services.Auth
         {
             AuthService act() => new(
                 Mock.Of<IRepoExtendedGet<BasicAuthEntity>>(),
+                _serviceFactory.GetRequiredService<IPasswordValidationProvider>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 null);

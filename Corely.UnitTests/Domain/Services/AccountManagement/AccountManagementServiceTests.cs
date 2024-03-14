@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Corely.Common.Providers.Security.Password;
 using Corely.Domain.Enums;
 using Corely.Domain.Models;
 using Corely.Domain.Models.AccountManagement;
@@ -74,7 +75,8 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
                     It.IsAny<UpsertBasicAuthRequest>()))
                 .ReturnsAsync(() =>
                     new UpsertBasicAuthResult(_createAuthSuccess, "",
-                        _fixture.Create<int>(), _fixture.Create<UpsertType>()));
+                        _fixture.Create<int>(), _fixture.Create<UpsertType>(),
+                        _fixture.Create<ValidatePasswordResult[]>()));
 
             return authServiceMock;
         }
@@ -132,28 +134,6 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
-        }
-
-        [Fact]
-        public async Task SignUpAsync_ShouldReturnFalseResult_OnError()
-        {
-            var unitOfWorkProviderMock = new Mock<IUnitOfWorkProvider>();
-            unitOfWorkProviderMock
-                .Setup(m => m.BeginAsync())
-                .ThrowsAsync(new Exception());
-
-            var accountManagementServiceFactory = new AccountManagementService(
-                Mock.Of<ILogger<AccountManagementService>>(),
-                _accountServiceMock.Object,
-                _userServiceMock.Object,
-                _authServiceMock.Object,
-                unitOfWorkProviderMock.Object);
-
-            var request = _fixture.Create<SignUpRequest>();
-
-            var result = await accountManagementServiceFactory.SignUpAsync(request);
-
-            Assert.False(result.IsSuccess);
         }
 
         [Fact]

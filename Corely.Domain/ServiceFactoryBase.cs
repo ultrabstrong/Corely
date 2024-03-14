@@ -3,6 +3,7 @@ using Corely.Common.Providers.Security.Encryption;
 using Corely.Common.Providers.Security.Factories;
 using Corely.Common.Providers.Security.Hashing;
 using Corely.Common.Providers.Security.Keys;
+using Corely.Common.Providers.Security.Password;
 using Corely.Domain.Mappers;
 using Corely.Domain.Mappers.AutoMapper;
 using Corely.Domain.Services.AccountManagement;
@@ -30,6 +31,7 @@ namespace Corely.Domain
             AddSecurityServices(services);
             AddDataAccessServices(services);
             AddDomainServices(services);
+            AddPasswordValidation(services);
 
             _serviceProvider = services.BuildServiceProvider();
         }
@@ -71,6 +73,11 @@ namespace Corely.Domain
 
         protected abstract void AddLogger(IServiceCollection services);
         protected abstract void AddDataAccessServices(IServiceCollection services);
+
+        protected virtual void AddPasswordValidation(IServiceCollection services)
+        {
+            services.AddScoped<IPasswordValidationProvider, PasswordValidationProvider>();
+        }
 
         public T GetRequiredService<T>() where T : notnull
             => _serviceProvider.GetRequiredService<T>();
