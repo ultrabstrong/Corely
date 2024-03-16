@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Corely.Common.Providers.Security.Password.Models;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Corely.Common.Providers.Security.Password
@@ -28,11 +29,11 @@ namespace Corely.Common.Providers.Security.Password
             return new Regex(patternBuilder.ToString());
         }
 
-        public ValidatePasswordResult[] ValidatePassword(string password)
+        public PasswordValidationResult ValidatePassword(string password)
         {
             if (Regex.IsMatch(password))
             {
-                return [ValidatePasswordResult.Success];
+                return new(true, []);
             }
             else
             {
@@ -40,7 +41,7 @@ namespace Corely.Common.Providers.Security.Password
             }
         }
 
-        private ValidatePasswordResult[] DetailedValidation(string password)
+        private PasswordValidationResult DetailedValidation(string password)
         {
             var hasUppercase = !RequireUppercase;
             var hasLowercase = !RequireLowercase;
@@ -55,30 +56,30 @@ namespace Corely.Common.Providers.Security.Password
                 if (!hasSpecial && !char.IsLetterOrDigit(ch)) hasSpecial = true;
             }
 
-            var validationResults = new List<ValidatePasswordResult>();
+            var validationResults = new List<string>();
 
             if (password.Length < MinimumLength)
             {
-                validationResults.Add(ValidatePasswordResult.TooShort);
+                validationResults.Add(PasswordConstants.PASSWORD_TOO_SHORT);
             }
             if (!hasUppercase)
             {
-                validationResults.Add(ValidatePasswordResult.NoUppercase);
+                validationResults.Add(PasswordConstants.PASSWORD_MISSING_UPPERCASE);
             }
             if (!hasLowercase)
             {
-                validationResults.Add(ValidatePasswordResult.NoLowercase);
+                validationResults.Add(PasswordConstants.PASSWORD_MISSING_LOWERCASE);
             }
             if (!hasDigit)
             {
-                validationResults.Add(ValidatePasswordResult.NoDigit);
+                validationResults.Add(PasswordConstants.PASSWORD_MISSING_DIGIT);
             }
             if (!hasSpecial)
             {
-                validationResults.Add(ValidatePasswordResult.NoSpecialCharacter);
+                validationResults.Add(PasswordConstants.PASSWORD_MISSING_SPECIAL_CHARACTER);
             }
 
-            return [.. validationResults];
+            return new(false, [.. validationResults]);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Corely.Common.Providers.Security.Password;
-using Corely.Domain.Enums;
+﻿using Corely.Domain.Enums;
 
 namespace Corely.Domain.Models.Auth
 {
@@ -7,8 +6,7 @@ namespace Corely.Domain.Models.Auth
         bool IsSuccess,
         string? Message,
         int CreatedId,
-        UpsertType UpsertType,
-        ValidatePasswordResult[] ValidatePasswordResults)
+        UpsertType UpsertType)
         : CreateResult(IsSuccess, Message, CreatedId)
     { }
 }

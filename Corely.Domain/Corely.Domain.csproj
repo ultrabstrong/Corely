@@ -30,4 +30,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Corely.Common\Corely.Common.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
 </Project>

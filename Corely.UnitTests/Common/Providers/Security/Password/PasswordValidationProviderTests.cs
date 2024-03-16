@@ -17,9 +17,8 @@ namespace Corely.UnitTests.Common.Providers.Security.Password
         public void ValidatePassword_ShouldReturnExpectedResult(string password, bool expectedIsValid)
         {
             var result = _provider.ValidatePassword(password);
-            var isValid = result.Contains(ValidatePasswordResult.Success);
 
-            Assert.Equal(expectedIsValid, isValid);
+            Assert.Equal(expectedIsValid, result.IsSuccess);
         }
 
         public static IEnumerable<object[]> ValidatePassword_ShouldReturnExpectedResult_Data() =>
@@ -38,44 +37,21 @@ namespace Corely.UnitTests.Common.Providers.Security.Password
             var password = "";
             var expectedResults = new[]
             {
-                ValidatePasswordResult.TooShort,
-                ValidatePasswordResult.NoUppercase,
-                ValidatePasswordResult.NoLowercase,
-                ValidatePasswordResult.NoDigit,
-                ValidatePasswordResult.NoSpecialCharacter
+                PasswordConstants.PASSWORD_TOO_SHORT,
+                PasswordConstants.PASSWORD_MISSING_UPPERCASE,
+                PasswordConstants.PASSWORD_MISSING_LOWERCASE,
+                PasswordConstants.PASSWORD_MISSING_DIGIT,
+                PasswordConstants.PASSWORD_MISSING_SPECIAL_CHARACTER
             };
 
             var result = _provider.ValidatePassword(password);
 
-            Assert.Equal(expectedResults.Length, result.Length);
+            Assert.Equal(expectedResults.Length, result.ValidationFailures.Length);
             foreach (var expectedResult in expectedResults)
             {
-                Assert.Contains(expectedResult, result);
+                Assert.Contains(expectedResult, result.ValidationFailures);
             }
         }
-
-        [Theory]
-        [MemberData(nameof(ValidatePassword_ShouldFail_WithSingleFailure_Data))]
-        public void ValidatePassword_ShouldFail_WithSingleFailure(string password, bool expectedIsValid, ValidatePasswordResult expectedResult)
-        {
-            var results = _provider.ValidatePassword(password);
-            var isValid = results.Contains(ValidatePasswordResult.Success);
-            Assert.Equal(expectedIsValid, isValid);
-
-            if (!expectedIsValid)
-            {
-                Assert.Contains(expectedResult, results);
-            }
-        }
-        public static IEnumerable<object[]> ValidatePassword_ShouldFail_WithSingleFailure_Data() =>
-        [
-             ["Short1!", false, ValidatePasswordResult.TooShort],
-             ["nouppercase123!", false, ValidatePasswordResult.NoUppercase],
-             ["NOLOWERCASE123!", false, ValidatePasswordResult.NoLowercase],
-             ["NoNumberPassword!", false, ValidatePasswordResult.NoDigit],
-             ["ValidPassword1", false, ValidatePasswordResult.NoSpecialCharacter],
-             ["ValidPa$sword1", true, ValidatePasswordResult.Success]
-        ];
 
         [Fact]
         public void ValidatePassword_ShouldFail_WithOnlyShortFailure()
@@ -84,8 +60,8 @@ namespace Corely.UnitTests.Common.Providers.Security.Password
 
             var result = _provider.ValidatePassword(password);
 
-            Assert.Single(result);
-            Assert.Equal(ValidatePasswordResult.TooShort, result[0]);
+            Assert.Single(result.ValidationFailures);
+            Assert.Equal(PasswordConstants.PASSWORD_TOO_SHORT, result.ValidationFailures[0]);
         }
 
         [Fact]
@@ -95,8 +71,8 @@ namespace Corely.UnitTests.Common.Providers.Security.Password
 
             var result = _provider.ValidatePassword(password);
 
-            Assert.Single(result);
-            Assert.Equal(ValidatePasswordResult.NoUppercase, result[0]);
+            Assert.Single(result.ValidationFailures);
+            Assert.Equal(PasswordConstants.PASSWORD_MISSING_UPPERCASE, result.ValidationFailures[0]);
         }
 
         [Fact]
@@ -106,8 +82,8 @@ namespace Corely.UnitTests.Common.Providers.Security.Password
 
             var result = _provider.ValidatePassword(password);
 
-            Assert.Single(result);
-            Assert.Equal(ValidatePasswordResult.NoLowercase, result[0]);
+            Assert.Single(result.ValidationFailures);
+            Assert.Equal(PasswordConstants.PASSWORD_MISSING_LOWERCASE, result.ValidationFailures[0]);
         }
 
         [Fact]
@@ -117,8 +93,8 @@ namespace Corely.UnitTests.Common.Providers.Security.Password
 
             var result = _provider.ValidatePassword(password);
 
-            Assert.Single(result);
-            Assert.Equal(ValidatePasswordResult.NoDigit, result[0]);
+            Assert.Single(result.ValidationFailures);
+            Assert.Equal(PasswordConstants.PASSWORD_MISSING_DIGIT, result.ValidationFailures[0]);
         }
 
         [Fact]
@@ -128,8 +104,8 @@ namespace Corely.UnitTests.Common.Providers.Security.Password
 
             var result = _provider.ValidatePassword(password);
 
-            Assert.Single(result);
-            Assert.Equal(ValidatePasswordResult.NoSpecialCharacter, result[0]);
+            Assert.Single(result.ValidationFailures);
+            Assert.Equal(PasswordConstants.PASSWORD_MISSING_SPECIAL_CHARACTER, result.ValidationFailures[0]);
         }
     }
 }

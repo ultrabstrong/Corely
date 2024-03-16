@@ -1,5 +1,6 @@
 ﻿using Corely.Common.Extensions;
 using Corely.Common.Providers.Security.Password;
+using Corely.Common.Providers.Security.Password.Exceptions;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Enums;
 using Corely.Domain.Mappers;
@@ -32,10 +33,9 @@ namespace Corely.Domain.Services.Auth
             ArgumentNullException.ThrowIfNull(request, nameof(request));
 
             var passwordValidationResults = _passwordValidationProvider.ValidatePassword(request.Password);
-            if (passwordValidationResults.Any(r => r != ValidatePasswordResult.Success))
+            if (!passwordValidationResults.IsSuccess)
             {
-                logger.LogWarning("Password validation failed for UserId {UserId}", request.UserId);
-                return new UpsertBasicAuthResult(false, "Password validation failed", 0, UpsertType.None, passwordValidationResults);
+                throw new PasswordValidationException(passwordValidationResults, "Password validation failed");
             }
 
             var basicAuth = MapToValid<BasicAuth>(request);
@@ -49,13 +49,13 @@ namespace Corely.Domain.Services.Auth
             {
                 logger.LogDebug("No existing basic auth for UserId {UserId}. Creating new", request.UserId);
                 var newId = await _basicAuthRepo.CreateAsync(basicAuthEntity);
-                result = new UpsertBasicAuthResult(true, "", newId, UpsertType.Create, passwordValidationResults);
+                result = new UpsertBasicAuthResult(true, "", newId, UpsertType.Create);
             }
             else
             {
                 logger.LogDebug("Found existing basic auth for UserId {UserId}. Updating", request.UserId);
                 await _basicAuthRepo.UpdateAsync(basicAuthEntity);
-                result = new UpsertBasicAuthResult(true, "", existingAuth.Id, UpsertType.Update, passwordValidationResults);
+                result = new UpsertBasicAuthResult(true, "", existingAuth.Id, UpsertType.Update);
             }
 
             logger.LogInformation("Upserted basic auth for UserId {UserId}", request.UserId);

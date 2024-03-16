@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using Corely.Common.Providers.Security.Password;
 using Corely.Domain.Enums;
 using Corely.Domain.Models;
 using Corely.Domain.Models.AccountManagement;
@@ -75,8 +74,7 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
                     It.IsAny<UpsertBasicAuthRequest>()))
                 .ReturnsAsync(() =>
                     new UpsertBasicAuthResult(_createAuthSuccess, "",
-                        _fixture.Create<int>(), _fixture.Create<UpsertType>(),
-                        _fixture.Create<ValidatePasswordResult[]>()));
+                        _fixture.Create<int>(), _fixture.Create<UpsertType>()));
 
             return authServiceMock;
         }

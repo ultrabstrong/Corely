@@ -1,4 +1,5 @@
 ﻿using Corely.Common.Providers.Security.Password;
+using Corely.Common.Providers.Security.Password.Exceptions;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Enums;
 using Corely.Domain.Mappers;
@@ -51,15 +52,17 @@ namespace Corely.UnitTests.Domain.Services.Auth
         }
 
         [Fact]
-        public async Task UpsertBasicAuthAsync_ShouldReturnFailureResult_WhenPasswordValidationFails()
+        public async Task UpsertBasicAuthAsync_ShouldThrowPasswordValidaitonException_WhenPasswordValidationFails()
         {
             var request = new UpsertBasicAuthRequest(1, "username", "password");
-            var result = await _authService.UpsertBasicAuthAsync(request);
 
-            Assert.NotNull(result);
-            Assert.False(result.IsSuccess);
-            Assert.Equal(UpsertType.None, result.UpsertType);
-            Assert.All(result.ValidatePasswordResults, r => Assert.NotEqual(ValidatePasswordResult.Success, r));
+            var ex = await Record.ExceptionAsync(() => _authService.UpsertBasicAuthAsync(request));
+
+            Assert.NotNull(ex);
+            var pvex = Assert.IsType<PasswordValidationException>(ex);
+            Assert.NotNull(pvex.PasswordValidationResult);
+            Assert.False(pvex.PasswordValidationResult.IsSuccess);
+            Assert.NotEmpty(pvex.PasswordValidationResult.ValidationFailures);
         }
 
 

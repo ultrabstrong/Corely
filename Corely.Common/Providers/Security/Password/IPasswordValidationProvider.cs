@@ -1,4 +1,6 @@
-﻿namespace Corely.Common.Providers.Security.Password
+﻿using Corely.Common.Providers.Security.Password.Models;
+
+namespace Corely.Common.Providers.Security.Password
 {
     public interface IPasswordValidationProvider
     {
@@ -8,6 +10,6 @@
         bool RequireNumber { get; }
         bool RequireSpecialCharacter { get; }
 
-        ValidatePasswordResult[] ValidatePassword(string password);
+        PasswordValidationResult ValidatePassword(string password);
     }
 }
