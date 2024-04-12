@@ -45,7 +45,7 @@ namespace Corely.DevTools.Commands.AccountManagement
                     return;
                 }
 
-                var signUpRequest = new SignUpRequest("accountName", "userName", "email", "password");
+                var signUpRequest = new RegisterRequest("accountName", "userName", "email", "password");
                 var json = JsonSerializer.Serialize(signUpRequest);
                 File.WriteAllText(JsonSignupRequestFile, json);
 
@@ -62,7 +62,7 @@ namespace Corely.DevTools.Commands.AccountManagement
 
                 var json = File.ReadAllText(JsonSignupRequestFile);
 
-                var signUpRequest = JsonSerializer.Deserialize<SignUpRequest>(json);
+                var signUpRequest = JsonSerializer.Deserialize<RegisterRequest>(json);
 
                 if (signUpRequest == null)
                 {
@@ -70,7 +70,7 @@ namespace Corely.DevTools.Commands.AccountManagement
                     return;
                 }
 
-                var result = await _accountManagementService.SignUpAsync(signUpRequest);
+                var result = await _accountManagementService.RegisterAsync(signUpRequest);
 
                 Console.WriteLine(JsonSerializer.Serialize(result));
             }

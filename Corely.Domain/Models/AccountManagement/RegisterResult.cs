@@ -1,6 +1,6 @@
 ﻿namespace Corely.Domain.Models.AccountManagement
 {
-    public record SignUpResult(
+    public record RegisterResult(
         bool IsSuccess,
         string? Message,
         int CreatedAccountId,

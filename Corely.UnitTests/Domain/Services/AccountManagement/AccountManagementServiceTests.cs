@@ -82,9 +82,9 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
         [Fact]
         public async Task SignUpAsync_ShouldReturnSuccessResult_WhenAllServicesSucceed()
         {
-            var request = _fixture.Create<SignUpRequest>();
+            var request = _fixture.Create<RegisterRequest>();
 
-            var result = await _accountManagementService.SignUpAsync(request);
+            var result = await _accountManagementService.RegisterAsync(request);
 
             Assert.True(result.IsSuccess);
         }
@@ -93,9 +93,9 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
         public async Task SignUpAsync_ShouldReturnFailureResult_WhenAccountServiceFails()
         {
             _createAccountSuccess = false;
-            var request = _fixture.Create<SignUpRequest>();
+            var request = _fixture.Create<RegisterRequest>();
 
-            var result = await _accountManagementService.SignUpAsync(request);
+            var result = await _accountManagementService.RegisterAsync(request);
 
             Assert.False(result.IsSuccess);
             _userServiceMock.Verify(m => m.CreateUserAsync(It.IsAny<CreateUserRequest>()), Times.Never);
@@ -106,9 +106,9 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
         public async Task SignUpAsync_ShouldReturnFailureResult_WhenUserServiceFails()
         {
             _createUserSuccess = false;
-            var request = _fixture.Create<SignUpRequest>();
+            var request = _fixture.Create<RegisterRequest>();
 
-            var result = await _accountManagementService.SignUpAsync(request);
+            var result = await _accountManagementService.RegisterAsync(request);
 
             Assert.False(result.IsSuccess);
             _authServiceMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
@@ -118,9 +118,9 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
         public async Task SignUpAsync_ShouldReturnFailureResult_WhenAuthServiceFails()
         {
             _createAuthSuccess = false;
-            var request = _fixture.Create<SignUpRequest>();
+            var request = _fixture.Create<RegisterRequest>();
 
-            var result = await _accountManagementService.SignUpAsync(request);
+            var result = await _accountManagementService.RegisterAsync(request);
 
             Assert.False(result.IsSuccess);
         }
@@ -128,7 +128,7 @@ namespace Corely.UnitTests.Domain.Services.AccountManagement
         [Fact]
         public async Task SignUpAsync_ShouldThrowArgumentNullException_WithNullRequest()
         {
-            var ex = await Record.ExceptionAsync(() => _accountManagementService.SignUpAsync(null!));
+            var ex = await Record.ExceptionAsync(() => _accountManagementService.RegisterAsync(null!));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);

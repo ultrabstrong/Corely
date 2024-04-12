@@ -32,10 +32,10 @@ namespace Corely.Domain.Services.AccountManagement
             _uowProvider = uowProvider.ThrowIfNull(nameof(uowProvider));
         }
 
-        public async Task<SignUpResult> SignUpAsync(SignUpRequest request)
+        public async Task<RegisterResult> RegisterAsync(RegisterRequest request)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
-            _logger.LogInformation("Signing up account {Account}", request.AccountName);
+            _logger.LogInformation("Registering account {Account}", request.AccountName);
 
             bool operationSucceeded = false;
             try
@@ -64,8 +64,8 @@ namespace Corely.Domain.Services.AccountManagement
 
                 await _uowProvider.CommitAsync();
                 operationSucceeded = true;
-                _logger.LogInformation("Account {Account} signed up with Id {Id}", request.AccountName, createAccountResult.CreatedId);
-                return new SignUpResult(true, "", createAccountResult.CreatedId, createUserResult.CreatedId, createAuthResult.CreatedId);
+                _logger.LogInformation("Account {Account} registered with Id {Id}", request.AccountName, createAccountResult.CreatedId);
+                return new RegisterResult(true, "", createAccountResult.CreatedId, createUserResult.CreatedId, createAuthResult.CreatedId);
             }
             finally
             {
@@ -74,13 +74,12 @@ namespace Corely.Domain.Services.AccountManagement
                     await _uowProvider.RollbackAsync();
                 }
             }
-            // BHS writing this from Peurto Morelos, 2024!
         }
 
-        private SignUpResult FailSignUpResult()
+        private RegisterResult FailSignUpResult()
         {
-            _logger.LogInformation("Sign up operation failed.");
-            return new SignUpResult(false, "Operation failed", -1, -1, -1);
+            _logger.LogInformation("Register operation failed.");
+            return new RegisterResult(false, "Operation failed", -1, -1, -1);
         }
     }
 }
