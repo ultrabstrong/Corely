@@ -46,7 +46,7 @@ namespace Corely.Domain.Services.Accounts
             if (existingAccount != null)
             {
                 logger.LogWarning("Account {Account} already exists", accountName);
-                throw new AccountExistsException(accountName);
+                throw new AccountExistsException($"Account {accountName} already exists");
             }
         }
     }

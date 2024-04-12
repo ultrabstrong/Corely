@@ -45,21 +45,21 @@ namespace Corely.Domain.Services.AccountManagement
                 if (!createAccountResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating account failed for {Account}", request.AccountName);
-                    return FailSignUpResult();
+                    return FailedRegistrationResult();
                 }
 
                 var createUserResult = await _userService.CreateUserAsync(new(createAccountResult.CreatedId, request.Username, request.Email));
                 if (!createUserResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating user failed for account {Account}", request.AccountName);
-                    return FailSignUpResult();
+                    return FailedRegistrationResult();
                 }
 
                 var createAuthResult = await _authService.UpsertBasicAuthAsync(new(createUserResult.CreatedId, request.Username, request.Password));
                 if (!createAuthResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating auth failed for user {Username}", request.Username);
-                    return FailSignUpResult();
+                    return FailedRegistrationResult();
                 }
 
                 await _uowProvider.CommitAsync();
@@ -76,9 +76,9 @@ namespace Corely.Domain.Services.AccountManagement
             }
         }
 
-        private RegisterResult FailSignUpResult()
+        private RegisterResult FailedRegistrationResult()
         {
-            _logger.LogInformation("Register operation failed.");
+            _logger.LogInformation("Account registration failed.");
             return new RegisterResult(false, "Operation failed", -1, -1, -1);
         }
     }

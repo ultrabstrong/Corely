@@ -41,7 +41,7 @@ namespace Corely.Domain.Services.Users
             if (accountEntity == null)
             {
                 logger.LogWarning("Account with Id {AccountId} not found", request.AccountId);
-                throw new AccountDoesNotExistException();
+                throw new AccountDoesNotExistException($"Account with Id {request.AccountId} not found");
             }
 
             var userEntity = mapProvider.Map<UserEntity>(user);
@@ -61,9 +61,15 @@ namespace Corely.Domain.Services.Users
                 bool usernameExists = existingUser.Username == username;
                 bool emailExists = existingUser.Email == email;
 
-                logger.LogWarning("User already exists with Username {ExistingUsername} and Email {ExistingEmail}", existingUser.Username, existingUser.Email);
+                if (usernameExists)
+                    logger.LogWarning("User already exists with Username {ExistingUsername}", existingUser.Username);
+                if (emailExists)
+                    logger.LogWarning("User already exists with Email {ExistingEmail}", existingUser.Email);
 
-                throw new UserExistsException()
+                string usernameExistsMessage = usernameExists ? $"Username {username} already exists." : "";
+                string emailExistsMessage = emailExists ? $"Email {email} already exists." : "";
+
+                throw new UserExistsException($"{usernameExistsMessage} {emailExistsMessage}".Trim())
                 {
                     UsernameExists = usernameExists,
                     EmailExists = emailExists
