@@ -9,10 +9,6 @@ namespace Corely.Domain.Validators.FluentValidators.Auth
         public BasicAuthValidator()
         {
             ClassLevelCascadeMode = CascadeMode.Stop;
-            RuleFor(m => m.Username)
-                .NotEmpty()
-                .MinimumLength(BasicAuthConstants.USERNAME_MIN_LENGTH)
-                .MaximumLength(BasicAuthConstants.USERNAME_MAX_LENGTH);
             RuleFor(m => m.Password)
                 .NotNull();
             RuleFor(m => m.Password.Hash)

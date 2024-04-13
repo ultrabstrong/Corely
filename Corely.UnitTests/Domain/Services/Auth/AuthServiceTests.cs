@@ -31,7 +31,7 @@ namespace Corely.UnitTests.Domain.Services.Auth
         [Fact]
         public async Task UpsertBasicAuthAsync_ShouldReturnCreateResult_WhenBasicAuthDoesNotExist()
         {
-            var request = new UpsertBasicAuthRequest(1, "username", VALID_PASSWORD);
+            var request = new UpsertBasicAuthRequest(1, VALID_PASSWORD);
             var result = await _authService.UpsertBasicAuthAsync(request);
 
             Assert.NotNull(result);
@@ -42,7 +42,7 @@ namespace Corely.UnitTests.Domain.Services.Auth
         [Fact]
         public async Task UpsertBasicAuthAsync_ShouldReturnUpdateResult_WhenBasicAuthExists()
         {
-            var request = new UpsertBasicAuthRequest(1, "username", VALID_PASSWORD);
+            var request = new UpsertBasicAuthRequest(1, VALID_PASSWORD);
             await _authService.UpsertBasicAuthAsync(request);
             var result = await _authService.UpsertBasicAuthAsync(request);
 
@@ -54,7 +54,7 @@ namespace Corely.UnitTests.Domain.Services.Auth
         [Fact]
         public async Task UpsertBasicAuthAsync_ShouldThrowPasswordValidaitonException_WhenPasswordValidationFails()
         {
-            var request = new UpsertBasicAuthRequest(1, "username", "password");
+            var request = new UpsertBasicAuthRequest(1, "password");
 
             var ex = await Record.ExceptionAsync(() => _authService.UpsertBasicAuthAsync(request));
 

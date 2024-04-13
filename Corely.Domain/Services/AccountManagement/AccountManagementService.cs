@@ -55,7 +55,7 @@ namespace Corely.Domain.Services.AccountManagement
                     return FailedRegistrationResult();
                 }
 
-                var createAuthResult = await _authService.UpsertBasicAuthAsync(new(createUserResult.CreatedId, request.Username, request.Password));
+                var createAuthResult = await _authService.UpsertBasicAuthAsync(new(createUserResult.CreatedId, request.Password));
                 if (!createAuthResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating auth failed for user {Username}", request.Username);

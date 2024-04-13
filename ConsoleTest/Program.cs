@@ -29,7 +29,7 @@ namespace ConsoleTest
             {
                 using var serviceFactory = new ServiceFactory();
 
-                var signUpRequest = new RegisterRequest("acct1", "un1", "email@x.y", "password");
+                var signUpRequest = new RegisterRequest("acct1", "un1", "email@x.y", "P@55Word");
 
                 var acctMgmtService = serviceFactory.GetRequiredService<IAccountManagementService>();
                 var signUpResult = await acctMgmtService.RegisterAsync(signUpRequest);

@@ -10,33 +10,7 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
 {
     public class BasicAuthValidatorTests
     {
-        private const string VALID_USERNAME = "username";
         private readonly BasicAuthValidator _validator = new();
-
-        [Theory]
-        [ClassData(typeof(NullEmptyAndWhitespace))]
-        [MemberData(nameof(InvalidUsernameData))]
-        public void BasicAuthValidator_ShouldHaveValidationError_WhenUsernameInvalid(string username)
-        {
-            var basicAuth = new BasicAuth
-            {
-                Username = username,
-                Password = new HashedValue(Mock.Of<IHashProvider>())
-                {
-                    Hash = ""
-                }
-            };
-
-            var result = _validator.TestValidate(basicAuth);
-            result.ShouldHaveValidationErrorFor(x => x.Username);
-            result.ShouldNotHaveValidationErrorFor(x => x.Password);
-        }
-
-        public static IEnumerable<object[]> InvalidUsernameData() =>
-        [
-            [new string('a', BasicAuthConstants.USERNAME_MIN_LENGTH - 1)],
-            [new string('a', BasicAuthConstants.USERNAME_MAX_LENGTH + 1)]
-        ];
 
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
@@ -45,7 +19,6 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
         {
             var basicAuth = new BasicAuth
             {
-                Username = VALID_USERNAME,
                 Password = new HashedValue(Mock.Of<IHashProvider>())
                 {
                     Hash = password
@@ -55,7 +28,6 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
             var result = _validator.TestValidate(basicAuth);
             result.ShouldHaveValidationErrorFor(x => x.Password.Hash);
             result.ShouldNotHaveValidationErrorFor(x => x.Password);
-            result.ShouldNotHaveValidationErrorFor(x => x.Username);
         }
 
         public static IEnumerable<object[]> InvalidPasswordData() =>
@@ -68,13 +40,11 @@ namespace Corely.UnitTests.Domain.Validators.FluentValidators.Auth
         {
             var basicAuth = new BasicAuth
             {
-                Username = VALID_USERNAME,
                 Password = null
             };
 
             var result = _validator.TestValidate(basicAuth);
             result.ShouldHaveValidationErrorFor(x => x.Password);
-            result.ShouldNotHaveValidationErrorFor(x => x.Username);
         }
     }
 }

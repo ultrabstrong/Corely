@@ -21,16 +21,5 @@ namespace Corely.UnitTests.DataAccess.Repos.Auth
 
             Assert.Equal(basicAuth, result);
         }
-
-        [Fact]
-        public async Task Create_ThenGetByUserName_ShouldReturnAddedBasicAuth()
-        {
-            var basicAuth = fixture.Create<BasicAuthEntity>();
-
-            await Repo.CreateAsync(basicAuth);
-            var result = await Repo.GetAsync(a => a.Username == basicAuth.Username);
-
-            Assert.Equal(basicAuth, result);
-        }
     }
 }
