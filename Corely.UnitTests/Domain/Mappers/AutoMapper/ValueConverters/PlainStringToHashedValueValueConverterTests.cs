@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
-using Corely.Common.Providers.Security.Factories;
 using Corely.Domain.Mappers.AutoMapper.ValueConverters;
+using Corely.Security.Hashing.Factories;
 using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.ValueConverters

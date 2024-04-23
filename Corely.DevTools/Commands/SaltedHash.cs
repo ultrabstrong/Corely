@@ -1,5 +1,5 @@
-﻿using Corely.Common.Providers.Security.Factories;
-using Corely.DevTools.Attributes;
+﻿using Corely.DevTools.Attributes;
+using Corely.Security.Hashing.Factories;
 
 namespace Corely.DevTools.Commands
 {

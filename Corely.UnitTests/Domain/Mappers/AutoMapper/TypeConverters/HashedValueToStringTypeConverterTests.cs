@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
-using Corely.Common.Models.Security;
-using Corely.Common.Providers.Security.Hashing;
 using Corely.Domain.Mappers.AutoMapper.TypeConverters;
+using Corely.Security.Hashing.Models;
+using Corely.Security.Hashing.Providers;
 using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.TypeConverters

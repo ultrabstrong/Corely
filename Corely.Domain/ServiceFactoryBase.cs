@@ -1,9 +1,4 @@
 ﻿using Corely.Common.Models;
-using Corely.Common.Providers.Security.Encryption;
-using Corely.Common.Providers.Security.Factories;
-using Corely.Common.Providers.Security.Hashing;
-using Corely.Common.Providers.Security.Keys;
-using Corely.Common.Providers.Security.Password;
 using Corely.Domain.Mappers;
 using Corely.Domain.Mappers.AutoMapper;
 using Corely.Domain.Services.AccountManagement;
@@ -12,6 +7,13 @@ using Corely.Domain.Services.Auth;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
 using Corely.Domain.Validators.FluentValidators;
+using Corely.Security.Encryption;
+using Corely.Security.Encryption.Factories;
+using Corely.Security.Hashing;
+using Corely.Security.Hashing.Factories;
+using Corely.Security.Keys;
+using Corely.Security.KeyStore;
+using Corely.Security.PasswordValidation.Providers;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -56,11 +58,11 @@ namespace Corely.Domain
                 new InMemoryKeyStoreProvider(key));
 
             services.AddScoped<IEncryptionProviderFactory, EncryptionProviderFactory>(serviceProvider =>
-                new EncryptionProviderFactory(EncryptionProviderConstants.AES_CODE,
+                new EncryptionProviderFactory(EncryptionConstants.AES_CODE,
                     serviceProvider.GetRequiredService<IKeyStoreProvider>()));
 
             services.AddScoped<IHashProviderFactory, HashProviderFactory>(_ =>
-                new HashProviderFactory(HashProviderConstants.SALTED_SHA256_CODE));
+                new HashProviderFactory(HashConstants.SALTED_SHA256_CODE));
         }
 
         private static void AddDomainServices(IServiceCollection services)

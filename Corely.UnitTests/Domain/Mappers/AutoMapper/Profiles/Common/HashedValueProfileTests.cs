@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
-using Corely.Common.Models.Security;
-using Corely.Common.Providers.Security.Hashing;
+using Corely.Security.Hashing;
+using Corely.Security.Hashing.Models;
+using Corely.Security.Hashing.Providers;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Common
 {
@@ -8,7 +9,7 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Common
         : BidirectionalProfileTestsBase<HashedValue, string>
     {
         protected override string GetDestination()
-            => $"{HashProviderConstants.SALTED_SHA256_CODE}:{new Fixture().Create<string>()}";
+            => $"{HashConstants.SALTED_SHA256_CODE}:{new Fixture().Create<string>()}";
 
         protected override object[] GetSourceParams()
             => [Mock.Of<IHashProvider>()];

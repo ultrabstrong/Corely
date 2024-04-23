@@ -1,12 +1,12 @@
-﻿using Corely.Common.Providers.Security.Password;
-using Corely.Common.Providers.Security.Password.Exceptions;
-using Corely.Domain.Entities.Auth;
+﻿using Corely.Domain.Entities.Auth;
 using Corely.Domain.Enums;
 using Corely.Domain.Mappers;
 using Corely.Domain.Models.Auth;
 using Corely.Domain.Repos;
 using Corely.Domain.Services.Auth;
 using Corely.Domain.Validators;
+using Corely.Security.Password;
+using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.Domain.Services.Auth

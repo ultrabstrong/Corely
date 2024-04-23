@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Corely.Common.Models.Security;
+using Corely.Security.Encryption.Models;
 
 namespace Corely.Domain.Mappers.AutoMapper.TypeConverters
 {

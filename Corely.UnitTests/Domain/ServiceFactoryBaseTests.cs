@@ -1,7 +1,4 @@
-﻿using Corely.Common.Providers.Security.Factories;
-using Corely.Common.Providers.Security.Keys;
-using Corely.Common.Providers.Security.Password;
-using Corely.DataAccess;
+﻿using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.Domain;
 using Corely.Domain.Mappers;
@@ -10,6 +7,10 @@ using Corely.Domain.Services.Accounts;
 using Corely.Domain.Services.Auth;
 using Corely.Domain.Services.Users;
 using Corely.Domain.Validators;
+using Corely.Security.Encryption.Factories;
+using Corely.Security.Hashing.Factories;
+using Corely.Security.KeyStore;
+using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

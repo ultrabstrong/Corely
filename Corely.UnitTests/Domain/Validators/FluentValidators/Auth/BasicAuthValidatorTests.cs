@@ -1,8 +1,8 @@
-﻿using Corely.Common.Models.Security;
-using Corely.Common.Providers.Security.Hashing;
-using Corely.Domain.Constants.Auth;
+﻿using Corely.Domain.Constants.Auth;
 using Corely.Domain.Models.Auth;
 using Corely.Domain.Validators.FluentValidators.Auth;
+using Corely.Security.Hashing.Models;
+using Corely.Security.Hashing.Providers;
 using Corely.UnitTests.ClassData;
 using FluentValidation.TestHelper;
 

@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
-using Corely.Common.Models.Security;
-using Corely.Common.Providers.Security.Encryption;
+using Corely.Security.Encryption;
+using Corely.Security.Encryption.Models;
+using Corely.Security.Encryption.Providers;
 
 namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Common
 {
@@ -8,7 +9,7 @@ namespace Corely.UnitTests.Domain.Mappers.AutoMapper.Profiles.Common
         : BidirectionalProfileTestsBase<EncryptedValue, string>
     {
         protected override string GetDestination()
-            => $"{EncryptionProviderConstants.AES_CODE}:{new Fixture().Create<string>()}";
+            => $"{EncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
         protected override object[] GetSourceParams()
             => [Mock.Of<IEncryptionProvider>()];
     }

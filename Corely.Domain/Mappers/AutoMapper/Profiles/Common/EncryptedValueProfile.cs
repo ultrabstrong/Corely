@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Corely.Common.Models.Security;
 using Corely.Domain.Mappers.AutoMapper.TypeConverters;
+using Corely.Security.Encryption.Models;
 
 namespace Corely.Domain.Mappers.AutoMapper.Profiles.Common
 {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Corely.Common.Models.Security;
-using Corely.Common.Providers.Security.Factories;
+using Corely.Security.Encryption.Factories;
+using Corely.Security.Encryption.Models;
 
 namespace Corely.Domain.Mappers.AutoMapper.ValueConverters
 {
