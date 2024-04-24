@@ -2,9 +2,9 @@
 using Serilog.Core;
 using Serilog.Events;
 
-namespace ConsoleTest
+namespace ConsoleTest.SerilogCustomization
 {
-    public class RedactionEnricher(List<IRedactionProvider> redactors)
+    public class SerilogRedactionEnricher(List<IRedactionProvider> redactors)
         : ILogEventEnricher
     {
         private readonly List<IRedactionProvider> _redactors = redactors;

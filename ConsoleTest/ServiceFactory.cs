@@ -1,9 +1,11 @@
-﻿using Corely.DataAccess;
+﻿using ConsoleTest.SerilogCustomization;
+using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System.Reflection;
@@ -16,14 +18,26 @@ namespace ConsoleTest
         {
             public override void Configure(DbContextOptionsBuilder optionsBuilder)
             {
-                optionsBuilder.UseMySql(
-                    connectionString,
-                    ServerVersion.AutoDetect(connectionString),
-                    b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
+                var serilogEFEventDataWriter = new SerilogEFEventDataWriter();
+                optionsBuilder
+                    .UseMySql(
+                        connectionString,
+                        ServerVersion.AutoDetect(connectionString),
+                        b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
+                    .LogTo(
+                        filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
+                        logger: serilogEFEventDataWriter.Write);
+                /* This is the default way to add logging if very little customization is needed
                 optionsBuilder.LogTo(
-                    Log.Logger.Debug,
-                    new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuted }
-                );
+                        Log.Logger.Debug,
+                        events: [RelationalEventId.CommandExecuted],
+                        options: DbContextLoggerOptions.UtcTime);
+                */
+#if DEBUG
+                optionsBuilder
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors();
+#endif
             }
         }
 

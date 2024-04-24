@@ -1,4 +1,5 @@
-﻿using Corely.Common.Providers.Redaction;
+﻿using ConsoleTest.SerilogCustomization;
+using Corely.Common.Providers.Redaction;
 using Corely.Domain.Models.AccountManagement;
 using Corely.Domain.Services.AccountManagement;
 using Serilog;
@@ -18,10 +19,11 @@ namespace ConsoleTest
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", "ConsoleTest")
                 .Enrich.WithProperty("CorrelationId", Guid.NewGuid())
-                .Enrich.With(new RedactionEnricher([
+                .Enrich.With(new SerilogRedactionEnricher([
                     new PasswordRedactionProvider()]))
                 .MinimumLevel.Debug()
-                .WriteTo.Console()
+                .WriteTo.Console(
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}")
                 .WriteTo.Seq("http://localhost:5341")
                 .CreateLogger();
 
