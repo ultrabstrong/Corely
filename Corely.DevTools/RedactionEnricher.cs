@@ -1,4 +1,4 @@
-﻿using Corely.Common.Providers.Redaction;
+﻿using Corely.Common.Redaction;
 using Serilog.Core;
 using Serilog.Events;
 

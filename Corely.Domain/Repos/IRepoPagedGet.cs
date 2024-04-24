@@ -1,4 +1,4 @@
-﻿using Corely.Common.Models.Results;
+﻿using Corely.Common.Models;
 
 namespace Corely.Domain.Repos
 {
