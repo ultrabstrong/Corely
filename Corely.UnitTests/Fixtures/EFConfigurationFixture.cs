@@ -1,10 +1,10 @@
 ﻿using AutoFixture;
-using Corely.DataAccess.Connections;
+using Corely.DataAccess.EntityFramework.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Corely.UnitTests.Fixtures
 {
-    public class EFConfigurationFixture : InMemoryEFConfigurationBase
+    public class EFConfigurationFixture : EFInMemoryConfigurationBase
     {
         public override void Configure(DbContextOptionsBuilder optionsBuilder)
         {

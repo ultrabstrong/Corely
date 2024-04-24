@@ -1,4 +1,6 @@
-﻿namespace Corely.DataAccess.Connections
+﻿using Corely.DataAccess.EntityFramework;
+
+namespace Corely.DataAccess.Connections
 {
     public class DataAccessConnection<T> : IDataAccessConnection<T>
     {

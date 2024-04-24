@@ -1,11 +1,11 @@
-﻿using Corely.DataAccess.Mock;
+﻿using Corely.DataAccess.Factories;
 using Corely.DataAccess.Mock.Repos;
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 
-namespace Corely.DataAccess.Factories.AccountManagement
+namespace Corely.DataAccess.Mock
 {
     internal class MockAccountManagementRepoFactory : IAccountManagementRepoFactory
     {

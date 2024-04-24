@@ -1,13 +1,13 @@
-﻿using Corely.DataAccess.Extensions;
+﻿using Corely.DataAccess.EntityFramework.Repos;
 using Microsoft.EntityFrameworkCore;
 
-namespace Corely.UnitTests.DataAccess.Extensions
+namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
 {
-    public class DbSetExtensionsTests
+    public class DbSetExtendedGetExtensionsTests
     {
         private readonly Mock<DbSet<object>> _dbSet;
 
-        public DbSetExtensionsTests()
+        public DbSetExtendedGetExtensionsTests()
         {
             _dbSet = new Mock<DbSet<object>>();
         }
@@ -15,7 +15,7 @@ namespace Corely.UnitTests.DataAccess.Extensions
         [Fact]
         public async Task GetAsync_ShouldThrowArgumentNullException_WithNullDbSet()
         {
-            var ex = await Record.ExceptionAsync(() => DbSetExtensions.GetAsync((DbSet<object>?)null, null));
+            var ex = await Record.ExceptionAsync(() => ((DbSet<object>?)null).GetAsync(null));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);

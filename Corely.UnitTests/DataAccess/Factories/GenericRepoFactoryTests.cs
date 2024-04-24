@@ -1,7 +1,9 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Connections;
+using Corely.DataAccess.EntityFramework;
+using Corely.DataAccess.EntityFramework.AccountManagement;
 using Corely.DataAccess.Factories;
-using Corely.DataAccess.Factories.AccountManagement;
+using Corely.DataAccess.Mock;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 

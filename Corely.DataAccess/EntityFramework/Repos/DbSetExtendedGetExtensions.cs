@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Corely.DataAccess.Extensions
+namespace Corely.DataAccess.EntityFramework.Repos
 {
-    internal static class DbSetExtensions
+    internal static class DbSetExtendedGetExtensions
     {
         public static async Task<T?> GetAsync<T>(this DbSet<T> dbSet,
             Expression<Func<T, bool>> query,

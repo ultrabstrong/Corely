@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Corely.DataAccess.Connections
+namespace Corely.DataAccess.EntityFramework.Configurations
 {
-    public abstract class InMemoryEFConfigurationBase : IEFConfiguration
+    public abstract class EFInMemoryConfigurationBase : IEFConfiguration
     {
         private class EFDbTypes : IEFDbTypes
         {

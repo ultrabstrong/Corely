@@ -1,4 +1,5 @@
 ﻿using Corely.DataAccess.EntityFramework;
+using Corely.DataAccess.EntityFramework.AccountManagement;
 using Corely.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 

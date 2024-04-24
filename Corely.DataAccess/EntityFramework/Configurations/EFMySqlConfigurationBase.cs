@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Corely.DataAccess.Connections
+namespace Corely.DataAccess.EntityFramework.Configurations
 {
-    public abstract class MySqlEFConfigurationBase : IEFConfiguration
+    public abstract class EFMySqlConfigurationBase : IEFConfiguration
     {
         private class EFDbTypes : IEFDbTypes
         {
@@ -13,7 +13,7 @@ namespace Corely.DataAccess.Connections
         private readonly EFDbTypes _efDbTypes = new();
         protected readonly string connectionString;
 
-        public MySqlEFConfigurationBase(string connectionString)
+        public EFMySqlConfigurationBase(string connectionString)
         {
             this.connectionString = connectionString;
         }

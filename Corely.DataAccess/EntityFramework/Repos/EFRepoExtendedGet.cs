@@ -1,5 +1,4 @@
-﻿using Corely.DataAccess.Extensions;
-using Corely.Domain.Entities;
+﻿using Corely.Domain.Entities;
 using Corely.Domain.Repos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

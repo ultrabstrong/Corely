@@ -1,5 +1,6 @@
 ﻿using Corely.DataAccess;
 using Corely.DataAccess.Connections;
+using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +10,7 @@ namespace Corely.UnitTests
 {
     public class ServiceFactory : ServiceFactoryBase
     {
-        private class InMemoryConfig : InMemoryEFConfigurationBase
+        private class InMemoryConfig : EFInMemoryConfigurationBase
         {
             public override void Configure(DbContextOptionsBuilder optionsBuilder)
             {

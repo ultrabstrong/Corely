@@ -3,7 +3,7 @@ using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 
-namespace Corely.DataAccess.Factories.AccountManagement
+namespace Corely.DataAccess.Factories
 {
     public interface IAccountManagementRepoFactory
     {

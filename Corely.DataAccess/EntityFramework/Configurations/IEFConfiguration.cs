@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Corely.DataAccess.Connections
+namespace Corely.DataAccess.EntityFramework.Configurations
 {
     public interface IEFConfiguration
     {

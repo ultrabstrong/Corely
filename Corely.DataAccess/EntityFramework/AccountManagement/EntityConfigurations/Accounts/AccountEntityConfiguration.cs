@@ -1,12 +1,11 @@
-﻿using Corely.DataAccess.Connections;
-using Corely.DataAccess.EntityFramework.Configurations;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.Domain.Constants.Accounts;
 using Corely.Domain.Entities.Accounts;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.EntityFramework.Configurations.Accounts
+namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations.Accounts
 {
-    internal class AccountEntityConfiguration : EntityConfigurationBase<AccountEntity>
+    internal sealed class AccountEntityConfiguration : EntityConfigurationBase<AccountEntity>
     {
         public AccountEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
         {

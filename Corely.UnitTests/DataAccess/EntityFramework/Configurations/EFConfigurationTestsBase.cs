@@ -1,6 +1,6 @@
-﻿using Corely.DataAccess.Connections;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 
-namespace Corely.UnitTests.DataAccess.Connections
+namespace Corely.UnitTests.DataAccess.EntityFramework.Configurations
 {
     public abstract class EFConfigurationTestsBase
     {

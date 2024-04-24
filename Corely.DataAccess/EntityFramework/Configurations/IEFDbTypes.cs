@@ -1,4 +1,4 @@
-﻿namespace Corely.DataAccess.Connections
+﻿namespace Corely.DataAccess.EntityFramework.Configurations
 {
     public interface IEFDbTypes
     {

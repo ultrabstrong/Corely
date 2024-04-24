@@ -1,6 +1,4 @@
-﻿using Corely.DataAccess.Factories.AccountManagement;
-
-namespace Corely.DataAccess.Factories
+﻿namespace Corely.DataAccess.Factories
 {
     public interface IGenericRepoFactory
     {

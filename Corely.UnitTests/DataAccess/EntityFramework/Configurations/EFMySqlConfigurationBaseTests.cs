@@ -1,12 +1,12 @@
 ﻿using AutoFixture;
-using Corely.DataAccess.Connections;
+using Corely.DataAccess.EntityFramework.Configurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace Corely.UnitTests.DataAccess.Connections
+namespace Corely.UnitTests.DataAccess.EntityFramework.Configurations
 {
-    public class MySqlEFConfigurationBaseTests : EFConfigurationTestsBase
+    public class EFMySqlConfigurationBaseTests : EFConfigurationTestsBase
     {
-        private class MockMySqlEFConfiguration : MySqlEFConfigurationBase
+        private class MockMySqlEFConfiguration : EFMySqlConfigurationBase
         {
             public MockMySqlEFConfiguration(string connectionString) : base(connectionString)
             {
@@ -20,7 +20,7 @@ namespace Corely.UnitTests.DataAccess.Connections
         private readonly Fixture _fixture = new();
         private readonly MockMySqlEFConfiguration _mockMySqlEFConfiguration;
 
-        public MySqlEFConfigurationBaseTests()
+        public EFMySqlConfigurationBaseTests()
         {
             _mockMySqlEFConfiguration = new(_fixture.Create<string>());
         }

@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
-using Corely.DataAccess.Factories.AccountManagement;
+using Corely.DataAccess.Factories;
 
-namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
+namespace Corely.UnitTests.DataAccess.Factories
 {
     public abstract class AccountManagementRepoFactoryTestsBase
     {

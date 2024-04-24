@@ -1,9 +1,9 @@
-﻿using Corely.DataAccess.Connections;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.EntityFramework.Configurations
+namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations
 {
     internal abstract class EntityConfigurationBase<T>
         : IEntityTypeConfiguration<T>

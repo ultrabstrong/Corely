@@ -1,11 +1,12 @@
-﻿using Corely.DataAccess.Connections;
-using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.Factories.AccountManagement;
+﻿using Corely.DataAccess.EntityFramework;
+using Corely.DataAccess.EntityFramework.AccountManagement;
+using Corely.DataAccess.Factories;
 using Corely.DataAccess.Mock;
+using Corely.UnitTests.DataAccess.Factories;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.DataAccess.Factories.AccountManagement
+namespace Corely.UnitTests.DataAccess.EntityFramework.AccountManagement
 {
     public class EFAccountManagementRepoFactoryTests : AccountManagementRepoFactoryTestsBase
     {

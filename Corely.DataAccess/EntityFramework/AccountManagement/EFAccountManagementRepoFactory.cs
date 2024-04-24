@@ -1,6 +1,5 @@
-﻿using Corely.DataAccess.Connections;
-using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.Repos;
+﻿using Corely.DataAccess.EntityFramework.Repos;
+using Corely.DataAccess.Factories;
 using Corely.DataAccess.Mock;
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
@@ -8,7 +7,7 @@ using Corely.Domain.Entities.Users;
 using Corely.Domain.Repos;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.DataAccess.Factories.AccountManagement
+namespace Corely.DataAccess.EntityFramework.AccountManagement
 {
     internal class EFAccountManagementRepoFactory : IAccountManagementRepoFactory
     {

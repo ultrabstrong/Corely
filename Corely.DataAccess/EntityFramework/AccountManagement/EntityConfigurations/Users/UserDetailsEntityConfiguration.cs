@@ -1,12 +1,11 @@
-﻿using Corely.DataAccess.Connections;
-using Corely.DataAccess.EntityFramework.Configurations;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.Domain.Constants.Users;
 using Corely.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.EntityFramework.Configurations.Users
+namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations.Users
 {
-    internal class UserDetailsEntityConfiguration : EntityConfigurationBase<UserDetailsEntity>
+    internal sealed class UserDetailsEntityConfiguration : EntityConfigurationBase<UserDetailsEntity>
     {
         public UserDetailsEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
         {

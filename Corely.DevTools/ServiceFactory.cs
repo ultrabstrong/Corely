@@ -1,5 +1,7 @@
 ﻿using Corely.DataAccess;
 using Corely.DataAccess.Connections;
+using Corely.DataAccess.EntityFramework;
+using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +12,7 @@ namespace Corely.DevTools
 {
     internal class ServiceFactory : ServiceFactoryBase
     {
-        private class EFConfiguration(string connectionString) : MySqlEFConfigurationBase(connectionString)
+        private class EFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
         {
             public override void Configure(DbContextOptionsBuilder optionsBuilder)
             {
