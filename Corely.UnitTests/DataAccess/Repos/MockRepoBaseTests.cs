@@ -6,9 +6,7 @@ namespace Corely.UnitTests.DataAccess.Repos
 {
     public class MockRepoBaseTests : RepoTestsBase<EntityFixture>
     {
-        private class TestMockRepo : MockRepoBase<EntityFixture> { }
-
-        private readonly TestMockRepo _mockRepoFixture = new();
+        private readonly MockRepo<EntityFixture> _mockRepoFixture = new();
         protected override IRepo<EntityFixture> Repo => _mockRepoFixture;
     }
 }

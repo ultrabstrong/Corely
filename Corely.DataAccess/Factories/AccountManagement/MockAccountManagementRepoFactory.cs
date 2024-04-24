@@ -1,7 +1,5 @@
 ﻿using Corely.DataAccess.DataSources.Mock;
-using Corely.DataAccess.Repos.Accounts;
-using Corely.DataAccess.Repos.Auth;
-using Corely.DataAccess.Repos.User;
+using Corely.DataAccess.Repos;
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
@@ -12,9 +10,9 @@ namespace Corely.DataAccess.Factories.AccountManagement
     internal class MockAccountManagementRepoFactory : IAccountManagementRepoFactory
     {
         // Reuse the same mocks so multiple requests work when testing
-        private readonly MockAccountRepo _accountRepo = new();
-        private readonly MockUserRepo _userRepo = new();
-        private readonly MockBasicAuthRepo _basicAuthRepo = new();
+        private readonly MockRepoExtendedGet<AccountEntity> _accountRepo = new();
+        private readonly MockRepoExtendedGet<UserEntity> _userRepo = new();
+        private readonly MockRepoExtendedGet<BasicAuthEntity> _basicAuthRepo = new();
         private readonly MockUoWProvider _mockUoWProvider = new();
 
         public IRepoExtendedGet<AccountEntity> CreateAccountRepo()
@@ -24,7 +22,7 @@ namespace Corely.DataAccess.Factories.AccountManagement
 
         public IReadonlyRepo<AccountEntity> CreateReadonlyAccountRepo()
         {
-            return new MockReadonlyAccountRepo(_accountRepo);
+            return new MockReadonlyRepo<AccountEntity>(_accountRepo);
         }
 
         public IRepoExtendedGet<UserEntity> CreateUserRepo()

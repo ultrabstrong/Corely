@@ -3,7 +3,7 @@ using Corely.Domain.Repos;
 
 namespace Corely.DataAccess.Repos
 {
-    internal abstract class MockRepoBase<T>
+    internal class MockRepo<T>
         : IRepo<T>
         where T : IHasIdPk
     {

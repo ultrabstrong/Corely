@@ -7,25 +7,21 @@ namespace Corely.UnitTests.DataAccess.Repos
 {
     public class MockReadonlyRepoBaseTests : ReadonlyRepoTestsBase<EntityFixture>
     {
-        private class MockReadonlyRepo : MockReadonlyRepoBase<EntityFixture>
-        {
-            private readonly List<EntityFixture> _entities;
 
-            public MockReadonlyRepo(List<EntityFixture> entities)
-            {
-                _entities = entities;
-            }
-
-            protected override List<EntityFixture> Entities => _entities;
-        }
-
-        private readonly MockReadonlyRepo _mockReadonlyRepo;
+        private readonly MockReadonlyRepo<EntityFixture> _mockReadonlyRepo;
         private readonly int _getId;
 
         public MockReadonlyRepoBaseTests()
         {
+            var mockRepo = new MockRepo<EntityFixture>();
+
             var entityList = fixture.CreateMany<EntityFixture>(5).ToList();
-            _mockReadonlyRepo = new MockReadonlyRepo(entityList);
+            foreach (var entity in entityList)
+            {
+                mockRepo.CreateAsync(entity);
+            }
+
+            _mockReadonlyRepo = new MockReadonlyRepo<EntityFixture>(mockRepo);
             _getId = entityList[2].Id;
         }
 

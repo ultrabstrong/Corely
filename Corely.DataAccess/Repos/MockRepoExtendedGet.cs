@@ -4,8 +4,8 @@ using System.Linq.Expressions;
 
 namespace Corely.DataAccess.Repos
 {
-    internal abstract class MockRepoExtendedGetBase<T>
-        : MockRepoBase<T>, IRepoExtendedGet<T>
+    internal class MockRepoExtendedGet<T>
+        : MockRepo<T>, IRepoExtendedGet<T>
         where T : IHasIdPk
     {
         public virtual Task<T?> GetAsync(Expression<Func<T, bool>> query,
