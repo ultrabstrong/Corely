@@ -1,9 +1,7 @@
 ﻿using Corely.DataAccess.Connections;
 using Corely.DataAccess.DataSources.EntityFramework;
 using Corely.DataAccess.DataSources.Mock;
-using Corely.DataAccess.Repos.Accounts;
-using Corely.DataAccess.Repos.Auth;
-using Corely.DataAccess.Repos.User;
+using Corely.DataAccess.Repos;
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
@@ -43,22 +41,33 @@ namespace Corely.DataAccess.Factories.AccountManagement
 
         public IRepoExtendedGet<AccountEntity> CreateAccountRepo()
         {
-            return new EFAccountRepo(_loggerFactory.CreateLogger<EFAccountRepo>(), _accountManagementDbContext);
+            return new EFRepoExtendedGet<AccountEntity>(
+                _loggerFactory.CreateLogger<EFRepoExtendedGet<AccountEntity>>(),
+                _accountManagementDbContext,
+                _accountManagementDbContext.Accounts);
         }
 
         public IReadonlyRepo<AccountEntity> CreateReadonlyAccountRepo()
         {
-            return new EFReadonlyAccountRepo(_loggerFactory.CreateLogger<EFReadonlyAccountRepo>(), _accountManagementDbContext);
+            return new EFReadonlyRepo<AccountEntity>(
+                _loggerFactory.CreateLogger<EFReadonlyRepo<AccountEntity>>(),
+                _accountManagementDbContext.Accounts);
         }
 
         public IRepoExtendedGet<UserEntity> CreateUserRepo()
         {
-            return new EFUserRepo(_loggerFactory.CreateLogger<EFUserRepo>(), _accountManagementDbContext);
+            return new EFRepoExtendedGet<UserEntity>(
+                _loggerFactory.CreateLogger<EFRepoExtendedGet<UserEntity>>(),
+                _accountManagementDbContext,
+                _accountManagementDbContext.Users);
         }
 
         public IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo()
         {
-            return new EFBasicAuthRepo(_loggerFactory.CreateLogger<EFBasicAuthRepo>(), _accountManagementDbContext);
+            return new EFRepoExtendedGet<BasicAuthEntity>(
+                _loggerFactory.CreateLogger<EFRepoExtendedGet<BasicAuthEntity>>(),
+                _accountManagementDbContext,
+                _accountManagementDbContext.BasicAuths);
         }
 
         public IUnitOfWorkProvider CreateUnitOfWorkProvider()

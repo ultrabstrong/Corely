@@ -5,13 +5,13 @@ using Corely.UnitTests.Fixtures;
 
 namespace Corely.UnitTests.DataAccess.Repos
 {
-    public class MockReadonlyRepoBaseTests : ReadonlyRepoTestsBase<EntityFixture>
+    public class MockReadonlyRepoTests : ReadonlyRepoTestsBase<EntityFixture>
     {
 
         private readonly MockReadonlyRepo<EntityFixture> _mockReadonlyRepo;
         private readonly int _getId;
 
-        public MockReadonlyRepoBaseTests()
+        public MockReadonlyRepoTests()
         {
             var mockRepo = new MockRepo<EntityFixture>();
 
