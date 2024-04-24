@@ -12,9 +12,9 @@ namespace Corely.DataAccess.EntityFramework.Repos
     {
         public EFRepoExtendedGet(
             ILogger<EFRepoExtendedGet<T>> logger,
-            DbContext dbContext,
+            Func<Task> saveChangesAsync,
             DbSet<T> dbSet)
-            : base(logger, dbContext, dbSet)
+            : base(logger, saveChangesAsync, dbSet)
         {
         }
 

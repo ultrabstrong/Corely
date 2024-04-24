@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corely.DataAccess.EntityFramework.AccountManagement
 {
-    public sealed class AccountManagementDbContext : DbContext
+    public class AccountManagementDbContext : DbContext
     {
         private readonly IEFConfiguration _configuration;
 

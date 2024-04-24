@@ -18,7 +18,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
 
             _efRepo = new EFRepo<EntityFixture>(
                 serviceFactory.GetRequiredService<ILogger<EFRepo<EntityFixture>>>(),
-                dbContext,
+                () => dbContext.SaveChangesAsync(),
                 dbContext.Entities);
         }
 

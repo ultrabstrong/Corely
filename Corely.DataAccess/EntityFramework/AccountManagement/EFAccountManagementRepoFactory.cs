@@ -42,7 +42,7 @@ namespace Corely.DataAccess.EntityFramework.AccountManagement
         {
             return new EFRepoExtendedGet<AccountEntity>(
                 _loggerFactory.CreateLogger<EFRepoExtendedGet<AccountEntity>>(),
-                _accountManagementDbContext,
+                SaveChangesAsync,
                 _accountManagementDbContext.Accounts);
         }
 
@@ -57,7 +57,7 @@ namespace Corely.DataAccess.EntityFramework.AccountManagement
         {
             return new EFRepoExtendedGet<UserEntity>(
                 _loggerFactory.CreateLogger<EFRepoExtendedGet<UserEntity>>(),
-                _accountManagementDbContext,
+                SaveChangesAsync,
                 _accountManagementDbContext.Users);
         }
 
@@ -65,7 +65,7 @@ namespace Corely.DataAccess.EntityFramework.AccountManagement
         {
             return new EFRepoExtendedGet<BasicAuthEntity>(
                 _loggerFactory.CreateLogger<EFRepoExtendedGet<BasicAuthEntity>>(),
-                _accountManagementDbContext,
+                SaveChangesAsync,
                 _accountManagementDbContext.BasicAuths);
         }
 
@@ -75,5 +75,7 @@ namespace Corely.DataAccess.EntityFramework.AccountManagement
                 ? new EFUoWProvider(_accountManagementDbContext)
                 : new MockUoWProvider();
         }
+
+        private async Task SaveChangesAsync() => await _accountManagementDbContext.SaveChangesAsync();
     }
 }

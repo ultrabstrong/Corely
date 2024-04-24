@@ -1,5 +1,4 @@
 ﻿using Corely.Common.Extensions;
-using Corely.Common.Models;
 using Corely.Domain.Entities;
 using Corely.Domain.Repos;
 using Microsoft.EntityFrameworkCore;
@@ -8,20 +7,21 @@ using Microsoft.Extensions.Logging;
 namespace Corely.DataAccess.EntityFramework.Repos
 {
     internal class EFRepo<T>
-        : DisposeBase, IRepo<T>
+        : IRepo<T>
         where T : class, IHasIdPk
     {
+        private readonly Func<Task> _saveChangesAsync;
+
         protected readonly ILogger<EFRepo<T>> _logger;
-        protected readonly DbContext _dbContext;
         protected readonly DbSet<T> _dbSet;
 
         public EFRepo(
             ILogger<EFRepo<T>> logger,
-            DbContext dbContext,
+            Func<Task> saveChangesAsync,
             DbSet<T> dbSet)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
-            _dbContext = dbContext.ThrowIfNull(nameof(dbContext));
+            _saveChangesAsync = saveChangesAsync.ThrowIfNull(nameof(saveChangesAsync));
             _dbSet = dbSet.ThrowIfNull(nameof(dbSet));
             _logger.LogDebug("{RepoType} created for {EntityType}", GetType().Name.Split('`')[0], typeof(T).Name);
         }
@@ -29,7 +29,7 @@ namespace Corely.DataAccess.EntityFramework.Repos
         public virtual async Task<int> CreateAsync(T entity)
         {
             var newEntity = await _dbSet.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
+            await _saveChangesAsync();
             return newEntity.Entity.Id;
         }
 
@@ -41,16 +41,13 @@ namespace Corely.DataAccess.EntityFramework.Repos
         public virtual async Task UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
-            await _dbContext.SaveChangesAsync();
+            await _saveChangesAsync();
         }
 
         public virtual async Task DeleteAsync(T entity)
         {
             _dbSet.Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            await _saveChangesAsync();
         }
-
-        protected override void DisposeManagedResources()
-            => _dbContext.Dispose();
     }
 }
