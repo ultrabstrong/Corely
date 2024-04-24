@@ -1,5 +1,5 @@
-﻿using Corely.DataAccess.DataSources.Mock;
-using Corely.DataAccess.Repos;
+﻿using Corely.DataAccess.Mock;
+using Corely.DataAccess.Mock.Repos;
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;

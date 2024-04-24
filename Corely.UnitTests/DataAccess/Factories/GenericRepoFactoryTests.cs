@@ -16,7 +16,7 @@ namespace Corely.UnitTests.DataAccess.Factories
         {
             var ex = Record.Exception(() => new GenericRepoFactory<string>(
                 null,
-                Mock.Of<IDataAccessConnection<string>>()));
+                Moq.Mock.Of<IDataAccessConnection<string>>()));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);

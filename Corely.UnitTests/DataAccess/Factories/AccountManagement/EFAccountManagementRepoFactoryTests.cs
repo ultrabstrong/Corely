@@ -1,7 +1,7 @@
 ﻿using Corely.DataAccess.Connections;
-using Corely.DataAccess.DataSources.EntityFramework;
-using Corely.DataAccess.DataSources.Mock;
+using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.Factories.AccountManagement;
+using Corely.DataAccess.Mock;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 

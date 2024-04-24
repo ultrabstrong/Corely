@@ -1,7 +1,7 @@
 ﻿using Corely.DataAccess.Connections;
-using Corely.DataAccess.DataSources.EntityFramework;
-using Corely.DataAccess.DataSources.Mock;
-using Corely.DataAccess.Repos;
+using Corely.DataAccess.EntityFramework;
+using Corely.DataAccess.EntityFramework.Repos;
+using Corely.DataAccess.Mock;
 using Corely.Domain.Entities.Accounts;
 using Corely.Domain.Entities.Auth;
 using Corely.Domain.Entities.Users;
