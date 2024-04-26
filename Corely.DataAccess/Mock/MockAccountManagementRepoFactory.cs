@@ -1,9 +1,9 @@
 ﻿using Corely.DataAccess.Factories;
 using Corely.DataAccess.Mock.Repos;
-using Corely.Domain.Entities.Accounts;
-using Corely.Domain.Entities.Auth;
-using Corely.Domain.Entities.Users;
-using Corely.Domain.Repos;
+using Corely.IAM.Entities.Accounts;
+using Corely.IAM.Entities.Auth;
+using Corely.IAM.Entities.Users;
+using Corely.IAM.Repos;
 
 namespace Corely.DataAccess.Mock
 {

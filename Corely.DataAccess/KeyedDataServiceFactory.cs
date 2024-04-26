@@ -1,5 +1,5 @@
 ﻿using Corely.DataAccess.Factories;
-using Corely.Domain.Services.AccountManagement;
+using Corely.IAM.Services.AccountManagement;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.DataAccess

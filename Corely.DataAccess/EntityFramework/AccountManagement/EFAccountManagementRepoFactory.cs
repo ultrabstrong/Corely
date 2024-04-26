@@ -1,10 +1,10 @@
 ﻿using Corely.DataAccess.EntityFramework.Repos;
 using Corely.DataAccess.Factories;
 using Corely.DataAccess.Mock;
-using Corely.Domain.Entities.Accounts;
-using Corely.Domain.Entities.Auth;
-using Corely.Domain.Entities.Users;
-using Corely.Domain.Repos;
+using Corely.IAM.Entities.Accounts;
+using Corely.IAM.Entities.Auth;
+using Corely.IAM.Entities.Users;
+using Corely.IAM.Repos;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.EntityFramework.AccountManagement

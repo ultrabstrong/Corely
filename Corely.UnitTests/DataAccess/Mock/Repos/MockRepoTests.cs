@@ -1,5 +1,5 @@
 ﻿using Corely.DataAccess.Mock.Repos;
-using Corely.Domain.Repos;
+using Corely.IAM.Repos;
 using Corely.UnitTests.Fixtures;
 
 namespace Corely.UnitTests.DataAccess.Mock.Repos

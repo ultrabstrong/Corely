@@ -1,5 +1,5 @@
-﻿using Corely.Domain.Entities;
-using Corely.Domain.Repos;
+﻿using Corely.IAM.Entities;
+using Corely.IAM.Repos;
 using System.Linq.Expressions;
 
 namespace Corely.DataAccess.Mock.Repos

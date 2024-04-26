@@ -1,7 +1,7 @@
 ﻿using ConsoleTest.SerilogCustomization;
 using Corely.Common.Providers.Redaction;
-using Corely.Domain.Models.AccountManagement;
-using Corely.Domain.Services.AccountManagement;
+using Corely.IAM.Models.AccountManagement;
+using Corely.IAM.Services.AccountManagement;
 using Serilog;
 
 namespace ConsoleTest

@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.EntityFramework.Repos;
-using Corely.Domain.Repos;
+using Corely.IAM.Repos;
 using Corely.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

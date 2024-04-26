@@ -1,6 +1,6 @@
 ﻿using Corely.DevTools.Attributes;
-using Corely.Domain.Models.AccountManagement;
-using Corely.Domain.Services.AccountManagement;
+using Corely.IAM.Models.AccountManagement;
+using Corely.IAM.Services.AccountManagement;
 using System.Text.Json;
 
 namespace Corely.DevTools.Commands.AccountManagement

@@ -1,5 +1,5 @@
 ﻿using Corely.DataAccess.EntityFramework.Configurations;
-using Corely.Domain.Entities;
+using Corely.IAM.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

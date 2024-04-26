@@ -1,5 +1,5 @@
 ﻿using Corely.Common.Models;
-using Corely.Domain.Repos;
+using Corely.IAM.Repos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Corely.DataAccess.EntityFramework

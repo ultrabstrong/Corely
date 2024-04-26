@@ -1,0 +1,13 @@
+﻿using Corely.IAM.Entities.Users;
+
+namespace Corely.IAM.Entities.Accounts
+{
+    public class AccountEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
+    {
+        public int Id { get; set; }
+        public string AccountName { get; init; } = null!;
+        public virtual ICollection<UserEntity> Users { get; init; } = null!;
+        public DateTime CreatedUtc { get; set; }
+        public DateTime ModifiedUtc { get; set; }
+    }
+}

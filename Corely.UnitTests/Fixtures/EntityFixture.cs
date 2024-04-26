@@ -1,4 +1,4 @@
-﻿using Corely.Domain.Entities;
+﻿using Corely.IAM.Entities;
 
 namespace Corely.UnitTests.Fixtures
 {

@@ -1,4 +1,4 @@
-﻿using Corely.Domain.Repos;
+﻿using Corely.IAM.Repos;
 
 namespace Corely.DataAccess.Mock
 {

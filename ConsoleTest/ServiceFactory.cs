@@ -3,7 +3,7 @@ using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.EntityFramework.Configurations;
-using Corely.Domain;
+using Corely.IAM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;

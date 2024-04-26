@@ -1,6 +1,6 @@
 ﻿using Corely.Common.Extensions;
-using Corely.Domain.Entities;
-using Corely.Domain.Repos;
+using Corely.IAM.Entities;
+using Corely.IAM.Repos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
