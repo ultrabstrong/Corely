@@ -1,5 +1,6 @@
 ﻿using Corely.Common.Providers.Redaction;
 using Corely.DevTools.Commands;
+using Corely.DevTools.SerilogCustomization;
 using Serilog;
 using System.CommandLine;
 using System.Reflection;
@@ -14,7 +15,7 @@ namespace Corely.DevTools
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", "ConsoleTest")
                 .Enrich.WithProperty("CorrelationId", Guid.NewGuid())
-                .Enrich.With(new RedactionEnricher([
+                .Enrich.With(new SerilogRedactionEnricher([
                     new PasswordRedactionProvider()]))
                 .MinimumLevel.Debug()
                 .WriteTo.Seq("http://localhost:5341")

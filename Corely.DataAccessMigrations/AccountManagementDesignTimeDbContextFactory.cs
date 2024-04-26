@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Corely.DataAccessMigrations
 {
-    public class AccountManagementDbContextFactory : IDesignTimeDbContextFactory<AccountManagementDbContext>
+    public class AccountManagementDesignTimeDbContextFactory : IDesignTimeDbContextFactory<AccountManagementDbContext>
     {
 
         public AccountManagementDbContext CreateDbContext(string[] args)
         {
-            var configuration = new EFConfiguration(ConfigurationProvider.GetConnectionString());
+            var configuration = new EFMySqlConfiguration(ConfigurationProvider.GetConnectionString());
             var optionsBuilder = new DbContextOptionsBuilder<AccountManagementDbContext>();
             configuration.Configure(optionsBuilder);
             return new AccountManagementDbContext(configuration);

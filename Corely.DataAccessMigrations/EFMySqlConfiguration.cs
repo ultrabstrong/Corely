@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Corely.DataAccessMigrations
 {
-    internal class EFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
+    internal class EFMySqlConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
     {
         public override void Configure(DbContextOptionsBuilder optionsBuilder)
         {

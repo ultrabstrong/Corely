@@ -27,12 +27,6 @@ namespace ConsoleTest
                     .LogTo(
                         filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
                         logger: serilogEFEventDataWriter.Write);
-                /* This is the default way to add logging if very little customization is needed
-                optionsBuilder.LogTo(
-                        Log.Logger.Debug,
-                        events: [RelationalEventId.CommandExecuted],
-                        options: DbContextLoggerOptions.UtcTime);
-                */
 #if DEBUG
                 optionsBuilder
                     .EnableSensitiveDataLogging()
@@ -45,11 +39,17 @@ namespace ConsoleTest
         {
             public override void Configure(DbContextOptionsBuilder optionsBuilder)
             {
-                optionsBuilder.UseInMemoryDatabase("TestDb");
-                optionsBuilder.LogTo(
-                    Log.Logger.Debug,
-                    new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuted }
-                );
+                var serilogEFEventDataWriter = new SerilogEFEventDataWriter();
+                optionsBuilder
+                    .UseInMemoryDatabase("TestDb")
+                    .LogTo(
+                        filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
+                        logger: serilogEFEventDataWriter.Write);
+#if DEBUG
+                optionsBuilder
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors();
+#endif
             }
         }
 
