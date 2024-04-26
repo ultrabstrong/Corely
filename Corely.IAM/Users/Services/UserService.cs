@@ -1,16 +1,17 @@
 ﻿using Corely.Common.Extensions;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Exceptions;
-using Corely.IAM.Entities.Users;
-using Corely.IAM.Exceptions;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
-using Corely.IAM.Models.Users;
 using Corely.IAM.Repos;
+using Corely.IAM.Services;
+using Corely.IAM.Users.Entities;
+using Corely.IAM.Users.Exceptions;
+using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.Services.Users
+namespace Corely.IAM.Users.Services
 {
     internal class UserService : ServiceBase, IUserService
     {

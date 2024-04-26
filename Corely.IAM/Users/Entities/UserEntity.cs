@@ -1,7 +1,8 @@
 ﻿using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
+using Corely.IAM.Entities;
 
-namespace Corely.IAM.Entities.Users
+namespace Corely.IAM.Users.Entities
 {
     public class UserEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     {

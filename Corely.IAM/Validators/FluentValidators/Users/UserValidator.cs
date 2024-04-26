@@ -1,5 +1,5 @@
-﻿using Corely.IAM.Constants.Users;
-using Corely.IAM.Models.Users;
+﻿using Corely.IAM.Users.Constants;
+using Corely.IAM.Users.Models;
 using FluentValidation;
 
 namespace Corely.IAM.Validators.FluentValidators.Users

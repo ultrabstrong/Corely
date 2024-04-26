@@ -1,6 +1,6 @@
 ﻿using Corely.DataAccess.EntityFramework.Configurations;
-using Corely.IAM.Constants.Users;
-using Corely.IAM.Entities.Users;
+using Corely.IAM.Users.Constants;
+using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations.Users

@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Models;
-using Corely.IAM.Models.Users;
+using Corely.IAM.Users.Models;
 
-namespace Corely.IAM.Services.Users
+namespace Corely.IAM.Users.Services
 {
     public interface IUserService
     {

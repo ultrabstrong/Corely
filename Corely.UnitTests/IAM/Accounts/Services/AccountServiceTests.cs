@@ -7,7 +7,7 @@ using Corely.IAM.Repos;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.IAM.Accounts
+namespace Corely.UnitTests.IAM.Accounts.Services
 {
     public class AccountServiceTests
     {

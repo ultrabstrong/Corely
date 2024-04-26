@@ -4,7 +4,7 @@ using Corely.IAM.Auth.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
 using Corely.IAM.Services.AccountManagement;
-using Corely.IAM.Services.Users;
+using Corely.IAM.Users.Services;
 using Corely.IAM.Validators;
 using Corely.IAM.Validators.FluentValidators;
 using Corely.Security.Encryption;

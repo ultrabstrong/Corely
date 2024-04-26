@@ -6,10 +6,10 @@ using Corely.IAM.Auth.Services;
 using Corely.IAM.Enums;
 using Corely.IAM.Models;
 using Corely.IAM.Models.AccountManagement;
-using Corely.IAM.Models.Users;
 using Corely.IAM.Repos;
 using Corely.IAM.Services.AccountManagement;
-using Corely.IAM.Services.Users;
+using Corely.IAM.Users.Models;
+using Corely.IAM.Users.Services;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.IAM.Services.AccountManagement

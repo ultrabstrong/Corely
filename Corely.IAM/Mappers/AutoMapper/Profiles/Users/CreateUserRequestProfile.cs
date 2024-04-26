@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Corely.IAM.Models.Users;
+using Corely.IAM.Users.Models;
 
 namespace Corely.IAM.Mappers.AutoMapper.Profiles.Users
 {

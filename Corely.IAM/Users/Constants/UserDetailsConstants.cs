@@ -1,4 +1,4 @@
-﻿namespace Corely.IAM.Constants.Users
+﻿namespace Corely.IAM.Users.Constants
 {
     public static class UserDetailsConstants
     {

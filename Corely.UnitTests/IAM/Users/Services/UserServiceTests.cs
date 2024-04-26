@@ -1,16 +1,16 @@
 ﻿using AutoFixture;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Exceptions;
-using Corely.IAM.Entities.Users;
-using Corely.IAM.Exceptions;
 using Corely.IAM.Mappers;
-using Corely.IAM.Models.Users;
 using Corely.IAM.Repos;
-using Corely.IAM.Services.Users;
+using Corely.IAM.Users.Entities;
+using Corely.IAM.Users.Exceptions;
+using Corely.IAM.Users.Models;
+using Corely.IAM.Users.Services;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.IAM.Services.Users
+namespace Corely.UnitTests.IAM.Users.Services
 {
     public class UserServiceTests
     {

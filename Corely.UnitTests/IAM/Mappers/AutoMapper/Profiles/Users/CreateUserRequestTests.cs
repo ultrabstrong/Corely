@@ -1,4 +1,4 @@
-﻿using Corely.IAM.Models.Users;
+﻿using Corely.IAM.Users.Models;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.Profiles.Users
 {

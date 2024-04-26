@@ -3,8 +3,8 @@ using AutoMapper;
 using Corely.IAM.Exceptions;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
-using Corely.IAM.Models.Users;
 using Corely.IAM.Services;
+using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 

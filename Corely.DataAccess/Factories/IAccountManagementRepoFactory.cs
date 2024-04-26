@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
-using Corely.IAM.Entities.Users;
 using Corely.IAM.Repos;
+using Corely.IAM.Users.Entities;
 
 namespace Corely.DataAccess.Factories
 {

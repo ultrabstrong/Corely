@@ -1,6 +1,6 @@
-﻿using Corely.IAM.Exceptions;
+﻿using Corely.IAM.Users.Exceptions;
 
-namespace Corely.UnitTests.IAM.Exceptions
+namespace Corely.UnitTests.IAM.Users.Exceptions
 {
     public class UserExistsExceptionTests
         : ExceptionTestsBase<UserExistsException>

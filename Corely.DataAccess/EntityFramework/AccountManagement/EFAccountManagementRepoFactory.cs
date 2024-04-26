@@ -3,8 +3,8 @@ using Corely.DataAccess.Factories;
 using Corely.DataAccess.Mock;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
-using Corely.IAM.Entities.Users;
 using Corely.IAM.Repos;
+using Corely.IAM.Users.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.EntityFramework.AccountManagement

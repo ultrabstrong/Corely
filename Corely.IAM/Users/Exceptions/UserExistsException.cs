@@ -1,4 +1,4 @@
-﻿namespace Corely.IAM.Exceptions
+﻿namespace Corely.IAM.Users.Exceptions
 {
     public sealed class UserExistsException : Exception
     {

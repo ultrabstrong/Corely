@@ -1,4 +1,6 @@
-﻿namespace Corely.IAM.Entities.Users
+﻿using Corely.IAM.Entities;
+
+namespace Corely.IAM.Users.Entities
 {
     public class UserDetailsEntity : IHasCreatedUtc, IHasModifiedUtc
     {

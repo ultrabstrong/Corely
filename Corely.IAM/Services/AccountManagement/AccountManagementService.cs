@@ -3,7 +3,7 @@ using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Models.AccountManagement;
 using Corely.IAM.Repos;
-using Corely.IAM.Services.Users;
+using Corely.IAM.Users.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
