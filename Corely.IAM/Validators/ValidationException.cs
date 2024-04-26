@@ -1,6 +1,4 @@
-﻿using Corely.IAM.Validators;
-
-namespace Corely.IAM.Exceptions
+﻿namespace Corely.IAM.Validators
 {
     public sealed class ValidationException : Exception
     {

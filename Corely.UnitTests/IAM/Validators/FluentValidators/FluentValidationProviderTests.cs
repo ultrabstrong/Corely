@@ -2,7 +2,7 @@
 using AutoMapper;
 using Corely.IAM.Validators.FluentValidators;
 using FluentValidation;
-using CorelyValidationException = Corely.IAM.Exceptions.ValidationException;
+using CorelyValidationException = Corely.IAM.Validators.ValidationException;
 using FluentValidationFailure = FluentValidation.Results.ValidationFailure;
 using FluentValidationResult = FluentValidation.Results.ValidationResult;
 

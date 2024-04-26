@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using AutoMapper;
-using Corely.IAM.Exceptions;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
 using Corely.IAM.Services;

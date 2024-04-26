@@ -1,5 +1,4 @@
-﻿using Corely.IAM.Exceptions;
-using Corely.IAM.Validators;
+﻿using Corely.IAM.Validators;
 
 namespace Corely.UnitTests.IAM.Validators
 {
