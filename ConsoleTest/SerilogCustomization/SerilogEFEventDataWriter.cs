@@ -16,7 +16,9 @@ namespace ConsoleTest.SerilogCustomization
                 timestamp: DateTimeOffset.Now,
                 level: GetSerilogLogEventLevel(eventData.LogLevel),
                 exception: null,
-                messageTemplate: new MessageTemplate("Entity Framework event data for {EventDataType}", [new PropertyToken("EventDataType", eventData.GetType().Name)]),
+                messageTemplate: new MessageTemplate(
+                    "Entity Framework {EventDataType}",
+                    [new PropertyToken("EventDataType", "")]),
                 properties: [
                     new LogEventProperty("EventDataType", new ScalarValue(eventData.GetType().Name))
                 ]);
@@ -55,6 +57,7 @@ namespace ConsoleTest.SerilogCustomization
             UpsertScalarProperty(logEvent, nameof(eventData.IsAsync), eventData.IsAsync);
             UpsertScalarProperty(logEvent, nameof(eventData.Command), eventData.Command);
             UpsertScalarProperty(logEvent, nameof(eventData.CommandId), eventData.CommandId);
+            UpsertScalarProperty(logEvent, nameof(eventData.Command.CommandType), eventData.Command.CommandType);
             UpsertScalarProperty(logEvent, nameof(eventData.Command.CommandText), eventData.Command.CommandText);
             UpsertParameterProperties(logEvent, eventData.Command.Parameters, eventData.LogParameterValues);
         }

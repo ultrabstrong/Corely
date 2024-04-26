@@ -22,8 +22,7 @@ namespace ConsoleTest
                 .Enrich.With(new SerilogRedactionEnricher([
                     new PasswordRedactionProvider()]))
                 .MinimumLevel.Debug()
-                .WriteTo.Console(
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}")
+                .WriteTo.Console()
                 .WriteTo.Seq("http://localhost:5341")
                 .CreateLogger();
 
