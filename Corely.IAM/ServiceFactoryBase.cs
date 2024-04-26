@@ -1,9 +1,9 @@
 ﻿using Corely.Common.Models;
+using Corely.IAM.AccountManagement.Services;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
-using Corely.IAM.Services.AccountManagement;
 using Corely.IAM.Users.Services;
 using Corely.IAM.Validators;
 using Corely.IAM.Validators.FluentValidators;

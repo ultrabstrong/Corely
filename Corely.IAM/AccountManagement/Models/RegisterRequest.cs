@@ -1,4 +1,4 @@
-﻿namespace Corely.IAM.Models.AccountManagement
+﻿namespace Corely.IAM.AccountManagement.Models
 {
     public record RegisterRequest(
         string AccountName,

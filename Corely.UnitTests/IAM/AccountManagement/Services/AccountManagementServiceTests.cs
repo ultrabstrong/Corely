@@ -1,18 +1,19 @@
 ﻿using AutoFixture;
+using Corely.IAM.AccountManagement.Models;
+using Corely.IAM.AccountManagement.Services;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Models;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Enums;
 using Corely.IAM.Models;
-using Corely.IAM.Models.AccountManagement;
 using Corely.IAM.Repos;
-using Corely.IAM.Services.AccountManagement;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Services;
+using Corely.UnitTests.IAM.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.IAM.Services.AccountManagement
+namespace Corely.UnitTests.IAM.AccountManagement.Services
 {
     public class AccountManagementServiceTests : ServiceBaseTests
     {

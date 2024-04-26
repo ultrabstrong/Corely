@@ -1,6 +1,6 @@
-﻿using Corely.IAM.Models.AccountManagement;
+﻿using Corely.IAM.AccountManagement.Models;
 
-namespace Corely.IAM.Services.AccountManagement
+namespace Corely.IAM.AccountManagement.Services
 {
     public interface IAccountManagementService
     {

@@ -1,13 +1,13 @@
 ﻿using Corely.Common.Extensions;
+using Corely.IAM.AccountManagement.Models;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
-using Corely.IAM.Models.AccountManagement;
 using Corely.IAM.Repos;
 using Corely.IAM.Users.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.Services.AccountManagement
+namespace Corely.IAM.AccountManagement.Services
 {
     internal class AccountManagementService : IAccountManagementService
     {

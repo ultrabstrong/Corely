@@ -1,4 +1,6 @@
-﻿namespace Corely.IAM.Models.AccountManagement
+﻿using Corely.IAM.Models;
+
+namespace Corely.IAM.AccountManagement.Models
 {
     public record RegisterResult(
         bool IsSuccess,
