@@ -1,4 +1,4 @@
-﻿namespace Corely.IAM.Models.Accounts
+﻿namespace Corely.IAM.Accounts.Models
 {
     public class Account
     {

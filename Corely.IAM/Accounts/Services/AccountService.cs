@@ -1,14 +1,15 @@
 ﻿using Corely.Common.Extensions;
-using Corely.IAM.Entities.Accounts;
-using Corely.IAM.Exceptions;
+using Corely.IAM.Accounts.Entities;
+using Corely.IAM.Accounts.Exceptions;
+using Corely.IAM.Accounts.Models;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
-using Corely.IAM.Models.Accounts;
 using Corely.IAM.Repos;
+using Corely.IAM.Services;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.Services.Accounts
+namespace Corely.IAM.Accounts.Services
 {
     internal class AccountService : ServiceBase, IAccountService
     {

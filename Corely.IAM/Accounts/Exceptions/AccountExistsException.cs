@@ -1,4 +1,4 @@
-﻿namespace Corely.IAM.Exceptions
+﻿namespace Corely.IAM.Accounts.Exceptions
 {
     public class AccountExistsException : Exception
     {

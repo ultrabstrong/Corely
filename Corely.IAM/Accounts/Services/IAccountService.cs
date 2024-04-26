@@ -1,7 +1,7 @@
-﻿using Corely.IAM.Models;
-using Corely.IAM.Models.Accounts;
+﻿using Corely.IAM.Accounts.Models;
+using Corely.IAM.Models;
 
-namespace Corely.IAM.Services.Accounts
+namespace Corely.IAM.Accounts.Services
 {
     public interface IAccountService
     {

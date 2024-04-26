@@ -1,4 +1,4 @@
-﻿namespace Corely.IAM.Constants.Accounts
+﻿namespace Corely.IAM.Accounts.Constants
 {
     public static class AccountConstants
     {

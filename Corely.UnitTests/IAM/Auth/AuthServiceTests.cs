@@ -9,7 +9,7 @@ using Corely.Security.Password;
 using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.IAM.Services.Auth
+namespace Corely.UnitTests.IAM.Auth
 {
     public class AuthServiceTests
     {

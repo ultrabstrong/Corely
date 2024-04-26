@@ -2,8 +2,8 @@
 using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.DataAccess.Factories;
+using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
-using Corely.IAM.Entities.Accounts;
 using Corely.IAM.Entities.Users;
 using Corely.IAM.Repos;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,5 +1,6 @@
 ﻿using Corely.Common.Extensions;
-using Corely.IAM.Entities.Accounts;
+using Corely.IAM.Accounts.Entities;
+using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Entities.Users;
 using Corely.IAM.Exceptions;
 using Corely.IAM.Mappers;

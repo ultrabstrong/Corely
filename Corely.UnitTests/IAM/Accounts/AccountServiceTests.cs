@@ -1,13 +1,13 @@
-﻿using Corely.IAM.Entities.Accounts;
-using Corely.IAM.Exceptions;
+﻿using Corely.IAM.Accounts.Entities;
+using Corely.IAM.Accounts.Exceptions;
+using Corely.IAM.Accounts.Models;
+using Corely.IAM.Accounts.Services;
 using Corely.IAM.Mappers;
-using Corely.IAM.Models.Accounts;
 using Corely.IAM.Repos;
-using Corely.IAM.Services.Accounts;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.IAM.Services.Accounts
+namespace Corely.UnitTests.IAM.Accounts
 {
     public class AccountServiceTests
     {
