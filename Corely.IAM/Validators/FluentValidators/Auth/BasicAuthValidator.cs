@@ -1,5 +1,5 @@
-﻿using Corely.IAM.Constants.Auth;
-using Corely.IAM.Models.Auth;
+﻿using Corely.IAM.Auth.Constants;
+using Corely.IAM.Auth.Models;
 using FluentValidation;
 
 namespace Corely.IAM.Validators.FluentValidators.Auth

@@ -1,6 +1,6 @@
 ﻿using Corely.Security.Hashing.Models;
 
-namespace Corely.IAM.Models.Auth
+namespace Corely.IAM.Auth.Models
 {
     public class BasicAuth
     {

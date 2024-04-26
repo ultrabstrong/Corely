@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Corely.IAM.Entities.Auth;
-using Corely.IAM.Models.Auth;
+using Corely.IAM.Auth.Entities;
+using Corely.IAM.Auth.Models;
 
 namespace Corely.IAM.Mappers.AutoMapper.Profiles.Auth
 {

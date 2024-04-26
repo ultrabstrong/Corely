@@ -1,15 +1,16 @@
 ﻿using Corely.Common.Extensions;
-using Corely.IAM.Entities.Auth;
+using Corely.IAM.Auth.Entities;
+using Corely.IAM.Auth.Models;
 using Corely.IAM.Enums;
 using Corely.IAM.Mappers;
-using Corely.IAM.Models.Auth;
 using Corely.IAM.Repos;
+using Corely.IAM.Services;
 using Corely.IAM.Validators;
 using Corely.Security.Password;
 using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.Services.Auth
+namespace Corely.IAM.Auth.Services
 {
     internal class AuthService : ServiceBase, IAuthService
     {

@@ -1,10 +1,10 @@
 ﻿using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.IAM;
+using Corely.IAM.Auth.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Services.AccountManagement;
 using Corely.IAM.Services.Accounts;
-using Corely.IAM.Services.Auth;
 using Corely.IAM.Services.Users;
 using Corely.IAM.Validators;
 using Corely.Security.Encryption.Factories;

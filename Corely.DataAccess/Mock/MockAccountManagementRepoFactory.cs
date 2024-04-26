@@ -1,7 +1,7 @@
 ﻿using Corely.DataAccess.Factories;
 using Corely.DataAccess.Mock.Repos;
+using Corely.IAM.Auth.Entities;
 using Corely.IAM.Entities.Accounts;
-using Corely.IAM.Entities.Auth;
 using Corely.IAM.Entities.Users;
 using Corely.IAM.Repos;
 

@@ -1,6 +1,6 @@
-﻿using Corely.IAM.Models.Auth;
+﻿using Corely.IAM.Auth.Models;
 
-namespace Corely.IAM.Services.Auth
+namespace Corely.IAM.Auth.Services
 {
     public interface IAuthService
     {

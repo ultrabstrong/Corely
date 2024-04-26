@@ -1,6 +1,7 @@
 ﻿using Corely.IAM.Enums;
+using Corely.IAM.Models;
 
-namespace Corely.IAM.Models.Auth
+namespace Corely.IAM.Auth.Models
 {
     public record UpsertBasicAuthResult(
         bool IsSuccess,

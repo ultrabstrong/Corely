@@ -1,5 +1,5 @@
-﻿using Corely.IAM.Entities.Accounts;
-using Corely.IAM.Entities.Auth;
+﻿using Corely.IAM.Auth.Entities;
+using Corely.IAM.Entities.Accounts;
 
 namespace Corely.IAM.Entities.Users
 {

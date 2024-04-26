@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Corely.IAM.Auth.Models;
 using Corely.IAM.Mappers.AutoMapper.ValueConverters;
-using Corely.IAM.Models.Auth;
 
 namespace Corely.IAM.Mappers.AutoMapper.Profiles.Auth
 {

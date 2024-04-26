@@ -1,4 +1,4 @@
-﻿using Corely.IAM.Models.Auth;
+﻿using Corely.IAM.Auth.Models;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.Profiles.Auth
 {

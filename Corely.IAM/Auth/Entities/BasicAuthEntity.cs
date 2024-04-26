@@ -1,6 +1,7 @@
-﻿using Corely.IAM.Entities.Users;
+﻿using Corely.IAM.Entities;
+using Corely.IAM.Entities.Users;
 
-namespace Corely.IAM.Entities.Auth
+namespace Corely.IAM.Auth.Entities
 {
     public class BasicAuthEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     {

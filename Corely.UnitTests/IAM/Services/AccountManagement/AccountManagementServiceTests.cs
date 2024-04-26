@@ -1,14 +1,14 @@
 ﻿using AutoFixture;
+using Corely.IAM.Auth.Models;
+using Corely.IAM.Auth.Services;
 using Corely.IAM.Enums;
 using Corely.IAM.Models;
 using Corely.IAM.Models.AccountManagement;
 using Corely.IAM.Models.Accounts;
-using Corely.IAM.Models.Auth;
 using Corely.IAM.Models.Users;
 using Corely.IAM.Repos;
 using Corely.IAM.Services.AccountManagement;
 using Corely.IAM.Services.Accounts;
-using Corely.IAM.Services.Auth;
 using Corely.IAM.Services.Users;
 using Microsoft.Extensions.Logging;
 
