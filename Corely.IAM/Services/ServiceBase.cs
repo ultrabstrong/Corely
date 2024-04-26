@@ -9,10 +9,10 @@ namespace Corely.IAM.Services
     public abstract class ServiceBase
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions;
+        private readonly IValidationProvider _validationProvider;
+        private readonly IMapProvider _mapProvider;
 
-        protected readonly IValidationProvider validationProvider;
-        protected readonly IMapProvider mapProvider;
-        protected readonly ILogger logger;
+        protected readonly ILogger Logger;
 
         public ServiceBase(
             IMapProvider mapProvider,
@@ -24,19 +24,19 @@ namespace Corely.IAM.Services
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
 
-            this.validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
-            this.mapProvider = mapProvider.ThrowIfNull(nameof(mapProvider));
-            this.logger = logger.ThrowIfNull(nameof(logger));
+            _validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
+            _mapProvider = mapProvider.ThrowIfNull(nameof(mapProvider));
+            Logger = logger.ThrowIfNull(nameof(logger));
         }
 
-        public T MapToValid<T>(object source)
+        public T MapAndValidate<T>(object source)
         {
             try
             {
                 ArgumentNullException.ThrowIfNull(source, nameof(source));
 
-                var destination = mapProvider.Map<T>(source);
-                validationProvider.ThrowIfInvalid(destination);
+                var destination = _mapProvider.Map<T>(source);
+                _validationProvider.ThrowIfInvalid(destination);
 
                 return destination;
             }
@@ -54,11 +54,21 @@ namespace Corely.IAM.Services
                         JsonSerializer.Serialize(validationException.ValidationResult, _jsonSerializerOptions));
                 }
 
-                using var scope = logger.BeginScope(state);
+                using var scope = Logger.BeginScope(state);
 
-                logger.LogWarning("Failed to map {MapSourceType} to valid {MapDestinationType}", source?.GetType()?.Name, typeof(T)?.Name);
+                Logger.LogWarning("Failed to map {MapSourceType} to valid {MapDestinationType}", source?.GetType()?.Name, typeof(T)?.Name);
                 throw;
             }
+        }
+
+        public T Map<T>(object source)
+        {
+            return _mapProvider.Map<T>(source);
+        }
+
+        public T? MapOrNull<T>(object? source)
+        {
+            return source == null ? default : _mapProvider.Map<T>(source);
         }
     }
 }

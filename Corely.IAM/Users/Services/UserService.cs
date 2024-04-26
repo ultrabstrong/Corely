@@ -34,24 +34,30 @@ namespace Corely.IAM.Users.Services
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-            logger.LogInformation("Creating user {Username}", request.Username);
+            Logger.LogInformation("Creating user {Username}", request.Username);
 
-            var user = MapToValid<User>(request);
+            var user = MapAndValidate<User>(request);
             await ThrowIfUserExists(user.Username, user.Email);
 
             var accountEntity = await _readonlyAccountRepo.GetAsync(request.AccountId);
             if (accountEntity == null)
             {
-                logger.LogWarning("Account with Id {AccountId} not found", request.AccountId);
+                Logger.LogWarning("Account with Id {AccountId} not found", request.AccountId);
                 throw new AccountDoesNotExistException($"Account with Id {request.AccountId} not found");
             }
 
-            var userEntity = mapProvider.Map<UserEntity>(user);
+            var userEntity = Map<UserEntity>(user);
             userEntity.Accounts = [accountEntity];
             var createdId = await _userRepo.CreateAsync(userEntity);
 
-            logger.LogInformation("User {Username} created with Id {Id}", user.Username, createdId);
+            Logger.LogInformation("User {Username} created with Id {Id}", user.Username, createdId);
             return new CreateResult(true, "", createdId);
+        }
+
+        public async Task<User?> GetUserAsync(int userId)
+        {
+            var userEntity = await _userRepo.GetAsync(userId);
+            return MapOrNull<User>(userEntity);
         }
 
         private async Task ThrowIfUserExists(string username, string email)
@@ -64,9 +70,9 @@ namespace Corely.IAM.Users.Services
                 bool emailExists = existingUser.Email == email;
 
                 if (usernameExists)
-                    logger.LogWarning("User already exists with Username {ExistingUsername}", existingUser.Username);
+                    Logger.LogWarning("User already exists with Username {ExistingUsername}", existingUser.Username);
                 if (emailExists)
-                    logger.LogWarning("User already exists with Email {ExistingEmail}", existingUser.Email);
+                    Logger.LogWarning("User already exists with Email {ExistingEmail}", existingUser.Email);
 
                 string usernameExistsMessage = usernameExists ? $"Username {username} already exists." : "";
                 string emailExistsMessage = emailExists ? $"Email {email} already exists." : "";

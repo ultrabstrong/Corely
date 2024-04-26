@@ -29,15 +29,15 @@ namespace Corely.IAM.Accounts.Services
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-            logger.LogInformation("Creating account {Account}", request.AccountName);
+            Logger.LogInformation("Creating account {Account}", request.AccountName);
 
-            var account = MapToValid<Account>(request);
+            var account = MapAndValidate<Account>(request);
             await ThrowIfAccountExists(account.AccountName);
 
-            var accountEntity = mapProvider.Map<AccountEntity>(account);
+            var accountEntity = Map<AccountEntity>(account);
             var createdId = await _accountRepo.CreateAsync(accountEntity);
 
-            logger.LogInformation("Account {Account} created with Id {Id}", account.AccountName, createdId);
+            Logger.LogInformation("Account {Account} created with Id {Id}", account.AccountName, createdId);
             return new CreateResult(true, "", createdId);
         }
 
@@ -46,7 +46,7 @@ namespace Corely.IAM.Accounts.Services
             var existingAccount = await _accountRepo.GetAsync(a => a.AccountName == accountName);
             if (existingAccount != null)
             {
-                logger.LogWarning("Account {Account} already exists", accountName);
+                Logger.LogWarning("Account {Account} already exists", accountName);
                 throw new AccountExistsException($"Account {accountName} already exists");
             }
         }

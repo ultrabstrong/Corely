@@ -161,5 +161,27 @@ namespace Corely.UnitTests.IAM.Users.Services
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
+
+        [Fact]
+        public async Task GetUserAsync_ShouldReturnNull_WhenUserDNE()
+        {
+            var user = await _userService.GetUserAsync(_fixture.Create<int>());
+
+            Assert.Null(user);
+        }
+
+        [Fact]
+        public async Task GetUserAsync_ShouldReturnUser_WhenUserExists()
+        {
+            var accountId = await CreateAccount();
+            var createUserRequest = new CreateUserRequest(accountId, VALID_USERNAME, VALID_EMAIL);
+            var createResult = await _userService.CreateUserAsync(createUserRequest);
+
+            var user = await _userService.GetUserAsync(createResult.CreatedId);
+
+            Assert.NotNull(user);
+            Assert.Equal(createUserRequest.Username, user.Username);
+            Assert.Equal(createUserRequest.Email, user.Email);
+        }
     }
 }

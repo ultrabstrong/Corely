@@ -7,5 +7,6 @@ namespace Corely.IAM.Users.Services
     {
         Task<CreateResult> CreateUserAsync(CreateUserRequest createUserRequest);
 
+        Task<User?> GetUserAsync(int userId);
     }
 }
