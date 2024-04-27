@@ -78,7 +78,7 @@ namespace Corely.UnitTests.DataAccess.Factories
                 new Mock<ILoggerFactory>().Object,
                 dataAccessConnection);
 
-            var ex = Record.Exception(() => genericRepoFactory.CreateAccountManagementRepoFactory());
+            var ex = Record.Exception(genericRepoFactory.CreateAccountManagementRepoFactory);
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentOutOfRangeException>(ex);

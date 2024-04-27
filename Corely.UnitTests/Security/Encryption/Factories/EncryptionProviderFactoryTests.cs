@@ -38,7 +38,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
 
             _encryptionProviderFactory.AddProvider(providerCode, provider);
             void act() => _encryptionProviderFactory.AddProvider(providerCode, provider);
-            var ex = Record.Exception(() => act());
+            var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
             Assert.IsType<EncryptionException>(ex);
@@ -52,7 +52,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
             var provider = new Mock<IEncryptionProvider>().Object;
 
             void act() => _encryptionProviderFactory.AddProvider(providerCode, provider);
-            var ex = Record.Exception(() => act());
+            var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
             Assert.True(ex is ArgumentNullException
@@ -66,7 +66,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
             var providerCode = _fixture.Create<string>();
 
             void act() => _encryptionProviderFactory.AddProvider(providerCode, null);
-            var ex = Record.Exception(() => act());
+            var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
@@ -93,7 +93,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
             var provider = new Mock<IEncryptionProvider>().Object;
 
             void act() => _encryptionProviderFactory.UpdateProvider(providerCode, provider);
-            var ex = Record.Exception(() => act());
+            var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
             Assert.IsType<EncryptionException>(ex);
@@ -107,7 +107,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
             var provider = new Mock<IEncryptionProvider>().Object;
 
             void act() => _encryptionProviderFactory.UpdateProvider(providerCode, provider);
-            var ex = Record.Exception(() => act());
+            var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
             Assert.True(ex is ArgumentNullException
@@ -121,7 +121,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
             var providerCode = _fixture.Create<string>();
 
             void act() => _encryptionProviderFactory.UpdateProvider(providerCode, null);
-            var ex = Record.Exception(() => act());
+            var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
@@ -151,7 +151,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
         public void GetProvider_ShouldThrow_WithInvalidCode(string code)
         {
             void act() => _encryptionProviderFactory.GetProvider(code);
-            var ex = Record.Exception(() => act());
+            var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
             Assert.True(ex is ArgumentNullException
@@ -177,7 +177,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
         public void GetProviderForDecrypting_ShouldThrow_WithInvalidCode(string code)
         {
             void act() => _encryptionProviderFactory.GetProviderForDecrypting(code);
-            var ex = Record.Exception(() => act());
+            var ex = Record.Exception(act);
 
             Assert.NotNull(ex);
             Assert.True(ex is ArgumentNullException
