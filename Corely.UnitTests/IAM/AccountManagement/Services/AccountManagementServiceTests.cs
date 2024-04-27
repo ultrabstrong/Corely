@@ -23,12 +23,15 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<IAuthService> _authServiceMock;
         private readonly AccountManagementService _accountManagementService;
+
         private bool _createAccountSuccess = true;
         private bool _createUserSuccess = true;
         private bool _createAuthSuccess = true;
+        private User _user;
 
         public AccountManagementServiceTests() : base()
         {
+            _user = _fixture.Create<User>();
             _accountServiceMock = GetMockAccountService();
             _userServiceMock = GetMockUserService();
             _authServiceMock = GetMockAuthService();
@@ -67,15 +70,12 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
             userServiceMock
                 .Setup(m => m.GetUserAsync(
                     It.IsAny<string>()))
-                .ReturnsAsync(_fixture.Create<User>());
+                .ReturnsAsync(() => _user);
 
             userServiceMock
                 .Setup(m => m.GetUserAsync(
                     It.IsAny<int>()))
-                .ReturnsAsync((int userId) =>
-                    _fixture.Build<User>()
-                        .With(m => m.Id, userId)
-                        .Create());
+                .ReturnsAsync(() => _user);
 
             return userServiceMock;
         }
@@ -157,13 +157,34 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task SignInAsync_ShouldReturnSuccessResult_WhenUserExistsAndPasswordIsValid()
+        public async Task SignInAsync_ShouldReturnSuccessResultAndUpdateSuccessfulLogin_WhenUserExistsAndPasswordIsValid()
         {
-            var request = _fixture.Create<SignInRequest>();
+            var request = new SignInRequest(_user.Username, _fixture.Create<string>());
+            _user.TotalSuccessfulLogins = 0;
+            _user.LastSuccessfulLoginUtc = null;
+            _user.TotalFailedLogins = 0;
+            _user.FailedLoginsSinceLastSuccess = 0;
+            _user.LastFailedLoginUtc = null;
 
             var result = await _accountManagementService.SignInAsync(request);
 
             Assert.True(result.IsSuccess);
+
+            _userServiceMock
+                .Verify(m => m.UpdateUserAsync(It.Is<User>(u =>
+                    HasUpdatedSuccessLogins(u))),
+                Times.Once);
+        }
+
+        private bool HasUpdatedSuccessLogins(User modified)
+        {
+            Assert.Equal(1, modified.TotalSuccessfulLogins);
+            Assert.NotNull(modified.LastSuccessfulLoginUtc);
+            Assert.True((DateTime.UtcNow - modified.LastSuccessfulLoginUtc).Value.TotalSeconds < 5);
+            Assert.Equal(0, modified.TotalFailedLogins);
+            Assert.Equal(0, modified.FailedLoginsSinceLastSuccess);
+            Assert.Null(modified.LastFailedLoginUtc);
+            return true;
         }
 
         [Fact]
@@ -183,10 +204,14 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task SignInAsync_ShouldReturnFailureResult_WhenPasswordIsInvalid()
+        public async Task SignInAsync_ShouldReturnFailureResultAndUpdatedFailedLogins_WhenPasswordIsInvalid()
         {
-            var request = _fixture.Create<SignInRequest>();
-            var user = _fixture.Create<User>();
+            var request = new SignInRequest(_user.Username, _fixture.Create<string>());
+            _user.TotalSuccessfulLogins = 0;
+            _user.LastSuccessfulLoginUtc = null;
+            _user.TotalFailedLogins = 0;
+            _user.FailedLoginsSinceLastSuccess = 0;
+            _user.LastFailedLoginUtc = null;
 
             _authServiceMock
                 .Setup(m => m.VerifyBasicAuthAsync(
@@ -198,6 +223,22 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
             Assert.False(result.IsSuccess);
             Assert.Equal("Invalid password", result.Message);
             Assert.Equal(string.Empty, result.AuthToken);
+
+            _userServiceMock
+                .Verify(m => m.UpdateUserAsync(It.Is<User>(u =>
+                    HasUpdatedFailedLogins(u))),
+                Times.Once);
+        }
+
+        private bool HasUpdatedFailedLogins(User modified)
+        {
+            Assert.Equal(0, modified.TotalSuccessfulLogins);
+            Assert.Null(modified.LastSuccessfulLoginUtc);
+            Assert.Equal(1, modified.TotalFailedLogins);
+            Assert.Equal(1, modified.FailedLoginsSinceLastSuccess);
+            Assert.NotNull(modified.LastFailedLoginUtc);
+            Assert.True((DateTime.UtcNow - modified.LastFailedLoginUtc).Value.TotalSeconds < 5);
+            return true;
         }
 
         [Fact]

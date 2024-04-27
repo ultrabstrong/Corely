@@ -6,11 +6,11 @@
         public string Username { get; set; } = null!;
         public string Email { get; set; } = null!;
         public bool Enabled { get; set; }
-        public int SuccessfulLogins { get; set; }
-        public int FailedLogins { get; set; }
+        public int TotalSuccessfulLogins { get; set; }
+        public DateTime? LastSuccessfulLoginUtc { get; set; }
         public int FailedLoginsSinceLastSuccess { get; set; }
+        public int TotalFailedLogins { get; set; }
         public DateTime? LastFailedLoginUtc { get; set; }
-        public DateTime? LastLoginUtc { get; set; }
         public DateTime CreatedUtc { get; set; }
         public DateTime ModifiedUtc { get; set; }
         public UserDetails? Details { get; init; }
