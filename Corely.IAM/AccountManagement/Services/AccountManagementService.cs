@@ -84,6 +84,8 @@ namespace Corely.IAM.AccountManagement.Services
 
         public async Task<SignInResult> SignInAsync(SignInRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+
             var user = await _userService.GetUserAsync(request.Username);
             if (user == null)
             {

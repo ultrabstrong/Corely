@@ -201,6 +201,15 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
+        public async Task SignInAsync_ShouldThrowArgumentNullException_WithNullRequest()
+        {
+            var ex = await Record.ExceptionAsync(() => _accountManagementService.SignInAsync(null!));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
         public void Constructor_ShouldThrowArgumentNullException_WhenLoggerIsNull()
         {
             AccountManagementService act() => new(

@@ -27,11 +27,10 @@ namespace Corely.IAM.Accounts.Services
 
         public async Task<CreateResult> CreateAccountAsync(CreateAccountRequest request)
         {
-            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            var account = MapThenValidateTo<Account>(request);
 
             Logger.LogInformation("Creating account {Account}", request.AccountName);
 
-            var account = MapThenValidateTo<Account>(request);
             await ThrowIfAccountExists(account.AccountName);
 
             var accountEntity = MapTo<AccountEntity>(account);

@@ -8,5 +8,6 @@ namespace Corely.IAM.Users.Services
         Task<CreateResult> CreateUserAsync(CreateUserRequest createUserRequest);
         Task<User?> GetUserAsync(int userId);
         Task<User?> GetUserAsync(string userName);
+        Task UpdateUserAsync(User user);
     }
 }

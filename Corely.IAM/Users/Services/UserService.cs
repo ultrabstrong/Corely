@@ -32,11 +32,10 @@ namespace Corely.IAM.Users.Services
 
         public async Task<CreateResult> CreateUserAsync(CreateUserRequest request)
         {
-            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            var user = MapThenValidateTo<User>(request);
 
             Logger.LogInformation("Creating user {Username}", request.Username);
 
-            var user = MapThenValidateTo<User>(request);
             await ThrowIfUserExists(user.Username, user.Email);
 
             var accountEntity = await _readonlyAccountRepo.GetAsync(request.AccountId);
@@ -103,6 +102,14 @@ namespace Corely.IAM.Users.Services
             }
 
             return MapTo<User>(userEntity);
+        }
+
+        public Task UpdateUserAsync(User user)
+        {
+            Validate(user);
+            var userEntity = MapTo<UserEntity>(user);
+
+            return _userRepo.UpdateAsync(userEntity);
         }
     }
 }

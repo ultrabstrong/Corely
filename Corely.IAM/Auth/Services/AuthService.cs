@@ -31,15 +31,13 @@ namespace Corely.IAM.Auth.Services
 
         public async Task<UpsertBasicAuthResult> UpsertBasicAuthAsync(UpsertBasicAuthRequest request)
         {
-            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            var basicAuth = MapThenValidateTo<BasicAuth>(request);
 
             var passwordValidationResults = _passwordValidationProvider.ValidatePassword(request.Password);
             if (!passwordValidationResults.IsSuccess)
             {
                 throw new PasswordValidationException(passwordValidationResults, "Password validation failed");
             }
-
-            var basicAuth = MapThenValidateTo<BasicAuth>(request);
 
             var basicAuthEntity = MapTo<BasicAuthEntity>(basicAuth);
 
