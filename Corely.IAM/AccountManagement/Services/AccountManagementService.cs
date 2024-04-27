@@ -87,14 +87,21 @@ namespace Corely.IAM.AccountManagement.Services
             var user = await _userService.GetUserAsync(request.Username);
             if (user == null)
             {
+                // Todo : Update failed login count
                 return new SignInResult(false, "User not found", string.Empty);
             }
+
+            // Todo : Add check for too many failed logins
+            // May need to be controlled through some sort of new ISettingsProvider
+            // Implement this after the other Todos are complete
 
             var isValidPassword = await _authService.VerifyBasicAuthAsync(new(user.Id, request.Password));
             if (!isValidPassword)
             {
+                // Todo : Update failed login count
                 return new SignInResult(false, "Invalid password", string.Empty);
             }
+            // Todo : Update successful login count and reset failed to 0
 
             var authToken = string.Empty; // Todo : Implement token generation service
 
