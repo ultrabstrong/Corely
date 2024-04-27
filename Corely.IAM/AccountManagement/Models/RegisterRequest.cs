@@ -4,7 +4,5 @@
         string AccountName,
         string Username,
         string Email,
-        string Password)
-    {
-    }
+        string Password);
 }

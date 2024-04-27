@@ -122,9 +122,9 @@ namespace Corely.UnitTests.Common.Http.Models
             [("!@#$%^&*()_+", "test"), "%21%40%23%24%25%5E%26%2A%28%29_%2B=test"],
             [("test", "!@#$%^&*()_+"), "test=%21%40%23%24%25%5E%26%2A%28%29_%2B"],
             [("test", "test"), "test=test"],
-            [("", "test"), "=test"],
-            [("test", ""), "test="],
-            [("", ""), "="],
+            [(string.Empty, "test"), "=test"],
+            [("test", string.Empty), "test="],
+            [(string.Empty, string.Empty), "="],
             [(" ", "test"), "%20=test"],
             [("test", " "), "test=%20"],
             [(" ", " "), "%20=%20"]

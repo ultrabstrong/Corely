@@ -2,6 +2,5 @@
 {
     public abstract record ResultBase(
         bool IsSuccess,
-        string? Message)
-    { }
+        string? Message);
 }

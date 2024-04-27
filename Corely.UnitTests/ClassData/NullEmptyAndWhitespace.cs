@@ -7,7 +7,7 @@ namespace Corely.UnitTests.ClassData
         private readonly List<object[]> _data =
         [
             [null],
-            [""],
+            [string.Empty],
             [" "],
         ];
 

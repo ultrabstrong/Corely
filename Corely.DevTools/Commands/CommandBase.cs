@@ -55,7 +55,7 @@ namespace Corely.DevTools.Commands
         private bool CreateArgument(PropertyInfo property, ArgumentAttribute? argumentAttribute, out Argument argument)
         {
             var argumentGenericType = typeof(Argument<>).MakeGenericType(property.PropertyType);
-            var optionalText = argumentAttribute?.IsRequired ?? false ? "" : "[Optional] ";
+            var optionalText = argumentAttribute?.IsRequired ?? false ? string.Empty : "[Optional] ";
 
             var argumentInstance = Activator.CreateInstance(
                 argumentGenericType,

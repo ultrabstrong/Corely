@@ -8,7 +8,5 @@ namespace Corely.IAM.AccountManagement.Models
         int CreatedAccountId,
         int CreatedUserId,
         int CreatedAuthId)
-        : ResultBase(IsSuccess, Message)
-    {
-    }
+        : ResultBase(IsSuccess, Message);
 }

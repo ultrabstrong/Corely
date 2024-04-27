@@ -50,17 +50,34 @@ namespace Corely.IAM.Auth.Services
             {
                 Logger.LogDebug("No existing basic auth for UserId {UserId}. Creating new", request.UserId);
                 var newId = await _basicAuthRepo.CreateAsync(basicAuthEntity);
-                result = new UpsertBasicAuthResult(true, "", newId, UpsertType.Create);
+                result = new UpsertBasicAuthResult(true, string.Empty, newId, UpsertType.Create);
             }
             else
             {
                 Logger.LogDebug("Found existing basic auth for UserId {UserId}. Updating", request.UserId);
                 await _basicAuthRepo.UpdateAsync(basicAuthEntity);
-                result = new UpsertBasicAuthResult(true, "", existingAuth.Id, UpsertType.Update);
+                result = new UpsertBasicAuthResult(true, string.Empty, existingAuth.Id, UpsertType.Update);
             }
 
             Logger.LogInformation("Upserted basic auth for UserId {UserId}", request.UserId);
             return result;
+        }
+
+        public async Task<bool> VerifyBasicAuthAsync(VerifyBasicAuthRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+            var basicAuthEntity = await _basicAuthRepo.GetAsync(e => e.UserId == request.UserId);
+
+            if (basicAuthEntity == null)
+            {
+                Logger.LogInformation("No basic auth found for UserId {UserId}", request.UserId);
+                return false;
+            }
+
+            var basicAuth = Map<BasicAuth>(basicAuthEntity);
+
+            return basicAuth.Password.Verify(request.Password);
         }
     }
 }

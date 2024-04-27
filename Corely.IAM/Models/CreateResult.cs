@@ -4,7 +4,5 @@
         bool IsSuccess,
         string? Message,
         int CreatedId)
-        : ResultBase(IsSuccess, Message)
-    {
-    }
+        : ResultBase(IsSuccess, Message);
 }

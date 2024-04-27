@@ -18,9 +18,9 @@ namespace Corely.UnitTests.Common.Text.Comparison
             ["saturday", "sunday", 3],
             ["rosettacode", "raisethysword", 8],
             ["kitten", "kitten", 0],
-            ["kitten", "", 6],
-            ["", "kitten", 6],
-            ["", "", 0]
+            ["kitten", string.Empty, 6],
+            [string.Empty, "kitten", 6],
+            [string.Empty, string.Empty, 0]
         ];
 
         [Theory, MemberData(nameof(GetJaroWinklerDistanceTestData))]

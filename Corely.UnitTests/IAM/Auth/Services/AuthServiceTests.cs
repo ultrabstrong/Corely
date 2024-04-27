@@ -76,6 +76,49 @@ namespace Corely.UnitTests.IAM.Auth.Services
         }
 
         [Fact]
+        public async Task VerifyBasicAuthAsync_ShouldReturnTrue_WhenBasicAuthExists()
+        {
+            var request = new UpsertBasicAuthRequest(1, VALID_PASSWORD);
+            await _authService.UpsertBasicAuthAsync(request);
+
+            var verifyRequest = new VerifyBasicAuthRequest(1, VALID_PASSWORD);
+            var result = await _authService.VerifyBasicAuthAsync(verifyRequest);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task VerifyBasicAuthAsync_ShouldReturnFalse_WhenPasswordIsIncorrect()
+        {
+            var request = new UpsertBasicAuthRequest(1, VALID_PASSWORD);
+            await _authService.UpsertBasicAuthAsync(request);
+
+            var verifyRequest = new VerifyBasicAuthRequest(1, "password");
+            var result = await _authService.VerifyBasicAuthAsync(verifyRequest);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task VerifyBasicAuthAsync_ShouldReturnFalse_WhenBasicAuthDoesNotExist()
+        {
+            var request = new VerifyBasicAuthRequest(1, VALID_PASSWORD);
+
+            var result = await _authService.VerifyBasicAuthAsync(request);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task VerifyBasicAuthAsync_ShouldThrowArgumentNullException_WithNullRequest()
+        {
+            var ex = await Record.ExceptionAsync(() => _authService.VerifyBasicAuthAsync(null!));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
         public void Constructor_ShouldThrowArgumentNullException_WhenBasicAuthRepoIsNull()
         {
             AuthService act() => new(

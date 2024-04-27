@@ -28,7 +28,7 @@ namespace Corely.UnitTests.IAM
 
             protected override void AddDataAccessServices(IServiceCollection services)
             {
-                var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
+                var connection = new DataAccessConnection<string>(ConnectionNames.Mock, string.Empty);
                 var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
                 keyedDataServiceFactory.AddAllDataServices(services);
             }

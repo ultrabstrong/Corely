@@ -39,6 +39,28 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
+        public void MapAndValidate_ShouldReturnValidDestination_IfSourceIsValid()
+        {
+            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
+            var user = _mockServiceBase.MapAndValidate<User>(createUserRequest);
+
+            Assert.NotNull(user);
+            Assert.Equal(createUserRequest.Username, user.Username);
+            Assert.Equal(createUserRequest.Email, user.Email);
+        }
+
+        [Fact]
+        public void Map_ShouldReturnValidDestination_IfSourceIsValid()
+        {
+            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
+            var user = _mockServiceBase.Map<User>(createUserRequest);
+
+            Assert.NotNull(user);
+            Assert.Equal(createUserRequest.Username, user.Username);
+            Assert.Equal(createUserRequest.Email, user.Email);
+        }
+
+        [Fact]
         public void MapAndValidate_ShouldThrowIfSourceIsNull()
         {
             var ex = Record.Exception(() => _mockServiceBase.MapAndValidate<object>(null!));
@@ -68,45 +90,5 @@ namespace Corely.UnitTests.IAM.Services
             Assert.IsType<ValidationException>(ex);
         }
 
-        [Fact]
-        public void MapAndValidate_ShouldReturnValidDestination_IfSourceIsValid()
-        {
-            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
-            var user = _mockServiceBase.MapAndValidate<User>(createUserRequest);
-
-            Assert.NotNull(user);
-            Assert.Equal(createUserRequest.Username, user.Username);
-            Assert.Equal(createUserRequest.Email, user.Email);
-        }
-
-        [Fact]
-        public void Map_ShouldReturnValidDestination_IfSourceIsValid()
-        {
-            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
-            var user = _mockServiceBase.Map<User>(createUserRequest);
-
-            Assert.NotNull(user);
-            Assert.Equal(createUserRequest.Username, user.Username);
-            Assert.Equal(createUserRequest.Email, user.Email);
-        }
-
-        [Fact]
-        public void MapOrNull_ShouldReturnNull_IfSourceIsNull()
-        {
-            var user = _mockServiceBase.MapOrNull<User>(null);
-
-            Assert.Null(user);
-        }
-
-        [Fact]
-        public void MapOrNull_ShouldReturnValidDestination_IfSourceIsValid()
-        {
-            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
-            var user = _mockServiceBase.MapOrNull<User>(createUserRequest);
-
-            Assert.NotNull(user);
-            Assert.Equal(createUserRequest.Username, user.Username);
-            Assert.Equal(createUserRequest.Email, user.Email);
-        }
     }
 }

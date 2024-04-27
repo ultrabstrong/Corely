@@ -26,7 +26,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
 
         private class EmptyMockEncryptionProvider : EncryptionProviderBase
         {
-            public override string EncryptionTypeCode => "";
+            public override string EncryptionTypeCode => string.Empty;
 
             public EmptyMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
                 : base(keyStoreProvider) { }

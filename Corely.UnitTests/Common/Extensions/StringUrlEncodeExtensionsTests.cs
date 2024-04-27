@@ -15,7 +15,7 @@ namespace Corely.UnitTests.Common.Extensions
         [Fact]
         public void UrlEncode_EmptyString_ReturnsEmptyString()
         {
-            Assert.Equal("", "".UrlEncode());
+            Assert.Equal(string.Empty, string.Empty.UrlEncode());
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Corely.UnitTests.Common.Extensions
         [Fact]
         public void UrlDecode_EmptyString_ReturnsEmptyString()
         {
-            Assert.Equal("", "".UrlDecode());
+            Assert.Equal(string.Empty, string.Empty.UrlDecode());
         }
 
         [Theory, MemberData(nameof(GetUrlEncodeDecodeTestData))]

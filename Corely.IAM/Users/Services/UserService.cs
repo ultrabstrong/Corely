@@ -51,13 +51,7 @@ namespace Corely.IAM.Users.Services
             var createdId = await _userRepo.CreateAsync(userEntity);
 
             Logger.LogInformation("User {Username} created with Id {Id}", user.Username, createdId);
-            return new CreateResult(true, "", createdId);
-        }
-
-        public async Task<User?> GetUserAsync(int userId)
-        {
-            var userEntity = await _userRepo.GetAsync(userId);
-            return MapOrNull<User>(userEntity);
+            return new CreateResult(true, string.Empty, createdId);
         }
 
         private async Task ThrowIfUserExists(string username, string email)
@@ -74,8 +68,8 @@ namespace Corely.IAM.Users.Services
                 if (emailExists)
                     Logger.LogWarning("User already exists with Email {ExistingEmail}", existingUser.Email);
 
-                string usernameExistsMessage = usernameExists ? $"Username {username} already exists." : "";
-                string emailExistsMessage = emailExists ? $"Email {email} already exists." : "";
+                string usernameExistsMessage = usernameExists ? $"Username {username} already exists." : string.Empty;
+                string emailExistsMessage = emailExists ? $"Email {email} already exists." : string.Empty;
 
                 throw new UserExistsException($"{usernameExistsMessage} {emailExistsMessage}".Trim())
                 {
@@ -83,6 +77,32 @@ namespace Corely.IAM.Users.Services
                     EmailExists = emailExists
                 };
             }
+        }
+
+        public async Task<User?> GetUserAsync(int userId)
+        {
+            var userEntity = await _userRepo.GetAsync(userId);
+
+            if (userEntity == null)
+            {
+                Logger.LogInformation("User with Id {UserId} not found", userId);
+                return null;
+            }
+
+            return Map<User>(userEntity);
+        }
+
+        public async Task<User?> GetUserAsync(string userName)
+        {
+            var userEntity = await _userRepo.GetAsync(u => u.Username == userName);
+
+            if (userEntity == null)
+            {
+                Logger.LogInformation("User with Username {Username} not found", userName);
+                return null;
+            }
+
+            return Map<User>(userEntity);
         }
     }
 }

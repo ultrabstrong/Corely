@@ -38,7 +38,7 @@ namespace Corely.IAM.Accounts.Services
             var createdId = await _accountRepo.CreateAsync(accountEntity);
 
             Logger.LogInformation("Account {Account} created with Id {Id}", account.AccountName, createdId);
-            return new CreateResult(true, "", createdId);
+            return new CreateResult(true, string.Empty, createdId);
         }
 
         private async Task ThrowIfAccountExists(string accountName)

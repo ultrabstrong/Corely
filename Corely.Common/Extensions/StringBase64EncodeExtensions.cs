@@ -6,7 +6,7 @@
         {
             if (string.IsNullOrEmpty(s))
             {
-                return "";
+                return string.Empty;
             }
             return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(s));
         }
@@ -15,7 +15,7 @@
         {
             if (string.IsNullOrEmpty(s))
             {
-                return "";
+                return string.Empty;
             }
             return System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(s));
         }

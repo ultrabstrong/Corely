@@ -1,6 +1,10 @@
-﻿namespace Corely.IAM.AccountManagement.Models
+﻿using Corely.IAM.Models;
+
+namespace Corely.IAM.AccountManagement.Models
 {
-    public record SignInResult(string AuthToken)
-    {
-    }
+    public record SignInResult(
+        bool IsSuccess,
+        string? Message,
+        string? AuthToken)
+        : ResultBase(IsSuccess, Message);
 }

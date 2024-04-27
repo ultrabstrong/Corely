@@ -100,16 +100,16 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         }
 
         [Theory]
-        [InlineData($"--", true)]
-        [InlineData($"--:", false)]
-        [InlineData($"--::", false)]
-        [InlineData($":", false)]
-        [InlineData($"::", false)]
-        [InlineData($"", true)]
-        [InlineData($":", true)]
-        [InlineData($"::", true)]
-        [InlineData($":1", true)]
-        [InlineData($":2:", true)]
+        [InlineData("--", true)]
+        [InlineData("--:", false)]
+        [InlineData("--::", false)]
+        [InlineData(":", false)]
+        [InlineData("::", false)]
+        [InlineData("", true)]
+        [InlineData(":", true)]
+        [InlineData("::", true)]
+        [InlineData(":1", true)]
+        [InlineData(":2:", true)]
         public void Decrypt_ShouldThrowEncryptionProviderException_WithInvalidFormat(string value, bool prependTypeCode)
         {
             var testValue = prependTypeCode

@@ -5,5 +5,6 @@ namespace Corely.IAM.AccountManagement.Services
     public interface IAccountManagementService
     {
         Task<RegisterResult> RegisterAsync(RegisterRequest request);
+        Task<SignInResult> SignInAsync(SignInRequest request);
     }
 }

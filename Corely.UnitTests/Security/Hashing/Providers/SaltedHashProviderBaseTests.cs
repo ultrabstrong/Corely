@@ -20,7 +20,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
 
         private class EmptyTypeCodeMockHashProvider : SaltedHashProviderBase
         {
-            public override string HashTypeCode => "";
+            public override string HashTypeCode => string.Empty;
             protected override byte[] HashInternal(byte[] value) => value;
         }
 

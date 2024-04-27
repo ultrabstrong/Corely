@@ -8,6 +8,5 @@ namespace Corely.IAM.Auth.Models
         string? Message,
         int CreatedId,
         UpsertType UpsertType)
-        : CreateResult(IsSuccess, Message, CreatedId)
-    { }
+        : CreateResult(IsSuccess, Message, CreatedId);
 }

@@ -89,7 +89,7 @@ namespace Corely.Common.Text.Delimited
             StreamReader streamReader = new(stream, encoding);
             if (stream.Position == 0 && Equals(new UTF8Encoding(true), streamReader.CurrentEncoding)) { result.Length += 3; }
 
-            string currentToken = "";
+            string currentToken = string.Empty;
             int currentRecordDelim = 0;
 
             bool isInLiteral = false,
@@ -185,7 +185,7 @@ namespace Corely.Common.Text.Delimited
                             // Token is complete. Remove last literal char, reset vars, and push token
                             currentToken = currentToken[..^1];
                             result.Tokens.Add(currentToken);
-                            currentToken = "";
+                            currentToken = string.Empty;
                             isInLiteral = false;
                         }
                         // Last char was not an unescaped literal
@@ -199,7 +199,7 @@ namespace Corely.Common.Text.Delimited
                     else
                     {
                         result.Tokens.Add(currentToken);
-                        currentToken = "";
+                        currentToken = string.Empty;
                         isInLiteral = false;
                     }
                     // Reset last char escaped
@@ -340,7 +340,7 @@ namespace Corely.Common.Text.Delimited
 
         private void AppendTokenLiteral(string token, StreamWriter writer)
         {
-            token ??= "";
+            token ??= string.Empty;
             token = token.Replace(_tokenLiteral.ToString(), $"{_tokenLiteral}{_tokenLiteral}");
 
             if (token.Contains(_tokenDelimiter) || token.Contains(_recordDelimiter))

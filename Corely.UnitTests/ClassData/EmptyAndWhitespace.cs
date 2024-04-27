@@ -6,7 +6,7 @@ namespace Corely.UnitTests.ClassData
     {
         private readonly List<object[]> _data =
         [
-            [""],
+            [string.Empty],
             [" "]
         ];
         public IEnumerator<object[]> GetEnumerator() => _data.GetEnumerator();

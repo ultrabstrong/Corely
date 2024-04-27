@@ -35,7 +35,7 @@ namespace Corely.UnitTests.Security.PasswordValidation.Providers
         [Fact]
         public void ValidatePassword_IdentifiesMultipleFailures()
         {
-            var password = "";
+            var password = string.Empty;
             var expectedResults = new[]
             {
                 PasswordValidationConstants.PASSWORD_TOO_SHORT,

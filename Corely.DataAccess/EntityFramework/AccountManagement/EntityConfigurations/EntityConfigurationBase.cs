@@ -22,7 +22,7 @@ namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfiguratio
         {
             if (typeof(T).Name.EndsWith("Entity"))
             {
-                string tableName = typeof(T).Name.Replace("Entity", "");
+                string tableName = typeof(T).Name.Replace("Entity", string.Empty);
                 if (!tableName.EndsWith('s'))
                 {
                     tableName += "s";

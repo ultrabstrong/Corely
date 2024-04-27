@@ -4,6 +4,7 @@ namespace Corely.IAM.Auth.Services
 {
     public interface IAuthService
     {
-        public Task<UpsertBasicAuthResult> UpsertBasicAuthAsync(UpsertBasicAuthRequest request);
+        Task<UpsertBasicAuthResult> UpsertBasicAuthAsync(UpsertBasicAuthRequest request);
+        Task<bool> VerifyBasicAuthAsync(VerifyBasicAuthRequest request);
     }
 }

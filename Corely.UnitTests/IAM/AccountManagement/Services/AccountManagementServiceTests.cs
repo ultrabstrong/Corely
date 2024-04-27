@@ -18,6 +18,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
     public class AccountManagementServiceTests : ServiceBaseTests
     {
         private readonly Fixture _fixture = new();
+        private readonly Mock<IUnitOfWorkProvider> _unitOfWorkProviderMock = new();
         private readonly Mock<IAccountService> _accountServiceMock;
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<IAuthService> _authServiceMock;
@@ -37,7 +38,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
                 _accountServiceMock.Object,
                 _userServiceMock.Object,
                 _authServiceMock.Object,
-                Mock.Of<IUnitOfWorkProvider>());
+                _unitOfWorkProviderMock.Object);
         }
 
         private Mock<IAccountService> GetMockAccountService()
@@ -48,7 +49,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
                 .Setup(m => m.CreateAccountAsync(
                     It.IsAny<CreateAccountRequest>()))
                 .ReturnsAsync(() =>
-                    new CreateResult(_createAccountSuccess, "", _fixture.Create<int>()));
+                    new CreateResult(_createAccountSuccess, string.Empty, _fixture.Create<int>()));
 
             return accountServiceMock;
         }
@@ -61,7 +62,20 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
                 .Setup(m => m.CreateUserAsync(
                     It.IsAny<CreateUserRequest>()))
                 .ReturnsAsync(() =>
-                    new CreateResult(_createUserSuccess, "", _fixture.Create<int>()));
+                    new CreateResult(_createUserSuccess, string.Empty, _fixture.Create<int>()));
+
+            userServiceMock
+                .Setup(m => m.GetUserAsync(
+                    It.IsAny<string>()))
+                .ReturnsAsync(_fixture.Create<User>());
+
+            userServiceMock
+                .Setup(m => m.GetUserAsync(
+                    It.IsAny<int>()))
+                .ReturnsAsync((int userId) =>
+                    _fixture.Build<User>()
+                        .With(m => m.Id, userId)
+                        .Create());
 
             return userServiceMock;
         }
@@ -74,14 +88,18 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
                 .Setup(m => m.UpsertBasicAuthAsync(
                     It.IsAny<UpsertBasicAuthRequest>()))
                 .ReturnsAsync(() =>
-                    new UpsertBasicAuthResult(_createAuthSuccess, "",
+                    new UpsertBasicAuthResult(_createAuthSuccess, string.Empty,
                         _fixture.Create<int>(), _fixture.Create<UpsertType>()));
+            authServiceMock
+                .Setup(m => m.VerifyBasicAuthAsync(
+                    It.IsAny<VerifyBasicAuthRequest>()))
+                .ReturnsAsync(true);
 
             return authServiceMock;
         }
 
         [Fact]
-        public async Task SignUpAsync_ShouldReturnSuccessResult_WhenAllServicesSucceed()
+        public async Task RegisterAsync_ShouldReturnSuccessResult_WhenAllServicesSucceed()
         {
             var request = _fixture.Create<RegisterRequest>();
 
@@ -91,7 +109,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task SignUpAsync_ShouldReturnFailureResult_WhenAccountServiceFails()
+        public async Task RegisterAsync_ShouldReturnFailureResult_WhenAccountServiceFails()
         {
             _createAccountSuccess = false;
             var request = _fixture.Create<RegisterRequest>();
@@ -101,10 +119,11 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
             Assert.False(result.IsSuccess);
             _userServiceMock.Verify(m => m.CreateUserAsync(It.IsAny<CreateUserRequest>()), Times.Never);
             _authServiceMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
+            _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
         }
 
         [Fact]
-        public async Task SignUpAsync_ShouldReturnFailureResult_WhenUserServiceFails()
+        public async Task RegisterAsync_ShouldReturnFailureResult_WhenUserServiceFails()
         {
             _createUserSuccess = false;
             var request = _fixture.Create<RegisterRequest>();
@@ -113,10 +132,11 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
 
             Assert.False(result.IsSuccess);
             _authServiceMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
+            _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
         }
 
         [Fact]
-        public async Task SignUpAsync_ShouldReturnFailureResult_WhenAuthServiceFails()
+        public async Task RegisterAsync_ShouldReturnFailureResult_WhenAuthServiceFails()
         {
             _createAuthSuccess = false;
             var request = _fixture.Create<RegisterRequest>();
@@ -124,15 +144,60 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
             var result = await _accountManagementService.RegisterAsync(request);
 
             Assert.False(result.IsSuccess);
+            _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
         }
 
         [Fact]
-        public async Task SignUpAsync_ShouldThrowArgumentNullException_WithNullRequest()
+        public async Task RegisterAsync_ShouldThrowArgumentNullException_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _accountManagementService.RegisterAsync(null!));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public async Task SignInAsync_ShouldReturnSuccessResult_WhenUserExistsAndPasswordIsValid()
+        {
+            var request = _fixture.Create<SignInRequest>();
+
+            var result = await _accountManagementService.SignInAsync(request);
+
+            Assert.True(result.IsSuccess);
+        }
+
+        [Fact]
+        public async Task SignInAsync_ShouldReturnFailureResult_WhenUserDoesNotExist()
+        {
+            var request = _fixture.Create<SignInRequest>();
+
+            _userServiceMock
+                .Setup(m => m.GetUserAsync(request.Username))
+                .ReturnsAsync((User)null!);
+
+            var result = await _accountManagementService.SignInAsync(request);
+
+            Assert.False(result.IsSuccess);
+            Assert.Equal("User not found", result.Message);
+            Assert.Equal(string.Empty, result.AuthToken);
+        }
+
+        [Fact]
+        public async Task SignInAsync_ShouldReturnFailureResult_WhenPasswordIsInvalid()
+        {
+            var request = _fixture.Create<SignInRequest>();
+            var user = _fixture.Create<User>();
+
+            _authServiceMock
+                .Setup(m => m.VerifyBasicAuthAsync(
+                    It.IsAny<VerifyBasicAuthRequest>()))
+                .ReturnsAsync(false);
+
+            var result = await _accountManagementService.SignInAsync(request);
+
+            Assert.False(result.IsSuccess);
+            Assert.Equal("Invalid password", result.Message);
+            Assert.Equal(string.Empty, result.AuthToken);
         }
 
         [Fact]

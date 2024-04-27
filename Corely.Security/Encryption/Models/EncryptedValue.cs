@@ -18,7 +18,7 @@ namespace Corely.Security.Encryption.Models
             get => _secret;
             init => _secret = value;
         }
-        private string _secret = "";
+        private string _secret = string.Empty;
 
         public void Set(string decryptedValue)
         {

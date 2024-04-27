@@ -18,7 +18,7 @@ namespace Corely.DevTools.SerilogCustomization
                 exception: null,
                 messageTemplate: new MessageTemplate(
                     "Entity Framework {EventDataType}",
-                    [new PropertyToken("EventDataType", "")]),
+                    [new PropertyToken("EventDataType", string.Empty)]),
                 properties: [
                     new LogEventProperty("EventDataType", new ScalarValue(eventData.GetType().Name))
                 ]);

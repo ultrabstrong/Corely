@@ -61,7 +61,7 @@ namespace ConsoleTest
         protected override void AddDataAccessServices(IServiceCollection services)
         {
             // Corely mock db connection
-            // var connection = new DataAccessConnection<string>(ConnectionNames.Mock, "");
+            // var connection = new DataAccessConnection<string>(ConnectionNames.Mock, string.Empty);
 
             // EF in memory db connection
             //var connection = new DataAccessConnection<EFConnection>(ConnectionNames.EntityFramework, new EFConnection(new InMemoryConfig()));

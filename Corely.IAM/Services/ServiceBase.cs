@@ -29,6 +29,11 @@ namespace Corely.IAM.Services
             Logger = logger.ThrowIfNull(nameof(logger));
         }
 
+        public T Map<T>(object source)
+        {
+            return _mapProvider.Map<T>(source);
+        }
+
         public T MapAndValidate<T>(object source)
         {
             try
@@ -59,16 +64,6 @@ namespace Corely.IAM.Services
                 Logger.LogWarning("Failed to map {MapSourceType} to valid {MapDestinationType}", source?.GetType()?.Name, typeof(T)?.Name);
                 throw;
             }
-        }
-
-        public T Map<T>(object source)
-        {
-            return _mapProvider.Map<T>(source);
-        }
-
-        public T? MapOrNull<T>(object? source)
-        {
-            return source == null ? default : _mapProvider.Map<T>(source);
         }
     }
 }

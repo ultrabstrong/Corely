@@ -65,7 +65,7 @@ namespace Corely.IAM.AccountManagement.Services
                 await _uowProvider.CommitAsync();
                 operationSucceeded = true;
                 _logger.LogInformation("Account {Account} registered with Id {Id}", request.AccountName, createAccountResult.CreatedId);
-                return new RegisterResult(true, "", createAccountResult.CreatedId, createUserResult.CreatedId, createAuthResult.CreatedId);
+                return new RegisterResult(true, string.Empty, createAccountResult.CreatedId, createUserResult.CreatedId, createAuthResult.CreatedId);
             }
             finally
             {
@@ -80,6 +80,25 @@ namespace Corely.IAM.AccountManagement.Services
         {
             _logger.LogInformation("Account registration failed.");
             return new RegisterResult(false, "Operation failed", -1, -1, -1);
+        }
+
+        public async Task<SignInResult> SignInAsync(SignInRequest request)
+        {
+            var user = await _userService.GetUserAsync(request.Username);
+            if (user == null)
+            {
+                return new SignInResult(false, "User not found", string.Empty);
+            }
+
+            var isValidPassword = await _authService.VerifyBasicAuthAsync(new(user.Id, request.Password));
+            if (!isValidPassword)
+            {
+                return new SignInResult(false, "Invalid password", string.Empty);
+            }
+
+            var authToken = string.Empty; // Todo : Implement token generation service
+
+            return new SignInResult(true, string.Empty, authToken);
         }
     }
 }

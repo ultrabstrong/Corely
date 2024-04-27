@@ -38,7 +38,7 @@
         {
             int place = info.Name.LastIndexOf(info.Extension);
             if (place == -1) { return info.Name; }
-            return info.Name.Remove(place, info.Extension.Length).Insert(place, "");
+            return info.Name.Remove(place, info.Extension.Length).Insert(place, string.Empty);
         }
 
         public string GetFileNameWithExtension(string filepath)

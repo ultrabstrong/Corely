@@ -3,6 +3,5 @@
     public record CreateUserRequest(
         int AccountId,
         string Username,
-        string Email)
-    { }
+        string Email);
 }

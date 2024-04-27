@@ -18,7 +18,7 @@ namespace Corely.Security.Hashing.Models
             get => _hash;
             init => _hash = value;
         }
-        private string _hash = "";
+        private string _hash = string.Empty;
 
         public IHashedValue Set(string value)
         {
