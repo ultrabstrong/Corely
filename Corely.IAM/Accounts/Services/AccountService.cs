@@ -31,10 +31,10 @@ namespace Corely.IAM.Accounts.Services
 
             Logger.LogInformation("Creating account {Account}", request.AccountName);
 
-            var account = MapAndValidate<Account>(request);
+            var account = MapThenValidateTo<Account>(request);
             await ThrowIfAccountExists(account.AccountName);
 
-            var accountEntity = Map<AccountEntity>(account);
+            var accountEntity = MapTo<AccountEntity>(account);
             var createdId = await _accountRepo.CreateAsync(accountEntity);
 
             Logger.LogInformation("Account {Account} created with Id {Id}", account.AccountName, createdId);

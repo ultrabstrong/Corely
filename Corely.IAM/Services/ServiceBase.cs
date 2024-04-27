@@ -29,28 +29,42 @@ namespace Corely.IAM.Services
             Logger = logger.ThrowIfNull(nameof(logger));
         }
 
-        public T Map<T>(object source)
+        public T MapThenValidateTo<T>(object source)
         {
-            return _mapProvider.Map<T>(source);
+            var mapped = MapTo<T>(source);
+            Validate(mapped);
+            return mapped;
         }
 
-        public T MapAndValidate<T>(object source)
+        public T MapTo<T>(object source)
         {
             try
             {
                 ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-                var destination = _mapProvider.Map<T>(source);
-                _validationProvider.ThrowIfInvalid(destination);
-
-                return destination;
+                return _mapProvider.MapTo<T>(source); ;
             }
             catch (Exception ex)
             {
-                var state = new Dictionary<string, object?>
+                using var scope = Logger.BeginScope(new Dictionary<string, object?>
                 {
                     { "MapSource", JsonSerializer.Serialize(source, _jsonSerializerOptions) }
-                };
+                });
+
+                Logger.LogWarning(ex, "Failed to map {MapSourceType} to {MapDestinationType}", source?.GetType()?.Name, typeof(T)?.Name);
+                throw;
+            }
+        }
+
+        public void Validate<T>(T model)
+        {
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model, nameof(model));
+                _validationProvider.ThrowIfInvalid(model);
+            }
+            catch (Exception ex)
+            {
+                var state = new Dictionary<string, object?>();
 
                 if (ex is ValidationException validationException
                     && validationException.ValidationResult != null)
@@ -59,9 +73,7 @@ namespace Corely.IAM.Services
                         JsonSerializer.Serialize(validationException.ValidationResult, _jsonSerializerOptions));
                 }
 
-                using var scope = Logger.BeginScope(state);
-
-                Logger.LogWarning("Failed to map {MapSourceType} to valid {MapDestinationType}", source?.GetType()?.Name, typeof(T)?.Name);
+                Logger.LogWarning(ex, "Validation failed for {ModelType}", model?.GetType()?.Name);
                 throw;
             }
         }

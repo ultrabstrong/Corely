@@ -36,7 +36,7 @@ namespace Corely.IAM.Users.Services
 
             Logger.LogInformation("Creating user {Username}", request.Username);
 
-            var user = MapAndValidate<User>(request);
+            var user = MapThenValidateTo<User>(request);
             await ThrowIfUserExists(user.Username, user.Email);
 
             var accountEntity = await _readonlyAccountRepo.GetAsync(request.AccountId);
@@ -46,7 +46,7 @@ namespace Corely.IAM.Users.Services
                 throw new AccountDoesNotExistException($"Account with Id {request.AccountId} not found");
             }
 
-            var userEntity = Map<UserEntity>(user);
+            var userEntity = MapTo<UserEntity>(user);
             userEntity.Accounts = [accountEntity];
             var createdId = await _userRepo.CreateAsync(userEntity);
 
@@ -89,7 +89,7 @@ namespace Corely.IAM.Users.Services
                 return null;
             }
 
-            return Map<User>(userEntity);
+            return MapTo<User>(userEntity);
         }
 
         public async Task<User?> GetUserAsync(string userName)
@@ -102,7 +102,7 @@ namespace Corely.IAM.Users.Services
                 return null;
             }
 
-            return Map<User>(userEntity);
+            return MapTo<User>(userEntity);
         }
     }
 }

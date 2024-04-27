@@ -39,9 +39,9 @@ namespace Corely.IAM.Auth.Services
                 throw new PasswordValidationException(passwordValidationResults, "Password validation failed");
             }
 
-            var basicAuth = MapAndValidate<BasicAuth>(request);
+            var basicAuth = MapThenValidateTo<BasicAuth>(request);
 
-            var basicAuthEntity = Map<BasicAuthEntity>(basicAuth);
+            var basicAuthEntity = MapTo<BasicAuthEntity>(basicAuth);
 
             var existingAuth = await _basicAuthRepo.GetAsync(e => e.UserId == basicAuthEntity.UserId);
 
@@ -75,7 +75,7 @@ namespace Corely.IAM.Auth.Services
                 return false;
             }
 
-            var basicAuth = Map<BasicAuth>(basicAuthEntity);
+            var basicAuth = MapTo<BasicAuth>(basicAuthEntity);
 
             return basicAuth.Password.Verify(request.Password);
         }

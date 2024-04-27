@@ -2,6 +2,6 @@
 {
     public interface IMapProvider
     {
-        public TDestination Map<TDestination>(object model);
+        public TDestination MapTo<TDestination>(object model);
     }
 }

@@ -11,7 +11,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper
             var autoMapperMock = new Mock<IMapper>();
             var provider = new AutoMapperMapProvider(autoMapperMock.Object);
 
-            var response = provider.Map<object>(new object());
+            var response = provider.MapTo<object>(new object());
 
             autoMapperMock.Verify(m => m.Map<object>(It.IsAny<object>()), Times.Once);
         }

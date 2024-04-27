@@ -11,7 +11,7 @@ namespace Corely.IAM.Mappers.AutoMapper
             _mapper = mapper;
         }
 
-        public TDestination Map<TDestination>(object source)
+        public TDestination MapTo<TDestination>(object source)
         {
             return _mapper.Map<TDestination>(source);
         }
