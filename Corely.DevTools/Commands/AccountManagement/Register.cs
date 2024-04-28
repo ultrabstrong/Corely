@@ -7,17 +7,17 @@ namespace Corely.DevTools.Commands.AccountManagement
 {
     internal partial class AccountManagement : CommandBase
     {
-        internal class SignUp : CommandBase
+        internal class Register : CommandBase
         {
-            [Argument("Filepath to signup request json", true)]
-            private string JsonSignupRequestFile { get; init; } = null!;
+            [Argument("Filepath to register request json", true)]
+            private string JsonRegisterRequestFile { get; init; } = null!;
 
             [Option("-c", "--create", Description = "Create sample json file at path")]
             private bool Create { get; init; }
 
             private readonly IAccountManagementService _accountManagementService;
 
-            public SignUp() : base("signup", "Sign up for a new account")
+            public Register() : base("register", "Register for a new account")
             {
                 var serviceFactory = new ServiceFactory();
                 _accountManagementService = serviceFactory.GetRequiredService<IAccountManagementService>();
@@ -31,13 +31,13 @@ namespace Corely.DevTools.Commands.AccountManagement
                 }
                 else
                 {
-                    await SignUpUserAsync();
+                    await RegisterUserAsync();
                 }
             }
 
             private void CreateSampleJson()
             {
-                FileInfo file = new(JsonSignupRequestFile);
+                FileInfo file = new(JsonRegisterRequestFile);
 
                 if (!Directory.Exists(file.DirectoryName))
                 {
@@ -45,32 +45,32 @@ namespace Corely.DevTools.Commands.AccountManagement
                     return;
                 }
 
-                var signUpRequest = new RegisterRequest("accountName", "userName", "email", "password");
-                var json = JsonSerializer.Serialize(signUpRequest);
-                File.WriteAllText(JsonSignupRequestFile, json);
+                var registerRequest = new RegisterRequest("accountName", "userName", "email", "password");
+                var json = JsonSerializer.Serialize(registerRequest);
+                File.WriteAllText(JsonRegisterRequestFile, json);
 
-                Console.WriteLine($"Sample json file created at: {JsonSignupRequestFile}");
+                Console.WriteLine($"Sample json file created at: {JsonRegisterRequestFile}");
             }
 
-            private async Task SignUpUserAsync()
+            private async Task RegisterUserAsync()
             {
-                if (!File.Exists(JsonSignupRequestFile))
+                if (!File.Exists(JsonRegisterRequestFile))
                 {
-                    Console.WriteLine($"File not found: {JsonSignupRequestFile}");
+                    Console.WriteLine($"File not found: {JsonRegisterRequestFile}");
                     return;
                 }
 
-                var json = File.ReadAllText(JsonSignupRequestFile);
+                var json = File.ReadAllText(JsonRegisterRequestFile);
 
-                var signUpRequest = JsonSerializer.Deserialize<RegisterRequest>(json);
+                var registerRequest = JsonSerializer.Deserialize<RegisterRequest>(json);
 
-                if (signUpRequest == null)
+                if (registerRequest == null)
                 {
-                    Console.WriteLine($"Invalid json: {JsonSignupRequestFile}");
+                    Console.WriteLine($"Invalid json: {JsonRegisterRequestFile}");
                     return;
                 }
 
-                var result = await _accountManagementService.RegisterAsync(signUpRequest);
+                var result = await _accountManagementService.RegisterAsync(registerRequest);
 
                 Console.WriteLine(JsonSerializer.Serialize(result));
             }
