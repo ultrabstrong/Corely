@@ -40,7 +40,18 @@ namespace Corely.DataAccess.EntityFramework.Repos
 
         public virtual async Task UpdateAsync(T entity)
         {
-            _dbSet.Update(entity);
+            var existingEntity = _dbSet.Local.FirstOrDefault(m => m.Id == entity.Id);
+            if (existingEntity == null)
+            {
+                // attach new entity instance to local context for tracking
+                _dbSet.Attach(entity);
+                _dbSet.Entry(entity).State = EntityState.Modified;
+            }
+            else
+            {
+                // update existing tracked entity instance with new entity values
+                _dbSet.Entry(existingEntity).CurrentValues.SetValues(entity);
+            }
             await _saveChangesAsync();
         }
 

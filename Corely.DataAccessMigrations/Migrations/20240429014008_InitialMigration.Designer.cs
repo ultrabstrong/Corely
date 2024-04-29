@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Corely.DataAccessMigrations.Migrations
 {
     [DbContext(typeof(AccountManagementDbContext))]
-    [Migration("20240413025644_InitialMigration")]
+    [Migration("20240429014008_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -40,7 +40,7 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.ToTable("AccountEntityUserEntity");
                 });
 
-            modelBuilder.Entity("Corely.Domain.Entities.Accounts.AccountEntity", b =>
+            modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,7 +71,7 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.ToTable("Accounts", (string)null);
                 });
 
-            modelBuilder.Entity("Corely.Domain.Entities.Auth.BasicAuthEntity", b =>
+            modelBuilder.Entity("Corely.IAM.Auth.Entities.BasicAuthEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -105,7 +105,7 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.ToTable("BasicAuths", (string)null);
                 });
 
-            modelBuilder.Entity("Corely.Domain.Entities.Users.UserDetailsEntity", b =>
+            modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -138,7 +138,7 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.ToTable("UserDetails", (string)null);
                 });
 
-            modelBuilder.Entity("Corely.Domain.Entities.Users.UserEntity", b =>
+            modelBuilder.Entity("Corely.IAM.Users.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -161,13 +161,13 @@ namespace Corely.DataAccessMigrations.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true);
 
-                    b.Property<int>("FailedLogins")
+                    b.Property<int>("FailedLoginsSinceLastSuccess")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("LastFailedLoginUtc")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("LastLoginUtc")
+                    b.Property<DateTime?>("LastSuccessfulLoginUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("ModifiedUtc")
@@ -175,7 +175,10 @@ namespace Corely.DataAccessMigrations.Migrations
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
-                    b.Property<int>("SuccessfulLogins")
+                    b.Property<int>("TotalFailedLogins")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalSuccessfulLogins")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
@@ -196,42 +199,42 @@ namespace Corely.DataAccessMigrations.Migrations
 
             modelBuilder.Entity("AccountEntityUserEntity", b =>
                 {
-                    b.HasOne("Corely.Domain.Entities.Accounts.AccountEntity", null)
+                    b.HasOne("Corely.IAM.Accounts.Entities.AccountEntity", null)
                         .WithMany()
                         .HasForeignKey("AccountsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Corely.Domain.Entities.Users.UserEntity", null)
+                    b.HasOne("Corely.IAM.Users.Entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Corely.Domain.Entities.Auth.BasicAuthEntity", b =>
+            modelBuilder.Entity("Corely.IAM.Auth.Entities.BasicAuthEntity", b =>
                 {
-                    b.HasOne("Corely.Domain.Entities.Users.UserEntity", "User")
+                    b.HasOne("Corely.IAM.Users.Entities.UserEntity", "User")
                         .WithOne("BasicAuth")
-                        .HasForeignKey("Corely.Domain.Entities.Auth.BasicAuthEntity", "UserId")
+                        .HasForeignKey("Corely.IAM.Auth.Entities.BasicAuthEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Corely.Domain.Entities.Users.UserDetailsEntity", b =>
+            modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
                 {
-                    b.HasOne("Corely.Domain.Entities.Users.UserEntity", "User")
+                    b.HasOne("Corely.IAM.Users.Entities.UserEntity", "User")
                         .WithOne("Details")
-                        .HasForeignKey("Corely.Domain.Entities.Users.UserDetailsEntity", "UserId")
+                        .HasForeignKey("Corely.IAM.Users.Entities.UserDetailsEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Corely.Domain.Entities.Users.UserEntity", b =>
+            modelBuilder.Entity("Corely.IAM.Users.Entities.UserEntity", b =>
                 {
                     b.Navigation("BasicAuth");
 

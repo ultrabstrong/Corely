@@ -43,10 +43,11 @@ namespace Corely.DataAccessMigrations.Migrations
                     Email = table.Column<string>(type: "varchar(254)", maxLength: 254, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Enabled = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: true),
-                    SuccessfulLogins = table.Column<int>(type: "int", nullable: false),
-                    FailedLogins = table.Column<int>(type: "int", nullable: false),
+                    TotalSuccessfulLogins = table.Column<int>(type: "int", nullable: false),
+                    LastSuccessfulLoginUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    FailedLoginsSinceLastSuccess = table.Column<int>(type: "int", nullable: false),
+                    TotalFailedLogins = table.Column<int>(type: "int", nullable: false),
                     LastFailedLoginUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LastLoginUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     CreatedUtc = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "(UTC_TIMESTAMP)"),
                     ModifiedUtc = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "(UTC_TIMESTAMP)")
                 },

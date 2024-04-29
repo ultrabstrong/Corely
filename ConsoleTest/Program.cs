@@ -35,7 +35,8 @@ namespace ConsoleTest
                 var registerRequest = new RegisterRequest("acct1", "un1", "email@x.y", "P@55Word");
                 var registerResult = await acctMgmtService.RegisterAsync(registerRequest);
 
-
+                var signInRequest = new SignInRequest("un1", "P@55Word");
+                var signInResult = await acctMgmtService.SignInAsync(signInRequest);
             }
             catch (Exception ex)
             {
