@@ -24,5 +24,13 @@ namespace ConsoleTest
             return connectionString
                 ?? throw new Exception($"DefaultConnection string not found in {SETTINGS_FILE_NAME}");
         }
+
+        public static string GetSystemKey()
+        {
+            string? systemKey = _configuration["SystemKey"];
+
+            return systemKey
+                ?? throw new Exception($"SystemKey not found in {SETTINGS_FILE_NAME}");
+        }
     }
 }

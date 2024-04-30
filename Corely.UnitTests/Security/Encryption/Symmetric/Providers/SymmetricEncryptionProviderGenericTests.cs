@@ -18,7 +18,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         {
             _keyProvider = new AesKeyProvider();
             _keyStoreProvider = new InMemorySymmetricKeyStoreProvider(_keyProvider.CreateKey());
-            _encryptionProvider = GetEncryptionProvider(_keyStoreProvider);
+            _encryptionProvider = GetEncryptionProvider();
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         {
             var decrypted = _fixture.Create<string>();
 
-            var encrypted = _encryptionProvider.Encrypt(decrypted);
+            var encrypted = _encryptionProvider.Encrypt(decrypted, _keyStoreProvider);
 
             Assert.StartsWith(_encryptionProvider.EncryptionTypeCode, encrypted);
             Assert.Matches(@"^.+:\d+:.+", encrypted);
@@ -36,7 +36,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         [Theory, ClassData(typeof(EmptyAndWhitespace))]
         public void Encrypt_ShouldReturnCorrectlyFormattedValue_WithEmptyAndWhitespace(string value)
         {
-            var encrypted = _encryptionProvider.Encrypt(value);
+            var encrypted = _encryptionProvider.Encrypt(value, _keyStoreProvider);
             Assert.StartsWith(_encryptionProvider.EncryptionTypeCode, encrypted);
             Assert.Matches(@"^.+:\d+:.+", encrypted);
             Assert.NotEqual(value, encrypted);
@@ -46,15 +46,15 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         public void Encrypt_ShouldProduceDifferentEncryptedStrings()
         {
             var decrypted = _fixture.Create<string>();
-            var encrypted1 = _encryptionProvider.Encrypt(decrypted);
-            var encrypted2 = _encryptionProvider.Encrypt(decrypted);
+            var encrypted1 = _encryptionProvider.Encrypt(decrypted, _keyStoreProvider);
+            var encrypted2 = _encryptionProvider.Encrypt(decrypted, _keyStoreProvider);
             Assert.NotEqual(encrypted1, encrypted2);
         }
 
         [Fact]
         public void Encrypt_ShouldArgumentNullExceptionThrow_WithNullInput()
         {
-            var ex = Record.Exception(() => _encryptionProvider.Encrypt(null!));
+            var ex = Record.Exception(() => _encryptionProvider.Encrypt(null!, _keyStoreProvider));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
@@ -63,8 +63,8 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         public void Encrypt_ThenDecrypt_ShouldProduceOriginalValue()
         {
             var originalDecrypted = _fixture.Create<string>();
-            var encrypted = _encryptionProvider.Encrypt(originalDecrypted);
-            var decrypted = _encryptionProvider.Decrypt(encrypted);
+            var encrypted = _encryptionProvider.Encrypt(originalDecrypted, _keyStoreProvider);
+            var decrypted = _encryptionProvider.Decrypt(encrypted, _keyStoreProvider);
             Assert.Equal(originalDecrypted, decrypted);
         }
 
@@ -72,10 +72,10 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         public void Decrypt_ShouldProduceSameStringThatWasEncrypted()
         {
             var decrpyted = _fixture.Create<string>();
-            var encrypted1 = _encryptionProvider.Encrypt(decrpyted);
-            var encrypted2 = _encryptionProvider.Encrypt(decrpyted);
-            var decrypted1 = _encryptionProvider.Decrypt(encrypted1);
-            var decrypted2 = _encryptionProvider.Decrypt(encrypted2);
+            var encrypted1 = _encryptionProvider.Encrypt(decrpyted, _keyStoreProvider);
+            var encrypted2 = _encryptionProvider.Encrypt(decrpyted, _keyStoreProvider);
+            var decrypted1 = _encryptionProvider.Decrypt(encrypted1, _keyStoreProvider);
+            var decrypted2 = _encryptionProvider.Decrypt(encrypted2, _keyStoreProvider);
             Assert.Equal(decrpyted, decrypted1);
             Assert.Equal(decrpyted, decrypted2);
         }
@@ -84,18 +84,18 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         public void Decrypt_ShouldSucceed_AfterKeyIsUpdated()
         {
             var decrypted = _fixture.Create<string>();
-            var encrypted = _encryptionProvider.Encrypt(decrypted);
+            var encrypted = _encryptionProvider.Encrypt(decrypted, _keyStoreProvider);
 
             _keyStoreProvider.Add(_keyProvider.CreateKey());
 
-            var reDecrypted = _encryptionProvider.Decrypt(encrypted);
+            var reDecrypted = _encryptionProvider.Decrypt(encrypted, _keyStoreProvider);
             Assert.Equal(decrypted, reDecrypted);
         }
 
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
         public void Decrypt_ShouldThrowArgumentException_WithNullOrWhiteSpace(string value)
         {
-            var ex = Record.Exception(() => _encryptionProvider.Decrypt(value));
+            var ex = Record.Exception(() => _encryptionProvider.Decrypt(value, _keyStoreProvider));
             Assert.True(ex is ArgumentNullException || ex is ArgumentException);
         }
 
@@ -116,7 +116,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
                 ? $"{_encryptionProvider.EncryptionTypeCode}{value}"
                 : value;
 
-            var ex = Record.Exception(() => _encryptionProvider.Decrypt(testValue));
+            var ex = Record.Exception(() => _encryptionProvider.Decrypt(testValue, _keyStoreProvider));
 
             Assert.NotNull(ex);
             Assert.IsType<EncryptionException>(ex);
@@ -126,10 +126,10 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         public void ReEncrypt_ShouldReturnUpdatedCurrentVersionValue_WhenKeyVersionIsSame()
         {
             var originalValue = _fixture.Create<string>();
-            var originalEncrypted = _encryptionProvider.Encrypt(originalValue);
+            var originalEncrypted = _encryptionProvider.Encrypt(originalValue, _keyStoreProvider);
 
-            var reEncrypted = _encryptionProvider.ReEncrypt(originalEncrypted);
-            var decrypted = _encryptionProvider.Decrypt(reEncrypted);
+            var reEncrypted = _encryptionProvider.ReEncrypt(originalEncrypted, _keyStoreProvider);
+            var decrypted = _encryptionProvider.Decrypt(reEncrypted, _keyStoreProvider);
 
             Assert.Equal(originalValue, decrypted);
             Assert.NotEqual(originalEncrypted, reEncrypted);
@@ -141,12 +141,12 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         public void ReEncrypt_ShouldReturnUpdatedNewVersionValue_WhenKeyVersionIsChanged()
         {
             var originalValue = _fixture.Create<string>();
-            var originalEncrypted = _encryptionProvider.Encrypt(originalValue);
+            var originalEncrypted = _encryptionProvider.Encrypt(originalValue, _keyStoreProvider);
 
             _keyStoreProvider.Add(_keyProvider.CreateKey());
 
-            var reEncrypted = _encryptionProvider.ReEncrypt(originalEncrypted);
-            var decrypted = _encryptionProvider.Decrypt(reEncrypted);
+            var reEncrypted = _encryptionProvider.ReEncrypt(originalEncrypted, _keyStoreProvider);
+            var decrypted = _encryptionProvider.Decrypt(reEncrypted, _keyStoreProvider);
 
             Assert.Equal(originalValue, decrypted);
             Assert.NotEqual(originalEncrypted, reEncrypted);
@@ -157,7 +157,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         [Fact]
         public abstract void EncryptionTypeCode_ShouldReturnCorrectCode_ForImplementation();
 
-        public abstract ISymmetricEncryptionProvider GetEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider);
+        public abstract ISymmetricEncryptionProvider GetEncryptionProvider();
 
     }
 }

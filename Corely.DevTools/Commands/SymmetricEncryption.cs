@@ -5,7 +5,7 @@ using Corely.Security.KeyStore.Symmetric;
 
 namespace Corely.DevTools.Commands
 {
-    internal class Encryption : CommandBase
+    internal class SymmetricEncryption : CommandBase
     {
         [Argument("Key to validate. Also used for encryption and decryption.", false)]
         private string Key { get; init; } = null!;
@@ -22,7 +22,7 @@ namespace Corely.DevTools.Commands
         [Option("-d", "--decrypt", Description = "Decrypt a value")]
         private string ToDecrypt { get; init; } = null!;
 
-        public Encryption() : base("encrypt", "Encryption operations", "Default: List encryption types if no argument or option is provided")
+        public SymmetricEncryption() : base("symencrypt", "Symmetric encryption operations", "Default: List symmetric encryption types if no argument or option is provided")
         {
         }
 
@@ -55,9 +55,8 @@ namespace Corely.DevTools.Commands
 
         private void ListProviders()
         {
-            var encryptionProviderFactor = new SymmetricEncryptionProviderFactory(
-                EncryptionTypeCode, new InMemorySymmetricKeyStoreProvider(Key));
-            var providers = encryptionProviderFactor.ListProviders();
+            var factory = new SymmetricEncryptionProviderFactory(EncryptionTypeCode);
+            var providers = factory.ListProviders();
             foreach (var (ProviderCode, ProviderType) in providers)
             {
                 Console.WriteLine($"Code {ProviderCode} = {ProviderType.Name}");
@@ -78,19 +77,19 @@ namespace Corely.DevTools.Commands
 
         private void Encrypt()
         {
-            var encryptionProviderFactor = new SymmetricEncryptionProviderFactory(
-                EncryptionTypeCode, new InMemorySymmetricKeyStoreProvider(Key));
-            var encrypted = encryptionProviderFactor.GetProvider(EncryptionTypeCode)
-                .Encrypt(ToEncrypt);
+            var factory = new SymmetricEncryptionProviderFactory(EncryptionTypeCode);
+            var keyProvider = new InMemorySymmetricKeyStoreProvider(Key);
+            var encrypted = factory.GetProvider(EncryptionTypeCode)
+                .Encrypt(ToEncrypt, keyProvider);
             Console.WriteLine(encrypted);
         }
 
         private void Decrypt()
         {
-            var encryptionProviderFactor = new SymmetricEncryptionProviderFactory(
-                EncryptionTypeCode, new InMemorySymmetricKeyStoreProvider(Key));
-            var decrypted = encryptionProviderFactor.GetProvider(EncryptionTypeCode)
-                .Decrypt(ToDecrypt);
+            var symmetricEncryptionProviderFactory = new SymmetricEncryptionProviderFactory(EncryptionTypeCode);
+            var keyProvider = new InMemorySymmetricKeyStoreProvider(Key);
+            var decrypted = symmetricEncryptionProviderFactory.GetProvider(EncryptionTypeCode)
+                .Decrypt(ToDecrypt, keyProvider);
             Console.WriteLine(decrypted);
         }
     }

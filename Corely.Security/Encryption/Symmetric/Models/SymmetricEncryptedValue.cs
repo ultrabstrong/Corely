@@ -1,4 +1,5 @@
 ﻿using Corely.Security.Encryption.Providers;
+using Corely.Security.KeyStore.Symmetric;
 
 namespace Corely.Security.Encryption.Models
 {
@@ -20,23 +21,23 @@ namespace Corely.Security.Encryption.Models
         }
         private string _secret = string.Empty;
 
-        public void Set(string decryptedValue)
+        public void Set(string decryptedValue, ISymmetricKeyStoreProvider provider)
         {
-            var encryptedValue = _encryptionProvider.Encrypt(decryptedValue);
+            var encryptedValue = _encryptionProvider.Encrypt(decryptedValue, provider);
             lock (_lock)
             {
                 _secret = encryptedValue;
             }
         }
 
-        public string GetDecrypted()
+        public string GetDecrypted(ISymmetricKeyStoreProvider provider)
         {
-            return _encryptionProvider.Decrypt(Secret);
+            return _encryptionProvider.Decrypt(Secret, provider);
         }
 
-        public void ReEncrypt()
+        public void ReEncrypt(ISymmetricKeyStoreProvider provider)
         {
-            _secret = _encryptionProvider.ReEncrypt(Secret);
+            _secret = _encryptionProvider.ReEncrypt(Secret, provider);
         }
     }
 }

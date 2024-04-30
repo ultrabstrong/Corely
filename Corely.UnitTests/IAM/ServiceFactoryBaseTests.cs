@@ -18,6 +18,14 @@ namespace Corely.UnitTests.IAM
 {
     public class ServiceFactoryBaseTests
     {
+        private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
+        {
+            public ISymmetricKeyStoreProvider GetSystemSymmetricKey()
+            {
+                return new Mock<ISymmetricKeyStoreProvider>().Object;
+            }
+        }
+
         private class MockServiceFactory : ServiceFactoryBase
         {
             protected override void AddLogger(IServiceCollection services)
@@ -31,6 +39,11 @@ namespace Corely.UnitTests.IAM
                 var connection = new DataAccessConnection<string>(ConnectionNames.Mock, string.Empty);
                 var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
                 keyedDataServiceFactory.AddAllDataServices(services);
+            }
+
+            protected override void AddSecurityConfigurationProvider(IServiceCollection services)
+            {
+                services.AddScoped<ISecurityConfigurationProvider, MockSecurityConfiguraitonProvider>();
             }
         }
 
@@ -48,13 +61,13 @@ namespace Corely.UnitTests.IAM
 
         public static IEnumerable<object[]> GetRequiredServiceData =>
         [
+            [typeof(ISecurityConfigurationProvider)],
             [typeof(IPasswordValidationProvider)],
 
             [typeof(IMapProvider)],
 
             [typeof(IValidationProvider)],
 
-            [typeof(ISymmetricKeyStoreProvider)],
             [typeof(ISymmetricEncryptionProviderFactory)],
             [typeof(IHashProviderFactory)],
 

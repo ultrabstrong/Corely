@@ -2,7 +2,6 @@
 using Corely.Security.Encryption;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Providers;
-using Corely.Security.KeyStore.Symmetric;
 using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
@@ -15,7 +14,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
 
         public SymmetricEncryptionProviderFactoryTests()
         {
-            _encryptionProviderFactory = new(_defaultProviderCode, new Mock<ISymmetricKeyStoreProvider>().Object);
+            _encryptionProviderFactory = new(_defaultProviderCode);
         }
 
         [Fact]

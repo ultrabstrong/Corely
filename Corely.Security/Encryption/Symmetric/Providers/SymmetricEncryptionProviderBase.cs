@@ -4,16 +4,12 @@ namespace Corely.Security.Encryption.Providers
 {
     public abstract class SymmetricEncryptionProviderBase : ISymmetricEncryptionProvider
     {
-        private readonly ISymmetricKeyStoreProvider _keyStoreProvider;
-
         public abstract string EncryptionTypeCode { get; }
 
-        public SymmetricEncryptionProviderBase(ISymmetricKeyStoreProvider keyStoreProvider)
+        public SymmetricEncryptionProviderBase()
         {
-            ArgumentNullException.ThrowIfNull(keyStoreProvider, nameof(keyStoreProvider));
             ArgumentException.ThrowIfNullOrWhiteSpace(EncryptionTypeCode, nameof(EncryptionTypeCode));
 
-            _keyStoreProvider = keyStoreProvider;
             if (EncryptionTypeCode.Contains(':'))
             {
                 throw new EncryptionException($"Symmetric encryption type code cannot contain ':'")
@@ -23,19 +19,19 @@ namespace Corely.Security.Encryption.Providers
             }
         }
 
-        public string Encrypt(string value)
+        public string Encrypt(string value, ISymmetricKeyStoreProvider provider)
         {
             ArgumentNullException.ThrowIfNull(value, nameof(value));
-            (var key, var version) = _keyStoreProvider.GetCurrentVersion();
+            (var key, var version) = provider.GetCurrentVersion();
             var encryptedValue = EncryptInternal(value, key);
             return FormatEncryptedValue(encryptedValue, version);
         }
 
-        public string Decrypt(string value)
+        public string Decrypt(string value, ISymmetricKeyStoreProvider provider)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
-            return DecryptInternal(encryptedValue, _keyStoreProvider.Get(version));
+            return DecryptInternal(encryptedValue, provider.Get(version));
         }
 
         private (string, int) ValidateForKeyVersion(string value)
@@ -63,12 +59,12 @@ namespace Corely.Security.Encryption.Providers
             return (parts[2], keyVersion);
         }
 
-        public string ReEncrypt(string value)
+        public string ReEncrypt(string value, ISymmetricKeyStoreProvider provider)
         {
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
-            (var key, var currentVersion) = _keyStoreProvider.GetCurrentVersion();
+            (var key, var currentVersion) = provider.GetCurrentVersion();
 
-            var decrypted = DecryptInternal(encryptedValue, _keyStoreProvider.Get(version));
+            var decrypted = DecryptInternal(encryptedValue, provider.Get(version));
             var updatedEncryptedValue = EncryptInternal(decrypted, key);
             return FormatEncryptedValue(updatedEncryptedValue, currentVersion);
         }

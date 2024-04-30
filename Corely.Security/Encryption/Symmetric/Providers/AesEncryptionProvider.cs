@@ -1,5 +1,4 @@
-﻿using Corely.Security.KeyStore.Symmetric;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace Corely.Security.Encryption.Providers
 {
@@ -7,8 +6,6 @@ namespace Corely.Security.Encryption.Providers
     {
         public override string EncryptionTypeCode => SymmetricEncryptionConstants.AES_CODE;
 
-        public AesEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider)
-            : base(keyStoreProvider) { }
         protected override string EncryptInternal(string value, string key)
         {
             using (Aes aes = Aes.Create())

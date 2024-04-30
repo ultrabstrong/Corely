@@ -1,22 +1,18 @@
 ﻿using Corely.Security.Encryption.Providers;
-using Corely.Security.KeyStore.Symmetric;
 
 namespace Corely.Security.Encryption.Factories
 {
     public class SymmetricEncryptionProviderFactory : ISymmetricEncryptionProviderFactory
     {
         private readonly string _defaultProviderCode;
-        private readonly ISymmetricKeyStoreProvider _keyStoreProvider;
         private readonly Dictionary<string, ISymmetricEncryptionProvider> _providers = [];
 
-        public SymmetricEncryptionProviderFactory(string defaultProviderCode, ISymmetricKeyStoreProvider keyStoreProvider)
+        public SymmetricEncryptionProviderFactory(string defaultProviderCode)
         {
             ArgumentNullException.ThrowIfNull(defaultProviderCode, nameof(defaultProviderCode));
-            ArgumentNullException.ThrowIfNull(keyStoreProvider, nameof(keyStoreProvider));
 
             _defaultProviderCode = defaultProviderCode;
-            _keyStoreProvider = keyStoreProvider;
-            _providers.Add(SymmetricEncryptionConstants.AES_CODE, new AesEncryptionProvider(_keyStoreProvider));
+            _providers.Add(SymmetricEncryptionConstants.AES_CODE, new AesEncryptionProvider());
         }
 
         public void AddProvider(string providerCode, ISymmetricEncryptionProvider provider)

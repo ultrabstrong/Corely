@@ -37,5 +37,10 @@ namespace Corely.UnitTests
             var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
             keyedDataServiceFactory.AddAllDataServices(services);
         }
+
+        protected override void AddSecurityConfigurationProvider(IServiceCollection services)
+        {
+            services.AddScoped<ISecurityConfigurationProvider, SecurityConfigurationProvider>();
+        }
     }
 }
