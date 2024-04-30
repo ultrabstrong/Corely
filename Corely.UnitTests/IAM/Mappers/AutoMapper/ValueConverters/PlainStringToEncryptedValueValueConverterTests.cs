@@ -13,7 +13,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         public PlainStringToEncryptedValueValueConverterTests()
         {
             var serviceFactory = new ServiceFactory();
-            _converter = new(serviceFactory.GetRequiredService<IEncryptionProviderFactory>());
+            _converter = new(serviceFactory.GetRequiredService<ISymmetricEncryptionProviderFactory>());
         }
 
         [Fact]

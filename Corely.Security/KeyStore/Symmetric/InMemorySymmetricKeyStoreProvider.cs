@@ -1,11 +1,11 @@
-﻿namespace Corely.Security.KeyStore
+﻿namespace Corely.Security.KeyStore.Symmetric
 {
-    public class InMemoryKeyStoreProvider : IKeyStoreProvider
+    public class InMemorySymmetricKeyStoreProvider : ISymmetricKeyStoreProvider
     {
         private readonly Dictionary<int, string> _keys = [];
         private int _version = 0;
 
-        public InMemoryKeyStoreProvider(string key)
+        public InMemorySymmetricKeyStoreProvider(string key)
         {
             Add(key);
         }

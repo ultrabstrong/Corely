@@ -1,23 +1,23 @@
 ﻿using AutoFixture;
 using Corely.Security.Encryption.Models;
 using Corely.Security.Encryption.Providers;
-using Corely.Security.Keys;
-using Corely.Security.KeyStore;
+using Corely.Security.Keys.Symmetric;
+using Corely.Security.KeyStore.Symmetric;
 
-namespace Corely.UnitTests.Security.Encryption.Models
+namespace Corely.UnitTests.Security.Encryption.Symmetric.Models
 {
-    public class EncryptedValueTests
+    public class SymmetricEncryptedValueTests
     {
-        private readonly EncryptedValue _encryptedValue;
+        private readonly SymmetricEncryptedValue _encryptedValue;
         private readonly Fixture _fixture = new();
 
-        public EncryptedValueTests()
+        public SymmetricEncryptedValueTests()
         {
             var keyProvider = new AesKeyProvider();
-            var keyStoreProvider = new InMemoryKeyStoreProvider(keyProvider.CreateKey());
+            var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(keyProvider.CreateKey());
             var encryptionProvider = new AesEncryptionProvider(keyStoreProvider);
 
-            _encryptedValue = new EncryptedValue(encryptionProvider);
+            _encryptedValue = new SymmetricEncryptedValue(encryptionProvider);
         }
 
         [Fact]
@@ -30,11 +30,11 @@ namespace Corely.UnitTests.Security.Encryption.Models
         public void Constructor_ShouldCreateEncryptedValueWithSecret()
         {
             var keyProvider = new AesKeyProvider();
-            var keyStoreProvider = new InMemoryKeyStoreProvider(keyProvider.CreateKey());
+            var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(keyProvider.CreateKey());
             var encryptionProvider = new AesEncryptionProvider(keyStoreProvider);
             var value = _fixture.Create<string>();
 
-            var encryptedValue = new EncryptedValue(encryptionProvider) { Secret = value };
+            var encryptedValue = new SymmetricEncryptedValue(encryptionProvider) { Secret = value };
 
             Assert.Equal(value, encryptedValue.Secret);
         }

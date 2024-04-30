@@ -1,9 +1,10 @@
 ﻿using AutoFixture;
 using Corely.Security.KeyStore;
+using Corely.Security.KeyStore.Symmetric;
 
-namespace Corely.UnitTests.Security.KeyStore
+namespace Corely.UnitTests.Security.KeyStore.Symmetric
 {
-    public class InMemoryKeyStoreProviderTests
+    public class InMemorySymmetricKeyStoreProviderTests
     {
         private readonly Fixture _fixture = new();
 
@@ -11,7 +12,7 @@ namespace Corely.UnitTests.Security.KeyStore
         public void GetCurrentVersion_ShouldReturnOne()
         {
             var key = _fixture.Create<string>();
-            var keyStoreProvider = new InMemoryKeyStoreProvider(key);
+            var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(key);
 
             var (currentKey, currentVersion) = keyStoreProvider.GetCurrentVersion();
 
@@ -23,7 +24,7 @@ namespace Corely.UnitTests.Security.KeyStore
         public void Add_ShouldIncrementVersion()
         {
             var key = _fixture.Create<string>();
-            var keyStoreProvider = new InMemoryKeyStoreProvider(key);
+            var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(key);
 
             keyStoreProvider.Add(key);
 
@@ -37,7 +38,7 @@ namespace Corely.UnitTests.Security.KeyStore
         public void Get_ShouldReturnKey()
         {
             var key = _fixture.Create<string>();
-            var keyStoreProvider = new InMemoryKeyStoreProvider(_fixture.Create<string>());
+            var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(_fixture.Create<string>());
 
             keyStoreProvider.Add(key);
             keyStoreProvider.Add(_fixture.Create<string>());
@@ -50,7 +51,7 @@ namespace Corely.UnitTests.Security.KeyStore
         [Fact]
         public void Get_ShouldThrowException_WhenVersionIsInvalid()
         {
-            var keyStoreProvider = new InMemoryKeyStoreProvider(_fixture.Create<string>());
+            var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(_fixture.Create<string>());
 
             var ex = Record.Exception(() => keyStoreProvider.Get(2));
 

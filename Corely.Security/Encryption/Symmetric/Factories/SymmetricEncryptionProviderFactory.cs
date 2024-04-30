@@ -1,25 +1,25 @@
 ﻿using Corely.Security.Encryption.Providers;
-using Corely.Security.KeyStore;
+using Corely.Security.KeyStore.Symmetric;
 
 namespace Corely.Security.Encryption.Factories
 {
-    public class EncryptionProviderFactory : IEncryptionProviderFactory
+    public class SymmetricEncryptionProviderFactory : ISymmetricEncryptionProviderFactory
     {
         private readonly string _defaultProviderCode;
-        private readonly IKeyStoreProvider _keyStoreProvider;
-        private readonly Dictionary<string, IEncryptionProvider> _providers = [];
+        private readonly ISymmetricKeyStoreProvider _keyStoreProvider;
+        private readonly Dictionary<string, ISymmetricEncryptionProvider> _providers = [];
 
-        public EncryptionProviderFactory(string defaultProviderCode, IKeyStoreProvider keyStoreProvider)
+        public SymmetricEncryptionProviderFactory(string defaultProviderCode, ISymmetricKeyStoreProvider keyStoreProvider)
         {
             ArgumentNullException.ThrowIfNull(defaultProviderCode, nameof(defaultProviderCode));
             ArgumentNullException.ThrowIfNull(keyStoreProvider, nameof(keyStoreProvider));
 
             _defaultProviderCode = defaultProviderCode;
             _keyStoreProvider = keyStoreProvider;
-            _providers.Add(EncryptionConstants.AES_CODE, new AesEncryptionProvider(_keyStoreProvider));
+            _providers.Add(SymmetricEncryptionConstants.AES_CODE, new AesEncryptionProvider(_keyStoreProvider));
         }
 
-        public void AddProvider(string providerCode, IEncryptionProvider provider)
+        public void AddProvider(string providerCode, ISymmetricEncryptionProvider provider)
         {
             ArgumentNullException.ThrowIfNull(provider, nameof(provider));
 
@@ -27,7 +27,7 @@ namespace Corely.Security.Encryption.Factories
 
             if (_providers.ContainsKey(providerCode))
             {
-                throw new EncryptionException($"Encryption provider code already exists: {providerCode}")
+                throw new EncryptionException($"Symmetric encryption provider code already exists: {providerCode}")
                 {
                     Reason = EncryptionException.ErrorReason.InvalidTypeCode
                 };
@@ -36,7 +36,7 @@ namespace Corely.Security.Encryption.Factories
             _providers.Add(providerCode, provider);
         }
 
-        public void UpdateProvider(string providerCode, IEncryptionProvider provider)
+        public void UpdateProvider(string providerCode, ISymmetricEncryptionProvider provider)
         {
             ArgumentNullException.ThrowIfNull(provider, nameof(provider));
 
@@ -44,7 +44,7 @@ namespace Corely.Security.Encryption.Factories
 
             if (!_providers.ContainsKey(providerCode))
             {
-                throw new EncryptionException($"Encryption provider code not found: {providerCode}")
+                throw new EncryptionException($"Symmetric encryption provider code not found: {providerCode}")
                 {
                     Reason = EncryptionException.ErrorReason.InvalidTypeCode
                 };
@@ -58,31 +58,31 @@ namespace Corely.Security.Encryption.Factories
             ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
             if (providerCode.Contains(':'))
             {
-                throw new EncryptionException($"Encryption type code cannot contain ':'")
+                throw new EncryptionException($"Symmetric encryption type code cannot contain ':'")
                 {
                     Reason = EncryptionException.ErrorReason.InvalidTypeCode
                 };
             }
         }
 
-        public IEncryptionProvider GetDefaultProvider() => GetProvider(_defaultProviderCode);
+        public ISymmetricEncryptionProvider GetDefaultProvider() => GetProvider(_defaultProviderCode);
 
-        public IEncryptionProvider GetProvider(string providerCode)
+        public ISymmetricEncryptionProvider GetProvider(string providerCode)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
 
-            if (_providers.TryGetValue(providerCode, out IEncryptionProvider? value))
+            if (_providers.TryGetValue(providerCode, out ISymmetricEncryptionProvider? value))
             {
                 return value;
             }
 
-            throw new EncryptionException($"Encryption provider code unknown: {providerCode}")
+            throw new EncryptionException($"Symmetric encryption provider code unknown: {providerCode}")
             {
                 Reason = EncryptionException.ErrorReason.InvalidTypeCode
             };
         }
 
-        public IEncryptionProvider GetProviderForDecrypting(string value)
+        public ISymmetricEncryptionProvider GetProviderForDecrypting(string value)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
 

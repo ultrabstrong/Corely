@@ -1,14 +1,14 @@
 ﻿using Corely.Security.Encryption;
 using Corely.Security.Encryption.Providers;
-using Corely.Security.Keys;
-using Corely.Security.KeyStore;
+using Corely.Security.Keys.Symmetric;
+using Corely.Security.KeyStore.Symmetric;
 
-namespace Corely.UnitTests.Security.Encryption.Providers
+namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
 {
-    public class AesEncryptionProviderTests : EncryptionProviderGenericTests
+    public class AesEncryptionProviderTests : SymmetricEncryptionProviderGenericTests
     {
         private readonly AesKeyProvider _keyProvider = new();
-        private readonly InMemoryKeyStoreProvider _keyStoreProvider;
+        private readonly InMemorySymmetricKeyStoreProvider _keyStoreProvider;
         private readonly AesEncryptionProvider _aesEncryptionProvider;
 
         public AesEncryptionProviderTests()
@@ -20,10 +20,10 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         [Fact]
         public override void EncryptionTypeCode_ShouldReturnCorrectCode_ForImplementation()
         {
-            Assert.Equal(EncryptionConstants.AES_CODE, _aesEncryptionProvider.EncryptionTypeCode);
+            Assert.Equal(SymmetricEncryptionConstants.AES_CODE, _aesEncryptionProvider.EncryptionTypeCode);
         }
 
-        public override IEncryptionProvider GetEncryptionProvider(IKeyStoreProvider keyStoreProvider)
+        public override ISymmetricEncryptionProvider GetEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider)
         {
             return new AesEncryptionProvider(keyStoreProvider);
         }

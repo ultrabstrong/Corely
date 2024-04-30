@@ -1,7 +1,7 @@
 ﻿using Corely.DevTools.Attributes;
 using Corely.Security.Encryption.Factories;
-using Corely.Security.Keys;
-using Corely.Security.KeyStore;
+using Corely.Security.Keys.Symmetric;
+using Corely.Security.KeyStore.Symmetric;
 
 namespace Corely.DevTools.Commands
 {
@@ -55,8 +55,8 @@ namespace Corely.DevTools.Commands
 
         private void ListProviders()
         {
-            var encryptionProviderFactor = new EncryptionProviderFactory(
-                EncryptionTypeCode, new InMemoryKeyStoreProvider(Key));
+            var encryptionProviderFactor = new SymmetricEncryptionProviderFactory(
+                EncryptionTypeCode, new InMemorySymmetricKeyStoreProvider(Key));
             var providers = encryptionProviderFactor.ListProviders();
             foreach (var (ProviderCode, ProviderType) in providers)
             {
@@ -78,8 +78,8 @@ namespace Corely.DevTools.Commands
 
         private void Encrypt()
         {
-            var encryptionProviderFactor = new EncryptionProviderFactory(
-                EncryptionTypeCode, new InMemoryKeyStoreProvider(Key));
+            var encryptionProviderFactor = new SymmetricEncryptionProviderFactory(
+                EncryptionTypeCode, new InMemorySymmetricKeyStoreProvider(Key));
             var encrypted = encryptionProviderFactor.GetProvider(EncryptionTypeCode)
                 .Encrypt(ToEncrypt);
             Console.WriteLine(encrypted);
@@ -87,8 +87,8 @@ namespace Corely.DevTools.Commands
 
         private void Decrypt()
         {
-            var encryptionProviderFactor = new EncryptionProviderFactory(
-                EncryptionTypeCode, new InMemoryKeyStoreProvider(Key));
+            var encryptionProviderFactor = new SymmetricEncryptionProviderFactory(
+                EncryptionTypeCode, new InMemorySymmetricKeyStoreProvider(Key));
             var decrypted = encryptionProviderFactor.GetProvider(EncryptionTypeCode)
                 .Decrypt(ToDecrypt);
             Console.WriteLine(decrypted);

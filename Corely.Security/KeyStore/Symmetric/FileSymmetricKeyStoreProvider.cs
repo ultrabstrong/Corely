@@ -1,11 +1,11 @@
-﻿namespace Corely.Security.KeyStore
+﻿namespace Corely.Security.KeyStore.Symmetric
 {
-    public class FileKeyStoreProvider : IKeyStoreProvider
+    public class FileSymmetricKeyStoreProvider : ISymmetricKeyStoreProvider
     {
         private readonly string _filePath;
         private readonly int _version = 1;
 
-        public FileKeyStoreProvider(string filePath)
+        public FileSymmetricKeyStoreProvider(string filePath)
         {
             _filePath = filePath;
         }

@@ -6,11 +6,11 @@ using Corely.Security.Encryption.Providers;
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
 {
     public class EncryptedValueProfileTests
-        : BidirectionalProfileTestsBase<EncryptedValue, string>
+        : BidirectionalProfileTestsBase<SymmetricEncryptedValue, string>
     {
         protected override string GetDestination()
-            => $"{EncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
+            => $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
         protected override object[] GetSourceParams()
-            => [Mock.Of<IEncryptionProvider>()];
+            => [Mock.Of<ISymmetricEncryptionProvider>()];
     }
 }

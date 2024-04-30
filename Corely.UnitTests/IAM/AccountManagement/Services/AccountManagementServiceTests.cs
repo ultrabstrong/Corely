@@ -24,10 +24,10 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         private readonly Mock<IAuthService> _authServiceMock;
         private readonly AccountManagementService _accountManagementService;
 
+        private readonly User _user;
         private bool _createAccountSuccess = true;
         private bool _createUserSuccess = true;
         private bool _createAuthSuccess = true;
-        private User _user;
 
         public AccountManagementServiceTests() : base()
         {
@@ -176,7 +176,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
                 Times.Once);
         }
 
-        private bool HasUpdatedSuccessLogins(User modified)
+        private static bool HasUpdatedSuccessLogins(User modified)
         {
             Assert.Equal(1, modified.TotalSuccessfulLogins);
             Assert.NotNull(modified.LastSuccessfulLoginUtc);
@@ -230,7 +230,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
                 Times.Once);
         }
 
-        private bool HasUpdatedFailedLogins(User modified)
+        private static bool HasUpdatedFailedLogins(User modified)
         {
             Assert.Equal(0, modified.TotalSuccessfulLogins);
             Assert.Null(modified.LastSuccessfulLoginUtc);

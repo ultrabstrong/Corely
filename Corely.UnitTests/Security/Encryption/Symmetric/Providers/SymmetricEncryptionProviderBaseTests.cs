@@ -1,53 +1,53 @@
 ﻿using Corely.Security.Encryption;
 using Corely.Security.Encryption.Providers;
-using Corely.Security.KeyStore;
+using Corely.Security.KeyStore.Symmetric;
 
-namespace Corely.UnitTests.Security.Encryption.Providers
+namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
 {
-    public class EncryptionProviderBaseTests : EncryptionProviderGenericTests
+    public class SymmetricEncryptionProviderBaseTests : SymmetricEncryptionProviderGenericTests
     {
-        private class MockEncryptionProvider : EncryptionProviderBase
+        private class MockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => TEST_ENCRYPTION_TYPE_CODE;
-            public MockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
+            public MockEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider)
                 : base(keyStoreProvider) { }
             protected override string EncryptInternal(string value, string key) => $"{Guid.NewGuid()}{value}";
             protected override string DecryptInternal(string value, string key) => value[36..];
         }
 
-        private class NullMockEncryptionProvider : EncryptionProviderBase
+        private class NullMockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => null!;
-            public NullMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
+            public NullMockEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider)
                 : base(keyStoreProvider) { }
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class EmptyMockEncryptionProvider : EncryptionProviderBase
+        private class EmptyMockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => string.Empty;
 
-            public EmptyMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
+            public EmptyMockEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider)
                 : base(keyStoreProvider) { }
 
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class WhitespaceMockEncryptionProvider : EncryptionProviderBase
+        private class WhitespaceMockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => " ";
-            public WhitespaceMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
+            public WhitespaceMockEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider)
                 : base(keyStoreProvider) { }
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class ColonMockEncryptionProvider : EncryptionProviderBase
+        private class ColonMockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => "as:df";
-            public ColonMockEncryptionProvider(IKeyStoreProvider keyStoreProvider)
+            public ColonMockEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider)
                 : base(keyStoreProvider) { }
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
@@ -55,12 +55,12 @@ namespace Corely.UnitTests.Security.Encryption.Providers
 
         private const string TEST_ENCRYPTION_TYPE_CODE = "00";
 
-        private readonly MockEncryptionProvider _mockEncryptionProvider = new(new Mock<IKeyStoreProvider>().Object);
+        private readonly MockEncryptionProvider _mockEncryptionProvider = new(new Mock<ISymmetricKeyStoreProvider>().Object);
 
         [Fact]
         public void NullEncryptionTypeCode_ShouldThrowArgumentNullException_OnBuild()
         {
-            var ex = Record.Exception(() => new NullMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object));
+            var ex = Record.Exception(() => new NullMockEncryptionProvider(new Mock<ISymmetricKeyStoreProvider>().Object));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
@@ -68,7 +68,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         [Fact]
         public void EmptyEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            var ex = Record.Exception(() => new EmptyMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object));
+            var ex = Record.Exception(() => new EmptyMockEncryptionProvider(new Mock<ISymmetricKeyStoreProvider>().Object));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentException>(ex);
         }
@@ -76,7 +76,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         [Fact]
         public void WhitespaceEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            var ex = Record.Exception(() => new WhitespaceMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object));
+            var ex = Record.Exception(() => new WhitespaceMockEncryptionProvider(new Mock<ISymmetricKeyStoreProvider>().Object));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentException>(ex);
         }
@@ -84,7 +84,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         [Fact]
         public void ColonEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
         {
-            var ex = Record.Exception(() => new ColonMockEncryptionProvider(new Mock<IKeyStoreProvider>().Object));
+            var ex = Record.Exception(() => new ColonMockEncryptionProvider(new Mock<ISymmetricKeyStoreProvider>().Object));
             Assert.NotNull(ex);
             Assert.IsType<EncryptionException>(ex);
         }
@@ -95,7 +95,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
             Assert.Equal(TEST_ENCRYPTION_TYPE_CODE, _mockEncryptionProvider.EncryptionTypeCode);
         }
 
-        public override IEncryptionProvider GetEncryptionProvider(IKeyStoreProvider keyStoreProvider)
+        public override ISymmetricEncryptionProvider GetEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider)
         {
             return new MockEncryptionProvider(keyStoreProvider);
         }

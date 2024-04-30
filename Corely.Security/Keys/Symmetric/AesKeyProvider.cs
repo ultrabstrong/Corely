@@ -1,8 +1,8 @@
 ﻿using System.Security.Cryptography;
 
-namespace Corely.Security.Keys
+namespace Corely.Security.Keys.Symmetric
 {
-    public sealed class AesKeyProvider : IKeyProvider
+    public sealed class AesKeyProvider : ISymmetricKeyProvider
     {
         public string CreateKey()
         {

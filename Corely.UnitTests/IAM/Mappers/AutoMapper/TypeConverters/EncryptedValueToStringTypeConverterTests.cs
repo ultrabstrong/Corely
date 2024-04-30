@@ -15,7 +15,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
         public void Convert_ShouldReturnString()
         {
             var value = _fixture.Create<string>();
-            var encryptedValue = new EncryptedValue(Mock.Of<IEncryptionProvider>())
+            var encryptedValue = new SymmetricEncryptedValue(Mock.Of<ISymmetricEncryptionProvider>())
             { Secret = value };
 
             var result = _converter.Convert(encryptedValue, default, default);
@@ -34,7 +34,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
         public void Convert_ShouldReturnNullEmptyOrWhitespace(string value)
         {
-            var encryptedValue = new EncryptedValue(Mock.Of<IEncryptionProvider>())
+            var encryptedValue = new SymmetricEncryptedValue(Mock.Of<ISymmetricEncryptionProvider>())
             { Secret = value };
 
             var result = _converter.Convert(encryptedValue, default, default);

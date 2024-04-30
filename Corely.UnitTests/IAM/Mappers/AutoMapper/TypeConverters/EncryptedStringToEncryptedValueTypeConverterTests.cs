@@ -13,8 +13,8 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
 
         public EncryptedStringToEncryptedValueTypeConverterTests()
         {
-            var encryptionProvider = Mock.Of<IEncryptionProvider>();
-            var encryptionProviderFactory = Mock.Of<IEncryptionProviderFactory>(
+            var encryptionProvider = Mock.Of<ISymmetricEncryptionProvider>();
+            var encryptionProviderFactory = Mock.Of<ISymmetricEncryptionProviderFactory>(
                 f => f.GetProviderForDecrypting(It.IsAny<string>()) == encryptionProvider);
 
             _converter = new(encryptionProviderFactory);

@@ -11,8 +11,8 @@ using Corely.Security.Encryption;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Hashing;
 using Corely.Security.Hashing.Factories;
-using Corely.Security.Keys;
-using Corely.Security.KeyStore;
+using Corely.Security.Keys.Symmetric;
+using Corely.Security.KeyStore.Symmetric;
 using Corely.Security.PasswordValidation.Providers;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,12 +54,12 @@ namespace Corely.IAM
         private static void AddSecurityServices(IServiceCollection services)
         {
             var key = new AesKeyProvider().CreateKey();
-            services.AddScoped<IKeyStoreProvider, InMemoryKeyStoreProvider>(_ =>
-                new InMemoryKeyStoreProvider(key));
+            services.AddScoped<ISymmetricKeyStoreProvider, InMemorySymmetricKeyStoreProvider>(_ =>
+                new InMemorySymmetricKeyStoreProvider(key));
 
-            services.AddScoped<IEncryptionProviderFactory, EncryptionProviderFactory>(serviceProvider =>
-                new EncryptionProviderFactory(EncryptionConstants.AES_CODE,
-                    serviceProvider.GetRequiredService<IKeyStoreProvider>()));
+            services.AddScoped<ISymmetricEncryptionProviderFactory, SymmetricEncryptionProviderFactory>(serviceProvider =>
+                new SymmetricEncryptionProviderFactory(SymmetricEncryptionConstants.AES_CODE,
+                    serviceProvider.GetRequiredService<ISymmetricKeyStoreProvider>()));
 
             services.AddScoped<IHashProviderFactory, HashProviderFactory>(_ =>
                 new HashProviderFactory(HashConstants.SALTED_SHA256_CODE));

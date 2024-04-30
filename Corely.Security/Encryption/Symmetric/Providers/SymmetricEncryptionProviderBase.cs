@@ -1,14 +1,14 @@
-﻿using Corely.Security.KeyStore;
+﻿using Corely.Security.KeyStore.Symmetric;
 
 namespace Corely.Security.Encryption.Providers
 {
-    public abstract class EncryptionProviderBase : IEncryptionProvider
+    public abstract class SymmetricEncryptionProviderBase : ISymmetricEncryptionProvider
     {
-        private readonly IKeyStoreProvider _keyStoreProvider;
+        private readonly ISymmetricKeyStoreProvider _keyStoreProvider;
 
         public abstract string EncryptionTypeCode { get; }
 
-        public EncryptionProviderBase(IKeyStoreProvider keyStoreProvider)
+        public SymmetricEncryptionProviderBase(ISymmetricKeyStoreProvider keyStoreProvider)
         {
             ArgumentNullException.ThrowIfNull(keyStoreProvider, nameof(keyStoreProvider));
             ArgumentException.ThrowIfNullOrWhiteSpace(EncryptionTypeCode, nameof(EncryptionTypeCode));
@@ -16,7 +16,7 @@ namespace Corely.Security.Encryption.Providers
             _keyStoreProvider = keyStoreProvider;
             if (EncryptionTypeCode.Contains(':'))
             {
-                throw new EncryptionException($"Encryption type code cannot contain ':'")
+                throw new EncryptionException($"Symmetric encryption type code cannot contain ':'")
                 {
                     Reason = EncryptionException.ErrorReason.InvalidTypeCode
                 };

@@ -1,23 +1,23 @@
 ﻿using AutoFixture;
 using Corely.Security.Encryption;
 using Corely.Security.Encryption.Providers;
-using Corely.Security.Keys;
-using Corely.Security.KeyStore;
+using Corely.Security.Keys.Symmetric;
+using Corely.Security.KeyStore.Symmetric;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.UnitTests.Security.Encryption.Providers
+namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
 {
-    public abstract class EncryptionProviderGenericTests
+    public abstract class SymmetricEncryptionProviderGenericTests
     {
         private readonly Fixture _fixture = new();
         private readonly AesKeyProvider _keyProvider;
-        private readonly InMemoryKeyStoreProvider _keyStoreProvider;
-        private readonly IEncryptionProvider _encryptionProvider;
+        private readonly InMemorySymmetricKeyStoreProvider _keyStoreProvider;
+        private readonly ISymmetricEncryptionProvider _encryptionProvider;
 
-        public EncryptionProviderGenericTests()
+        public SymmetricEncryptionProviderGenericTests()
         {
             _keyProvider = new AesKeyProvider();
-            _keyStoreProvider = new InMemoryKeyStoreProvider(_keyProvider.CreateKey());
+            _keyStoreProvider = new InMemorySymmetricKeyStoreProvider(_keyProvider.CreateKey());
             _encryptionProvider = GetEncryptionProvider(_keyStoreProvider);
         }
 
@@ -157,7 +157,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         [Fact]
         public abstract void EncryptionTypeCode_ShouldReturnCorrectCode_ForImplementation();
 
-        public abstract IEncryptionProvider GetEncryptionProvider(IKeyStoreProvider keyStoreProvider);
+        public abstract ISymmetricEncryptionProvider GetEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider);
 
     }
 }

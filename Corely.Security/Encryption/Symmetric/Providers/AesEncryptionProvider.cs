@@ -1,13 +1,13 @@
-﻿using Corely.Security.KeyStore;
+﻿using Corely.Security.KeyStore.Symmetric;
 using System.Security.Cryptography;
 
 namespace Corely.Security.Encryption.Providers
 {
-    internal sealed class AesEncryptionProvider : EncryptionProviderBase
+    internal sealed class AesEncryptionProvider : SymmetricEncryptionProviderBase
     {
-        public override string EncryptionTypeCode => EncryptionConstants.AES_CODE;
+        public override string EncryptionTypeCode => SymmetricEncryptionConstants.AES_CODE;
 
-        public AesEncryptionProvider(IKeyStoreProvider keyStoreProvider)
+        public AesEncryptionProvider(ISymmetricKeyStoreProvider keyStoreProvider)
             : base(keyStoreProvider) { }
         protected override string EncryptInternal(string value, string key)
         {

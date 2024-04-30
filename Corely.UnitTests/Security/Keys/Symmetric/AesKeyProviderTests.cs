@@ -1,8 +1,8 @@
-﻿using Corely.Security.Keys;
+﻿using Corely.Security.Keys.Symmetric;
 using Corely.UnitTests.ClassData;
 using System.Security.Cryptography;
 
-namespace Corely.UnitTests.Security.Keys
+namespace Corely.UnitTests.Security.Keys.Symmetric
 {
     public class AesKeyProviderTests
     {

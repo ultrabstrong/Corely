@@ -2,12 +2,12 @@
 
 namespace Corely.Security.Encryption.Models
 {
-    public class EncryptedValue : IEncryptedValue
+    public class SymmetricEncryptedValue : ISymmetricEncryptedValue
     {
         private readonly object _lock = new();
-        private readonly IEncryptionProvider _encryptionProvider;
+        private readonly ISymmetricEncryptionProvider _encryptionProvider;
 
-        public EncryptedValue(IEncryptionProvider encryptionProvider)
+        public SymmetricEncryptedValue(ISymmetricEncryptionProvider encryptionProvider)
         {
             ArgumentNullException.ThrowIfNull(encryptionProvider, nameof(encryptionProvider));
             _encryptionProvider = encryptionProvider;
