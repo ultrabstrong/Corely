@@ -43,5 +43,16 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
+
+        [Fact]
+        public void Constructor_ShouldThrowArgumentNullException_WhenHashProviderIsNull()
+        {
+            static PlainStringToHashedValueValueConverter act() => new(null);
+
+            var ex = Record.Exception(act);
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
     }
 }

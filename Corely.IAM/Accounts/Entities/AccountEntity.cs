@@ -1,5 +1,5 @@
 ﻿using Corely.IAM.Entities;
-using Corely.IAM.Security;
+using Corely.IAM.Security.Models;
 using Corely.IAM.Users.Entities;
 
 namespace Corely.IAM.Accounts.Entities

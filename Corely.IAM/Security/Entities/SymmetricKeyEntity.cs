@@ -1,6 +1,8 @@
-﻿namespace Corely.IAM.Security
+﻿using Corely.IAM.Entities;
+
+namespace Corely.IAM.Security.Entities
 {
-    public class SymmetricKey
+    public class SymmetricKeyEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     {
         public int Id { get; set; }
         public int Version { get; set; }

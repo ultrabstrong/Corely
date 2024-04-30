@@ -4,6 +4,7 @@ using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
+using Corely.IAM.Security.Services;
 using Corely.IAM.Users.Services;
 using Corely.IAM.Validators;
 using Corely.IAM.Validators.FluentValidators;
@@ -57,6 +58,8 @@ namespace Corely.IAM
 
             services.AddScoped<IHashProviderFactory, HashProviderFactory>(_ =>
                 new HashProviderFactory(HashConstants.SALTED_SHA256_CODE));
+
+            services.AddScoped<ISecurityService, SecurityService>();
         }
 
         private static void AddDomainServices(IServiceCollection services)

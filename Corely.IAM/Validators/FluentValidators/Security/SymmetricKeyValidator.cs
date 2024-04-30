@@ -1,4 +1,5 @@
-﻿using Corely.IAM.Security;
+﻿using Corely.IAM.Security.Constants;
+using Corely.IAM.Security.Models;
 using FluentValidation;
 
 namespace Corely.IAM.Validators.FluentValidators.Security
@@ -8,7 +9,9 @@ namespace Corely.IAM.Validators.FluentValidators.Security
         public SymmetricKeyValidator()
         {
             RuleFor(m => m.Key)
-                .NotNull()
+                .NotNull();
+
+            RuleFor(m => m.Key.Secret)
                 .NotEmpty()
                 .MaximumLength(SymmetricKeyConstants.KEY_MAX_LENGTH);
 

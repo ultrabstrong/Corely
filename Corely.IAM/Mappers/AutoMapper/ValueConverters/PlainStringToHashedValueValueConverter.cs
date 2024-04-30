@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Corely.Common.Extensions;
 using Corely.Security.Hashing.Factories;
 using Corely.Security.Hashing.Models;
 
@@ -10,7 +11,7 @@ namespace Corely.IAM.Mappers.AutoMapper.ValueConverters
 
         public PlainStringToHashedValueValueConverter(IHashProviderFactory hashProviderFactory)
         {
-            _hashProviderFactory = hashProviderFactory;
+            _hashProviderFactory = hashProviderFactory.ThrowIfNull(nameof(hashProviderFactory));
         }
 
         public IHashedValue Convert(string source, ResolutionContext context)

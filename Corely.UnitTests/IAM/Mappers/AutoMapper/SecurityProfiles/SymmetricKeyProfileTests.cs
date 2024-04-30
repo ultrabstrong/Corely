@@ -1,4 +1,5 @@
-﻿using Corely.IAM.Security;
+﻿using Corely.IAM.Security.Entities;
+using Corely.IAM.Security.Models;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
 {

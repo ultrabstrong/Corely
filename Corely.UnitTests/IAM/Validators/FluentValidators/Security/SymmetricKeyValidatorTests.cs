@@ -1,5 +1,8 @@
-﻿using Corely.IAM.Security;
+﻿using Corely.IAM.Security.Constants;
+using Corely.IAM.Security.Models;
 using Corely.IAM.Validators.FluentValidators.Security;
+using Corely.Security.Encryption.Models;
+using Corely.Security.Encryption.Providers;
 using Corely.UnitTests.ClassData;
 using FluentValidation.TestHelper;
 
@@ -68,7 +71,10 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
         {
             var symmetricKey = new SymmetricKey
             {
-                Key = key
+                Key = new SymmetricEncryptedValue(new AesEncryptionProvider())
+                {
+                    Secret = key
+                }
             };
 
             var result = _validator.TestValidate(symmetricKey);

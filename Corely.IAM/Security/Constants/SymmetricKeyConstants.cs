@@ -1,4 +1,4 @@
-﻿namespace Corely.IAM.Security
+﻿namespace Corely.IAM.Security.Constants
 {
     public class SymmetricKeyConstants
     {
