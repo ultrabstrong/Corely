@@ -1,18 +1,18 @@
-﻿using Corely.DataAccess.EntityFramework.AccountManagement;
+﻿using Corely.DataAccess.EntityFramework.IAM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Corely.DataAccessMigrations
 {
-    public class AccountManagementDesignTimeDbContextFactory : IDesignTimeDbContextFactory<AccountManagementDbContext>
+    public class AccountManagementDesignTimeDbContextFactory : IDesignTimeDbContextFactory<IAMDbContext>
     {
 
-        public AccountManagementDbContext CreateDbContext(string[] args)
+        public IAMDbContext CreateDbContext(string[] args)
         {
             var configuration = new EFMySqlConfiguration(ConfigurationProvider.GetConnectionString());
-            var optionsBuilder = new DbContextOptionsBuilder<AccountManagementDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<IAMDbContext>();
             configuration.Configure(optionsBuilder);
-            return new AccountManagementDbContext(configuration);
+            return new IAMDbContext(configuration);
         }
     }
 }

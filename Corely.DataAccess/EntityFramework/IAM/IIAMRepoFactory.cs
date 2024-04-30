@@ -3,9 +3,9 @@ using Corely.IAM.Auth.Entities;
 using Corely.IAM.Repos;
 using Corely.IAM.Users.Entities;
 
-namespace Corely.DataAccess.Factories
+namespace Corely.DataAccess.EntityFramework.IAM
 {
-    public interface IAccountManagementRepoFactory
+    public interface IIAMRepoFactory
     {
         IRepoExtendedGet<AccountEntity> CreateAccountRepo();
 

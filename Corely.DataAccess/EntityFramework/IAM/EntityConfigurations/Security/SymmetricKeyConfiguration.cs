@@ -2,7 +2,7 @@
 using Corely.IAM.Security;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations.Security
+namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Security
 {
     internal sealed class SymmetricKeyConfiguration : EntityConfigurationBase<SymmetricKeyEntity>
     {

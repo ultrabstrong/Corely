@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Corely.DataAccessMigrations.Migrations
 {
     [DbContext(typeof(IAMDbContext))]
-    [Migration("20240429014008_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20240430141202_AddedSymmetricKey")]
+    partial class AddedSymmetricKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,10 +63,15 @@ namespace Corely.DataAccessMigrations.Migrations
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
+                    b.Property<int>("SymmetricKeyId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountName")
                         .IsUnique();
+
+                    b.HasIndex("SymmetricKeyId");
 
                     b.ToTable("Accounts", (string)null);
                 });
@@ -103,6 +108,32 @@ namespace Corely.DataAccessMigrations.Migrations
                         .IsUnique();
 
                     b.ToTable("BasicAuths", (string)null);
+                });
+
+            modelBuilder.Entity("Corely.IAM.Security.SymmetricKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ModifiedUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SymmetricKey");
                 });
 
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
@@ -210,6 +241,17 @@ namespace Corely.DataAccessMigrations.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountEntity", b =>
+                {
+                    b.HasOne("Corely.IAM.Security.SymmetricKey", "SymmetricKey")
+                        .WithMany()
+                        .HasForeignKey("SymmetricKeyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SymmetricKey");
                 });
 
             modelBuilder.Entity("Corely.IAM.Auth.Entities.BasicAuthEntity", b =>

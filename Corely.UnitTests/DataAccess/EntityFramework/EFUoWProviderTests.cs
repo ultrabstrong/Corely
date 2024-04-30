@@ -1,5 +1,5 @@
 ﻿using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.AccountManagement;
+using Corely.DataAccess.EntityFramework.IAM;
 using Corely.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -7,7 +7,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
 {
     public class EFUoWProviderTests
     {
-        private readonly Mock<AccountManagementDbContext> _accountManagementDbContextMock;
+        private readonly Mock<IAMDbContext> _accountManagementDbContextMock;
         private readonly EFUoWProvider _efUoWProvider;
 
         public EFUoWProviderTests()
@@ -16,9 +16,9 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
             _efUoWProvider = new(_accountManagementDbContextMock.Object);
         }
 
-        private static Mock<AccountManagementDbContext> GetMockAccountManagementDbContext()
+        private static Mock<IAMDbContext> GetMockAccountManagementDbContext()
         {
-            var accountManagementDbContextMock = new Mock<AccountManagementDbContext>(new EFConfigurationFixture());
+            var accountManagementDbContextMock = new Mock<IAMDbContext>(new EFConfigurationFixture());
             var mockDatabaseFacade = new Mock<DatabaseFacade>(accountManagementDbContextMock.Object);
             accountManagementDbContextMock.SetupGet(c => c.Database).Returns(mockDatabaseFacade.Object);
 

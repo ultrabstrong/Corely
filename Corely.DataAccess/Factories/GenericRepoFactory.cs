@@ -1,7 +1,7 @@
 ﻿using Corely.Common.Extensions;
 using Corely.DataAccess.Connections;
 using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.AccountManagement;
+using Corely.DataAccess.EntityFramework.IAM;
 using Corely.DataAccess.Mock;
 using Microsoft.Extensions.Logging;
 
@@ -20,12 +20,12 @@ namespace Corely.DataAccess.Factories
             _connection = connection.ThrowIfNull(nameof(connection));
         }
 
-        public virtual IAccountManagementRepoFactory CreateAccountManagementRepoFactory()
+        public virtual IIAMRepoFactory CreateAccountManagementRepoFactory()
         {
             return _connection.ConnectionName switch
             {
                 ConnectionNames.EntityFramework =>
-                    new EFAccountManagementRepoFactory(
+                    new EFIAMRepoFactory(
                         _loggerFactory,
                         ((IDataAccessConnection<EFConnection>)_connection).GetConnection()),
                 ConnectionNames.Mock =>

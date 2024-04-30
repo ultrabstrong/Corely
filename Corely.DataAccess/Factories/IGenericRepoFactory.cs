@@ -1,7 +1,9 @@
-﻿namespace Corely.DataAccess.Factories
+﻿using Corely.DataAccess.EntityFramework.IAM;
+
+namespace Corely.DataAccess.Factories
 {
     public interface IGenericRepoFactory
     {
-        public IAccountManagementRepoFactory CreateAccountManagementRepoFactory();
+        public IIAMRepoFactory CreateAccountManagementRepoFactory();
     }
 }

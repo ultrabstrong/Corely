@@ -5,7 +5,7 @@ using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations.Users
+namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Users
 {
     internal sealed class UserEntityConfiguration : EntityConfigurationBase<UserEntity>
     {

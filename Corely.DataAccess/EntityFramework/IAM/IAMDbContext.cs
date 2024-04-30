@@ -1,19 +1,19 @@
-﻿using Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations.Accounts;
-using Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations.Auth;
-using Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations.Users;
+﻿using Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts;
+using Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Auth;
+using Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Users;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
 using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Corely.DataAccess.EntityFramework.AccountManagement
+namespace Corely.DataAccess.EntityFramework.IAM
 {
-    public class AccountManagementDbContext : DbContext
+    public class IAMDbContext : DbContext
     {
         private readonly IEFConfiguration _configuration;
 
-        public AccountManagementDbContext(IEFConfiguration configuration)
+        public IAMDbContext(IEFConfiguration configuration)
             : base()
         {
             _configuration = configuration;

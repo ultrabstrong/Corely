@@ -1,25 +1,23 @@
 ﻿using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.AccountManagement;
-using Corely.DataAccess.Factories;
+using Corely.DataAccess.EntityFramework.IAM;
 using Corely.DataAccess.Mock;
-using Corely.UnitTests.DataAccess.Factories;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.DataAccess.EntityFramework.AccountManagement
+namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
 {
-    public class EFAccountManagementRepoFactoryTests : AccountManagementRepoFactoryTestsBase
+    public class EFIAMRepoFactoryTests : IAMRepoFactoryTestsBase
     {
         private readonly ServiceFactory _serviceFactory = new();
-        private readonly EFAccountManagementRepoFactory _factory;
+        private readonly EFIAMRepoFactory _factory;
 
-        protected override IAccountManagementRepoFactory AccountManagementRepoFactory => _factory;
+        protected override IIAMRepoFactory AccountManagementRepoFactory => _factory;
 
-        public EFAccountManagementRepoFactoryTests()
+        public EFIAMRepoFactoryTests()
         {
             var mockFactory = GetMockFactory();
             mockFactory.Setup(f => f.CreateDbContext())
-                .Returns(new AccountManagementDbContext(new EFConfigurationFixture()));
+                .Returns(new IAMDbContext(new EFConfigurationFixture()));
 
             _factory = mockFactory.Object;
         }
@@ -41,9 +39,9 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.AccountManagement
             Assert.IsType<MockUoWProvider>(uowProvider);
         }
 
-        private Mock<EFAccountManagementRepoFactory> GetMockFactory()
+        private Mock<EFIAMRepoFactory> GetMockFactory()
         {
-            var mockFactory = new Mock<EFAccountManagementRepoFactory>(
+            var mockFactory = new Mock<EFIAMRepoFactory>(
                 _serviceFactory.GetRequiredService<ILoggerFactory>(),
                 new Mock<EFConnection>(new EFConfigurationFixture()).Object)
             {

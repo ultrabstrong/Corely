@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using Corely.DataAccess;
 using Corely.DataAccess.Connections;
-using Corely.DataAccess.Factories;
+using Corely.DataAccess.EntityFramework.IAM;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
 using Corely.IAM.Repos;
@@ -36,7 +36,7 @@ namespace Corely.UnitTests.DataAccess
 
         public static IEnumerable<object[]> GetRequiredServiceData =>
         [
-            [typeof(IAccountManagementRepoFactory)],
+            [typeof(IIAMRepoFactory)],
             [typeof(IRepoExtendedGet<AccountEntity>)],
             [typeof(IReadonlyRepo<AccountEntity>)],
             [typeof(IRepoExtendedGet<UserEntity>)],

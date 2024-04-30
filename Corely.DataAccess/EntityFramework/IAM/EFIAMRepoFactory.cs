@@ -1,5 +1,4 @@
 ﻿using Corely.DataAccess.EntityFramework.Repos;
-using Corely.DataAccess.Factories;
 using Corely.DataAccess.Mock;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
@@ -7,13 +6,13 @@ using Corely.IAM.Repos;
 using Corely.IAM.Users.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.DataAccess.EntityFramework.AccountManagement
+namespace Corely.DataAccess.EntityFramework.IAM
 {
-    internal class EFAccountManagementRepoFactory : IAccountManagementRepoFactory
+    internal class EFIAMRepoFactory : IIAMRepoFactory
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly EFConnection _connection;
-        private readonly AccountManagementDbContext _accountManagementDbContext;
+        private readonly IAMDbContext _accountManagementDbContext;
         private readonly bool _supportsTransactions;
 
         private static string[] ProvidersWithoutTransactionSupport =>
@@ -21,7 +20,7 @@ namespace Corely.DataAccess.EntityFramework.AccountManagement
             "Microsoft.EntityFrameworkCore.InMemory",
         ];
 
-        public EFAccountManagementRepoFactory(
+        public EFIAMRepoFactory(
             ILoggerFactory loggerFactory,
             EFConnection connection)
         {
@@ -33,7 +32,7 @@ namespace Corely.DataAccess.EntityFramework.AccountManagement
                 .Contains(_accountManagementDbContext.Database.ProviderName);
         }
 
-        internal virtual AccountManagementDbContext CreateDbContext()
+        internal virtual IAMDbContext CreateDbContext()
         {
             return new(_connection.Configuration);
         }

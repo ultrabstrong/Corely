@@ -1,12 +1,12 @@
 ﻿using AutoFixture;
-using Corely.DataAccess.Factories;
+using Corely.DataAccess.EntityFramework.IAM;
 
-namespace Corely.UnitTests.DataAccess.Factories
+namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
 {
-    public abstract class AccountManagementRepoFactoryTestsBase
+    public abstract class IAMRepoFactoryTestsBase
     {
         protected readonly Fixture fixture = new();
-        protected abstract IAccountManagementRepoFactory AccountManagementRepoFactory { get; }
+        protected abstract IIAMRepoFactory AccountManagementRepoFactory { get; }
 
         [Fact]
         public void CreateAccountRepo_ShouldReturnMockAccountRepo()

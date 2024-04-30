@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Connections;
 using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.AccountManagement;
+using Corely.DataAccess.EntityFramework.IAM;
 using Corely.DataAccess.Factories;
 using Corely.DataAccess.Mock;
 using Corely.UnitTests.Fixtures;
@@ -65,7 +65,7 @@ namespace Corely.UnitTests.DataAccess.Factories
             var accountManagementRepoFactory = genericRepoFactory.CreateAccountManagementRepoFactory();
 
             Assert.NotNull(accountManagementRepoFactory);
-            Assert.IsType<EFAccountManagementRepoFactory>(accountManagementRepoFactory);
+            Assert.IsType<EFIAMRepoFactory>(accountManagementRepoFactory);
         }
 
         [Fact]

@@ -3,7 +3,7 @@ using Corely.IAM.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations
+namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations
 {
     internal abstract class EntityConfigurationBase<T>
         : IEntityTypeConfiguration<T>

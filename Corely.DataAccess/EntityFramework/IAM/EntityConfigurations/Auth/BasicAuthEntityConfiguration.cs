@@ -3,7 +3,7 @@ using Corely.IAM.Auth.Constants;
 using Corely.IAM.Auth.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfigurations.Auth
+namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Auth
 {
     internal sealed class BasicAuthEntityConfiguration : EntityConfigurationBase<BasicAuthEntity>
     {
