@@ -19,19 +19,19 @@ namespace Corely.Security.Encryption.Providers
             }
         }
 
-        public string Encrypt(string value, ISymmetricKeyStoreProvider provider)
+        public string Encrypt(string value, ISymmetricKeyStoreProvider keyStoreProvider)
         {
             ArgumentNullException.ThrowIfNull(value, nameof(value));
-            (var key, var version) = provider.GetCurrentVersion();
+            (var key, var version) = keyStoreProvider.GetCurrentVersion();
             var encryptedValue = EncryptInternal(value, key);
             return FormatEncryptedValue(encryptedValue, version);
         }
 
-        public string Decrypt(string value, ISymmetricKeyStoreProvider provider)
+        public string Decrypt(string value, ISymmetricKeyStoreProvider keyStoreProvider)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
-            return DecryptInternal(encryptedValue, provider.Get(version));
+            return DecryptInternal(encryptedValue, keyStoreProvider.Get(version));
         }
 
         private (string, int) ValidateForKeyVersion(string value)
@@ -59,12 +59,12 @@ namespace Corely.Security.Encryption.Providers
             return (parts[2], keyVersion);
         }
 
-        public string ReEncrypt(string value, ISymmetricKeyStoreProvider provider)
+        public string ReEncrypt(string value, ISymmetricKeyStoreProvider keyStoreProvider)
         {
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
-            (var key, var currentVersion) = provider.GetCurrentVersion();
+            (var key, var currentVersion) = keyStoreProvider.GetCurrentVersion();
 
-            var decrypted = DecryptInternal(encryptedValue, provider.Get(version));
+            var decrypted = DecryptInternal(encryptedValue, keyStoreProvider.Get(version));
             var updatedEncryptedValue = EncryptInternal(decrypted, key);
             return FormatEncryptedValue(updatedEncryptedValue, currentVersion);
         }
