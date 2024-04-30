@@ -24,6 +24,8 @@ namespace Corely.DataAccess.EntityFramework.AccountManagement.EntityConfiguratio
 
             builder.HasMany(e => e.Users)
                 .WithMany(e => e.Accounts);
+
+            builder.HasOne(e => e.SymmetricKey);
         }
     }
 }

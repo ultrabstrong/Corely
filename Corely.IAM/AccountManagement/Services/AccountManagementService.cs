@@ -86,9 +86,12 @@ namespace Corely.IAM.AccountManagement.Services
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
 
+            _logger.LogDebug("Signing in user {Username}", request.Username);
+
             var user = await _userService.GetUserAsync(request.Username);
             if (user == null)
             {
+                _logger.LogDebug("User {Username} not found", request.Username);
                 return new SignInResult(false, "User not found", string.Empty);
             }
 
@@ -105,6 +108,8 @@ namespace Corely.IAM.AccountManagement.Services
 
                 await _userService.UpdateUserAsync(user);
 
+                _logger.LogDebug("User {Username} failed to sign in (invalid password)", request.Username);
+
                 return new SignInResult(false, "Invalid password", string.Empty);
             }
             user.TotalSuccessfulLogins++;
@@ -113,6 +118,8 @@ namespace Corely.IAM.AccountManagement.Services
             await _userService.UpdateUserAsync(user);
 
             var authToken = string.Empty; // Todo : Implement token generation service
+
+            _logger.LogDebug("User {Username} signed in", request.Username);
 
             return new SignInResult(true, string.Empty, authToken);
         }
