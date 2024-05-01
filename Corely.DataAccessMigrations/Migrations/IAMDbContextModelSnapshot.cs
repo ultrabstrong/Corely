@@ -116,21 +116,26 @@ namespace Corely.DataAccessMigrations.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
                     b.Property<string>("Key")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<DateTime>("ModifiedUtc")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
                     b.Property<int>("Version")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SymmetricKeyEntity");
+                    b.ToTable("SymmetricKeys", (string)null);
                 });
 
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>

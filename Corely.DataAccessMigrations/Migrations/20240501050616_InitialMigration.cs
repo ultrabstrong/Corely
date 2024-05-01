@@ -16,20 +16,20 @@ namespace Corely.DataAccessMigrations.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "SymmetricKeyEntity",
+                name: "SymmetricKeys",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Version = table.Column<int>(type: "int", nullable: false),
-                    Key = table.Column<string>(type: "longtext", nullable: false)
+                    Key = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatedUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ModifiedUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    CreatedUtc = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "(UTC_TIMESTAMP)"),
+                    ModifiedUtc = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "(UTC_TIMESTAMP)")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SymmetricKeyEntity", x => x.Id);
+                    table.PrimaryKey("PK_SymmetricKeys", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -74,9 +74,9 @@ namespace Corely.DataAccessMigrations.Migrations
                 {
                     table.PrimaryKey("PK_Accounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Accounts_SymmetricKeyEntity_SymmetricKeyId",
+                        name: "FK_Accounts_SymmetricKeys_SymmetricKeyId",
                         column: x => x.SymmetricKeyId,
-                        principalTable: "SymmetricKeyEntity",
+                        principalTable: "SymmetricKeys",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -212,7 +212,7 @@ namespace Corely.DataAccessMigrations.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "SymmetricKeyEntity");
+                name: "SymmetricKeys");
         }
     }
 }

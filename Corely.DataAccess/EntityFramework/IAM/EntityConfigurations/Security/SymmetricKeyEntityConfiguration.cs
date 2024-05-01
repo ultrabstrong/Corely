@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Security
 {
-    internal sealed class SymmetricKeyConfiguration : EntityConfigurationBase<SymmetricKeyEntity>
+    internal sealed class SymmetricKeyEntityConfiguration : EntityConfigurationBase<SymmetricKeyEntity>
     {
-        public SymmetricKeyConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
+        public SymmetricKeyEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
         {
         }
 

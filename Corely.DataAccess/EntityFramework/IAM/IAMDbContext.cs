@@ -1,7 +1,8 @@
-﻿using Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
+using Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts;
 using Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Auth;
+using Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Security;
 using Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Users;
-using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
 using Corely.IAM.Users.Entities;
@@ -31,6 +32,8 @@ namespace Corely.DataAccess.EntityFramework.IAM
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new SymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
+
             modelBuilder.ApplyConfiguration(new AccountEntityConfiguration(_configuration.GetDbTypes()));
 
             modelBuilder.ApplyConfiguration(new UserEntityConfiguration(_configuration.GetDbTypes()));

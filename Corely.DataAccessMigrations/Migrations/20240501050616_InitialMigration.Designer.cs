@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Corely.DataAccessMigrations.Migrations
 {
     [DbContext(typeof(IAMDbContext))]
-    [Migration("20240501042402_InitialMigration")]
+    [Migration("20240501050616_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -119,21 +119,26 @@ namespace Corely.DataAccessMigrations.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
                     b.Property<string>("Key")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<DateTime>("ModifiedUtc")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
                     b.Property<int>("Version")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SymmetricKeyEntity");
+                    b.ToTable("SymmetricKeys", (string)null);
                 });
 
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
