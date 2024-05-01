@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Corely.DataAccessMigrations
 {
-    public class AccountManagementDesignTimeDbContextFactory : IDesignTimeDbContextFactory<IAMDbContext>
+    public class IAMDesignTimeDbContextFactory : IDesignTimeDbContextFactory<IAMDbContext>
     {
 
         public IAMDbContext CreateDbContext(string[] args)

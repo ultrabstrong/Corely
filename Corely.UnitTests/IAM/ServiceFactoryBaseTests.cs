@@ -10,6 +10,7 @@ using Corely.IAM.Users.Services;
 using Corely.IAM.Validators;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Hashing.Factories;
+using Corely.Security.Keys.Symmetric;
 using Corely.Security.KeyStore.Symmetric;
 using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,6 +71,7 @@ namespace Corely.UnitTests.IAM
             [typeof(IValidationProvider)],
 
             [typeof(ISymmetricEncryptionProviderFactory)],
+            [typeof(ISymmetricKeyProvider)],
             [typeof(IHashProviderFactory)],
 
             [typeof(IAuthService)],

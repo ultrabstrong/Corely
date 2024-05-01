@@ -7,7 +7,7 @@ using Corely.IAM.Users.Entities;
 
 namespace Corely.DataAccess.Mock
 {
-    internal class MockAccountManagementRepoFactory : IIAMRepoFactory
+    internal class MockIAMRepoFactory : IIAMRepoFactory
     {
         // Reuse the same mocks so multiple requests work when testing
         private readonly MockRepoExtendedGet<AccountEntity> _accountRepo = new();

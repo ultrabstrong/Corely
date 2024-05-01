@@ -13,7 +13,8 @@ namespace Corely.IAM.Validators.FluentValidators.Security
 
             RuleFor(m => m.Key.Secret)
                 .NotEmpty()
-                .MaximumLength(SymmetricKeyConstants.KEY_MAX_LENGTH);
+                .MaximumLength(SymmetricKeyConstants.KEY_MAX_LENGTH)
+                .When(m => m.Key != null);
 
             RuleFor(m => m.Version)
                 .GreaterThanOrEqualTo(SymmetricKeyConstants.VERSION_MIN_VALUE);

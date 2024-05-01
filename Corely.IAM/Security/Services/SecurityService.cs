@@ -1,11 +1,9 @@
 ﻿using Corely.Common.Extensions;
 using Corely.IAM.Security.Models;
+using Corely.Security.Encryption.Factories;
+using Corely.Security.Encryption.Models;
+using Corely.Security.Encryption.Providers;
 using Corely.Security.Keys.Symmetric;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Corely.IAM.Security.Services
 {
@@ -13,26 +11,34 @@ namespace Corely.IAM.Security.Services
     {
         private readonly ISecurityConfigurationProvider _securityConfigurationProvider;
         private readonly ISymmetricKeyProvider _symmetricKeyProvider;
+        private readonly ISymmetricEncryptionProvider _symmetricEncryptionProvider;
 
         public SecurityService(
+            ISecurityConfigurationProvider securityConfigurationProvider,
             ISymmetricKeyProvider symmetricKeyProvider,
-            ISecurityConfigurationProvider securityConfigurationProvider)
-        { 
-            _symmetricKeyProvider = symmetricKeyProvider.ThrowIfNull(nameof(symmetricKeyProvider));
+            ISymmetricEncryptionProviderFactory symmetricEncryptionProviderFactory)
+        {
             _securityConfigurationProvider = securityConfigurationProvider.ThrowIfNull(nameof(securityConfigurationProvider));
-            ArgumentNullException.ThrowIfNull(
-                securityConfigurationProvider.GetSystemSymmetricKey(),
-                nameof(securityConfigurationProvider.GetSystemSymmetricKey));
+            _symmetricKeyProvider = symmetricKeyProvider.ThrowIfNull(nameof(symmetricKeyProvider));
+            _symmetricEncryptionProvider = symmetricEncryptionProviderFactory
+                .ThrowIfNull(nameof(symmetricEncryptionProviderFactory))
+                .GetDefaultProvider();
         }
 
         public SymmetricKey GetSymmetricKeyEncryptedWithSystemKey()
         {
-            var newkey = _symmetricKeyProvider.CreateKey();
-            var systemKey = _securityConfigurationProvider
-                .GetSystemSymmetricKey()
-                .GetCurrentVersion()
-                .Key;
-            return null;
+            var systemKeyStoreProvider = _securityConfigurationProvider.GetSystemSymmetricKey();
+            var decryptedKey = _symmetricKeyProvider.CreateKey();
+            var encryptedKey = _symmetricEncryptionProvider.Encrypt(decryptedKey, systemKeyStoreProvider);
+            var symmetricKey = new SymmetricKey
+            {
+                Version = systemKeyStoreProvider.GetCurrentVersion().Version,
+                Key = new SymmetricEncryptedValue(_symmetricEncryptionProvider)
+                {
+                    Secret = encryptedKey
+                }
+            };
+            return symmetricKey;
         }
     }
 }

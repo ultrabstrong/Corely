@@ -8,12 +8,12 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
     public class PlainStringToHashedValueValueConverterTests
     {
         private readonly Fixture _fixture = new();
-        private readonly PlainStringToHashedValueValueConverter _converter;
+        private readonly PlainStringToHashedValueValueConverter _valueConverter;
 
         public PlainStringToHashedValueValueConverterTests()
         {
             var serviceFactory = new ServiceFactory();
-            _converter = new(serviceFactory.GetRequiredService<IHashProviderFactory>());
+            _valueConverter = new(serviceFactory.GetRequiredService<IHashProviderFactory>());
         }
 
         [Fact]
@@ -21,7 +21,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         {
             var value = _fixture.Create<string>();
 
-            var result = _converter.Convert(value, default);
+            var result = _valueConverter.Convert(value, default);
 
             Assert.NotNull(result.Hash);
             Assert.True(result.Verify(value));
@@ -30,7 +30,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         [Theory, ClassData(typeof(EmptyAndWhitespace))]
         public void Convert_ShouldReturnHashedValue_WithEmptyWhitespace(string value)
         {
-            var result = _converter.Convert(value, default);
+            var result = _valueConverter.Convert(value, default);
 
             Assert.NotNull(result.Hash);
             Assert.True(result.Verify(value));
@@ -39,7 +39,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         [Fact]
         public void Convert_ShouldThrowArgumentNullException_WhenValueIsNull()
         {
-            var ex = Record.Exception(() => _converter.Convert(null, default));
+            var ex = Record.Exception(() => _valueConverter.Convert(null, default));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }

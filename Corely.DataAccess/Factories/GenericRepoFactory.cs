@@ -20,7 +20,7 @@ namespace Corely.DataAccess.Factories
             _connection = connection.ThrowIfNull(nameof(connection));
         }
 
-        public virtual IIAMRepoFactory CreateAccountManagementRepoFactory()
+        public virtual IIAMRepoFactory CreateIAMRepoFactory()
         {
             return _connection.ConnectionName switch
             {
@@ -29,7 +29,7 @@ namespace Corely.DataAccess.Factories
                         _loggerFactory,
                         ((IDataAccessConnection<EFConnection>)_connection).GetConnection()),
                 ConnectionNames.Mock =>
-                    new MockAccountManagementRepoFactory(),
+                    new MockIAMRepoFactory(),
                 _ =>
                     throw new ArgumentOutOfRangeException(_connection.ConnectionName),
             };

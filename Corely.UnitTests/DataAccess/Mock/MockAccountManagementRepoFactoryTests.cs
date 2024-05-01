@@ -6,7 +6,7 @@ namespace Corely.UnitTests.DataAccess.Mock
 {
     public class MockAccountManagementRepoFactoryTests : IAMRepoFactoryTestsBase
     {
-        private readonly MockAccountManagementRepoFactory _mockAccountManagementRepoFactory = new();
+        private readonly MockIAMRepoFactory _mockAccountManagementRepoFactory = new();
         protected override IIAMRepoFactory AccountManagementRepoFactory
             => _mockAccountManagementRepoFactory;
     }

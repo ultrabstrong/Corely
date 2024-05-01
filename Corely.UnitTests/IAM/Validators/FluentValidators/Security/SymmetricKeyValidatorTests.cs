@@ -10,59 +10,19 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
 {
     public class SymmetricKeyValidatorTests
     {
-        /*public SymmetricKeyValidator()
-        {
-            RuleFor(m => m.Key)
-                .NotNull()
-                .NotEmpty()
-                .MaximumLength(256);
-
-            RuleFor(m => m.Version)
-                .GreaterThanOrEqualTo(0);
-        }*/
-
-        /* Template class for running validation tests
-         * public class BasicAuthValidatorTests
-        {
-        private readonly BasicAuthValidator _validator = new();
-
-        [Theory]
-        [ClassData(typeof(NullEmptyAndWhitespace))]
-        [MemberData(nameof(InvalidPasswordData))]
-        public void BasicAuthValidator_ShouldHaveValidationError_WhenPasswordInvalid(string password)
-        {
-            var basicAuth = new BasicAuth
-            {
-                Password = new HashedValue(Mock.Of<IHashProvider>())
-                {
-                    Hash = password
-                }
-            };
-
-            var result = _validator.TestValidate(basicAuth);
-            result.ShouldHaveValidationErrorFor(x => x.Password.Hash);
-            result.ShouldNotHaveValidationErrorFor(x => x.Password);
-        }
-
-        public static IEnumerable<object[]> InvalidPasswordData() =>
-        [
-            [new string('a', BasicAuthConstants.PASSWORD_MAX_LENGTH + 1)]
-        ];
+        private readonly SymmetricKeyValidator _validator = new();
 
         [Fact]
-        public void BasicAuthValidator_ShouldHaveValidationError_WhenPasswordIsNull()
+        public void SymmetricKeyValidator_ShouldHaveValidationError_WhenKeyIsNull()
         {
-            var basicAuth = new BasicAuth
+            var symmetricKey = new SymmetricKey
             {
-                Password = null
+                Key = null
             };
 
-            var result = _validator.TestValidate(basicAuth);
-            result.ShouldHaveValidationErrorFor(x => x.Password);
+            var result = _validator.TestValidate(symmetricKey);
+            result.ShouldHaveValidationErrorFor(x => x.Key);
         }
-        }
-        */
-        private readonly SymmetricKeyValidator _validator = new();
 
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
@@ -78,7 +38,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
             };
 
             var result = _validator.TestValidate(symmetricKey);
-            result.ShouldHaveValidationErrorFor(x => x.Key);
+            result.ShouldHaveValidationErrorFor(x => x.Key.Secret);
         }
 
         public static IEnumerable<object[]> InvalidKeyData() =>
@@ -91,7 +51,11 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
         {
             var symmetricKey = new SymmetricKey
             {
-                Version = SymmetricKeyConstants.VERSION_MIN_VALUE - 1
+                Version = SymmetricKeyConstants.VERSION_MIN_VALUE - 1,
+                Key = new SymmetricEncryptedValue(new AesEncryptionProvider())
+                {
+                    Secret = "key"
+                }
             };
 
             var result = _validator.TestValidate(symmetricKey);

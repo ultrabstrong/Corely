@@ -8,8 +8,8 @@ namespace Corely.IAM.Mappers.AutoMapper.SecurityProfiles
     {
         public EncryptedValueProfile()
         {
-            CreateMap<ISymmetricEncryptedValue, string?>().ConvertUsing<EncryptedValueToStringTypeConverter>();
-            CreateMap<string, ISymmetricEncryptedValue>().ConvertUsing<EncryptedStringToEncryptedValueTypeConverter>();
+            CreateMap<ISymmetricEncryptedValue, string?>().ConvertUsing<SymmetricEncryptedValueToStringTypeConverter>();
+            CreateMap<string, ISymmetricEncryptedValue>().ConvertUsing<SymmetricEncryptedStringToEncryptedValueTypeConverter>();
         }
     }
 }

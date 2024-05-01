@@ -4,11 +4,11 @@ using Corely.Security.Encryption.Models;
 
 namespace Corely.IAM.Mappers.AutoMapper.TypeConverters
 {
-    internal sealed class EncryptedStringToEncryptedValueTypeConverter : ITypeConverter<string, ISymmetricEncryptedValue>
+    internal sealed class SymmetricEncryptedStringToEncryptedValueTypeConverter : ITypeConverter<string, ISymmetricEncryptedValue>
     {
         private readonly ISymmetricEncryptionProviderFactory _encryptionProviderFactory;
 
-        public EncryptedStringToEncryptedValueTypeConverter(ISymmetricEncryptionProviderFactory encryptionProviderFactory)
+        public SymmetricEncryptedStringToEncryptedValueTypeConverter(ISymmetricEncryptionProviderFactory encryptionProviderFactory)
         {
             _encryptionProviderFactory = encryptionProviderFactory;
         }

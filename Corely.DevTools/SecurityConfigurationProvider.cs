@@ -6,10 +6,16 @@ namespace Corely.DevTools
 {
     internal class SecurityConfigurationProvider : ISecurityConfigurationProvider
     {
+        private readonly string _key;
+
+        public SecurityConfigurationProvider()
+        {
+            _key = new AesKeyProvider().CreateKey();
+        }
+
         public ISymmetricKeyStoreProvider GetSystemSymmetricKey()
         {
-            var key = new AesKeyProvider().CreateKey();
-            return new InMemorySymmetricKeyStoreProvider(key);
+            return new InMemorySymmetricKeyStoreProvider(_key);
         }
     }
 }

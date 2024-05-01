@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Corely.DataAccessMigrations.Migrations
 {
     [DbContext(typeof(IAMDbContext))]
-    partial class AccountManagementDbContextModelSnapshot : ModelSnapshot
+    partial class IAMDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

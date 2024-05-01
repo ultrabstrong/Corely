@@ -4,6 +4,6 @@ namespace Corely.DataAccess.Factories
 {
     public interface IGenericRepoFactory
     {
-        public IIAMRepoFactory CreateAccountManagementRepoFactory();
+        public IIAMRepoFactory CreateIAMRepoFactory();
     }
 }

@@ -36,7 +36,7 @@ namespace Corely.UnitTests.DataAccess.Factories
         }
 
         [Fact]
-        public void CreateAccountManagementRepoFactory_ShouldReturnCorrectType_WithMockConnection()
+        public void CreateIAMRepoFactory_ShouldReturnCorrectType_WithMockConnection()
         {
             var dataAccessConnection = new DataAccessConnection<string>(
                 ConnectionNames.Mock, _fixture.Create<string>());
@@ -45,14 +45,14 @@ namespace Corely.UnitTests.DataAccess.Factories
                 new Mock<ILoggerFactory>().Object,
                 dataAccessConnection);
 
-            var accountManagementRepoFactory = genericRepoFactory.CreateAccountManagementRepoFactory();
+            var IAMRepoFactory = genericRepoFactory.CreateIAMRepoFactory();
 
-            Assert.NotNull(accountManagementRepoFactory);
-            Assert.IsType<MockAccountManagementRepoFactory>(accountManagementRepoFactory);
+            Assert.NotNull(IAMRepoFactory);
+            Assert.IsType<MockIAMRepoFactory>(IAMRepoFactory);
         }
 
         [Fact]
-        public void CreateAccountManagementRepoFactory_ShouldReturnCorrectType_WithEFConnection()
+        public void CreateIAMRepoFactory_ShouldReturnCorrectType_WithEFConnection()
         {
             var connection = new EFConfigurationFixture();
             var dataAccessConnection = new DataAccessConnection<EFConnection>(
@@ -62,14 +62,14 @@ namespace Corely.UnitTests.DataAccess.Factories
                 new Mock<ILoggerFactory>().Object,
                 dataAccessConnection);
 
-            var accountManagementRepoFactory = genericRepoFactory.CreateAccountManagementRepoFactory();
+            var IAMRepoFactory = genericRepoFactory.CreateIAMRepoFactory();
 
-            Assert.NotNull(accountManagementRepoFactory);
-            Assert.IsType<EFIAMRepoFactory>(accountManagementRepoFactory);
+            Assert.NotNull(IAMRepoFactory);
+            Assert.IsType<EFIAMRepoFactory>(IAMRepoFactory);
         }
 
         [Fact]
-        public void CreateAccountManagementRepoFactory_ShouldThrowArgumentOutOfRangeException_WithInvalidConnectionName()
+        public void CreateIAMRepoFactory_ShouldThrowArgumentOutOfRangeException_WithInvalidConnectionName()
         {
             var dataAccessConnection = new DataAccessConnection<string>(
                 _fixture.Create<string>(), _fixture.Create<string>());
@@ -78,7 +78,7 @@ namespace Corely.UnitTests.DataAccess.Factories
                 new Mock<ILoggerFactory>().Object,
                 dataAccessConnection);
 
-            var ex = Record.Exception(genericRepoFactory.CreateAccountManagementRepoFactory);
+            var ex = Record.Exception(genericRepoFactory.CreateIAMRepoFactory);
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentOutOfRangeException>(ex);

@@ -12,7 +12,7 @@ namespace Corely.DataAccess.EntityFramework.IAM
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly EFConnection _connection;
-        private readonly IAMDbContext _accountManagementDbContext;
+        private readonly IAMDbContext _IAMDbContext;
         private readonly bool _supportsTransactions;
 
         private static string[] ProvidersWithoutTransactionSupport =>
@@ -26,10 +26,10 @@ namespace Corely.DataAccess.EntityFramework.IAM
         {
             _loggerFactory = loggerFactory;
             _connection = connection;
-            _accountManagementDbContext = CreateDbContext();
+            _IAMDbContext = CreateDbContext();
 
             _supportsTransactions = !ProvidersWithoutTransactionSupport
-                .Contains(_accountManagementDbContext.Database.ProviderName);
+                .Contains(_IAMDbContext.Database.ProviderName);
         }
 
         internal virtual IAMDbContext CreateDbContext()
@@ -42,14 +42,14 @@ namespace Corely.DataAccess.EntityFramework.IAM
             return new EFRepoExtendedGet<AccountEntity>(
                 _loggerFactory.CreateLogger<EFRepoExtendedGet<AccountEntity>>(),
                 SaveChangesAsync,
-                _accountManagementDbContext.Accounts);
+                _IAMDbContext.Accounts);
         }
 
         public IReadonlyRepo<AccountEntity> CreateReadonlyAccountRepo()
         {
             return new EFReadonlyRepo<AccountEntity>(
                 _loggerFactory.CreateLogger<EFReadonlyRepo<AccountEntity>>(),
-                _accountManagementDbContext.Accounts);
+                _IAMDbContext.Accounts);
         }
 
         public IRepoExtendedGet<UserEntity> CreateUserRepo()
@@ -57,7 +57,7 @@ namespace Corely.DataAccess.EntityFramework.IAM
             return new EFRepoExtendedGet<UserEntity>(
                 _loggerFactory.CreateLogger<EFRepoExtendedGet<UserEntity>>(),
                 SaveChangesAsync,
-                _accountManagementDbContext.Users);
+                _IAMDbContext.Users);
         }
 
         public IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo()
@@ -65,16 +65,16 @@ namespace Corely.DataAccess.EntityFramework.IAM
             return new EFRepoExtendedGet<BasicAuthEntity>(
                 _loggerFactory.CreateLogger<EFRepoExtendedGet<BasicAuthEntity>>(),
                 SaveChangesAsync,
-                _accountManagementDbContext.BasicAuths);
+                _IAMDbContext.BasicAuths);
         }
 
         public IUnitOfWorkProvider CreateUnitOfWorkProvider()
         {
             return _supportsTransactions
-                ? new EFUoWProvider(_accountManagementDbContext)
+                ? new EFUoWProvider(_IAMDbContext)
                 : new MockUoWProvider();
         }
 
-        private async Task SaveChangesAsync() => await _accountManagementDbContext.SaveChangesAsync();
+        private async Task SaveChangesAsync() => await _IAMDbContext.SaveChangesAsync();
     }
 }

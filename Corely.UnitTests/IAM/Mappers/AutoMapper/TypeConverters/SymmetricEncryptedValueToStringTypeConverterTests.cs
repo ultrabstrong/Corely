@@ -6,9 +6,9 @@ using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
 {
-    public class EncryptedValueToStringTypeConverterTests
+    public class SymmetricEncryptedValueToStringTypeConverterTests
     {
-        private readonly EncryptedValueToStringTypeConverter _converter = new();
+        private readonly SymmetricEncryptedValueToStringTypeConverter _converter = new();
         private readonly Fixture _fixture = new();
 
         [Fact]
