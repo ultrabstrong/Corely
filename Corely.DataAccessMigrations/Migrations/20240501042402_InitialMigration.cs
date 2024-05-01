@@ -16,19 +16,20 @@ namespace Corely.DataAccessMigrations.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Accounts",
+                name: "SymmetricKeyEntity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    AccountName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                    Version = table.Column<int>(type: "int", nullable: false),
+                    Key = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatedUtc = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "(UTC_TIMESTAMP)"),
-                    ModifiedUtc = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "(UTC_TIMESTAMP)")
+                    CreatedUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ModifiedUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                    table.PrimaryKey("PK_SymmetricKeyEntity", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -58,25 +59,24 @@ namespace Corely.DataAccessMigrations.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "AccountEntityUserEntity",
+                name: "Accounts",
                 columns: table => new
                 {
-                    AccountsId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    AccountName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SymmetricKeyId = table.Column<int>(type: "int", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "(UTC_TIMESTAMP)"),
+                    ModifiedUtc = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "(UTC_TIMESTAMP)")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountEntityUserEntity", x => new { x.AccountsId, x.UsersId });
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccountEntityUserEntity_Accounts_AccountsId",
-                        column: x => x.AccountsId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AccountEntityUserEntity_Users_UsersId",
-                        column: x => x.UsersId,
-                        principalTable: "Users",
+                        name: "FK_Accounts_SymmetricKeyEntity_SymmetricKeyId",
+                        column: x => x.SymmetricKeyId,
+                        principalTable: "SymmetricKeyEntity",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -133,6 +133,31 @@ namespace Corely.DataAccessMigrations.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "AccountEntityUserEntity",
+                columns: table => new
+                {
+                    AccountsId = table.Column<int>(type: "int", nullable: false),
+                    UsersId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountEntityUserEntity", x => new { x.AccountsId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_AccountEntityUserEntity_Accounts_AccountsId",
+                        column: x => x.AccountsId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountEntityUserEntity_Users_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AccountEntityUserEntity_UsersId",
                 table: "AccountEntityUserEntity",
@@ -143,6 +168,11 @@ namespace Corely.DataAccessMigrations.Migrations
                 table: "Accounts",
                 column: "AccountName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_SymmetricKeyId",
+                table: "Accounts",
+                column: "SymmetricKeyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BasicAuths_UserId",
@@ -180,6 +210,9 @@ namespace Corely.DataAccessMigrations.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "SymmetricKeyEntity");
         }
     }
 }

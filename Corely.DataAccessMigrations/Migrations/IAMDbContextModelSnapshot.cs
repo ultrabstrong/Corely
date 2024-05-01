@@ -107,7 +107,7 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.ToTable("BasicAuths", (string)null);
                 });
 
-            modelBuilder.Entity("Corely.IAM.Security.SymmetricKey", b =>
+            modelBuilder.Entity("Corely.IAM.Security.Entities.SymmetricKeyEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -130,7 +130,7 @@ namespace Corely.DataAccessMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SymmetricKey");
+                    b.ToTable("SymmetricKeyEntity");
                 });
 
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
@@ -242,7 +242,7 @@ namespace Corely.DataAccessMigrations.Migrations
 
             modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountEntity", b =>
                 {
-                    b.HasOne("Corely.IAM.Security.SymmetricKey", "SymmetricKey")
+                    b.HasOne("Corely.IAM.Security.Entities.SymmetricKeyEntity", "SymmetricKey")
                         .WithMany()
                         .HasForeignKey("SymmetricKeyId")
                         .OnDelete(DeleteBehavior.Cascade)

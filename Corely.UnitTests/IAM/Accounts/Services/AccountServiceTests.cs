@@ -4,6 +4,7 @@ using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Repos;
+using Corely.IAM.Security.Services;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
@@ -20,6 +21,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         {
             _accountService = new AccountService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<ISecurityService>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<AccountService>>());
