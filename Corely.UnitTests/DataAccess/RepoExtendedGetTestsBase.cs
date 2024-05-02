@@ -6,7 +6,7 @@ namespace Corely.UnitTests.DataAccess
 {
     public abstract class RepoExtendedGetTestsBase<T>
         : RepoTestsBase<T>
-        where T : IHasIdPk
+        where T : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     {
         protected abstract override IRepoExtendedGet<T> Repo { get; }
 

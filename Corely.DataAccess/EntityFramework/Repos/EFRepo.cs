@@ -40,6 +40,11 @@ namespace Corely.DataAccess.EntityFramework.Repos
 
         public virtual async Task UpdateAsync(T entity)
         {
+            if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
+            {
+                ((IHasModifiedUtc)entity).ModifiedUtc = DateTime.UtcNow;
+            }
+
             var existingEntity = _dbSet.Local.FirstOrDefault(m => m.Id == entity.Id);
             if (existingEntity == null)
             {

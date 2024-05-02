@@ -22,6 +22,11 @@ namespace Corely.DataAccess.Mock.Repos
 
         public virtual Task UpdateAsync(T entity)
         {
+            if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
+            {
+                ((IHasModifiedUtc)entity).ModifiedUtc = DateTime.UtcNow;
+            }
+
             var index = Entities.FindIndex(u => u.Id == entity.Id);
             if (index > -1) { Entities[index] = entity; }
             return Task.CompletedTask;
