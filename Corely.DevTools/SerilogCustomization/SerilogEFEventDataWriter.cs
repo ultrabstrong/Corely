@@ -10,7 +10,7 @@ namespace Corely.DevTools.SerilogCustomization
 {
     internal class SerilogEFEventDataWriter
     {
-        public void Write(EventData eventData)
+        public static void Write(EventData eventData)
         {
             var logEvent = new LogEvent(
                 timestamp: DateTimeOffset.Now,
@@ -45,7 +45,7 @@ namespace Corely.DevTools.SerilogCustomization
             };
         }
 
-        private void Update(CommandExecutedEventData eventData, LogEvent logEvent)
+        private static void Update(CommandExecutedEventData eventData, LogEvent logEvent)
         {
             UpsertScalarProperty(logEvent, nameof(eventData.Connection.DataSource), eventData.Connection.DataSource);
             UpsertScalarProperty(logEvent, nameof(eventData.Connection.Database), eventData.Connection.Database);
@@ -62,7 +62,7 @@ namespace Corely.DevTools.SerilogCustomization
             UpsertParameterProperties(logEvent, eventData.Command.Parameters, eventData.LogParameterValues);
         }
 
-        private void UpsertParameterProperties(LogEvent logEvent, DbParameterCollection parameters, bool logValues)
+        private static void UpsertParameterProperties(LogEvent logEvent, DbParameterCollection parameters, bool logValues)
         {
             for (int i = 0; i < parameters.Count; i++)
             {
@@ -78,7 +78,7 @@ namespace Corely.DevTools.SerilogCustomization
             }
         }
 
-        private void UpsertScalarProperty(LogEvent logEvent, string propName, object? propValue)
+        private static void UpsertScalarProperty(LogEvent logEvent, string propName, object? propValue)
         {
             logEvent.AddOrUpdateProperty(new LogEventProperty(propName, new ScalarValue(propValue)));
         }

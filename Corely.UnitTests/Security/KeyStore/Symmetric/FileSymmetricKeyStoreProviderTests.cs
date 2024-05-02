@@ -21,10 +21,16 @@ namespace Corely.UnitTests.Security.KeyStore.Symmetric
         }
 
         [Fact]
+        public void GetCurrentKey_ShouldReturnKey()
+        {
+            var key = _fileKeyStoreProvider.GetCurrentKey();
+            Assert.Equal(_fileKey, key);
+        }
+
+        [Fact]
         public void GetCurrentVersion_ShouldReturnVersion1()
         {
-            var (key, version) = _fileKeyStoreProvider.GetCurrentVersion();
-            Assert.Equal(_fileKey, key);
+            var version = _fileKeyStoreProvider.GetCurrentVersion();
             Assert.Equal(1, version);
         }
 

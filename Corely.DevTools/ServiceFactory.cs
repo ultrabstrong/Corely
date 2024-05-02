@@ -18,7 +18,6 @@ namespace Corely.DevTools
         {
             public override void Configure(DbContextOptionsBuilder optionsBuilder)
             {
-                var serilogEFEventDataWriter = new SerilogEFEventDataWriter();
                 optionsBuilder
                     .UseMySql(
                         connectionString,
@@ -26,7 +25,7 @@ namespace Corely.DevTools
                         b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
                     .LogTo(
                         filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
-                        logger: serilogEFEventDataWriter.Write);
+                        logger: SerilogEFEventDataWriter.Write);
             }
         }
 

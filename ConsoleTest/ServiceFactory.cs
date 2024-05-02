@@ -18,7 +18,6 @@ namespace ConsoleTest
         {
             public override void Configure(DbContextOptionsBuilder optionsBuilder)
             {
-                var serilogEFEventDataWriter = new SerilogEFEventDataWriter();
                 optionsBuilder
                     .UseMySql(
                         connectionString,
@@ -26,7 +25,7 @@ namespace ConsoleTest
                         b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
                     .LogTo(
                         filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
-                        logger: serilogEFEventDataWriter.Write);
+                        logger: SerilogEFEventDataWriter.Write);
 #if DEBUG
                 optionsBuilder
                     .EnableSensitiveDataLogging()
@@ -39,12 +38,11 @@ namespace ConsoleTest
         {
             public override void Configure(DbContextOptionsBuilder optionsBuilder)
             {
-                var serilogEFEventDataWriter = new SerilogEFEventDataWriter();
                 optionsBuilder
                     .UseInMemoryDatabase("TestDb")
                     .LogTo(
                         filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
-                        logger: serilogEFEventDataWriter.Write);
+                        logger: SerilogEFEventDataWriter.Write);
 #if DEBUG
                 optionsBuilder
                     .EnableSensitiveDataLogging()

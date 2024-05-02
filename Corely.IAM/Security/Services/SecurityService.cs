@@ -32,7 +32,7 @@ namespace Corely.IAM.Security.Services
             var encryptedKey = _symmetricEncryptionProvider.Encrypt(decryptedKey, systemKeyStoreProvider);
             var symmetricKey = new SymmetricKey
             {
-                Version = systemKeyStoreProvider.GetCurrentVersion().Version,
+                Version = systemKeyStoreProvider.GetCurrentVersion(),
                 Key = new SymmetricEncryptedValue(_symmetricEncryptionProvider)
                 {
                     Secret = encryptedKey

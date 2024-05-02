@@ -10,8 +10,12 @@
             _filePath = filePath;
         }
 
-        public (string Key, int Version) GetCurrentVersion() => (GetFileContents(), _version);
-        public string Get(int version) => GetFileContents();
+        public string GetCurrentKey() => GetFileContents();
+
         protected virtual string GetFileContents() => File.ReadAllText(_filePath);
+
+        public int GetCurrentVersion() => _version;
+
+        public string Get(int version) => GetFileContents();
     }
 }

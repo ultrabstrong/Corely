@@ -2,7 +2,8 @@
 {
     public interface ISymmetricKeyStoreProvider
     {
-        (string Key, int Version) GetCurrentVersion();
+        string GetCurrentKey();
+        int GetCurrentVersion();
         string Get(int version);
     }
 }
