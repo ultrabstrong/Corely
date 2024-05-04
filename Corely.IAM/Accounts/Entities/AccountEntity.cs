@@ -9,7 +9,7 @@ namespace Corely.IAM.Accounts.Entities
         public int Id { get; set; }
         public string AccountName { get; init; } = null!;
         public virtual ICollection<UserEntity> Users { get; init; } = null!;
-        public virtual SymmetricKeyEntity SymmetricKey { get; init; } = null!;
+        public virtual AccountSymmetricKeyEntity AccountSymmetricKey { get; init; } = null!;
         public DateTime CreatedUtc { get; set; }
         public DateTime ModifiedUtc { get; set; }
     }

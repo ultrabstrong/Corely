@@ -6,9 +6,9 @@ using Corely.Security.Encryption;
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
 {
     public class SymmetricKeyProfileTests
-        : BidirectionalProfileTestsBase<SymmetricKey, SymmetricKeyEntity>
+        : BidirectionalProfileTestsBase<SymmetricKey, AccountSymmetricKeyEntity>
     {
-        protected override SymmetricKeyEntity ApplyDestinatonModifications(SymmetricKeyEntity destination)
+        protected override AccountSymmetricKeyEntity ApplyDestinatonModifications(AccountSymmetricKeyEntity destination)
         {
             destination.Key = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
             return destination;

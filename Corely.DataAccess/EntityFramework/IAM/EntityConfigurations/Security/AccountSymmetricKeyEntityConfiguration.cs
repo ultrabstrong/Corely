@@ -5,15 +5,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Security
 {
-    internal sealed class SymmetricKeyEntityConfiguration : EntityConfigurationBase<SymmetricKeyEntity>
+    internal class AccountSymmetricKeyEntityConfiguration : EntityConfigurationBase<AccountSymmetricKeyEntity>
     {
-        public SymmetricKeyEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
+        public AccountSymmetricKeyEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
         {
         }
 
-        public override void Configure(EntityTypeBuilder<SymmetricKeyEntity> builder)
+        public override void Configure(EntityTypeBuilder<AccountSymmetricKeyEntity> builder)
         {
             ConfigureGenericTypes(builder);
+
+            builder.HasKey(e => e.AccountId);
+            builder.Property(e => e.AccountId)
+                .ValueGeneratedNever();
 
             builder.Property(m => m.Key)
                 .IsRequired()

@@ -2,9 +2,9 @@
 
 namespace Corely.IAM.Security.Entities
 {
-    public class SymmetricKeyEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
+    public class AccountSymmetricKeyEntity : IHasCreatedUtc, IHasModifiedUtc
     {
-        public int Id { get; set; }
+        public int AccountId { get; set; }
         public int Version { get; set; }
         public string Key { get; set; } = null!;
         public DateTime CreatedUtc { get; set; }

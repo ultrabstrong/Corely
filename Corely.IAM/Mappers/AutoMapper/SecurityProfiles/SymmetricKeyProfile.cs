@@ -8,7 +8,8 @@ namespace Corely.IAM.Mappers.AutoMapper.SecurityProfiles
     {
         public SymmetricKeyProfile()
         {
-            CreateMap<SymmetricKey, SymmetricKeyEntity>()
+            CreateMap<SymmetricKey, AccountSymmetricKeyEntity>()
+                .ForMember(m => m.AccountId, opt => opt.Ignore())
                 .ReverseMap();
         }
     }

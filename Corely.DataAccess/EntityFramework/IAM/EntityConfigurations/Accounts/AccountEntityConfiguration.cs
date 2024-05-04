@@ -1,6 +1,8 @@
 ﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Accounts.Constants;
 using Corely.IAM.Accounts.Entities;
+using Corely.IAM.Security.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts
@@ -25,7 +27,10 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts
             builder.HasMany(e => e.Users)
                 .WithMany(e => e.Accounts);
 
-            builder.HasOne(e => e.SymmetricKey);
+            builder.HasOne(e => e.AccountSymmetricKey)
+                .WithOne()
+                .HasForeignKey<AccountSymmetricKeyEntity>(p => p.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
