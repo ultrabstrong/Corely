@@ -18,7 +18,7 @@ namespace Corely.UnitTests.IAM.Security.Services
         }
 
         [Fact]
-        public void GetSymmetricKeyEncryptedWithSystemKey_ShouldReturnSymmetricKey()
+        public void GetSymmetricKeyEncryptedWithSystemKey_ReturnsSymmetricKey()
         {
             var result = _securityService.GetSymmetricKeyEncryptedWithSystemKey();
 

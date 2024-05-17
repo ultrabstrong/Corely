@@ -14,7 +14,7 @@ namespace Corely.UnitTests.DataAccess
         protected abstract int GetId { get; }
 
         [Fact]
-        public async Task GetAsync_ShouldReturnEntity_WhenEntityExists()
+        public async Task GetAsync_ReturnsEntity_WhenEntityExists()
         {
             var result = await Repo.GetAsync(GetId);
 

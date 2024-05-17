@@ -13,7 +13,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
         }
 
         [Fact]
-        public async Task GetAsync_ShouldThrowArgumentNullException_WithNullDbSet()
+        public async Task GetAsync_ThrowsArgumentNullException_WithNullDbSet()
         {
             var ex = await Record.ExceptionAsync(() => ((DbSet<object>?)null).GetAsync(null));
 
@@ -22,7 +22,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
         }
 
         [Fact]
-        public async Task GetAsync_ShouldThrowArgumentNullException_WithNullQuery()
+        public async Task GetAsync_ThrowsArgumentNullException_WithNullQuery()
         {
             var ex = await Record.ExceptionAsync(() => _dbSet.Object.GetAsync(null));
 

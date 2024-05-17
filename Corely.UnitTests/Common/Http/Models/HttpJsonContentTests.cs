@@ -8,32 +8,32 @@ namespace Corely.UnitTests.Common.Http.Models
         private readonly HttpJsonContent _httpJsonContent = new("content");
 
         [Fact]
-        public void HttpFormUrlEncodedContent_ShouldBeOfTypeIHttpContent()
+        public void HttpFormUrlEncodedContent_IsOfTypeIHttpContent()
         {
             Assert.IsAssignableFrom<IHttpContent<string>>(_httpJsonContent);
         }
 
         [Fact]
-        public void HttpJsonContent_ShouldBeOfTypeHttpStringContentBase()
+        public void HttpJsonContent_IsOfTypeHttpStringContentBase()
         {
             Assert.IsAssignableFrom<HttpStringContentBase>(_httpJsonContent);
         }
 
         [Fact]
-        public void HttpJsonContent_ShouldSetContent_OnConstruction()
+        public void HttpJsonContent_SetsContent_OnConstruction()
         {
             Assert.Equal("content", _httpJsonContent.Content);
         }
 
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void HttpJsonContent_ShouldAllowEmptyContent(string content)
+        public void HttpJsonContent_AllowsEmptyContent(string content)
         {
             var httpJsonContent = new HttpJsonContent(content);
             Assert.Equal(content, httpJsonContent.Content);
         }
 
         [Theory, MemberData(nameof(HttpJsonContentTestData))]
-        public void HttpJsonContent_ShouldSerializeContent(object content, string expected)
+        public void HttpJsonContent_SerializesContent(object content, string expected)
         {
             var httpJsonContent = new HttpJsonContent(content);
             Assert.Equal(expected, httpJsonContent.Content);

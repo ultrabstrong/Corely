@@ -5,7 +5,7 @@ namespace Corely.UnitTests.IAM.Validators
     public class ValidationResultTests
     {
         [Fact]
-        public void IsValid_ShouldReturnFalse_WhenErrorsIsNotNull()
+        public void IsValid_ReturnsFalse_WhenErrorsIsNotNull()
         {
             var result = new ValidationResult
             {
@@ -16,7 +16,7 @@ namespace Corely.UnitTests.IAM.Validators
         }
 
         [Fact]
-        public void IsValid_ShouldReturnTrue_WhenErrorsIsNull()
+        public void IsValid_ReturnsTrue_WhenErrorsIsNull()
         {
             var result = new ValidationResult
             {
@@ -27,7 +27,7 @@ namespace Corely.UnitTests.IAM.Validators
         }
 
         [Fact]
-        public void ThrowIfInvalid_ShouldThrowValidationException_WhenErrorsIsNotNull()
+        public void ThrowIfInvalid_ThrowsValidationException_WhenErrorsIsNotNull()
         {
             var result = new ValidationResult
             {
@@ -42,7 +42,7 @@ namespace Corely.UnitTests.IAM.Validators
         }
 
         [Fact]
-        public void ThrowIfInvalid_ShouldNotThrowValidationException_WhenErrorsIsNull()
+        public void ThrowIfInvalid_DoesNotThrowValidationException_WhenErrorsIsNull()
         {
             var result = new ValidationResult();
             Assert.True(result.IsValid);

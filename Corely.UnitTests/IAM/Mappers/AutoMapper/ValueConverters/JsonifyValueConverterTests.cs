@@ -15,7 +15,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         private readonly Fixture _fixture = new();
 
         [Fact]
-        public void Convert_ShouldReturnJson()
+        public void Convert_ReturnsJson()
         {
             var value = _fixture.Create<TestClass>();
 
@@ -26,7 +26,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         }
 
         [Fact]
-        public void Convert_ShouldReturnJson_WithNullSource()
+        public void Convert_ReturnsJson_WithNullSource()
         {
             TestClass? value = null;
 

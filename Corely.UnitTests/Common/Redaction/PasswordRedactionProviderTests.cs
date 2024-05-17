@@ -8,7 +8,7 @@ namespace Corely.UnitTests.Common.Redaction
 
         [Theory]
         [MemberData(nameof(RedactTestData))]
-        public void Redact_ShouldRedactPassword(string input, string expected)
+        public void Redact_RedactsPassword(string input, string expected)
         {
             var actual = _passwordRedactionProvider.Redact(input);
             Assert.Equal(expected, actual);

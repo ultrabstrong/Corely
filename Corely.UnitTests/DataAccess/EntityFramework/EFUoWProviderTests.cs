@@ -26,7 +26,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
         }
 
         [Fact]
-        public async Task BeginAsync_ShouldBeginTransaction()
+        public async Task BeginAsync_BeginsTransaction()
         {
             await _efUoWProvider.BeginAsync();
 
@@ -35,7 +35,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
         }
 
         [Fact]
-        public async Task CommitAsync_ShouldCommitTransaction()
+        public async Task CommitAsync_CommitsTransaction()
         {
             await _efUoWProvider.CommitAsync();
 
@@ -44,7 +44,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
         }
 
         [Fact]
-        public async Task RollbackAsync_ShouldRollbackTransaction()
+        public async Task RollbackAsync_RollsbackTransaction()
         {
             await _efUoWProvider.RollbackAsync();
 
@@ -53,7 +53,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
         }
 
         [Fact]
-        public void Dispose_ShouldDisposeDbContext()
+        public void Dispose_DisposesDbContext()
         {
             _efUoWProvider.Dispose();
 

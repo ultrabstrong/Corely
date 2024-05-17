@@ -14,15 +14,15 @@ namespace Corely.UnitTests.Security.PasswordValidation.Providers
             RequireSpecialCharacter = true
         };
 
-        [Theory, MemberData(nameof(ValidatePassword_ShouldReturnExpectedResult_Data))]
-        public void ValidatePassword_ShouldReturnExpectedResult(string password, bool expectedIsValid)
+        [Theory, MemberData(nameof(ValidatePassword_ReturnsExpectedResult_Data))]
+        public void ValidatePassword_ReturnExpectedResult(string password, bool expectedIsValid)
         {
             var result = _provider.ValidatePassword(password);
 
             Assert.Equal(expectedIsValid, result.IsSuccess);
         }
 
-        public static IEnumerable<object[]> ValidatePassword_ShouldReturnExpectedResult_Data() =>
+        public static IEnumerable<object[]> ValidatePassword_ReturnsExpectedResult_Data() =>
         [
             ["Short1", false],
             ["LongEnoughButNoDigitsOrUppercase1", false],
@@ -55,7 +55,7 @@ namespace Corely.UnitTests.Security.PasswordValidation.Providers
         }
 
         [Fact]
-        public void ValidatePassword_ShouldFail_WithOnlyShortFailure()
+        public void ValidatePassword_Fails_WithOnlyShortFailure()
         {
             var password = "Short1!";
 
@@ -66,7 +66,7 @@ namespace Corely.UnitTests.Security.PasswordValidation.Providers
         }
 
         [Fact]
-        public void ValidatePassword_ShouldFail_WithOnlyNoUppercaseFailure()
+        public void ValidatePassword_Fails_WithOnlyNoUppercaseFailure()
         {
             var password = "nouppercase123!";
 
@@ -77,7 +77,7 @@ namespace Corely.UnitTests.Security.PasswordValidation.Providers
         }
 
         [Fact]
-        public void ValidatePassword_ShouldFail_WithOnlyNoLowercaseFailure()
+        public void ValidatePassword_Fails_WithOnlyNoLowercaseFailure()
         {
             var password = "NOLOWERCASE123!";
 
@@ -88,7 +88,7 @@ namespace Corely.UnitTests.Security.PasswordValidation.Providers
         }
 
         [Fact]
-        public void ValidatePassword_ShouldFail_WithOnlyNoDigitFailure()
+        public void ValidatePassword_Fails_WithOnlyNoDigitFailure()
         {
             var password = "NoNumberPassword!";
 
@@ -99,7 +99,7 @@ namespace Corely.UnitTests.Security.PasswordValidation.Providers
         }
 
         [Fact]
-        public void ValidatePassword_ShouldFail_WithOnlyNoSpecialCharacterFailure()
+        public void ValidatePassword_Fails_WithOnlyNoSpecialCharacterFailure()
         {
             var password = "ValidPassword1";
 

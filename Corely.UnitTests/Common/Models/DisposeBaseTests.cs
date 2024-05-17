@@ -15,7 +15,7 @@ namespace Corely.UnitTests.Common.Models
         private readonly Mock<MockDisposeBase> _mockDisposeBase = new() { CallBase = true };
 
         [Fact]
-        public void Dispose_ShouldCallCorrectOverrides()
+        public void Dispose_CallsCorrectOverrides()
         {
             _mockDisposeBase.Object.Dispose();
             _mockDisposeBase.Protected().Verify("DisposeManagedResources", Times.Once());
@@ -24,7 +24,7 @@ namespace Corely.UnitTests.Common.Models
         }
 
         [Fact]
-        public async Task DisposeAsync_ShouldCallCorrectOverrides_Async()
+        public async Task DisposeAsync_CallsCorrectOverrides_Async()
         {
             await _mockDisposeBase.Object.DisposeAsync();
             _mockDisposeBase.Protected().Verify("DisposeManagedResources", Times.Never());

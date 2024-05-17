@@ -18,7 +18,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         }
 
         [Fact]
-        public void AddProvider_ShouldAddProvider()
+        public void AddProvider_AddProvider()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<ISymmetricEncryptionProvider>().Object;
@@ -30,7 +30,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         }
 
         [Fact]
-        public void AddProvider_ShouldThrowEncryptionProviderException_WithExistingProviderCode()
+        public void AddProvider_ThrowsEncryptionProviderException_WithExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<ISymmetricEncryptionProvider>().Object;
@@ -46,7 +46,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData(":")]
-        public void AddProvider_ShouldThrow_WithInvalidCode(string providerCode)
+        public void AddProvider_Throws_WithInvalidCode(string providerCode)
         {
             var provider = new Mock<ISymmetricEncryptionProvider>().Object;
 
@@ -60,7 +60,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         }
 
         [Fact]
-        public void AddProvider_ShouldThrowNullException_WithNullProvider()
+        public void AddProvider_ThrowsNullException_WithNullProvider()
         {
             var providerCode = _fixture.Create<string>();
 
@@ -72,7 +72,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ShouldUpdateProvider()
+        public void UpdateProvider_UpdatesProvider()
         {
             var providerCode = _fixture.Create<string>();
             var originalProvider = new Mock<ISymmetricEncryptionProvider>().Object;
@@ -86,7 +86,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ShouldThrowEncryptionProviderException_WithNonExistingProviderCode()
+        public void UpdateProvider_ThrowsEncryptionProviderException_WithNonExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<ISymmetricEncryptionProvider>().Object;
@@ -101,7 +101,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData(":")]
-        public void UpdateProvider_ShouldThrow_WithInvalidCode(string providerCode)
+        public void UpdateProvider_Throws_WithInvalidCode(string providerCode)
         {
             var provider = new Mock<ISymmetricEncryptionProvider>().Object;
 
@@ -115,7 +115,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ShouldThrowNullException_WithNullProvider()
+        public void UpdateProvider_ThrowsNullException_WithNullProvider()
         {
             var providerCode = _fixture.Create<string>();
 
@@ -127,7 +127,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         }
 
         [Fact]
-        public void GetDefaultProvider_ShouldReturnDefaultProvider()
+        public void GetDefaultProvider_ReturnsDefaultProvider()
         {
             var encryptionProvider = _encryptionProviderFactory.GetDefaultProvider();
             Assert.NotNull(encryptionProvider);
@@ -136,7 +136,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
 
         [Theory]
         [InlineData(SymmetricEncryptionConstants.AES_CODE, typeof(AesEncryptionProvider))]
-        public void GetProvider_ShouldReturnEncryptionProvider(string code, Type expectedType)
+        public void GetProvider_ReturnEncryptionProvider(string code, Type expectedType)
         {
             var encryptionProvider = _encryptionProviderFactory.GetProvider(code);
             Assert.NotNull(encryptionProvider);
@@ -147,7 +147,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData("-")]
         [InlineData("--")]
-        public void GetProvider_ShouldThrow_WithInvalidCode(string code)
+        public void GetProvider_Throws_WithInvalidCode(string code)
         {
             void act() => _encryptionProviderFactory.GetProvider(code);
             var ex = Record.Exception(act);
@@ -160,7 +160,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
 
         [Theory]
         [InlineData(SymmetricEncryptionConstants.AES_CODE, typeof(AesEncryptionProvider))]
-        public void GetProviderForDecrypting_ShouldReturnEncryptionProvider(string code, Type expectedType)
+        public void GetProviderForDecrypting_ReturnsEncryptionProvider(string code, Type expectedType)
         {
             var encryptedValue = $"{code}:1:{_fixture.Create<string>()}";
             var encryptionProvider = _encryptionProviderFactory.GetProviderForDecrypting(encryptedValue);
@@ -173,7 +173,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData("-")]
         [InlineData("--")]
-        public void GetProviderForDecrypting_ShouldThrow_WithInvalidCode(string code)
+        public void GetProviderForDecrypting_Throws_WithInvalidCode(string code)
         {
             void act() => _encryptionProviderFactory.GetProviderForDecrypting(code);
             var ex = Record.Exception(act);
@@ -185,7 +185,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
         }
 
         [Fact]
-        public void ListProviders_ShouldReturnListOfProviders()
+        public void ListProviders_ReturnsListOfProviders()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<ISymmetricEncryptionProvider>().Object;

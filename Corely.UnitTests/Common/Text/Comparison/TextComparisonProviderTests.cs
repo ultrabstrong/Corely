@@ -5,7 +5,7 @@ namespace Corely.UnitTests.Common.Text.Comparison
     public class TextComparisonProviderTests
     {
         [Theory, MemberData(nameof(GetLevenshteinEditDistanceTestData))]
-        public void GetLevenshteinEditDistance_ShouldReturnCorrectValue(
+        public void GetLevenshteinEditDistance_ReturnsCorrectValue(
             string str1, string str2, int expected)
         {
             var actual = TextComparisonProvider.GetLevenshteinEditDistance(str1, str2);
@@ -24,7 +24,7 @@ namespace Corely.UnitTests.Common.Text.Comparison
         ];
 
         [Theory, MemberData(nameof(GetJaroWinklerDistanceTestData))]
-        public void GetJaroWinklerDistance_ShouldReturnCorrectValue(
+        public void GetJaroWinklerDistance_ReturnsCorrectValue(
                        string str1, string str2, double expected)
         {
             var actual = TextComparisonProvider.GetJaroWinklerDistance(str1, str2);

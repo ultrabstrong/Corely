@@ -15,7 +15,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Auth
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [MemberData(nameof(InvalidPasswordData))]
-        public void BasicAuthValidator_ShouldHaveValidationError_WhenPasswordInvalid(string password)
+        public void BasicAuthValidator_HasValidationError_WhenPasswordInvalid(string password)
         {
             var basicAuth = new BasicAuth
             {
@@ -36,7 +36,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Auth
         ];
 
         [Fact]
-        public void BasicAuthValidator_ShouldHaveValidationError_WhenPasswordIsNull()
+        public void BasicAuthValidator_HasValidationError_WhenPasswordIsNull()
         {
             var basicAuth = new BasicAuth
             {

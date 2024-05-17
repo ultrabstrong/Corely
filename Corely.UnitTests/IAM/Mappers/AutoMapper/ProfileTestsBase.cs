@@ -16,7 +16,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper
         }
 
         [Fact]
-        public void Map_ShouldMapSourceToDestination()
+        public void Map_MapsSourceToDestination()
         {
             var source = GetSource();
             var modifiedSource = ApplySourceModifications(source);

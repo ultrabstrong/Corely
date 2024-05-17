@@ -7,19 +7,19 @@ namespace Corely.UnitTests.Common.Http.Models
         private readonly HttpFormUrlEncodedContent _httpFormUrlEncodedContent = new([]);
 
         [Fact]
-        public void HttpFormUrlEncodedContent_ShouldBeOfTypeIHttpContent()
+        public void HttpFormUrlEncodedContent_IsOfTypeIHttpContent()
         {
             Assert.IsAssignableFrom<IHttpContent<Dictionary<string, string>>>(_httpFormUrlEncodedContent);
         }
 
         [Fact]
-        public void HttpFormUrlEncodedContent_ShouldBeOfTypeHttpDictionaryContentBase()
+        public void HttpFormUrlEncodedContent_IsOfTypeHttpDictionaryContentBase()
         {
             Assert.IsAssignableFrom<HttpDictionaryContentBase>(_httpFormUrlEncodedContent);
         }
 
         [Fact]
-        public void HttpFormUrlEncodedContent_ShouldThrowArgumentNullException_WhenContentIsNull()
+        public void HttpFormUrlEncodedContent_ThrowsArgumentNullException_WhenContentIsNull()
         {
             var ex = Record.Exception(() => new HttpFormUrlEncodedContent(null));
             Assert.NotNull(ex);
@@ -27,7 +27,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Theory, MemberData(nameof(HttpFormUrlEncodedContentTestData))]
-        public void HttpFormUrlEncodedContent_ShouldReturnExpectedContent(Dictionary<string, string> content)
+        public void HttpFormUrlEncodedContent_ReturnsExpectedContent(Dictionary<string, string> content)
         {
             var httpFormUrlEncodedContent = new HttpFormUrlEncodedContent(content);
 

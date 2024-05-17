@@ -14,7 +14,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper
         }
 
         [Fact]
-        public void AssertConfigurationIsValid_ShouldSucceed()
+        public void AssertConfigurationIsValid_Succeeds()
         {
             _mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }

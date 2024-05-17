@@ -7,19 +7,19 @@
         protected virtual bool HasInnerExceptionConstructor => true;
 
         [Fact]
-        public void DefaultConstructor_ShouldWork()
+        public void DefaultConstructor_Works()
         {
             if (HasDefaultConstructor) { Activator.CreateInstance<TException>(); }
         }
 
         [Fact]
-        public void MessageConstructor_ShouldWork()
+        public void MessageConstructor_Works()
         {
             if (HasMessageConstructor) { Activator.CreateInstance(typeof(TException), "message"); }
         }
 
         [Fact]
-        public void MessageInnerExceptionConstructor_ShouldWork()
+        public void MessageInnerExceptionConstructor_Works()
         {
             if (HasInnerExceptionConstructor) { Activator.CreateInstance(typeof(TException), "message", new Exception()); }
         }

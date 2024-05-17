@@ -18,7 +18,7 @@ namespace Corely.UnitTests.Common.Extensions
         [InlineData("password", "REDACTED")]
         [InlineData("password123", "REDACTED123")]
         [InlineData("123password", "123REDACTED")]
-        public void ReplaceGroup_ShouldReplaceGroup(string? input, string? expected)
+        public void ReplaceGroup_ReplacesGroup(string? input, string? expected)
         {
             var actual = _passwordRegex.ReplaceGroup(input!, 1, REDACTED);
 
@@ -29,7 +29,7 @@ namespace Corely.UnitTests.Common.Extensions
         [InlineData("password password", "REDACTED REDACTED")]
         [InlineData("password123 password123", "REDACTED123 REDACTED123")]
         [InlineData("123password 123password", "123REDACTED 123REDACTED")]
-        public void ReplaceGroup_ShouldReplaceMultiple(string input, string expected)
+        public void ReplaceGroup_ReplacesMultiple(string input, string expected)
         {
             var actual = _passwordRegex.ReplaceGroup(input, 1, REDACTED);
 
@@ -37,7 +37,7 @@ namespace Corely.UnitTests.Common.Extensions
         }
 
         [Fact]
-        public void ReplaceGroup_ShouldThrowArgumentNullException_WhenInputIsNull()
+        public void ReplaceGroup_ThrowsArgumentNullException_WhenInputIsNull()
         {
             Assert.Throws<ArgumentNullException>(() => _passwordRegex.ReplaceGroup(null!, 1, REDACTED));
         }

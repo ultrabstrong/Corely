@@ -7,7 +7,7 @@ namespace Corely.UnitTests.Common.Text.Normalization
         private readonly TextNormalizationProvider _textNormalizationProvider = new();
 
         [Theory, MemberData(nameof(BasicNormalizeTestData))]
-        public void BasicNormalize_ShouldReturnBasicNormalizedString(string input, string expected)
+        public void BasicNormalize_ReturnsBasicNormalizedString(string input, string expected)
         {
             string actual = _textNormalizationProvider.BasicNormalize(input);
             Assert.Equal(expected, actual);
@@ -21,7 +21,7 @@ namespace Corely.UnitTests.Common.Text.Normalization
         ];
 
         [Fact]
-        public void BasicNormalize_ShouldThrowArgumentNullException()
+        public void BasicNormalize_ThrowsArgumentNullException()
         {
             var ex = Record.Exception(() => _textNormalizationProvider.BasicNormalize(null!));
             Assert.NotNull(ex);
@@ -29,7 +29,7 @@ namespace Corely.UnitTests.Common.Text.Normalization
         }
 
         [Theory, MemberData(nameof(NormalizeAddressTestData))]
-        public void NormalizeAddress_ShouldReturnNormalizedAddress(string street, string[] additional, string expected)
+        public void NormalizeAddress_ReturnsNormalizedAddress(string street, string[] additional, string expected)
         {
             string actual = _textNormalizationProvider.NormalizeAddress(street, additional);
             Assert.Equal(expected, actual);
@@ -43,7 +43,7 @@ namespace Corely.UnitTests.Common.Text.Normalization
         ];
 
         [Fact]
-        public void NormalizeAddress_ShouldThrowArgumentNullException()
+        public void NormalizeAddress_ThrowsArgumentNullException()
         {
             string[] additional = ["Apt. 1"];
 
@@ -54,7 +54,7 @@ namespace Corely.UnitTests.Common.Text.Normalization
         }
 
         [Theory, MemberData(nameof(NormalizeAddressAndStateTestData))]
-        public void NormalizeAddressAndState_ShouldReturnNormalizedAddressAndState(string street, string[] additional, string expected)
+        public void NormalizeAddressAndState_ReturnsNormalizedAddressAndState(string street, string[] additional, string expected)
         {
             string actual = _textNormalizationProvider.NormalizeAddressAndState(street, additional);
             Assert.Equal(expected, actual);
@@ -68,7 +68,7 @@ namespace Corely.UnitTests.Common.Text.Normalization
         ];
 
         [Fact]
-        public void NormalizeAddressAndState_ShouldThrowArgumentNullException()
+        public void NormalizeAddressAndState_ThrowsArgumentNullException()
         {
             string[] additional = ["Apt. 1"];
 

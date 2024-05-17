@@ -18,7 +18,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void AddProvider_ShouldAddProvider()
+        public void AddProvider_AddsProvider()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<IHashProvider>().Object;
@@ -30,7 +30,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void AddProvider_ShouldThrowHashProviderException_WithExistingProviderCode()
+        public void AddProvider_ThrowsHashProviderException_WithExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<IHashProvider>().Object;
@@ -46,7 +46,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData(":")]
-        public void AddProvider_ShouldThrow_WithInvalidCode(string providerCode)
+        public void AddProvider_Throws_WithInvalidCode(string providerCode)
         {
             var provider = new Mock<IHashProvider>().Object;
 
@@ -60,7 +60,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void AddProvider_ShouldThrowNullException_WithNullProvider()
+        public void AddProvider_ThrowsNullException_WithNullProvider()
         {
             var providerCode = _fixture.Create<string>();
 
@@ -72,7 +72,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ShouldUpdateProvider()
+        public void UpdateProvider_UpdatesProvider()
         {
             var providerCode = _fixture.Create<string>();
             var originalProvider = new Mock<IHashProvider>().Object;
@@ -86,7 +86,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ShouldThrowHashProviderException_WithNonExistingProviderCode()
+        public void UpdateProvider_ThrowsHashProviderException_WithNonExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<IHashProvider>().Object;
@@ -101,7 +101,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData(":")]
-        public void UpdateProvider_ShouldThrow_WithInvalidCode(string providerCode)
+        public void UpdateProvider_Throws_WithInvalidCode(string providerCode)
         {
             var provider = new Mock<IHashProvider>().Object;
 
@@ -115,7 +115,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ShouldThrowNullException_WithNullProvider()
+        public void UpdateProvider_ThrowsNullException_WithNullProvider()
         {
             var providerCode = _fixture.Create<string>();
 
@@ -127,7 +127,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void GetDefaultProvider_ShouldReturnDefaultProvider()
+        public void GetDefaultProvider_ReturnsDefaultProvider()
         {
             var hashProvider = _hashProviderFactory.GetDefaultProvider();
             Assert.NotNull(hashProvider);
@@ -137,7 +137,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         [Theory]
         [InlineData(HashConstants.SALTED_SHA256_CODE, typeof(Sha256SaltedHashProvider))]
         [InlineData(HashConstants.SALTED_SHA512_CODE, typeof(Sha512SaltedHashProvider))]
-        public void GetProvider_ShouldReturnProvider(string providerCode, Type expectedType)
+        public void GetProvider_ReturnProvider(string providerCode, Type expectedType)
         {
             var hashProvider = _hashProviderFactory.GetProvider(providerCode);
             Assert.NotNull(hashProvider);
@@ -148,7 +148,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData("-")]
         [InlineData("--")]
-        public void GetProvider_ShouldThrow_WithInvalidCode(string providerCode)
+        public void GetProvider_Throws_WithInvalidCode(string providerCode)
         {
             void act() => _hashProviderFactory.GetProvider(providerCode);
             var ex = Record.Exception(act);
@@ -162,7 +162,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         [Theory]
         [InlineData(HashConstants.SALTED_SHA256_CODE, typeof(Sha256SaltedHashProvider))]
         [InlineData(HashConstants.SALTED_SHA512_CODE, typeof(Sha512SaltedHashProvider))]
-        public void GetProviderToVerify_ShouldReturnHashProvider(string providerCode, Type expectedType)
+        public void GetProviderToVerify_ReturnHashProvider(string providerCode, Type expectedType)
         {
             var fixture = new Fixture();
             var hashedValue = $"{providerCode}:{fixture.Create<string>()}";
@@ -175,7 +175,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [InlineData("-")]
         [InlineData("--")]
-        public void GetProviderToVerify_ShouldThrow_WithInvalidCode(string providerCode)
+        public void GetProviderToVerify_Throws_WithInvalidCode(string providerCode)
         {
             void act() => _hashProviderFactory.GetProviderToVerify(providerCode);
             var ex = Record.Exception(act);
@@ -187,7 +187,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void ListProviders_ShouldReturnListOfProviders()
+        public void ListProviders_ReturnsListOfProviders()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<IHashProvider>().Object;

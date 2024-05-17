@@ -6,7 +6,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper
     public class AutoMapperMapProviderTests
     {
         [Fact]
-        public void Map_ShouldCallWrappedMapper()
+        public void Map_CallsWrappedMapper()
         {
             var autoMapperMock = new Mock<IMapper>();
             var provider = new AutoMapperMapProvider(autoMapperMock.Object);

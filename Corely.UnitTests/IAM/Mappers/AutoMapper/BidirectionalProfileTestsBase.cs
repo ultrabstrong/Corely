@@ -6,7 +6,7 @@
         where TDestination : class
     {
         [Fact]
-        public void ReverseMap_ShouldMapDestinationToSource()
+        public void ReverseMap_MapsDestinationToSource()
         {
             var destination = GetDestination();
             var modifiedDestination = ApplyDestinatonModifications(destination);

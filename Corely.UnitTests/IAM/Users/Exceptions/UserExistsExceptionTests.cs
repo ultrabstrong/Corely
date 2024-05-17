@@ -6,7 +6,7 @@ namespace Corely.UnitTests.IAM.Users.Exceptions
         : ExceptionTestsBase<UserExistsException>
     {
         [Fact]
-        public void Properties_ShouldInitAndBeAccessible()
+        public void Properties_InitsAndIsAccessible()
         {
             var userExistsException = new UserExistsException()
             {

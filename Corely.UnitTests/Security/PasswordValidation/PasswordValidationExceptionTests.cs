@@ -8,19 +8,19 @@ namespace Corely.UnitTests.Security.PasswordValidation
         private readonly PasswordValidationResult _validationResult = new(false, ["error"]);
 
         [Fact]
-        public void DefaultConstructor_ShouldWork()
+        public void DefaultConstructor_Works()
         {
             _ = new PasswordValidationException(_validationResult);
         }
 
         [Fact]
-        public void MessageConstructor_ShouldWork()
+        public void MessageConstructor_Works()
         {
             _ = new PasswordValidationException(_validationResult, default);
         }
 
         [Fact]
-        public void MessageInnerExceptionConstructor_ShouldWork()
+        public void MessageInnerExceptionConstructor_Works()
         {
             _ = new PasswordValidationException(_validationResult, default, default);
         }

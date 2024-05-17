@@ -13,7 +13,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
         private readonly SymmetricKeyValidator _validator = new();
 
         [Fact]
-        public void SymmetricKeyValidator_ShouldHaveValidationError_WhenKeyIsNull()
+        public void SymmetricKeyValidator_HasValidationError_WhenKeyIsNull()
         {
             var symmetricKey = new SymmetricKey
             {
@@ -27,7 +27,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [MemberData(nameof(InvalidKeyData))]
-        public void SymmetricKeyValidator_ShouldHaveValidationError_WhenKeyInvalid(string key)
+        public void SymmetricKeyValidator_HasValidationError_WhenKeyInvalid(string key)
         {
             var symmetricKey = new SymmetricKey
             {
@@ -47,7 +47,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
         ];
 
         [Fact]
-        public void SymmetricKeyValidator_ShouldHaveValidationError_WhenVersionIsNegative()
+        public void SymmetricKeyValidator_HasValidationError_WhenVersionIsNegative()
         {
             var symmetricKey = new SymmetricKey
             {

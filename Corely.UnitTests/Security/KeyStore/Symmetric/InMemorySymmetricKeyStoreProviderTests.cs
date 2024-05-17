@@ -9,7 +9,7 @@ namespace Corely.UnitTests.Security.KeyStore.Symmetric
         private readonly Fixture _fixture = new();
 
         [Fact]
-        public void GetCurrentKey_ShouldReturnKey()
+        public void GetCurrentKey_ReturnsKey()
         {
             var key = _fixture.Create<string>();
             var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(key);
@@ -20,7 +20,7 @@ namespace Corely.UnitTests.Security.KeyStore.Symmetric
         }
 
         [Fact]
-        public void GetCurrentVersion_ShouldReturnOne()
+        public void GetCurrentVersion_ReturnsOne()
         {
             var key = _fixture.Create<string>();
             var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(key);
@@ -31,7 +31,7 @@ namespace Corely.UnitTests.Security.KeyStore.Symmetric
         }
 
         [Fact]
-        public void Add_ShouldIncrementVersion()
+        public void Add_IncrementsVersion()
         {
             var key = _fixture.Create<string>();
             var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(key);
@@ -46,7 +46,7 @@ namespace Corely.UnitTests.Security.KeyStore.Symmetric
         }
 
         [Fact]
-        public void Get_ShouldReturnKey()
+        public void Get_ReturnsKey()
         {
             var key = _fixture.Create<string>();
             var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(_fixture.Create<string>());
@@ -60,7 +60,7 @@ namespace Corely.UnitTests.Security.KeyStore.Symmetric
         }
 
         [Fact]
-        public void Get_ShouldThrowException_WhenVersionIsInvalid()
+        public void Get_ThrowsException_WhenVersionIsInvalid()
         {
             var keyStoreProvider = new InMemorySymmetricKeyStoreProvider(_fixture.Create<string>());
 

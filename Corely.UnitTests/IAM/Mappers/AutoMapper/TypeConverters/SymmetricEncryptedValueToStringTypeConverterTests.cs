@@ -12,7 +12,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
         private readonly Fixture _fixture = new();
 
         [Fact]
-        public void Convert_ShouldReturnString()
+        public void Convert_ReturnsString()
         {
             var value = _fixture.Create<string>();
             var encryptedValue = new SymmetricEncryptedValue(Mock.Of<ISymmetricEncryptionProvider>())
@@ -24,7 +24,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
         }
 
         [Fact]
-        public void Convert_ShouldReturnNull_WithNullSecretValue()
+        public void Convert_ReturnsNull_WithNullSecretValue()
         {
             var result = _converter.Convert(null, default, default);
 
@@ -32,7 +32,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
         }
 
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void Convert_ShouldReturnNullEmptyOrWhitespace(string value)
+        public void Convert_ReturnsNullEmptyOrWhitespace(string value)
         {
             var encryptedValue = new SymmetricEncryptedValue(Mock.Of<ISymmetricEncryptionProvider>())
             { Secret = value };

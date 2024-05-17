@@ -16,13 +16,13 @@ namespace Corely.UnitTests.Security.Hashing.Models
         }
 
         [Fact]
-        public void Constructor_ShouldCreateHashedValue()
+        public void Constructor_CreatesHashedValue()
         {
             Assert.NotNull(_hashedValue);
         }
 
         [Fact]
-        public void Constructor_ShouldCreateHashedValueWithHash()
+        public void Constructor_CreatesHashedValueWithHash()
         {
             var hashProvider = new Sha256SaltedHashProvider();
             var value = _fixture.Create<string>();
@@ -33,7 +33,7 @@ namespace Corely.UnitTests.Security.Hashing.Models
         }
 
         [Fact]
-        public void Set_ShouldSetHashedValue()
+        public void Set_SetsHashedValue()
         {
             var value = _fixture.Create<string>();
             _hashedValue.Set(value);
@@ -43,7 +43,7 @@ namespace Corely.UnitTests.Security.Hashing.Models
         }
 
         [Fact]
-        public void Verify_ShouldVerifyHashedValue()
+        public void Verify_VerifiesHashedValue()
         {
             var value = _fixture.Create<string>();
             _hashedValue.Set(value);

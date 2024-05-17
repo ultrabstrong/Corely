@@ -9,7 +9,7 @@ namespace Corely.UnitTests.Security.Keys.Symmetric
         private readonly AesKeyProvider _aesKeyProvider = new();
 
         [Fact]
-        public void GetKey_ShouldReturnValidKeyKey()
+        public void GetKey_ReturnsValidKeyKey()
         {
             var key = _aesKeyProvider.CreateKey();
             using (Aes aes = Aes.Create())
@@ -26,20 +26,20 @@ namespace Corely.UnitTests.Security.Keys.Symmetric
         }
 
         [Fact]
-        public void IsKeyValid_ShouldReturnTrue_WithKeyFromCreateKey()
+        public void IsKeyValid_ReturnsTrue_WithKeyFromCreateKey()
         {
             var key = _aesKeyProvider.CreateKey();
             Assert.True(_aesKeyProvider.IsKeyValid(key));
         }
 
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void IsKeyValid_ShouldReturnFalse_WithNullOrWhitespaceKey(string key)
+        public void IsKeyValid_ReturnsFalse_WithNullOrWhitespaceKey(string key)
         {
             Assert.False(_aesKeyProvider.IsKeyValid(key));
         }
 
         [Fact]
-        public void IsKeyValid_ShouldReturnTrueForValidKey()
+        public void IsKeyValid_ReturnsTrueForValidKey()
         {
             var key = _aesKeyProvider.CreateKey();
             var isValid = _aesKeyProvider.IsKeyValid(key);
@@ -47,7 +47,7 @@ namespace Corely.UnitTests.Security.Keys.Symmetric
         }
 
         [Fact]
-        public void IsKeyValid_ShouldReturnFalseForInvalidKey()
+        public void IsKeyValid_ReturnsFalseForInvalidKey()
         {
             var isValid = _aesKeyProvider.IsKeyValid("asdf");
             Assert.False(isValid);

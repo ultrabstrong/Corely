@@ -52,7 +52,7 @@ namespace Corely.UnitTests.IAM
         private readonly MockServiceFactory _mockServiceFactory = new();
 
         [Theory, MemberData(nameof(GetRequiredServiceData))]
-        public void ServiceFactoryBase_ShouldProvideService(Type serviceType, string key = null)
+        public void ServiceFactoryBase_ProvidesService(Type serviceType, string key = null)
         {
             var service = key == null
                 ? GetRequiredService(serviceType)
@@ -100,7 +100,7 @@ namespace Corely.UnitTests.IAM
         }
 
         [Fact]
-        public void ServiceFactoryBase_ShouldDisposeServiceProviderCorrectly()
+        public void ServiceFactoryBase_DisposesServiceProviderCorrectly()
         {
             var mockServiceFactory = new MockServiceFactory();
 

@@ -11,7 +11,7 @@ namespace Corely.UnitTests.DataAccess.Connections
         private readonly Fixture _fixture = new();
 
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void Constructor_ShouldThrow_WithNullOrWhiteSpaceConnectionName(string connectionName)
+        public void Constructor_Throws_WithNullOrWhiteSpaceConnectionName(string connectionName)
         {
             var ex = Record.Exception(() => new DataAccessConnection<string>(
                 connectionName,
@@ -23,7 +23,7 @@ namespace Corely.UnitTests.DataAccess.Connections
 
         [Theory]
         [InlineData(ConnectionNames.EntityFramework)]
-        public void Constructor_ShouldThrowArgumentException_WithInvalidConnectionType(string connectionName)
+        public void Constructor_ThrowsArgumentException_WithInvalidConnectionType(string connectionName)
         {
             var ex = Record.Exception(() => new DataAccessConnection<InvalidDataType>(
                 connectionName,
@@ -34,7 +34,7 @@ namespace Corely.UnitTests.DataAccess.Connections
         }
 
         [Fact]
-        public void Constructor_ShouldAllowAnyConnectionType_WithMockConnection()
+        public void Constructor_AllowsAnyConnectionType_WithMockConnection()
         {
             var ex = Record.Exception(() => new DataAccessConnection<InvalidDataType>(
                 ConnectionNames.Mock,
@@ -44,7 +44,7 @@ namespace Corely.UnitTests.DataAccess.Connections
         }
 
         [Fact]
-        public void Constructor_ShouldAllowUnknownConnectionType()
+        public void Constructor_AllowsUnknownConnectionType()
         {
             var ex = Record.Exception(() => new DataAccessConnection<InvalidDataType>(
                 _fixture.Create<string>(),

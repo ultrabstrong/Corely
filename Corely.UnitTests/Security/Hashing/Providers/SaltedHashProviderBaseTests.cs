@@ -43,7 +43,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         private readonly MockHashProvider _mockHashProvider = new();
 
         [Fact]
-        public void NullHashTypeCode_ShouldThrowArgumentNullException_OnBuild()
+        public void NullHashTypeCode_ThrowsArgumentNullException_OnBuild()
         {
             var ex = Record.Exception(() => new NullTypeCodeMockHashProvider());
             Assert.NotNull(ex);
@@ -51,7 +51,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void EmptyHashTypeCode_ShouldThrowArgumentException_OnBuild()
+        public void EmptyHashTypeCode_ThrowsArgumentException_OnBuild()
         {
             var ex = Record.Exception(() => new EmptyTypeCodeMockHashProvider());
             Assert.NotNull(ex);
@@ -59,7 +59,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void WhitespaceHashTypeCode_ShouldThrowArgumentException_OnBuild()
+        public void WhitespaceHashTypeCode_ThrowsArgumentException_OnBuild()
         {
             var ex = Record.Exception(() => new WhitespaceTypeCodeMockHashProvider());
             Assert.NotNull(ex);
@@ -67,7 +67,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void ColonHashTypeCode_ShouldThrowArgumentException_OnBuild()
+        public void ColonHashTypeCode_ThrowsArgumentException_OnBuild()
         {
             var ex = Record.Exception(() => new ColonTypeCodeMockHashProvider());
             Assert.NotNull(ex);
@@ -75,7 +75,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public override void HashTypeCode_ShouldReturnCorrectCode_ForImplementation()
+        public override void HashTypeCode_ReturnsCorrectCode_ForImplementation()
         {
             Assert.Equal(TEST_HASH_TYPE_CODE, _mockHashProvider.HashTypeCode);
         }
@@ -84,7 +84,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         [InlineData("asdf")]
         [InlineData(TEST_HASH_TYPE_CODE)]
         [InlineData($"{TEST_HASH_TYPE_CODE}:asdf")]
-        public void Verify_ShouldReturnFalse_WithInvalidHash(string hash)
+        public void Verify_ReturnsFalse_WithInvalidHash(string hash)
         {
             var fixture = new Fixture();
             Assert.False(_mockHashProvider.Verify(fixture.Create<string>(), hash));

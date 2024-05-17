@@ -22,7 +22,7 @@ namespace Corely.UnitTests.Common.Text.Delimited
         [InlineData(TokenDelimiter.Pipe, '|', '"', "\r\n")]
         [InlineData(TokenDelimiter.Tab, '\t', '"', "\r\n")]
         [InlineData(TokenDelimiter.Comma, ',', '"', "\r\n")]
-        public void Constructor_ShouldCreateCorrectDelimiters_ForEnum(
+        public void Constructor_CreatesCorrectDelimiters_ForEnum(
             TokenDelimiter tokenDelimiter,
             char expectedTokenDelim,
             char expectedTokenLiteral,
@@ -45,7 +45,7 @@ namespace Corely.UnitTests.Common.Text.Delimited
         }
 
         [Fact]
-        public void WriteRecord_ShouldWriteCorrectRecord()
+        public void WriteRecord_WritesCorrectRecord()
         {
             string expected = "test1,te\"\"st2,\"te,st3\"";
             string actual;
@@ -63,7 +63,7 @@ namespace Corely.UnitTests.Common.Text.Delimited
         }
 
         [Theory, MemberData(nameof(WriteAllRecordsTestData))]
-        public void WriteAllRecordsThenReadAllRecords_ShouldProduceOriginalInput(List<List<string>> records)
+        public void WriteAllRecordsThenReadAllRecords_ProducesOriginalInput(List<List<string>> records)
         {
             string delimitedData;
             using (MemoryStream stream = new())

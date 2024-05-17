@@ -7,7 +7,7 @@ namespace Corely.UnitTests.Common.Text.Delimited
         private readonly ReadRecordResult _readRecordResult = new();
 
         [Fact]
-        public void ToString_ShouldReturnCommaDelimitedTokens()
+        public void ToString_ReturnsCommaDelimitedTokens()
         {
             _readRecordResult.Tokens = ["a", "b", "c"];
             Assert.Equal("a,b,c", _readRecordResult.ToString());

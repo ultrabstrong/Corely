@@ -13,7 +13,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Accounts
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [MemberData(nameof(InvalidAccountTestData))]
-        public void AccountValidator_ShouldHaveValidationError_WhenAccountNameInvalid(string accountName)
+        public void AccountValidator_HasValidationError_WhenAccountNameInvalid(string accountName)
         {
             var account = new Account
             {

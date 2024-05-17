@@ -99,7 +99,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task RegisterAsync_ShouldReturnSuccessResult_WhenAllServicesSucceed()
+        public async Task RegisterAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
         {
             var request = _fixture.Create<RegisterRequest>();
 
@@ -109,7 +109,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task RegisterAsync_ShouldReturnFailureResult_WhenAccountServiceFails()
+        public async Task RegisterAsync_ReturnsFailureResult_WhenAccountServiceFails()
         {
             _createAccountSuccess = false;
             var request = _fixture.Create<RegisterRequest>();
@@ -123,7 +123,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task RegisterAsync_ShouldReturnFailureResult_WhenUserServiceFails()
+        public async Task RegisterAsync_ReturnsFailureResult_WhenUserServiceFails()
         {
             _createUserSuccess = false;
             var request = _fixture.Create<RegisterRequest>();
@@ -136,7 +136,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task RegisterAsync_ShouldReturnFailureResult_WhenAuthServiceFails()
+        public async Task RegisterAsync_ReturnsFailureResult_WhenAuthServiceFails()
         {
             _createAuthSuccess = false;
             var request = _fixture.Create<RegisterRequest>();
@@ -148,7 +148,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task RegisterAsync_ShouldThrowArgumentNullException_WithNullRequest()
+        public async Task RegisterAsync_ThrowsArgumentNullException_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _accountManagementService.RegisterAsync(null!));
 
@@ -157,7 +157,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task SignInAsync_ShouldReturnSuccessResultAndUpdateSuccessfulLogin_WhenUserExistsAndPasswordIsValid()
+        public async Task SignInAsync_ReturnsSuccessResultAndUpdateSuccessfulLogin_WhenUserExistsAndPasswordIsValid()
         {
             var request = new SignInRequest(_user.Username, _fixture.Create<string>());
             _user.TotalSuccessfulLogins = 0;
@@ -188,7 +188,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task SignInAsync_ShouldReturnFailureResult_WhenUserDoesNotExist()
+        public async Task SignInAsync_ReturnsFailureResult_WhenUserDoesNotExist()
         {
             var request = _fixture.Create<SignInRequest>();
 
@@ -204,7 +204,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task SignInAsync_ShouldReturnFailureResultAndUpdatedFailedLogins_WhenPasswordIsInvalid()
+        public async Task SignInAsync_ReturnsFailureResultAndUpdatedFailedLogins_WhenPasswordIsInvalid()
         {
             var request = new SignInRequest(_user.Username, _fixture.Create<string>());
             _user.TotalSuccessfulLogins = 0;
@@ -242,7 +242,7 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
         }
 
         [Fact]
-        public async Task SignInAsync_ShouldThrowArgumentNullException_WithNullRequest()
+        public async Task SignInAsync_ThrowsArgumentNullException_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _accountManagementService.SignInAsync(null!));
 

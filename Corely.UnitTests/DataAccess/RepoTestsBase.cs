@@ -13,7 +13,7 @@ namespace Corely.UnitTests.DataAccess
 
 
         [Fact]
-        public async Task Create_ThenGet_ShouldReturnAdded()
+        public async Task Create_ThenGet_ReturnsAdded()
         {
             var entity = fixture.Create<T>();
 
@@ -24,7 +24,7 @@ namespace Corely.UnitTests.DataAccess
         }
 
         [Fact]
-        public async Task Create_ThenUpdate_ShouldUpdate()
+        public async Task Create_ThenUpdate_Updates()
         {
             var entity = fixture.Create<T>();
             var updateEntity = fixture.Create<T>();
@@ -39,7 +39,7 @@ namespace Corely.UnitTests.DataAccess
         }
 
         [Fact]
-        public async Task Create_ThenUpdate_ShouldUpdateModifiedUtc()
+        public async Task Create_ThenUpdate_UpdatesModifiedUtc()
         {
             var entity = fixture.Create<T>();
             entity.ModifiedUtc = DateTime.UtcNow;
@@ -57,7 +57,7 @@ namespace Corely.UnitTests.DataAccess
         }
 
         [Fact]
-        public async Task Create_ThenDelete_ShouldDelete()
+        public async Task Create_ThenDelete_Deletes()
         {
             var entity = fixture.Create<T>();
 

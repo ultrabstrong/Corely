@@ -28,7 +28,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         }
 
         [Fact]
-        public async Task CreateAccountAsync_ShouldReturnAccountEntity_WhenValidAccountName()
+        public async Task CreateAccountAsync_ReturnsAccountEntity_WhenValidAccountName()
         {
             var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
             await _accountService.CreateAccountAsync(createAccountRequest);
@@ -40,7 +40,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         }
 
         [Fact]
-        public async Task CreateAccount_ShouldReturnCreateAccountResult()
+        public async Task CreateAccount_ReturnsCreateAccountResult()
         {
             var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
             var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
@@ -49,7 +49,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         }
 
         [Fact]
-        public async Task CreateAccount_ShouldThrowArgumentNullException_WithNullRequest()
+        public async Task CreateAccount_ThrowsArgumentNullException_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(null!));
 

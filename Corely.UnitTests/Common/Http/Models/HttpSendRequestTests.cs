@@ -7,7 +7,7 @@ namespace Corely.UnitTests.Common.Http.Models
         private readonly HttpSendRequest _httpSendRequest = new("/v1/entity", HttpMethod.Get);
 
         [Fact]
-        public void CreateHttpRequestMessage_ShouldReturnHttpRequestMessage()
+        public void CreateHttpRequestMessage_ReturnsHttpRequestMessage()
         {
             _httpSendRequest.Parameters = new HttpParameters(
                 new Dictionary<string, string>()

@@ -45,7 +45,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         private readonly MockEncryptionProvider _mockEncryptionProvider = new();
 
         [Fact]
-        public void NullEncryptionTypeCode_ShouldThrowArgumentNullException_OnBuild()
+        public void NullEncryptionTypeCode_ThrowsArgumentNullException_OnBuild()
         {
             var ex = Record.Exception(() => new NullMockEncryptionProvider());
             Assert.NotNull(ex);
@@ -53,7 +53,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void EmptyEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
+        public void EmptyEncryptionTypeCode_ThrowsArgumentException_OnBuild()
         {
             var ex = Record.Exception(() => new EmptyMockEncryptionProvider());
             Assert.NotNull(ex);
@@ -61,7 +61,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void WhitespaceEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
+        public void WhitespaceEncryptionTypeCode_ThrowsArgumentException_OnBuild()
         {
             var ex = Record.Exception(() => new WhitespaceMockEncryptionProvider());
             Assert.NotNull(ex);
@@ -69,7 +69,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void ColonEncryptionTypeCode_ShouldThrowArgumentException_OnBuild()
+        public void ColonEncryptionTypeCode_ThrowsArgumentException_OnBuild()
         {
             var ex = Record.Exception(() => new ColonMockEncryptionProvider());
             Assert.NotNull(ex);
@@ -77,7 +77,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public override void EncryptionTypeCode_ShouldReturnCorrectCode_ForImplementation()
+        public override void EncryptionTypeCode_ReturnsCorrectCode_ForImplementation()
         {
             Assert.Equal(TEST_ENCRYPTION_TYPE_CODE, _mockEncryptionProvider.EncryptionTypeCode);
         }

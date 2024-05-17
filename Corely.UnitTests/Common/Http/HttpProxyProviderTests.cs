@@ -38,25 +38,25 @@ namespace Corely.UnitTests.Common.Http
         }
 
         [Fact]
-        public void HttpProxyProvider_ShouldImplementIHttpProxyProvider()
+        public void HttpProxyProvider_ImplementsIHttpProxyProvider()
         {
             Assert.IsAssignableFrom<IHttpProxyProvider>(_httpProxyProvider);
         }
 
         [Fact]
-        public void HttpProxyProvider_ShouldImplementIDisposable()
+        public void HttpProxyProvider_ImplementsIDisposable()
         {
             Assert.IsAssignableFrom<IDisposable>(_httpProxyProvider);
         }
 
         [Fact]
-        public void HttpProxyProvider_ShouldImplementHttpProxyProviderBase()
+        public void HttpProxyProvider_ImplementsHttpProxyProviderBase()
         {
             Assert.IsAssignableFrom<HttpProxyProviderBase>(_httpProxyProvider);
         }
 
         [Fact]
-        public void HttpProxyProvider_ShouldDispose()
+        public void Dispose_Disposes()
         {
             _httpProxyProvider.Dispose();
             var disposed = NonPublicHelpers.GetNonPublicField<bool>(_httpProxyProvider, "_disposed");
@@ -64,7 +64,7 @@ namespace Corely.UnitTests.Common.Http
         }
 
         [Fact]
-        public async Task SendRequestForHttpResponse_ShouldSendRequestForHttpResponse()
+        public async Task SendRequestForHttpResponse_SendsRequestForHttpResponse()
         {
             var requestUri = _fixture.Create<string>();
             var request = new HttpSendRequest(requestUri, HttpMethod.Get);
@@ -75,7 +75,7 @@ namespace Corely.UnitTests.Common.Http
         }
 
         [Fact]
-        public async Task SendRequestForHttpResponse_ShouldThrowForBadRequest()
+        public async Task SendRequestForHttpResponse_ThrowsForBadRequest()
         {
             _httpStatusCode = HttpStatusCode.BadRequest;
             var requestUri = _fixture.Create<string>();

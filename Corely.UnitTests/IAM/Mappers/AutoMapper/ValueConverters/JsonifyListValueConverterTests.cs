@@ -15,7 +15,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         private readonly Fixture _fixture = new();
 
         [Fact]
-        public void Convert_ShouldReturnJsonList()
+        public void Convert_ReturnsJsonList()
         {
             var list = _fixture.CreateMany<TestClass>().ToList();
             list.Add(null);
@@ -32,7 +32,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         }
 
         [Fact]
-        public void Convert_ShouldReturnNull_WithNullSource()
+        public void Convert_ReturnsNull_WithNullSource()
         {
             var result = _converter.Convert(null, default);
 

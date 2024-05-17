@@ -23,7 +23,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
         }
 
         [Fact]
-        public void CreateDbContext_ShouldReturnAccountManagementDbContext()
+        public void CreateDbContext_ReturnsAccountManagementDbContext()
         {
             var factory = GetMockFactory();
             var accountManagementDbContext = factory.Object.CreateDbContext();
@@ -31,7 +31,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
         }
 
         [Fact]
-        public void CreateUnitOfWorkProvider_ShouldReturnMockUow_WithInMemoryDb()
+        public void CreateUnitOfWorkProvider_ReturnsMockUow_WithInMemoryDb()
         {
             var factory = GetMockFactory();
             var uowProvider = factory.Object.CreateUnitOfWorkProvider();

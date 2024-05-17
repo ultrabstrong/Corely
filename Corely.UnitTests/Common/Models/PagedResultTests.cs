@@ -21,7 +21,7 @@ namespace Corely.UnitTests.Common.Models
         [Theory]
         [InlineData(-1, 10)]
         [InlineData(0, 0)]
-        public void PagedResponse_ShouldThrowErrors_WithInvalidConstructorArgs(int skip, int take)
+        public void PagedResponse_ThrowsErrors_WithInvalidConstructorArgs(int skip, int take)
         {
             var ex = Record.Exception(() => new PagedResult<object>(skip, take));
             Assert.NotNull(ex);
@@ -29,7 +29,7 @@ namespace Corely.UnitTests.Common.Models
         }
 
         [Fact]
-        public void PagedResponse_ShouldConstruct_WithValidConstructorArgs()
+        public void PagedResponse_Constructs_WithValidConstructorArgs()
         {
             Assert.True(_pagedResponse.HasMore);
             Assert.Equal(0, _pagedResponse.PageNum);
@@ -42,7 +42,7 @@ namespace Corely.UnitTests.Common.Models
         }
 
         [Theory, MemberData(nameof(SkipAndTakeTestData))]
-        public void PagedResponse_ShouldAddAllItems(int skip, int take)
+        public void PagedResponse_AddsAllItems(int skip, int take)
         {
             _pagedResponse = new PagedResult<object>(skip, take);
 
@@ -70,7 +70,7 @@ namespace Corely.UnitTests.Common.Models
         }
 
         [Theory, MemberData(nameof(SkipAndTakeTestData))]
-        public void PagedResponse_ShouldSetAllItems(int skip, int take)
+        public void PagedResponse_SetsAllItems(int skip, int take)
         {
             _pagedResponse = new PagedResult<object>(skip, take);
 
@@ -102,7 +102,7 @@ namespace Corely.UnitTests.Common.Models
         }
 
         [Theory, MemberData(nameof(SkipAndTakeTestData))]
-        public void PageNum_ShouldBeCeilingSkipOverTake(int skip, int take)
+        public void PageNum_IsCeilingSkipOverTake(int skip, int take)
         {
             _pagedResponse = new PagedResult<object>(skip, take);
             Assert.Equal((int)Math.Ceiling((decimal)skip / take), _pagedResponse.PageNum);
@@ -128,7 +128,7 @@ namespace Corely.UnitTests.Common.Models
         ];
 
         [Fact]
-        public void PagedResult_ShouldReturnNull_WhenHasMoreFalse()
+        public void PagedResult_ReturnsNull_WhenHasMoreFalse()
         {
             _pagedResponse = new PagedResult<object>(0, 1);
 
@@ -144,7 +144,7 @@ namespace Corely.UnitTests.Common.Models
         }
 
         [Fact]
-        public void OnGetNextChunk_ShouldThrow_WhenSubscriberRemoved()
+        public void OnGetNextChunk_Throws_WhenSubscriberRemoved()
         {
             _pagedResponse = new PagedResult<object>(0, 1);
 

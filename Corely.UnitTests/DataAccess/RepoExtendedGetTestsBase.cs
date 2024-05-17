@@ -11,7 +11,7 @@ namespace Corely.UnitTests.DataAccess
         protected abstract override IRepoExtendedGet<T> Repo { get; }
 
         [Fact]
-        public async Task Create_ThenExtendedGetById_ShouldReturnAddedEntity()
+        public async Task Create_ThenExtendedGetById_ReturnsAddedEntity()
         {
             var entity = fixture.Create<T>();
 

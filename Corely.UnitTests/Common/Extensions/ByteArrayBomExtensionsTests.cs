@@ -6,7 +6,7 @@ namespace Corely.UnitTests.Common.Extensions
     public class ByteArrayBomExtensionsTests
     {
         [Theory, MemberData(nameof(GetByteOrderMarkEncoding))]
-        public void GetByteOrderMarkEncoding_ShouldReturnCorrectEncoding(byte[] bom, Encoding expectedEncoding)
+        public void GetByteOrderMarkEncoding_ReturnsCorrectEncoding(byte[] bom, Encoding expectedEncoding)
         {
             var encoding = bom.GetByteOrderMarkEncoding();
             Assert.Equal(expectedEncoding, encoding);

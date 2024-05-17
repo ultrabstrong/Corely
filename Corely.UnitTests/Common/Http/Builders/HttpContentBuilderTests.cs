@@ -8,13 +8,13 @@ namespace Corely.UnitTests.Common.Http.Builders
         private readonly HttpContentBuilder _builder = new();
 
         [Fact]
-        public void HttpContentBuilder_ShouldImplementIHttpContentBuilder()
+        public void HttpContentBuilder_ImplementsIHttpContentBuilder()
         {
             Assert.IsAssignableFrom<IHttpContentBuilder>(_builder);
         }
 
         [Fact]
-        public void HttpContentBuilder_Build_ShouldThrowArgumentNullException()
+        public void Build_ThrowsArgumentNullException()
         {
             var ex = Record.Exception(() => _builder.Build((null as IHttpContent<string>)!));
             Assert.NotNull(ex);
@@ -27,7 +27,7 @@ namespace Corely.UnitTests.Common.Http.Builders
         }
 
         [Fact]
-        public void HttpContentBuilder_Build_ShouldThrowNotImplementedException()
+        public void Build_ThrowsNotImplementedException()
         {
             var ex = Record.Exception(() => _builder.Build(new TestHttpContent()));
             Assert.NotNull(ex);
@@ -35,7 +35,7 @@ namespace Corely.UnitTests.Common.Http.Builders
         }
 
         [Fact]
-        public async Task HttpContentBuilder_Build_ShouldReturnMultipartFormDataContent()
+        public async Task Build_ReturnsMultipartFormDataContent()
         {
             var content = new HttpMultipartFormDataContent(new() { { "key1", "value1" } });
             var result = _builder.Build(content);
@@ -46,7 +46,7 @@ namespace Corely.UnitTests.Common.Http.Builders
         }
 
         [Fact]
-        public async Task HttpContentBuilder_Build_ShouldReturnFormUrlEncodedContent()
+        public async Task Build_ReturnsFormUrlEncodedContent()
         {
             var content = new HttpFormUrlEncodedContent(new() { { "key1", "value1" } });
             var result = _builder.Build(content);
@@ -56,7 +56,7 @@ namespace Corely.UnitTests.Common.Http.Builders
         }
 
         [Fact]
-        public async Task HttpContentBuilder_Build_ShouldReturnJsonContent()
+        public async Task Build_ReturnsJsonContent()
         {
             var content = new HttpJsonContent(new { Test = "test" });
             var result = _builder.Build(content);
@@ -66,7 +66,7 @@ namespace Corely.UnitTests.Common.Http.Builders
         }
 
         [Fact]
-        public async Task HttpContentBuilder_Build_ShouldReturnTextContent()
+        public async Task Build_ReturnsTextContent()
         {
             var content = new HttpTextContent("test");
             var result = _builder.Build(content);

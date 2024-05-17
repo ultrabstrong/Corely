@@ -15,7 +15,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Users
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [MemberData(nameof(InvalidUsernameData))]
-        public void UserValidator_ShouldHaveValidationError_WhenUsernameInvalid(string username)
+        public void UserValidator_HasValidationError_WhenUsernameInvalid(string username)
         {
             var user = new User
             {
@@ -37,7 +37,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Users
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
         [MemberData(nameof(InvalidEmailData))]
-        public void UserValidator_ShouldHaveValidationError_WhenEmailInvalid(string email)
+        public void UserValidator_HasValidationError_WhenEmailInvalid(string email)
         {
             var user = new User
             {

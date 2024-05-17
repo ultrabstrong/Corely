@@ -25,7 +25,7 @@ namespace Corely.UnitTests.DataAccess
         }
 
         [Theory, MemberData(nameof(GetRequiredServiceData))]
-        public void AddAccountManagementDataAccessServices_ShouldAddAccountManagementDataAccessServices(Type serviceType)
+        public void AddAccountManagementDataAccessServices_AddsAccountManagementDataAccessServices(Type serviceType)
         {
             _keyedDataServiceFactory.AddAccountManagementDataAccessServices(_serviceCollection);
             var serviceProvider = _serviceCollection.BuildServiceProvider();

@@ -39,7 +39,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapThenValidateTo_ShouldReturnValidDestination_IfSourceIsValid()
+        public void MapThenValidateTo_ReturnsValidDestination_IfSourceIsValid()
         {
             var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
             var user = _mockServiceBase.MapThenValidateTo<User>(createUserRequest);
@@ -50,7 +50,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapThenValidateTo_ShouldThrowArgumentNullException_WhenSourceIsNull()
+        public void MapThenValidateTo_ThrowsArgumentNullException_WhenSourceIsNull()
         {
             var ex = Record.Exception(() => _mockServiceBase.MapThenValidateTo<object>(null!));
             Assert.NotNull(ex);
@@ -58,7 +58,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapThenValidateTo_ShouldThrowAutoMapperMappingException_IfDestinationIsInvalid()
+        public void MapThenValidateTo_ThrowsAutoMapperMappingException_IfDestinationIsInvalid()
         {
             var createUserRequest = _fixture.Create<CreateUserRequest>();
 
@@ -69,7 +69,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapThenValidateTo_ShouldThrowValidationException_IfDestinationIsInvalid()
+        public void MapThenValidateTo_ThrowsValidationException_IfDestinationIsInvalid()
         {
             var createUserRequest = _fixture.Create<CreateUserRequest>();
 
@@ -80,7 +80,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapTo_ShouldReturnValidDestination_IfSourceIsValid()
+        public void MapTo_ReturnsValidDestination_IfSourceIsValid()
         {
             var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
             var user = _mockServiceBase.MapTo<User>(createUserRequest);
@@ -91,7 +91,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapTo_ShouldThrowArgumentNullException_WhenSourceIsNull()
+        public void MapTo_ThrowsArgumentNullException_WhenSourceIsNull()
         {
             var ex = Record.Exception(() => _mockServiceBase.MapTo<object>(null!));
             Assert.NotNull(ex);
@@ -99,7 +99,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapTo_ShouldThrowAutoMapperMappingException_IfDestinationIsInvalid()
+        public void MapTo_ThrowsAutoMapperMappingException_IfDestinationIsInvalid()
         {
             var createUserRequest = _fixture.Create<CreateUserRequest>();
 
@@ -110,7 +110,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void Validate_ShouldNotThrowException_IfModelIsValid()
+        public void Validate_DoesNotThrowException_IfModelIsValid()
         {
             var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
             var user = _mockServiceBase.MapTo<User>(createUserRequest);
@@ -121,7 +121,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void Validate_ShouldThrowArgumentNullException_WhenModelIsNull()
+        public void Validate_ThrowsArgumentNullException_WhenModelIsNull()
         {
             var ex = Record.Exception(() => _mockServiceBase.Validate<object>(null!));
             Assert.NotNull(ex);

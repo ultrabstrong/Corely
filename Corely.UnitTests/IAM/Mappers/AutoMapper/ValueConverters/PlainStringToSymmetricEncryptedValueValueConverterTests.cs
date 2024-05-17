@@ -23,7 +23,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         }
 
         [Fact]
-        public void Convert_ShouldReturnSymmetricEncryptedValue()
+        public void Convert_ReturnsSymmetricEncryptedValue()
         {
             var plainString = _fixture.Create<string>();
 
@@ -35,7 +35,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         }
 
         [Theory, ClassData(typeof(EmptyAndWhitespace))]
-        public void Convert_ShouldReturnSymmetricEncryptedValue_WithEmptyWhitespace(string value)
+        public void Convert_ReturnsSymmetricEncryptedValue_WithEmptyWhitespace(string value)
         {
             var result = _valueConverter.Convert(value, default);
 

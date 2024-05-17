@@ -32,7 +32,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task CreateUserAsync_ShouldThrowUserExistsException_WhenUserExists()
+        public async Task CreateUserAsync_ThrowsUserExistsException_WhenUserExists()
         {
             var accountId = await CreateAccount();
             var createUserRequest = new CreateUserRequest(accountId, VALID_USERNAME, VALID_EMAIL);
@@ -45,7 +45,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task CreateUser_ShouldReturnCreateUserResult()
+        public async Task CreateUser_ReturnsCreateUserResult()
         {
             var accountId = await CreateAccount();
             var createUserRequest = new CreateUserRequest(accountId, VALID_USERNAME, VALID_EMAIL);
@@ -63,7 +63,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task CreateUser_ShouldThrowAccountDoesNotExistException_WhenAccountDNE()
+        public async Task CreateUser_ThrowsAccountDoesNotExistException_WhenAccountDNE()
         {
             var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
 
@@ -74,7 +74,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task CreateUser_ShouldThrowArgumentNullException_WithNullRequest()
+        public async Task CreateUser_ThrowsArgumentNullException_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _userService.CreateUserAsync(null!));
 
@@ -83,7 +83,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task GetUserByUseridAsync_ShouldReturnNull_WhenUserDNE()
+        public async Task GetUserByUseridAsync_ReturnsNull_WhenUserDNE()
         {
             var user = await _userService.GetUserAsync(_fixture.Create<int>());
 
@@ -91,7 +91,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task GetUserByUseridAsync_ShouldReturnUser_WhenUserExists()
+        public async Task GetUserByUseridAsync_ReturnsUser_WhenUserExists()
         {
             var accountId = await CreateAccount();
             var createUserRequest = new CreateUserRequest(accountId, VALID_USERNAME, VALID_EMAIL);
@@ -105,7 +105,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task GetUserByUsernameAsync_ShouldReturnNull_WhenUserDNE()
+        public async Task GetUserByUsernameAsync_ReturnsNull_WhenUserDNE()
         {
             var user = await _userService.GetUserAsync(_fixture.Create<string>());
 
@@ -113,7 +113,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task GetUserByUsernameAsync_ShouldReturnUser_WhenUserExists()
+        public async Task GetUserByUsernameAsync_ReturnsUser_WhenUserExists()
         {
             var accountId = await CreateAccount();
             var createUserRequest = new CreateUserRequest(accountId, VALID_USERNAME, VALID_EMAIL);

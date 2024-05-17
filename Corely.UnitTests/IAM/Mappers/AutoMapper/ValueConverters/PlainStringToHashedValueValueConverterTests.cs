@@ -17,7 +17,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         }
 
         [Fact]
-        public void Convert_ShouldReturnHashedValue()
+        public void Convert_ReturnsHashedValue()
         {
             var value = _fixture.Create<string>();
 
@@ -28,7 +28,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         }
 
         [Theory, ClassData(typeof(EmptyAndWhitespace))]
-        public void Convert_ShouldReturnHashedValue_WithEmptyWhitespace(string value)
+        public void Convert_ReturnsHashedValue_WithEmptyWhitespace(string value)
         {
             var result = _valueConverter.Convert(value, default);
 
@@ -37,7 +37,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         }
 
         [Fact]
-        public void Convert_ShouldThrowArgumentNullException_WhenValueIsNull()
+        public void Convert_ThrowsArgumentNullException_WhenValueIsNull()
         {
             var ex = Record.Exception(() => _valueConverter.Convert(null, default));
             Assert.NotNull(ex);

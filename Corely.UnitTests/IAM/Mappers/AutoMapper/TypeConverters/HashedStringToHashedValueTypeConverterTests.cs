@@ -21,7 +21,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
         }
 
         [Fact]
-        public void Convert_ShouldReturnHashedValue()
+        public void Convert_ReturnsHashedValue()
         {
             var value = _fixture.Create<string>();
 
@@ -31,7 +31,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
         }
 
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void Convert_ShouldReturnNullEmptyOrWhitespace(string value)
+        public void Convert_ReturnsNullEmptyOrWhitespace(string value)
         {
             var result = _converter.Convert(value, default, default);
 

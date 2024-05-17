@@ -7,19 +7,19 @@ namespace Corely.UnitTests.Common.Http.Models
         private readonly HttpParametersBase _httpParameters = new HttpParameters();
 
         [Fact]
-        public void HttpParametersBase_ShouldImplementIHttpParameters()
+        public void HttpParametersBase_ImplementsIHttpParameters()
         {
             Assert.IsAssignableFrom<IHttpParameters>(_httpParameters);
         }
 
         [Fact]
-        public void HttpParametersBase_ShouldImplementHttpParametersBase()
+        public void HttpParametersBase_ImplementsHttpParametersBase()
         {
             Assert.IsAssignableFrom<HttpParametersBase>(_httpParameters);
         }
 
         [Fact]
-        public void HttpParametersBaseConstructor_ShouldSetProperties()
+        public void HttpParametersBaseConstructor_SetsProperties()
         {
             Assert.False(_httpParameters.HasParameters());
             Assert.Equal(0, _httpParameters.GetParameterCount());
@@ -29,7 +29,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void HttpParametersStringConstructor_ShouldSetProperties()
+        public void HttpParametersStringConstructor_SetsProperties()
         {
             var httpParameters = new HttpParameters("key", "value");
 
@@ -42,7 +42,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void HttpParametersDictionaryConstructors_ShouldSetProperties()
+        public void HttpParametersDictionaryConstructors_SetsProperties()
         {
             var parameters = new Dictionary<string, string>() { { "key1", "value1" } };
 
@@ -54,7 +54,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void HttpParametersDictionaryConstructors_ShouldSetProperties_WithTempParams()
+        public void HttpParametersDictionaryConstructors_SetsProperties_WithTempParams()
         {
             var parameters = new Dictionary<string, string>() { { "key1", "value1" } };
             var tempParameters = new Dictionary<string, string>() { { "key2", "value2" } };
@@ -71,13 +71,13 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void CreateParameters_ShouldReturnEmptyString_WhenNoParametersAreAdded()
+        public void CreateParameters_ReturnsEmptyString_WhenNoParametersAreAdded()
         {
             Assert.Equal(string.Empty, _httpParameters.CreateParameters());
         }
 
         [Theory, MemberData(nameof(CreateParametersInvalidTestData))]
-        public void AddParameters_ShouldThrowArgumentNullException_WhenKeyOrValueIsNull(string key, string value)
+        public void AddParameters_ThrowArgumentNullException_WhenKeyOrValueIsNull(string key, string value)
         {
             var ex = Record.Exception(() => _httpParameters.AddParameters((key, value)));
             Assert.NotNull(ex);
@@ -92,7 +92,7 @@ namespace Corely.UnitTests.Common.Http.Models
         ];
 
         [Theory, MemberData(nameof(CreateParametersTestData))]
-        public void CreateParameters_ShouldReturnExpectedString_WhenParametersAreAdded((string key, string value) keyValuePairs, string expected)
+        public void CreateParameters_ReturnsExpectedString_WhenParametersAreAdded((string key, string value) keyValuePairs, string expected)
         {
             _httpParameters.AddParameters(keyValuePairs);
 
@@ -100,7 +100,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Theory, MemberData(nameof(CreateParametersTestData))]
-        public void CreateParameters_ShouldReturnExpectedString_WhenTempParametersAreAdded((string key, string value) keyValuePairs, string expected)
+        public void CreateParameters_ReturnsExpectedString_WhenTempParametersAreAdded((string key, string value) keyValuePairs, string expected)
         {
             _httpParameters.AddTempParameters(keyValuePairs);
 
@@ -108,7 +108,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Theory, MemberData(nameof(CreateParametersTestData))]
-        public void CreateParameters_ShouldReturnExpectedString_WhenBothParametersAreAdded((string key, string value) keyValuePairs, string expected)
+        public void CreateParameters_ReturnsExpectedString_WhenBothParametersAreAdded((string key, string value) keyValuePairs, string expected)
         {
             _httpParameters.AddParameters(keyValuePairs);
             _httpParameters.AddTempParameters(keyValuePairs);
@@ -131,7 +131,7 @@ namespace Corely.UnitTests.Common.Http.Models
         ];
 
         [Fact]
-        public void CreateParameters_ShouldChainParameters_WhenMoreThanOneAdded()
+        public void CreateParameters_ChainsParameters_WhenMoreThanOneAdded()
         {
             _httpParameters.AddParameters(("key1", "value1"), ("key2", "value2"));
 
@@ -139,7 +139,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void CreateParameters_ShouldChainTempParameters_WhenMoreThanOneAdded()
+        public void CreateParameters_ChainsTempParameters_WhenMoreThanOneAdded()
         {
             _httpParameters.AddTempParameters(("key1", "value1"), ("key2", "value2"));
 
@@ -147,7 +147,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void CreateParameters_ShouldChainBothParameters_WhenMoreThanOneAdded()
+        public void CreateParameters_ChainsBothParameters_WhenMoreThanOneAdded()
         {
             _httpParameters.AddParameters(("key1", "value1"), ("key2", "value2"));
             _httpParameters.AddTempParameters(("key3", "value3"), ("key4", "value4"));
@@ -156,7 +156,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void CreateParameters_ShouldClearTempParameters()
+        public void CreateParameters_ClearsTempParameters()
         {
 
             _httpParameters.AddParameters(("key1", "value1"), ("key2", "value2"));
@@ -176,7 +176,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void ChangingParameters_ShouldReflectChangedParameters()
+        public void ChangingParameters_ReflectsChangedParameters()
         {
             _httpParameters.AddParameters(("key1", "value1"), ("key2", "value2"));
 
@@ -208,7 +208,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void ChangingTempParameters_ShouldReflectChangedTempParameters()
+        public void ChangingTempParameters_ReflectsChangedTempParameters()
         {
             _httpParameters.AddTempParameters(("key1", "value1"), ("key2", "value2"));
 

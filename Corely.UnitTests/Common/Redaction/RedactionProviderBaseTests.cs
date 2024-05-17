@@ -28,7 +28,7 @@ namespace Corely.UnitTests.Common.Providers.Redaction
         [InlineData("password", "REDACTED")]
         [InlineData("password123", "REDACTEDREDACTED")]
         [InlineData("123password", "REDACTEDREDACTED")]
-        public void Redact_ShouldRedact_WithMultipleRegexes(string? input, string? expected)
+        public void Redact_Redacts_WithMultipleRegexes(string? input, string? expected)
         {
             var actual = _redactionProvider.Redact(input!);
 
@@ -39,7 +39,7 @@ namespace Corely.UnitTests.Common.Providers.Redaction
         [InlineData("password password", "REDACTED REDACTED")]
         [InlineData("password123 password123", "REDACTEDREDACTED REDACTEDREDACTED")]
         [InlineData("123password 123password", "REDACTEDREDACTED REDACTEDREDACTED")]
-        public void Redact_ShouldRedactMultiple_WithMultipleRegexes(string? input, string? expected)
+        public void Redact_RedactsMultiple_WithMultipleRegexes(string? input, string? expected)
         {
             var actual = _redactionProvider.Redact(input!);
 

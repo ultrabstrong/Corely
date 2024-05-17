@@ -22,7 +22,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void Encrypt_ShouldReturnCorrectlyFormattedValue()
+        public void Encrypt_ReturnsCorrectlyFormattedValue()
         {
             var decrypted = _fixture.Create<string>();
 
@@ -34,7 +34,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Theory, ClassData(typeof(EmptyAndWhitespace))]
-        public void Encrypt_ShouldReturnCorrectlyFormattedValue_WithEmptyAndWhitespace(string value)
+        public void Encrypt_ReturnsCorrectlyFormattedValue_WithEmptyAndWhitespace(string value)
         {
             var encrypted = _encryptionProvider.Encrypt(value, _keyStoreProvider);
             Assert.StartsWith(_encryptionProvider.EncryptionTypeCode, encrypted);
@@ -43,7 +43,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void Encrypt_ShouldProduceDifferentEncryptedStrings()
+        public void Encrypt_ProducesDifferentEncryptedStrings()
         {
             var decrypted = _fixture.Create<string>();
             var encrypted1 = _encryptionProvider.Encrypt(decrypted, _keyStoreProvider);
@@ -52,7 +52,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void Encrypt_ShouldArgumentNullExceptionThrow_WithNullInput()
+        public void Encrypt_ThrowsArgumentNullException_WithNullInput()
         {
             var ex = Record.Exception(() => _encryptionProvider.Encrypt(null!, _keyStoreProvider));
             Assert.NotNull(ex);
@@ -60,7 +60,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void Encrypt_ThenDecrypt_ShouldProduceOriginalValue()
+        public void Encrypt_ThenDecrypt_ProducesOriginalValue()
         {
             var originalDecrypted = _fixture.Create<string>();
             var encrypted = _encryptionProvider.Encrypt(originalDecrypted, _keyStoreProvider);
@@ -69,7 +69,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void Decrypt_ShouldProduceSameStringThatWasEncrypted()
+        public void Decrypt_ProducesSameStringThatWasEncrypted()
         {
             var decrpyted = _fixture.Create<string>();
             var encrypted1 = _encryptionProvider.Encrypt(decrpyted, _keyStoreProvider);
@@ -81,7 +81,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void Decrypt_ShouldSucceed_AfterKeyIsUpdated()
+        public void Decrypt_Succeeds_AfterKeyIsUpdated()
         {
             var decrypted = _fixture.Create<string>();
             var encrypted = _encryptionProvider.Encrypt(decrypted, _keyStoreProvider);
@@ -93,7 +93,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void Decrypt_ShouldThrowArgumentException_WithNullOrWhiteSpace(string value)
+        public void Decrypt_ThrowsArgumentException_WithNullOrWhiteSpace(string value)
         {
             var ex = Record.Exception(() => _encryptionProvider.Decrypt(value, _keyStoreProvider));
             Assert.True(ex is ArgumentNullException || ex is ArgumentException);
@@ -110,7 +110,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         [InlineData("::", true)]
         [InlineData(":1", true)]
         [InlineData(":2:", true)]
-        public void Decrypt_ShouldThrowEncryptionProviderException_WithInvalidFormat(string value, bool prependTypeCode)
+        public void Decrypt_ThrowsEncryptionProviderException_WithInvalidFormat(string value, bool prependTypeCode)
         {
             var testValue = prependTypeCode
                 ? $"{_encryptionProvider.EncryptionTypeCode}{value}"
@@ -123,7 +123,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void ReEncrypt_ShouldReturnUpdatedCurrentVersionValue_WhenKeyVersionIsSame()
+        public void ReEncrypt_ReturnsUpdatedCurrentVersionValue_WhenKeyVersionIsSame()
         {
             var originalValue = _fixture.Create<string>();
             var originalEncrypted = _encryptionProvider.Encrypt(originalValue, _keyStoreProvider);
@@ -138,7 +138,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public void ReEncrypt_ShouldReturnUpdatedNewVersionValue_WhenKeyVersionIsChanged()
+        public void ReEncrypt_ReturnsUpdatedNewVersionValue_WhenKeyVersionIsChanged()
         {
             var originalValue = _fixture.Create<string>();
             var originalEncrypted = _encryptionProvider.Encrypt(originalValue, _keyStoreProvider);
@@ -155,7 +155,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
         }
 
         [Fact]
-        public abstract void EncryptionTypeCode_ShouldReturnCorrectCode_ForImplementation();
+        public abstract void EncryptionTypeCode_ReturnsCorrectCode_ForImplementation();
 
         public abstract ISymmetricEncryptionProvider GetEncryptionProvider();
 

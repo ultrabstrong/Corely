@@ -19,7 +19,7 @@ namespace Corely.UnitTests.Common.Extensions
         }
 
         [Fact]
-        public void UrlDecode_Null_ThrowsArgumentNullException()
+        public void UrlDecode_ThrowsArgumentNullException_WithNullInput()
         {
             var ex = Record.Exception(() => StringUrlEncodeExtensions.UrlDecode(null));
             Assert.NotNull(ex);
@@ -33,7 +33,7 @@ namespace Corely.UnitTests.Common.Extensions
         }
 
         [Theory, MemberData(nameof(GetUrlEncodeDecodeTestData))]
-        public void UrlEncodeThenDecode_ShouldReturnOriginalString(string source)
+        public void UrlEncodeThenDecode_ReturnsOriginalString(string source)
         {
             Assert.Equal(source, source.UrlEncode().UrlDecode());
         }
@@ -50,13 +50,13 @@ namespace Corely.UnitTests.Common.Extensions
         ];
 
         [Fact]
-        public void UrlEncode_ShouldEncodeSpecialCharacters()
+        public void UrlEncode_EncodesSpecialCharacters()
         {
             Assert.Equal("%21%40%23%24%25%5E%26%2A%28%29_%2B%20", "!@#$%^&*()_+ ".UrlEncode());
         }
 
         [Fact]
-        public void UrlDecode_ShouldDecodeSpecialCharacters()
+        public void UrlDecode_DecodesSpecialCharacters()
         {
             Assert.Equal("!@#$%^&*()_+ ", "%21%40%23%24%25%5E%26%2A%28%29_%2B%20".UrlDecode());
         }

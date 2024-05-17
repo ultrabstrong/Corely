@@ -9,35 +9,35 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
         protected abstract IIAMRepoFactory AccountManagementRepoFactory { get; }
 
         [Fact]
-        public void CreateAccountRepo_ShouldReturnMockAccountRepo()
+        public void CreateAccountRepo_ReturnsMockAccountRepo()
         {
             var accountRepo = AccountManagementRepoFactory.CreateAccountRepo();
             Assert.NotNull(accountRepo);
         }
 
         [Fact]
-        public void CreateReadonlyAccountRepo_ShouldReturnMockReadonlyAccountRepo()
+        public void CreateReadonlyAccountRepo_ReturnsMockReadonlyAccountRepo()
         {
             var readonlyAccountRepo = AccountManagementRepoFactory.CreateReadonlyAccountRepo();
             Assert.NotNull(readonlyAccountRepo);
         }
 
         [Fact]
-        public void CreateBasicAuthRepo_ShouldReturnMockBasicAuthRepo()
+        public void CreateBasicAuthRepo_ReturnsMockBasicAuthRepo()
         {
             var basicAuthRepo = AccountManagementRepoFactory.CreateBasicAuthRepo();
             Assert.NotNull(basicAuthRepo);
         }
 
         [Fact]
-        public void CreateUserRepo_ShouldReturnMockUserRepo()
+        public void CreateUserRepo_ReturnsMockUserRepo()
         {
             var userRepo = AccountManagementRepoFactory.CreateUserRepo();
             Assert.NotNull(userRepo);
         }
 
         [Fact]
-        public void CreateUnitOfWorkProvider_ShouldReturnUowProvider()
+        public void CreateUnitOfWorkProvider_ReturnsUowProvider()
         {
             var uowProvider = AccountManagementRepoFactory.CreateUnitOfWorkProvider();
             Assert.NotNull(uowProvider);

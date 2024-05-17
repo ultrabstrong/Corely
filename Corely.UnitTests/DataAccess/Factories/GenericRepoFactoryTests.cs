@@ -14,7 +14,7 @@ namespace Corely.UnitTests.DataAccess.Factories
         private static readonly Fixture _fixture = new();
 
         [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WithNullLogger()
+        public void Constructor_ThrowsArgumentNullException_WithNullLogger()
         {
             var ex = Record.Exception(() => new GenericRepoFactory<string>(
                 null,
@@ -25,7 +25,7 @@ namespace Corely.UnitTests.DataAccess.Factories
         }
 
         [Fact]
-        public void Constructor_ShouldThrowArgumentNullException_WithNullConnection()
+        public void Constructor_ThrowsArgumentNullException_WithNullConnection()
         {
             var ex = Record.Exception(() => new GenericRepoFactory<string>(
                 new Mock<ILoggerFactory>().Object,
@@ -36,7 +36,7 @@ namespace Corely.UnitTests.DataAccess.Factories
         }
 
         [Fact]
-        public void CreateIAMRepoFactory_ShouldReturnCorrectType_WithMockConnection()
+        public void CreateIAMRepoFactory_ReturnsCorrectType_WithMockConnection()
         {
             var dataAccessConnection = new DataAccessConnection<string>(
                 ConnectionNames.Mock, _fixture.Create<string>());
@@ -52,7 +52,7 @@ namespace Corely.UnitTests.DataAccess.Factories
         }
 
         [Fact]
-        public void CreateIAMRepoFactory_ShouldReturnCorrectType_WithEFConnection()
+        public void CreateIAMRepoFactory_ReturnsCorrectType_WithEFConnection()
         {
             var connection = new EFConfigurationFixture();
             var dataAccessConnection = new DataAccessConnection<EFConnection>(
@@ -69,7 +69,7 @@ namespace Corely.UnitTests.DataAccess.Factories
         }
 
         [Fact]
-        public void CreateIAMRepoFactory_ShouldThrowArgumentOutOfRangeException_WithInvalidConnectionName()
+        public void CreateIAMRepoFactory_ThrowsArgumentOutOfRangeException_WithInvalidConnectionName()
         {
             var dataAccessConnection = new DataAccessConnection<string>(
                 _fixture.Create<string>(), _fixture.Create<string>());

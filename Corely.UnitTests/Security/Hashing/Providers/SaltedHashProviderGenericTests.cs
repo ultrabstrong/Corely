@@ -11,7 +11,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         private readonly Fixture _fixture = new();
 
         [Fact]
-        public void Hash_ShouldReturnHashedValue()
+        public void Hash_ReturnsHashedValue()
         {
             var value = _fixture.Create<string>();
             var hashed = HashProvider.Hash(value);
@@ -19,7 +19,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void Hash_ShouldProduceDifferentValues_WithSameInput()
+        public void Hash_ProducesDifferentValues_WithSameInput()
         {
             var value = _fixture.Create<string>();
             var hash1 = HashProvider.Hash(value);
@@ -28,7 +28,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void Hash_ShouldReturnCorrectlyFormattedValue()
+        public void Hash_ReturnsCorrectlyFormattedValue()
         {
             var value = _fixture.Create<string>();
             var hashed = HashProvider.Hash(value);
@@ -37,7 +37,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Theory, ClassData(typeof(EmptyAndWhitespace))]
-        public void Hash_ShouldReturnCorrectlyFormattedValue_WithEmptyAndWhitespace(string value)
+        public void Hash_ReturnsCorrectlyFormattedValue_WithEmptyAndWhitespace(string value)
         {
             var hashed = HashProvider.Hash(value);
             Assert.StartsWith(HashProvider.HashTypeCode, hashed);
@@ -45,7 +45,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void Hash_ShouldThrowArgumentNullException_WithNullInput()
+        public void Hash_ThrowsArgumentNullException_WithNullInput()
         {
             var ex = Record.Exception(() => HashProvider.Hash(null));
             Assert.NotNull(ex);
@@ -53,7 +53,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void Verify_ShouldReturnTrue_WithMatchingValueHash()
+        public void Verify_ReturnsTrue_WithMatchingValueHash()
         {
             var value = _fixture.Create<string>();
             var hash = HashProvider.Hash(value);
@@ -62,7 +62,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void Verify_ShouldReturnFalse_WithNonMatchingHash()
+        public void Verify_ReturnsFalse_WithNonMatchingHash()
         {
             var value = _fixture.Create<string>();
             var hash = HashProvider.Hash(value);
@@ -71,7 +71,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void Verify_ShouldReturnFalse_WithNonMatchingHashType()
+        public void Verify_ReturnsFalse_WithNonMatchingHashType()
         {
             var value = _fixture.Create<string>();
             var hash = HashProvider.Hash(value);
@@ -83,7 +83,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         [InlineData(null, null)]
         [InlineData(null, "")]
         [InlineData("", null)]
-        public void Verify_ShouldThrowArgumentNullException_WithNull(string? value, string? hash)
+        public void Verify_ThrowsArgumentNullException_WithNull(string? value, string? hash)
         {
             var ex = Record.Exception(() => HashProvider.Verify(value!, hash!));
             Assert.NotNull(ex);
@@ -91,6 +91,6 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public abstract void HashTypeCode_ShouldReturnCorrectCode_ForImplementation();
+        public abstract void HashTypeCode_ReturnsCorrectCode_ForImplementation();
     }
 }

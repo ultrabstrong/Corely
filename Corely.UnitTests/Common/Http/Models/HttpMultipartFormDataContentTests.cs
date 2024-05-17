@@ -7,19 +7,19 @@ namespace Corely.UnitTests.Common.Http.Models
         private readonly HttpMultipartFormDataContent _httpMultipartFormDataContent = new([]);
 
         [Fact]
-        public void HttpMultipartFormDataContent_ShouldBeOfTypeIHttpContent()
+        public void HttpMultipartFormDataContent_IsOfTypeIHttpContent()
         {
             Assert.IsAssignableFrom<IHttpContent<Dictionary<string, string>>>(_httpMultipartFormDataContent);
         }
 
         [Fact]
-        public void HttpMultipartFormDataContent_ShouldBeOfTypeHttpDictionaryContentBase()
+        public void HttpMultipartFormDataContent_IsOfTypeHttpDictionaryContentBase()
         {
             Assert.IsAssignableFrom<HttpDictionaryContentBase>(_httpMultipartFormDataContent);
         }
 
         [Fact]
-        public void HttpMultipartFormDataContent_ShouldThrowArgumentNullException_WhenContentIsNull()
+        public void HttpMultipartFormDataContent_ThrowsArgumentNullException_WhenContentIsNull()
         {
             var ex = Record.Exception(() => new HttpMultipartFormDataContent(null));
             Assert.NotNull(ex);
@@ -28,7 +28,7 @@ namespace Corely.UnitTests.Common.Http.Models
 
 
         [Theory, MemberData(nameof(HttpMultipartFormDataContentTestData))]
-        public void HttpMultipartFormDataContent_ShouldReturnExpectedContent(Dictionary<string, string> content)
+        public void HttpMultipartFormDataContent_ReturnsExpectedContent(Dictionary<string, string> content)
         {
             var httpFormUrlEncodedContent = new HttpFormUrlEncodedContent(content);
 

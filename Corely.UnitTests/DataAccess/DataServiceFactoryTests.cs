@@ -20,7 +20,7 @@ namespace Corely.UnitTests.DataAccess
         }
 
         [Theory, MemberData(nameof(GetRequiredServiceData))]
-        public void RegisterConnection_ShouldRegisterConnection(Type serviceType)
+        public void RegisterConnection_RegistersConnection(Type serviceType)
         {
             DataServiceFactory.RegisterConnection(_connection, _serviceCollection);
             var serviceProvider = _serviceCollection.BuildServiceProvider();

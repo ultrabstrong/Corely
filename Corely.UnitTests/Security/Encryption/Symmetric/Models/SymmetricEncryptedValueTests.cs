@@ -22,13 +22,13 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Models
         }
 
         [Fact]
-        public void Constructor_ShouldCreateEncryptedValue()
+        public void Constructor_CreatesEncryptedValue()
         {
             Assert.NotNull(_encryptedValue);
         }
 
         [Fact]
-        public void Constructor_ShouldCreateEncryptedValueWithSecret()
+        public void Constructor_CreatesEncryptedValueWithSecret()
         {
             var encryptionProvider = new AesEncryptionProvider();
             var value = _fixture.Create<string>();
@@ -39,7 +39,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Models
         }
 
         [Fact]
-        public void Set_ShouldSetEncryptedSecret()
+        public void Set_SetsEncryptedSecret()
         {
             var value = _fixture.Create<string>();
             _encryptedValue.Set(value, _keyStoreProvider);
@@ -49,7 +49,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Models
         }
 
         [Fact]
-        public void Get_ShouldGetDecryptedSecret()
+        public void Get_GetsDecryptedSecret()
         {
             var value = _fixture.Create<string>();
             _encryptedValue.Set(value, _keyStoreProvider);
@@ -58,7 +58,7 @@ namespace Corely.UnitTests.Security.Encryption.Symmetric.Models
         }
 
         [Fact]
-        public void ReEncrypt_ShouldReEncryptSecret()
+        public void ReEncrypt_ReEncryptsSecret()
         {
             var value = _fixture.Create<string>();
             _encryptedValue.Set(value, _keyStoreProvider);

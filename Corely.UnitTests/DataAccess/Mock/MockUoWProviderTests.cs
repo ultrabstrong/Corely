@@ -7,7 +7,7 @@ namespace Corely.UnitTests.DataAccess.Mock
         private readonly MockUoWProvider _mockUoWProvider = new();
 
         [Fact]
-        public async Task BeginAsync_ShouldReturnCompletedTask()
+        public async Task BeginAsync_ReturnsCompletedTask()
         {
             await _mockUoWProvider.BeginAsync();
 
@@ -15,7 +15,7 @@ namespace Corely.UnitTests.DataAccess.Mock
         }
 
         [Fact]
-        public async Task CommitAsync_ShouldReturnCompletedTask()
+        public async Task CommitAsync_ReturnsCompletedTask()
         {
             await _mockUoWProvider.CommitAsync();
 
@@ -23,7 +23,7 @@ namespace Corely.UnitTests.DataAccess.Mock
         }
 
         [Fact]
-        public async Task RollbackAsync_ShouldReturnCompletedTask()
+        public async Task RollbackAsync_ReturnsCompletedTask()
         {
             await _mockUoWProvider.RollbackAsync();
 
