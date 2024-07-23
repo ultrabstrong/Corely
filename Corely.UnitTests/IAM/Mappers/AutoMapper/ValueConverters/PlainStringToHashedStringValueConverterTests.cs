@@ -5,12 +5,12 @@ using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
 {
-    public class PlainStringToHashedValueValueConverterTests
+    public class PlainStringToHashedStringValueConverterTests
     {
         private readonly Fixture _fixture = new();
-        private readonly PlainStringToHashedValueValueConverter _valueConverter;
+        private readonly PlainStringToHashedStringValueConverter _valueConverter;
 
-        public PlainStringToHashedValueValueConverterTests()
+        public PlainStringToHashedStringValueConverterTests()
         {
             var serviceFactory = new ServiceFactory();
             _valueConverter = new(serviceFactory.GetRequiredService<IHashProviderFactory>());

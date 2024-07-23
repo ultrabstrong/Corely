@@ -10,7 +10,7 @@ namespace Corely.IAM.Mappers.AutoMapper.AuthProfiles
         {
             CreateMap<UpsertBasicAuthRequest, BasicAuth>(MemberList.Source)
                 .ForMember(dest => dest.Password,
-                    opt => opt.ConvertUsing<PlainStringToHashedValueValueConverter, string>());
+                    opt => opt.ConvertUsing<PlainStringToHashedStringValueConverter, string>());
         }
     }
 }

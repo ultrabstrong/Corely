@@ -5,11 +5,11 @@ using Corely.Security.Hashing.Models;
 
 namespace Corely.IAM.Mappers.AutoMapper.ValueConverters
 {
-    internal sealed class PlainStringToHashedValueValueConverter : IValueConverter<string, IHashedValue>
+    internal sealed class PlainStringToHashedStringValueConverter : IValueConverter<string, IHashedValue>
     {
         private readonly IHashProviderFactory _hashProviderFactory;
 
-        public PlainStringToHashedValueValueConverter(IHashProviderFactory hashProviderFactory)
+        public PlainStringToHashedStringValueConverter(IHashProviderFactory hashProviderFactory)
         {
             _hashProviderFactory = hashProviderFactory.ThrowIfNull(nameof(hashProviderFactory));
         }

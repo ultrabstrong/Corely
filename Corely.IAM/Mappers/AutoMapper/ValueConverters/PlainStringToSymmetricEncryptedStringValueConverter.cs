@@ -6,12 +6,12 @@ using Corely.Security.Encryption.Providers;
 
 namespace Corely.IAM.Mappers.AutoMapper.ValueConverters
 {
-    internal sealed class PlainStringToSymmetricEncryptedValueValueConverter : IValueConverter<string, ISymmetricEncryptedValue>
+    internal sealed class PlainStringToSymmetricEncryptedStringValueConverter : IValueConverter<string, ISymmetricEncryptedValue>
     {
         private readonly ISecurityConfigurationProvider _securityConfigurationProvider;
         private readonly ISymmetricEncryptionProvider _symmetricEncryptionProvider;
 
-        public PlainStringToSymmetricEncryptedValueValueConverter(
+        public PlainStringToSymmetricEncryptedStringValueConverter(
             ISecurityConfigurationProvider securityConfigurationProvider,
             ISymmetricEncryptionProviderFactory symmetricEncryptionProviderFactory)
         {

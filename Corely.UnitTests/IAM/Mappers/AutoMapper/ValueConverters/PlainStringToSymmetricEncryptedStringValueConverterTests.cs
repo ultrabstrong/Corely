@@ -7,13 +7,13 @@ using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
 {
-    public class PlainStringToSymmetricEncryptedValueValueConverterTests
+    public class PlainStringToSymmetricEncryptedStringValueConverterTests
     {
         private readonly Fixture _fixture = new();
         private readonly ISecurityConfigurationProvider _securityConfigurationProviderMock;
-        private readonly PlainStringToSymmetricEncryptedValueValueConverter _valueConverter;
+        private readonly PlainStringToSymmetricEncryptedStringValueConverter _valueConverter;
 
-        public PlainStringToSymmetricEncryptedValueValueConverterTests()
+        public PlainStringToSymmetricEncryptedStringValueConverterTests()
         {
             var serviceFactory = new ServiceFactory();
             _valueConverter = new(
