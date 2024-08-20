@@ -1,6 +1,6 @@
 ﻿using Corely.IAM;
-using Corely.Security.Keys.Symmetric;
-using Corely.Security.KeyStore.Symmetric;
+using Corely.Security.Keys;
+using Corely.Security.KeyStore;
 
 namespace Corely.UnitTests
 {

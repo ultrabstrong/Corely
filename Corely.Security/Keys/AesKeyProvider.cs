@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Corely.Security.Keys.Symmetric
+namespace Corely.Security.Keys
 {
     public sealed class AesKeyProvider : ISymmetricKeyProvider
     {

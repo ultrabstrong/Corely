@@ -1,7 +1,7 @@
 ﻿using Corely.IAM;
 using Corely.IAM.Security.Services;
 using Corely.Security.Encryption.Factories;
-using Corely.Security.Keys.Symmetric;
+using Corely.Security.Keys;
 
 namespace Corely.UnitTests.IAM.Security.Services
 {

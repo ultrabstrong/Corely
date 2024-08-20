@@ -1,11 +1,11 @@
 ﻿using AutoFixture;
 using Corely.Security.Encryption;
 using Corely.Security.Encryption.Providers;
-using Corely.Security.Keys.Symmetric;
-using Corely.Security.KeyStore.Symmetric;
+using Corely.Security.Keys;
+using Corely.Security.KeyStore;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
+namespace Corely.UnitTests.Security.Encryption.Providers
 {
     public abstract class SymmetricEncryptionProviderGenericTests
     {

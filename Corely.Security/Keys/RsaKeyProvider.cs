@@ -1,17 +1,14 @@
 ﻿using System.Security.Cryptography;
 
-namespace Corely.Security.Keys.Asymmetric
+namespace Corely.Security.Keys
 {
     public sealed class RsaKeyProvider : IAsymmetricKeyProvider
     {
         public const int DEFAULT_KEY_SIZE = 2048;
 
         private readonly int _keySize;
-        private readonly HashAlgorithmName _hashAlgorithm;
 
-        public RsaKeyProvider(
-            int keySize = DEFAULT_KEY_SIZE, 
-            HashAlgorithmName hashAlgorithm = default)
+        public RsaKeyProvider(int keySize = DEFAULT_KEY_SIZE)
         {
             if (keySize < 0 || keySize % 8 != 0)
             {
@@ -19,9 +16,6 @@ namespace Corely.Security.Keys.Asymmetric
             }
 
             _keySize = keySize;
-            _hashAlgorithm = hashAlgorithm == default 
-                ? HashAlgorithmName.SHA256 
-                : hashAlgorithm;
         }
 
         public (string PublicKey, string PrivateKey) CreateKeyPair()
@@ -56,6 +50,7 @@ namespace Corely.Security.Keys.Asymmetric
 
                     rsa.ImportPkcs8PrivateKey(privateKeyBytes, out _);
                     var testPrivateKey = rsa.ExportPkcs8PrivateKey();
+                    
 
                     return Convert.ToBase64String(testPublicKey) == publicKey &&
                            Convert.ToBase64String(testPrivateKey) == privateKey;

@@ -1,4 +1,4 @@
-﻿namespace Corely.Security.Keys.Symmetric
+﻿namespace Corely.Security.Keys
 {
     public interface ISymmetricKeyProvider
     {

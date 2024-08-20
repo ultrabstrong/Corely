@@ -12,7 +12,7 @@ using Corely.Security.Encryption;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Hashing;
 using Corely.Security.Hashing.Factories;
-using Corely.Security.Keys.Symmetric;
+using Corely.Security.Keys;
 using Corely.Security.PasswordValidation.Providers;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;

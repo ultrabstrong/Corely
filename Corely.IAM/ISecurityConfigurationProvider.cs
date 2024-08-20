@@ -1,4 +1,4 @@
-﻿using Corely.Security.KeyStore.Symmetric;
+﻿using Corely.Security.KeyStore;
 
 namespace Corely.IAM
 {

@@ -1,8 +1,7 @@
 ﻿using AutoFixture;
 using Corely.Security.KeyStore;
-using Corely.Security.KeyStore.Symmetric;
 
-namespace Corely.UnitTests.Security.KeyStore.Symmetric
+namespace Corely.UnitTests.Security.KeyStore
 {
     public class InMemorySymmetricKeyStoreProviderTests
     {

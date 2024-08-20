@@ -1,8 +1,8 @@
 ﻿using AutoFixture;
-using Corely.Security.KeyStore.Symmetric;
+using Corely.Security.KeyStore;
 using Moq.Protected;
 
-namespace Corely.UnitTests.Security.KeyStore.Symmetric
+namespace Corely.UnitTests.Security.KeyStore
 {
     public class FileSymmetricKeyStoreProviderTests
     {

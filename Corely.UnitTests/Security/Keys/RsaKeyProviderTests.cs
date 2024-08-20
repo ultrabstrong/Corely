@@ -1,7 +1,7 @@
-﻿using Corely.Security.Keys.Asymmetric;
+﻿using Corely.Security.Keys;
 using System.Security.Cryptography;
 
-namespace Corely.UnitTests.Security.Keys.Asymmetric
+namespace Corely.UnitTests.Security.Keys
 {
     public class RsaKeyProviderTests
     {
@@ -58,7 +58,7 @@ namespace Corely.UnitTests.Security.Keys.Asymmetric
         [Fact]
         public void IsKeyValid_ReturnsFalse_ForInvalidPublicKey()
         {
-            var (_, privateKey) = _rsaKeyProvider.CreateKeyPair();
+            _rsaKeyProvider.CreateKeyPair();
             var invalidKey = Convert.ToBase64String(new byte[256]);
             var isValid = _rsaKeyProvider.IsKeyValid(invalidKey, invalidKey);
             Assert.False(isValid);

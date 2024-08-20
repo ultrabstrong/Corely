@@ -4,7 +4,7 @@ using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Providers;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.UnitTests.Security.Encryption.Symmetric.Factories
+namespace Corely.UnitTests.Security.Encryption.Factories
 {
     public class SymmetricEncryptionProviderFactoryTests
     {

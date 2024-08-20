@@ -1,7 +1,7 @@
 ﻿using Corely.DevTools.Attributes;
 using Corely.Security.Encryption.Factories;
-using Corely.Security.Keys.Symmetric;
-using Corely.Security.KeyStore.Symmetric;
+using Corely.Security.Keys;
+using Corely.Security.KeyStore;
 
 namespace Corely.DevTools.Commands
 {

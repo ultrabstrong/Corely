@@ -1,4 +1,4 @@
-﻿namespace Corely.Security.Keys.Asymmetric
+﻿namespace Corely.Security.Keys
 {
     public interface IAsymmetricKeyProvider
     {

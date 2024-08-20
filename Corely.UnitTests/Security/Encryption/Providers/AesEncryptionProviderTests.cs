@@ -1,7 +1,7 @@
 ﻿using Corely.Security.Encryption;
 using Corely.Security.Encryption.Providers;
 
-namespace Corely.UnitTests.Security.Encryption.Symmetric.Providers
+namespace Corely.UnitTests.Security.Encryption.Providers
 {
     public class AesEncryptionProviderTests : SymmetricEncryptionProviderGenericTests
     {

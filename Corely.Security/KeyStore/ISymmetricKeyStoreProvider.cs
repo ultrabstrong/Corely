@@ -1,4 +1,4 @@
-﻿namespace Corely.Security.KeyStore.Symmetric
+﻿namespace Corely.Security.KeyStore
 {
     public interface ISymmetricKeyStoreProvider
     {

@@ -3,7 +3,7 @@ using Corely.IAM.Security.Models;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Models;
 using Corely.Security.Encryption.Providers;
-using Corely.Security.Keys.Symmetric;
+using Corely.Security.Keys;
 
 namespace Corely.IAM.Security.Services
 {

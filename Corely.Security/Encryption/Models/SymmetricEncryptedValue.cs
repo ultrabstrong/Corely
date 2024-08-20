@@ -1,5 +1,5 @@
 ﻿using Corely.Security.Encryption.Providers;
-using Corely.Security.KeyStore.Symmetric;
+using Corely.Security.KeyStore;
 
 namespace Corely.Security.Encryption.Models
 {
