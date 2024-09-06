@@ -25,8 +25,8 @@ namespace Corely.Security.Keys
                 try
                 {
                     rsa.PersistKeyInCsp = false;
-                    var publicKey = Convert.ToBase64String(rsa.ExportSubjectPublicKeyInfo());
-                    var privateKey = Convert.ToBase64String(rsa.ExportPkcs8PrivateKey());
+                    var publicKey = GetPublicKey(rsa);
+                    var privateKey = GetPrivateKey(rsa);
                     return (publicKey, privateKey);
                 }
                 finally
@@ -46,20 +46,30 @@ namespace Corely.Security.Keys
                     var privateKeyBytes = Convert.FromBase64String(privateKey);
 
                     rsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
-                    var testPublicKey = rsa.ExportSubjectPublicKeyInfo();
+                    var testPublicKey = GetPublicKey(rsa);
 
                     rsa.ImportPkcs8PrivateKey(privateKeyBytes, out _);
-                    var testPrivateKey = rsa.ExportPkcs8PrivateKey();
-                    
+                    var testPrivateKey = GetPrivateKey(rsa);
 
-                    return Convert.ToBase64String(testPublicKey) == publicKey &&
-                           Convert.ToBase64String(testPrivateKey) == privateKey;
+
+                    return testPublicKey == publicKey &&
+                           testPrivateKey == privateKey;
                 }
             }
             catch
             {
                 return false;
             }
+        }
+
+        private static string GetPrivateKey(RSACryptoServiceProvider rsa)
+        {
+            return Convert.ToBase64String(rsa.ExportPkcs8PrivateKey());
+        }
+
+        private static string GetPublicKey(RSACryptoServiceProvider rsa)
+        {
+            return Convert.ToBase64String(rsa.ExportSubjectPublicKeyInfo());
         }
     }
 }
