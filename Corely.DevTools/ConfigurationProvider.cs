@@ -11,7 +11,7 @@ namespace Corely.DevTools
         static ConfigurationProvider()
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile(SETTINGS_FILE_NAME, optional: true, reloadOnChange: true);
 
             _configuration = builder.Build();
