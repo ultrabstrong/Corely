@@ -36,8 +36,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
             var provider = new Mock<IHashProvider>().Object;
 
             _hashProviderFactory.AddProvider(providerCode, provider);
-            void act() => _hashProviderFactory.AddProvider(providerCode, provider);
-            var ex = Record.Exception(act);
+            var ex = Record.Exception(() => _hashProviderFactory.AddProvider(providerCode, provider));
 
             Assert.NotNull(ex);
             Assert.IsType<HashException>(ex);
@@ -50,8 +49,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         {
             var provider = new Mock<IHashProvider>().Object;
 
-            void act() => _hashProviderFactory.AddProvider(providerCode, provider);
-            var ex = Record.Exception(act);
+            var ex = Record.Exception(() => _hashProviderFactory.AddProvider(providerCode, provider));
 
             Assert.NotNull(ex);
             Assert.True(ex is ArgumentNullException
@@ -64,8 +62,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         {
             var providerCode = _fixture.Create<string>();
 
-            void act() => _hashProviderFactory.AddProvider(providerCode, null);
-            var ex = Record.Exception(act);
+            var ex = Record.Exception(() => _hashProviderFactory.AddProvider(providerCode, null));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
@@ -91,8 +88,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<IHashProvider>().Object;
 
-            void act() => _hashProviderFactory.UpdateProvider(providerCode, provider);
-            var ex = Record.Exception(act);
+            var ex = Record.Exception(() => _hashProviderFactory.UpdateProvider(providerCode, provider));
 
             Assert.NotNull(ex);
             Assert.IsType<HashException>(ex);
@@ -105,8 +101,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         {
             var provider = new Mock<IHashProvider>().Object;
 
-            void act() => _hashProviderFactory.UpdateProvider(providerCode, provider);
-            var ex = Record.Exception(act);
+            var ex = Record.Exception(() => _hashProviderFactory.UpdateProvider(providerCode, provider));
 
             Assert.NotNull(ex);
             Assert.True(ex is ArgumentNullException
@@ -119,8 +114,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         {
             var providerCode = _fixture.Create<string>();
 
-            void act() => _hashProviderFactory.UpdateProvider(providerCode, null);
-            var ex = Record.Exception(act);
+            var ex = Record.Exception(() => _hashProviderFactory.UpdateProvider(providerCode, null));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
@@ -150,8 +144,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         [InlineData("--")]
         public void GetProvider_Throws_WithInvalidCode(string providerCode)
         {
-            void act() => _hashProviderFactory.GetProvider(providerCode);
-            var ex = Record.Exception(act);
+            var ex = Record.Exception(() => _hashProviderFactory.GetProvider(providerCode));
 
             Assert.NotNull(ex);
             Assert.True(ex is ArgumentNullException
@@ -177,8 +170,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         [InlineData("--")]
         public void GetProviderToVerify_Throws_WithInvalidCode(string providerCode)
         {
-            void act() => _hashProviderFactory.GetProviderToVerify(providerCode);
-            var ex = Record.Exception(act);
+            var ex = Record.Exception(() => _hashProviderFactory.GetProviderToVerify(providerCode));
 
             Assert.NotNull(ex);
             Assert.True(ex is ArgumentNullException
