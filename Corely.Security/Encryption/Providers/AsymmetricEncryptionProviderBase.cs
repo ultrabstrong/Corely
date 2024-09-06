@@ -2,38 +2,38 @@
 
 namespace Corely.Security.Encryption.Providers
 {
-    public abstract class SymmetricEncryptionProviderBase : ISymmetricEncryptionProvider
+    public abstract class AsymmetricEncryptionProviderBase : IAsymmetricEncryptionProvider
     {
         public abstract string EncryptionTypeCode { get; }
 
-        public SymmetricEncryptionProviderBase()
+        public AsymmetricEncryptionProviderBase()
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(EncryptionTypeCode, nameof(EncryptionTypeCode));
 
             if (EncryptionTypeCode.Contains(':'))
             {
-                throw new EncryptionException($"Symmetric encryption type code cannot contain ':'")
+                throw new EncryptionException($"Asymmetric encryption type code cannot contain ':'")
                 {
                     Reason = EncryptionException.ErrorReason.InvalidTypeCode
                 };
             }
         }
 
-        public string Encrypt(string value, ISymmetricKeyStoreProvider keyStoreProvider)
+        public string Encrypt(string value, IAsymmetricKeyStoreProvider keyStoreProvider)
         {
             ArgumentNullException.ThrowIfNull(value, nameof(value));
-            var key = keyStoreProvider.GetCurrentKey();
-            var encryptedValue = EncryptInternal(value, key);
+            var (publicKey, _) = keyStoreProvider.GetCurrentKeys();
+            var encryptedValue = EncryptInternal(value, publicKey);
             var version = keyStoreProvider.GetCurrentVersion();
             return FormatEncryptedValue(encryptedValue, version);
         }
 
-        public string Decrypt(string value, ISymmetricKeyStoreProvider keyStoreProvider)
+        public string Decrypt(string value, IAsymmetricKeyStoreProvider keyStoreProvider)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
-            var key = keyStoreProvider.Get(version);
-            return DecryptInternal(encryptedValue, key);
+            var (_, privateKey) = keyStoreProvider.Get(version);
+            return DecryptInternal(encryptedValue, privateKey);
         }
 
         private (string, int) ValidateForKeyVersion(string value)
@@ -61,15 +61,15 @@ namespace Corely.Security.Encryption.Providers
             return (parts[2], keyVersion);
         }
 
-        public string ReEncrypt(string value, ISymmetricKeyStoreProvider keyStoreProvider)
+        public string ReEncrypt(string value, IAsymmetricKeyStoreProvider keyStoreProvider)
         {
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
 
-            var decryptKey = keyStoreProvider.Get(version);
-            var decrypted = DecryptInternal(encryptedValue, decryptKey);
+            var (_, privateKey) = keyStoreProvider.Get(version);
+            var decrypted = DecryptInternal(encryptedValue, privateKey);
 
-            var encryptKey = keyStoreProvider.GetCurrentKey();
-            var updatedEncryptedValue = EncryptInternal(decrypted, encryptKey);
+            var (publicKey, _) = keyStoreProvider.GetCurrentKeys();
+            var updatedEncryptedValue = EncryptInternal(decrypted, publicKey);
 
             var currentVersion = keyStoreProvider.GetCurrentVersion();
             return FormatEncryptedValue(updatedEncryptedValue, currentVersion);
@@ -80,8 +80,8 @@ namespace Corely.Security.Encryption.Providers
             return $"{EncryptionTypeCode}:{keyVersion}:{encryptedValue}";
         }
 
-        protected abstract string DecryptInternal(string value, string key);
+        protected abstract string DecryptInternal(string value, string privateKey);
 
-        protected abstract string EncryptInternal(string value, string key);
+        protected abstract string EncryptInternal(string value, string publicKey);
     }
 }

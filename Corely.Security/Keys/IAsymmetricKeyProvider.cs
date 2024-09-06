@@ -2,7 +2,7 @@
 {
     public interface IAsymmetricKeyProvider
     {
-        (string PublicKey, string PrivateKey) CreateKeyPair();
+        (string PublicKey, string PrivateKey) CreateKeys();
         bool IsKeyValid(string publicKey, string privateKey);
     }
 }

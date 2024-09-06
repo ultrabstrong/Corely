@@ -11,7 +11,7 @@ namespace Corely.UnitTests.Security.Keys
         public void Constructor_UsesDefaultKeySize()
         {
             var rsaKeyProvider = new RsaKeyProvider();
-            var (publicKey, _) = rsaKeyProvider.CreateKeyPair();
+            var (publicKey, _) = rsaKeyProvider.CreateKeys();
 
             using (var rsa = new RSACryptoServiceProvider())
             {
@@ -33,7 +33,7 @@ namespace Corely.UnitTests.Security.Keys
         [Fact]
         public void CreateKeyPair_ReturnsValidKeyPair()
         {
-            var (publicKey, privateKey) = _rsaKeyProvider.CreateKeyPair();
+            var (publicKey, privateKey) = _rsaKeyProvider.CreateKeys();
             Assert.NotEmpty(publicKey);
             Assert.NotEmpty(privateKey);
         }
@@ -41,7 +41,7 @@ namespace Corely.UnitTests.Security.Keys
         [Fact]
         public void IsKeyValid_ReturnsTrue_ForValidKeys()
         {
-            var (publicKey, privateKey) = _rsaKeyProvider.CreateKeyPair();
+            var (publicKey, privateKey) = _rsaKeyProvider.CreateKeys();
             var isValid = _rsaKeyProvider.IsKeyValid(publicKey, privateKey);
             Assert.True(isValid);
         }
@@ -49,7 +49,7 @@ namespace Corely.UnitTests.Security.Keys
         [Fact]
         public void IsKeyValid_ReturnsFalse_ForInvalidPrivateKey()
         {
-            var (publicKey, _) = _rsaKeyProvider.CreateKeyPair();
+            var (publicKey, _) = _rsaKeyProvider.CreateKeys();
             var invalidKey = Convert.ToBase64String(new byte[256]);
             var isValid = _rsaKeyProvider.IsKeyValid(publicKey, invalidKey);
             Assert.False(isValid);
@@ -58,7 +58,7 @@ namespace Corely.UnitTests.Security.Keys
         [Fact]
         public void IsKeyValid_ReturnsFalse_ForInvalidPublicKey()
         {
-            _rsaKeyProvider.CreateKeyPair();
+            _rsaKeyProvider.CreateKeys();
             var invalidKey = Convert.ToBase64String(new byte[256]);
             var isValid = _rsaKeyProvider.IsKeyValid(invalidKey, invalidKey);
             Assert.False(isValid);
@@ -68,7 +68,7 @@ namespace Corely.UnitTests.Security.Keys
         public void CreateKeyPair_RespectsSpecifiedKeySize()
         {
             var rsaKeyProvider = new RsaKeyProvider(4096);
-            var (publicKey, _) = rsaKeyProvider.CreateKeyPair();
+            var (publicKey, _) = rsaKeyProvider.CreateKeys();
 
             using (var rsa = new RSACryptoServiceProvider())
             {

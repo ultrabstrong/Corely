@@ -18,7 +18,7 @@ namespace Corely.Security.Keys
             _keySize = keySize;
         }
 
-        public (string PublicKey, string PrivateKey) CreateKeyPair()
+        public (string PublicKey, string PrivateKey) CreateKeys()
         {
             using (var rsa = new RSACryptoServiceProvider(_keySize))
             {

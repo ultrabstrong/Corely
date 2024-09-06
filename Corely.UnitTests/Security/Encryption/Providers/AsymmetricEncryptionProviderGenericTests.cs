@@ -7,17 +7,18 @@ using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Security.Encryption.Providers
 {
-    public abstract class SymmetricEncryptionProviderGenericTests
+    public abstract class AsymmetricEncryptionProviderGenericTests
     {
         private readonly Fixture _fixture = new();
-        private readonly AesKeyProvider _keyProvider;
-        private readonly InMemorySymmetricKeyStoreProvider _keyStoreProvider;
-        private readonly ISymmetricEncryptionProvider _encryptionProvider;
+        private readonly RsaKeyProvider _keyProvider;
+        private readonly InMemoryAsymmetricKeyStoreProvider _keyStoreProvider;
+        private readonly IAsymmetricEncryptionProvider _encryptionProvider;
 
-        public SymmetricEncryptionProviderGenericTests()
+        public AsymmetricEncryptionProviderGenericTests()
         {
-            _keyProvider = new AesKeyProvider();
-            _keyStoreProvider = new InMemorySymmetricKeyStoreProvider(_keyProvider.CreateKey());
+            _keyProvider = new RsaKeyProvider();
+            var (publicKey, privateKey) = _keyProvider.CreateKeys();
+            _keyStoreProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
             _encryptionProvider = GetEncryptionProvider();
         }
 
@@ -60,7 +61,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         }
 
         [Fact]
-        public void Encrypt_ThenDecrypt_ProducesOriginalValue()
+        public void Encrypt_ThenDecrypt_ReturnsOriginalValue()
         {
             var originalDecrypted = _fixture.Create<string>();
             var encrypted = _encryptionProvider.Encrypt(originalDecrypted, _keyStoreProvider);
@@ -71,13 +72,13 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         [Fact]
         public void Decrypt_ProducesSameStringThatWasEncrypted()
         {
-            var decrpyted = _fixture.Create<string>();
-            var encrypted1 = _encryptionProvider.Encrypt(decrpyted, _keyStoreProvider);
-            var encrypted2 = _encryptionProvider.Encrypt(decrpyted, _keyStoreProvider);
+            var decrypted = _fixture.Create<string>();
+            var encrypted1 = _encryptionProvider.Encrypt(decrypted, _keyStoreProvider);
+            var encrypted2 = _encryptionProvider.Encrypt(decrypted, _keyStoreProvider);
             var decrypted1 = _encryptionProvider.Decrypt(encrypted1, _keyStoreProvider);
             var decrypted2 = _encryptionProvider.Decrypt(encrypted2, _keyStoreProvider);
-            Assert.Equal(decrpyted, decrypted1);
-            Assert.Equal(decrpyted, decrypted2);
+            Assert.Equal(decrypted, decrypted1);
+            Assert.Equal(decrypted, decrypted2);
         }
 
         [Fact]
@@ -86,7 +87,8 @@ namespace Corely.UnitTests.Security.Encryption.Providers
             var originalDecrypted = _fixture.Create<string>();
             var encrypted = _encryptionProvider.Encrypt(originalDecrypted, _keyStoreProvider);
 
-            _keyStoreProvider.Add(_keyProvider.CreateKey());
+            var (publicKey, privateKey) = _keyProvider.CreateKeys();
+            _keyStoreProvider.Add(publicKey, privateKey);
 
             var decrypted = _encryptionProvider.Decrypt(encrypted, _keyStoreProvider);
             Assert.Equal(originalDecrypted, decrypted);
@@ -144,7 +146,8 @@ namespace Corely.UnitTests.Security.Encryption.Providers
             var originalDecrypted = _fixture.Create<string>();
             var originalEncrypted = _encryptionProvider.Encrypt(originalDecrypted, _keyStoreProvider);
 
-            _keyStoreProvider.Add(_keyProvider.CreateKey());
+            var (publicKey, privateKey) = _keyProvider.CreateKeys();
+            _keyStoreProvider.Add(publicKey, privateKey);
 
             var encrypted = _encryptionProvider.ReEncrypt(originalEncrypted, _keyStoreProvider);
             var decrypted = _encryptionProvider.Decrypt(encrypted, _keyStoreProvider);
@@ -158,7 +161,6 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         [Fact]
         public abstract void EncryptionTypeCode_ReturnsCorrectCode_ForImplementation();
 
-        public abstract ISymmetricEncryptionProvider GetEncryptionProvider();
-
+        public abstract IAsymmetricEncryptionProvider GetEncryptionProvider();
     }
 }
