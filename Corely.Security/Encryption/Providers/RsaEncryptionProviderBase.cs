@@ -3,9 +3,9 @@ using System.Text;
 
 namespace Corely.Security.Encryption.Providers
 {
-    internal sealed class RsaEncryptionProvider : AsymmetricEncryptionProviderBase
+    internal abstract class RsaEncryptionProviderBase : AsymmetricEncryptionProviderBase
     {
-        public override string EncryptionTypeCode => AsymmetricEncryptionConstants.RSA_CODE;
+        protected abstract RSAEncryptionPadding RsaEncryptionPadding { get; }
 
         protected override string DecryptInternal(string value, string privateKey)
         {
@@ -15,7 +15,7 @@ namespace Corely.Security.Encryption.Providers
             using (var rsa = RSA.Create())
             {
                 rsa.ImportPkcs8PrivateKey(privateKeyBytes, out _);
-                var decryptedBytes = rsa.Decrypt(encryptedBytes, RSAEncryptionPadding.OaepSHA256);
+                var decryptedBytes = rsa.Decrypt(encryptedBytes, RsaEncryptionPadding);
                 return Encoding.UTF8.GetString(decryptedBytes);
             }
         }
@@ -28,7 +28,7 @@ namespace Corely.Security.Encryption.Providers
             using (var rsa = RSA.Create())
             {
                 rsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
-                var encryptedBytes = rsa.Encrypt(dataToEncrypt, RSAEncryptionPadding.OaepSHA256);
+                var encryptedBytes = rsa.Encrypt(dataToEncrypt, RsaEncryptionPadding);
                 return Convert.ToBase64String(encryptedBytes);
             }
         }

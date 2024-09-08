@@ -12,7 +12,7 @@ namespace Corely.Security.Encryption.Factories
             ArgumentNullException.ThrowIfNull(defaultProviderCode, nameof(defaultProviderCode));
 
             _defaultProviderCode = defaultProviderCode;
-            _providers.Add(AsymmetricEncryptionConstants.RSA_CODE, new RsaEncryptionProvider());
+            _providers.Add(AsymmetricEncryptionConstants.RSA_SHA256_CODE, new RsaSha256EncryptionProvider());
         }
 
         public void AddProvider(string providerCode, IAsymmetricEncryptionProvider provider)

@@ -3,19 +3,19 @@ using Corely.Security.Encryption.Providers;
 
 namespace Corely.UnitTests.Security.Encryption.Providers
 {
-    public class RsaEncryptionProviderTests : AsymmetricEncryptionProviderGenericTests
+    public class RsaSha512EncryptionProviderTests : AsymmetricEncryptionProviderGenericTests
     {
-        private readonly RsaEncryptionProvider _rsaEncryptionProvider = new();
+        private readonly RsaSha512EncryptionProvider _rsaEncryptionProvider = new();
 
         [Fact]
         public override void EncryptionTypeCode_ReturnsCorrectCode_ForImplementation()
         {
-            Assert.Equal(AsymmetricEncryptionConstants.RSA_CODE, _rsaEncryptionProvider.EncryptionTypeCode);
+            Assert.Equal(AsymmetricEncryptionConstants.RSA_SHA512_CODE, _rsaEncryptionProvider.EncryptionTypeCode);
         }
 
         public override IAsymmetricEncryptionProvider GetEncryptionProvider()
         {
-            return new RsaEncryptionProvider();
+            return new RsaSha512EncryptionProvider();
         }
     }
 }

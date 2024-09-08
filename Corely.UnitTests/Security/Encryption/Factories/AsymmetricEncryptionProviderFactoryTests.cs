@@ -8,7 +8,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
 {
     public class AsymmetricEncryptionProviderFactoryTests
     {
-        private readonly string _defaultProviderCode = AsymmetricEncryptionConstants.RSA_CODE;
+        private readonly string _defaultProviderCode = AsymmetricEncryptionConstants.RSA_SHA256_CODE;
         private readonly AsymmetricEncryptionProviderFactory _encryptionProviderFactory;
         private readonly Fixture _fixture = new();
 
@@ -130,7 +130,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
         }
 
         [Theory]
-        [InlineData(AsymmetricEncryptionConstants.RSA_CODE, typeof(RsaEncryptionProvider))]
+        [InlineData(AsymmetricEncryptionConstants.RSA_SHA256_CODE, typeof(RsaSha256EncryptionProvider))]
         public void GetProvider_ReturnEncryptionProvider(string code, Type expectedType)
         {
             var encryptionProvider = _encryptionProviderFactory.GetProvider(code);
@@ -153,7 +153,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
         }
 
         [Theory]
-        [InlineData(AsymmetricEncryptionConstants.RSA_CODE, typeof(RsaEncryptionProvider))]
+        [InlineData(AsymmetricEncryptionConstants.RSA_SHA256_CODE, typeof(RsaSha256EncryptionProvider))]
         public void GetProviderForDecrypting_ReturnsEncryptionProvider(string code, Type expectedType)
         {
             var encryptedValue = $"{code}:1:{_fixture.Create<string>()}";
