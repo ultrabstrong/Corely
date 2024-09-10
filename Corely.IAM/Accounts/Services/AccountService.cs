@@ -38,6 +38,7 @@ namespace Corely.IAM.Accounts.Services
             await ThrowIfAccountExists(account.AccountName);
 
             account.SymmetricKey = _securityService.GetSymmetricKeyEncryptedWithSystemKey();
+            account.AsymmetricKey = _securityService.GetAsymmetricKeyEncryptedWithSystemKey();
             var accountEntity = MapTo<AccountEntity>(account);
             var createdId = await _accountRepo.CreateAsync(accountEntity);
 
