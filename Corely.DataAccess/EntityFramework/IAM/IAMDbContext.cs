@@ -33,6 +33,7 @@ namespace Corely.DataAccess.EntityFramework.IAM
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new AccountSymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
+            modelBuilder.ApplyConfiguration(new AccountAsymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
 
             modelBuilder.ApplyConfiguration(new AccountEntityConfiguration(_configuration.GetDbTypes()));
 

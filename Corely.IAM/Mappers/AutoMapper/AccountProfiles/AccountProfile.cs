@@ -9,7 +9,6 @@ namespace Corely.IAM.Mappers.AutoMapper.AccountProfiles
         public AccountProfile()
         {
             CreateMap<Account, AccountEntity>(MemberList.Source)
-                .ForMember(dest => dest.AccountSymmetricKey, opt => opt.MapFrom(src => src.SymmetricKey))
                 .ReverseMap();
         }
     }

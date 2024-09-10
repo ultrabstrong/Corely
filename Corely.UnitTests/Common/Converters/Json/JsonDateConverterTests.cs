@@ -21,7 +21,7 @@ namespace Corely.UnitTests.Common.Converters.Json
         }
 
         [Theory, MemberData(nameof(ReadTestData))]
-        public void Read_ReturnsDate_WhenInputIsDate(string input, DateTime expected)
+        public void Read_ReturnsDate_WhenInputIsDate(string input, DateTime? expected)
         {
             var converter = new JsonDateConverter();
             var reader = GetReader(input);
@@ -32,6 +32,7 @@ namespace Corely.UnitTests.Common.Converters.Json
 
         public static IEnumerable<object[]> ReadTestData() =>
         [
+            ["null", null],
             ["2020-01-01", new DateTime(2020, 1, 1)],
             ["2020-01-01T00:00:00", new DateTime(2020, 1, 1)],
             ["2020-01-01T00:00:01", new DateTime(2020, 1, 1, 0, 0, 1)],
@@ -49,7 +50,7 @@ namespace Corely.UnitTests.Common.Converters.Json
         }
 
         [Theory, MemberData(nameof(WriteTestData))]
-        public void Write_ReturnsDate_WhenInputIsDate(DateTime input, string expected)
+        public void Write_ReturnsDate_WhenInputIsDate(DateTime? input, string expected)
         {
             var converter = new JsonDateConverter();
             using var memoryStream = new MemoryStream();
@@ -66,6 +67,7 @@ namespace Corely.UnitTests.Common.Converters.Json
 
         public static IEnumerable<object[]> WriteTestData() =>
         [
+            [null, "null"],
             [new DateTime(2020, 1, 1), "\"2020-01-01\""],
             [new DateTime(2020, 1, 1, 0, 0, 1), "\"2020-01-01\""],
             [new DateTime(2020, 1, 1, 0, 1, 0), "\"2020-01-01\""],
