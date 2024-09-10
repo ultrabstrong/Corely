@@ -14,7 +14,8 @@ namespace Corely.UnitTests.IAM.Security.Services
             _securityService = new(
                 serviceFactory.GetRequiredService<ISecurityConfigurationProvider>(),
                 serviceFactory.GetRequiredService<ISymmetricKeyProvider>(),
-                serviceFactory.GetRequiredService<ISymmetricEncryptionProviderFactory>());
+                serviceFactory.GetRequiredService<ISymmetricEncryptionProviderFactory>(),
+                serviceFactory.GetRequiredService<IAsymmetricKeyProvider>());
         }
 
         [Fact]
@@ -24,6 +25,17 @@ namespace Corely.UnitTests.IAM.Security.Services
 
             Assert.NotNull(result);
             Assert.NotNull(result.Key);
+            Assert.True(result.Version > -1);
+        }
+
+        [Fact]
+        public void GetAsymmetricKeyEncryptedWithSystemKey_ReturnsAsymmetricKey()
+        {
+            var result = _securityService.GetAsymmetricKeyEncryptedWithSystemKey();
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.PublicKey);
+            Assert.NotNull(result.PrivateKey);
             Assert.True(result.Version > -1);
         }
     }

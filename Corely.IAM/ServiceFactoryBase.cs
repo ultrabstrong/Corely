@@ -54,14 +54,18 @@ namespace Corely.IAM
 
         private static void AddSecurityServices(IServiceCollection services)
         {
-            services.AddScoped<ISymmetricEncryptionProviderFactory, SymmetricEncryptionProviderFactory>(serviceProvider =>
+            services.AddSingleton<ISymmetricEncryptionProviderFactory, SymmetricEncryptionProviderFactory>(serviceProvider =>
                 new SymmetricEncryptionProviderFactory(SymmetricEncryptionConstants.AES_CODE));
-            services.AddScoped<ISymmetricKeyProvider, AesKeyProvider>();
+            services.AddSingleton<ISymmetricKeyProvider, AesKeyProvider>();
 
-            services.AddScoped<IHashProviderFactory, HashProviderFactory>(_ =>
+            services.AddSingleton<IAsymmetricEncryptionProviderFactory, AsymmetricEncryptionProviderFactory>(serviceProvider =>
+                new AsymmetricEncryptionProviderFactory(AsymmetricEncryptionConstants.RSA_SHA256_CODE));
+            services.AddSingleton<IAsymmetricKeyProvider, RsaKeyProvider>();
+
+            services.AddSingleton<IHashProviderFactory, HashProviderFactory>(_ =>
                 new HashProviderFactory(HashConstants.SALTED_SHA256_CODE));
 
-            services.AddScoped<ISecurityService, SecurityService>();
+            services.AddSingleton<ISecurityService, SecurityService>();
         }
 
         private static void AddDomainServices(IServiceCollection services)
