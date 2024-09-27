@@ -1,4 +1,6 @@
-﻿namespace Corely.IAM.Users.Models
+﻿using Corely.IAM.Security.Models;
+
+namespace Corely.IAM.Users.Models
 {
     public class User
     {
@@ -14,5 +16,7 @@
         public DateTime CreatedUtc { get; set; }
         public DateTime ModifiedUtc { get; set; }
         public UserDetails? Details { get; init; }
+        public SymmetricKey? SymmetricKey { get; set; } = null!;
+        public AsymmetricKey? AsymmetricKey { get; set; } = null!;
     }
 }

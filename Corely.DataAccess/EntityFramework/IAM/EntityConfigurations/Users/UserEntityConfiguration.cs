@@ -1,5 +1,6 @@
 ﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Auth.Entities;
+using Corely.IAM.Security.Entities;
 using Corely.IAM.Users.Constants;
 using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,16 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Users
             builder.HasOne(p => p.Details)
                 .WithOne(d => d.User)
                 .HasForeignKey<UserDetailsEntity>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(p => p.SymmetricKey)
+                .WithOne()
+                .HasForeignKey<UserSymmetricKeyEntity>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(p => p.AsymmetricKey)
+                .WithOne()
+                .HasForeignKey<UserAsymmetricKeyEntity>(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(p => p.BasicAuth)

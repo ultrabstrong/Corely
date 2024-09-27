@@ -4,11 +4,13 @@ using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
 using Corely.IAM.Repos;
+using Corely.IAM.Security.Services;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM.Users.Services
@@ -17,10 +19,12 @@ namespace Corely.IAM.Users.Services
     {
         private readonly IRepoExtendedGet<UserEntity> _userRepo;
         private readonly IReadonlyRepo<AccountEntity> _readonlyAccountRepo;
+        private readonly ISecurityService _securityService;
 
         public UserService(
             IRepoExtendedGet<UserEntity> userRepo,
             IReadonlyRepo<AccountEntity> readonlyAccountRepo,
+            ISecurityService securityService,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
             ILogger<UserService> logger)
@@ -28,6 +32,7 @@ namespace Corely.IAM.Users.Services
         {
             _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
             _readonlyAccountRepo = readonlyAccountRepo.ThrowIfNull(nameof(readonlyAccountRepo));
+            _securityService = securityService.ThrowIfNull(nameof(securityService));
         }
 
         public async Task<CreateResult> CreateUserAsync(CreateUserRequest request)
@@ -44,6 +49,9 @@ namespace Corely.IAM.Users.Services
                 Logger.LogWarning("Account with Id {AccountId} not found", request.AccountId);
                 throw new AccountDoesNotExistException($"Account with Id {request.AccountId} not found");
             }
+
+            user.SymmetricKey = _securityService.GetSymmetricKeyEncryptedWithSystemKey();
+            user.AsymmetricKey = _securityService.GetAsymmetricKeyEncryptedWithSystemKey();
 
             var userEntity = MapTo<UserEntity>(user);
             userEntity.Accounts = [accountEntity];
@@ -110,6 +118,28 @@ namespace Corely.IAM.Users.Services
             var userEntity = MapTo<UserEntity>(user);
 
             return _userRepo.UpdateAsync(userEntity);
+        }
+
+        public async Task<string?> GetUserAuthTokenAsync(int userId)
+        {
+            var userEntity = await _userRepo.GetAsync(
+                u => u.Id == userId,
+                include: q => q
+                    .Include(u => u.AsymmetricKey));
+
+            if (userEntity == null)
+            {
+                Logger.LogWarning("User with Id {UserId} not found", userId);
+                return null;
+            }
+
+            if (userEntity.AsymmetricKey == null)
+            {
+                Logger.LogWarning("User with Id {UserId} does not have an asymmetric key", userId);
+                return null;
+            }
+
+            return userEntity.AsymmetricKey.PublicKey;
         }
     }
 }

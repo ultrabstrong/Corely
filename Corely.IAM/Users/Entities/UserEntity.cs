@@ -1,6 +1,7 @@
 ﻿using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
 using Corely.IAM.Entities;
+using Corely.IAM.Security.Entities;
 
 namespace Corely.IAM.Users.Entities
 {
@@ -18,6 +19,8 @@ namespace Corely.IAM.Users.Entities
         public DateTime CreatedUtc { get; set; }
         public DateTime ModifiedUtc { get; set; }
         public virtual UserDetailsEntity? Details { get; set; }
+        public virtual UserSymmetricKeyEntity? SymmetricKey { get; init; }
+        public virtual UserAsymmetricKeyEntity? AsymmetricKey { get; init; }
         public virtual BasicAuthEntity? BasicAuth { get; set; }
         public virtual ICollection<AccountEntity>? Accounts { get; set; }
     }

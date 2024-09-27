@@ -11,6 +11,10 @@ namespace Corely.IAM.Mappers.AutoMapper.SecurityProfiles
             CreateMap<SymmetricKey, AccountSymmetricKeyEntity>()
                 .ForMember(m => m.AccountId, opt => opt.Ignore())
                 .ReverseMap();
+
+            CreateMap<SymmetricKey, UserSymmetricKeyEntity>()
+                .ForMember(m => m.UserId, opt => opt.Ignore())
+                .ReverseMap();
         }
     }
 }

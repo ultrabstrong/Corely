@@ -6,12 +6,25 @@ using Corely.Security.Encryption;
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
 {
     public class AsymmetricKeyProfileTests
-        : BidirectionalProfileTestsBase<AsymmetricKey, AccountAsymmetricKeyEntity>
     {
-        protected override AccountAsymmetricKeyEntity ApplyDestinatonModifications(AccountAsymmetricKeyEntity destination)
+        public class ToAccountAsymmetricKeyEntity
+            : BidirectionalProfileTestsBase<AsymmetricKey, AccountAsymmetricKeyEntity>
         {
-            destination.PrivateKey = $"{AsymmetricEncryptionConstants.RSA_SHA256_CODE}:{new Fixture().Create<string>()}";
-            return destination;
+            protected override AccountAsymmetricKeyEntity ApplyDestinatonModifications(AccountAsymmetricKeyEntity destination)
+            {
+                destination.PrivateKey = $"{AsymmetricEncryptionConstants.RSA_SHA256_CODE}:{new Fixture().Create<string>()}";
+                return destination;
+            }
+        }
+
+        public class ToUserAsymmetricKeyEntity
+            : BidirectionalProfileTestsBase<AsymmetricKey, UserAsymmetricKeyEntity>
+        {
+            protected override UserAsymmetricKeyEntity ApplyDestinatonModifications(UserAsymmetricKeyEntity destination)
+            {
+                destination.PrivateKey = $"{AsymmetricEncryptionConstants.RSA_SHA256_CODE}:{new Fixture().Create<string>()}";
+                return destination;
+            }
         }
     }
 }

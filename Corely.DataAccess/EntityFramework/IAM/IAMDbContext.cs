@@ -37,6 +37,9 @@ namespace Corely.DataAccess.EntityFramework.IAM
 
             modelBuilder.ApplyConfiguration(new AccountEntityConfiguration(_configuration.GetDbTypes()));
 
+            modelBuilder.ApplyConfiguration(new UserSymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
+            modelBuilder.ApplyConfiguration(new UserAsymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
+
             modelBuilder.ApplyConfiguration(new UserEntityConfiguration(_configuration.GetDbTypes()));
             modelBuilder.ApplyConfiguration(new UserDetailsEntityConfiguration(_configuration.GetDbTypes()));
 

@@ -117,7 +117,7 @@ namespace Corely.IAM.AccountManagement.Services
             user.LastSuccessfulLoginUtc = DateTime.UtcNow;
             await _userService.UpdateUserAsync(user);
 
-            var authToken = string.Empty; // Todo : Implement token generation service
+            var authToken = await _userService.GetUserAuthTokenAsync(user.Id);
 
             _logger.LogDebug("User {Username} signed in", request.Username);
 

@@ -3,6 +3,7 @@ using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Mappers;
 using Corely.IAM.Repos;
+using Corely.IAM.Security.Services;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Users.Models;
@@ -26,6 +27,7 @@ namespace Corely.UnitTests.IAM.Users.Services
             _userService = new UserService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<UserEntity>>(),
                 _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<ISecurityService>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserService>>());

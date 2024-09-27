@@ -31,7 +31,10 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
 
         public AccountManagementServiceTests() : base()
         {
-            _user = _fixture.Create<User>();
+            _user = _fixture.Build<User>()
+                .Without(u => u.SymmetricKey)
+                .Without(u => u.AsymmetricKey)
+                .Create();
             _accountServiceMock = GetMockAccountService();
             _userServiceMock = GetMockUserService();
             _authServiceMock = GetMockAuthService();

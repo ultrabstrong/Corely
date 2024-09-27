@@ -15,5 +15,27 @@ namespace Corely.DataAccess.Mock.Repos
             var predicate = query.Compile();
             return Task.FromResult(Entities.FirstOrDefault(predicate));
         }
+
+        public virtual async Task<T?> GetAsync(
+            Expression<Func<T, bool>> query,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            Func<IQueryable<T>, IQueryable<T>>? include = null)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            var predicate = query.Compile();
+            var queryable = Entities.AsQueryable();
+
+            if (include != null)
+            {
+                queryable = include(queryable);
+            }
+
+            if (orderBy != null)
+            {
+                queryable = orderBy(queryable);
+            }
+
+            return await Task.FromResult(queryable.FirstOrDefault(predicate));
+        }
     }
 }
