@@ -56,23 +56,26 @@ namespace Corely.IAM.Accounts.Services
             }
         }
 
-        public async Task<Account?> GetAccountAsync(GetAccountRequest getAccountRequest)
+        public async Task<Account?> GetAccountAsync(int accountId)
         {
-            AccountEntity? accountEntity = null;
-            if (!string.IsNullOrEmpty(getAccountRequest.AccountName))
-            {
-                Logger.LogInformation("Getting account for account name {AccountName}", getAccountRequest.AccountName);
-                accountEntity = await _accountRepo.GetAsync(a => a.AccountName == getAccountRequest.AccountName);
-            }
-            else if (getAccountRequest.AccountId.HasValue)
-            {
-                Logger.LogInformation("Getting account for account id {AccountId}", getAccountRequest.AccountId);
-                accountEntity = await _accountRepo.GetAsync(getAccountRequest.AccountId.Value);
-            }
+            var accountEntity = await _accountRepo.GetAsync(accountId);
 
             if (accountEntity == null)
             {
-                Logger.LogWarning("Account not found for {GetAccountRequest}", getAccountRequest);
+                Logger.LogWarning("Account with Id {AccountId} not found", accountId);
+                return null;
+            }
+
+            return MapTo<Account>(accountEntity);
+        }
+
+        public async Task<Account?> GetAccountAsync(string accountName)
+        {
+            var accountEntity = await _accountRepo.GetAsync(a => a.AccountName == accountName);
+
+            if (accountEntity == null)
+            {
+                Logger.LogWarning("Account with Name {AccountName} not found", accountName);
                 return null;
             }
 

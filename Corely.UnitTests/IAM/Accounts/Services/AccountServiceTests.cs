@@ -1,4 +1,5 @@
-﻿using Corely.IAM.Accounts.Entities;
+﻿using AutoFixture;
+using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Services;
@@ -14,6 +15,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
     {
         private const string VALID_ACCOUNT_NAME = "accountname";
 
+        private readonly Fixture _fixture = new();
         private readonly ServiceFactory _serviceFactory = new();
         private readonly AccountService _accountService;
 
@@ -58,47 +60,53 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         }
 
         [Fact]
-        public async Task GetAccountAsync_ReturnsAccountEntity_WhenValidAccountName()
+        public async Task CreateAccount_ThrowsArgumentNullException_WithNullAccountName()
         {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
-            await _accountService.CreateAccountAsync(createAccountRequest);
+            var createAccountRequest = new CreateAccountRequest(null!);
+            var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(createAccountRequest));
 
-            var getAccountRequest = GetAccountRequest.ForAccountName(VALID_ACCOUNT_NAME);
-            var account = await _accountService.GetAccountAsync(getAccountRequest);
-
-            Assert.NotNull(account);
-            Assert.Equal(VALID_ACCOUNT_NAME, account!.AccountName);
+            Assert.NotNull(ex);
+            Assert.IsType<ValidationException>(ex);
         }
 
         [Fact]
-        public async Task GetAccountAsync_ReturnsAccountEntity_WhenValidAccountId()
+        public async Task GetAccountByAccountIdAsync_ReturnsNull_WhenAccountDNE()
+        {
+            var account = await _accountService.GetAccountAsync(_fixture.Create<int>());
+
+            Assert.Null(account);
+        }
+
+        [Fact]
+        public async Task GetAccountByAccountIdAsync_ReturnsAccount_WhenAccountExists()
         {
             var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
             var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
 
-            var getAccountRequest = GetAccountRequest.ForAccountId(createAccountResult.CreatedId);
-            var account = await _accountService.GetAccountAsync(getAccountRequest);
+            var account = await _accountService.GetAccountAsync(createAccountResult.CreatedId);
 
             Assert.NotNull(account);
-            Assert.Equal(VALID_ACCOUNT_NAME, account!.AccountName);
+            Assert.Equal(VALID_ACCOUNT_NAME, account.AccountName);
         }
 
         [Fact]
-        public async Task GetAccountAsync_ReturnsNull_WhenInvalidAccountName()
+        public async Task GetAccountByAccountNameAsync_ReturnsNull_WhenAccountDNE()
         {
-            var getAccountRequest = GetAccountRequest.ForAccountName(VALID_ACCOUNT_NAME);
-            var account = await _accountService.GetAccountAsync(getAccountRequest);
+            var account = await _accountService.GetAccountAsync(_fixture.Create<string>());
 
             Assert.Null(account);
         }
 
         [Fact]
-        public async Task GetAccountAsync_ReturnsNull_WhenInvalidAccountId()
+        public async Task GetAccountByAccountNameAsync_ReturnsAccount_WhenAccountExists()
         {
-            var getAccountRequest = GetAccountRequest.ForAccountId(0);
-            var account = await _accountService.GetAccountAsync(getAccountRequest);
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
+            await _accountService.CreateAccountAsync(createAccountRequest);
 
-            Assert.Null(account);
+            var account = await _accountService.GetAccountAsync(VALID_ACCOUNT_NAME);
+
+            Assert.NotNull(account);
+            Assert.Equal(VALID_ACCOUNT_NAME, account.AccountName);
         }
     }
 }

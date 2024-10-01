@@ -6,7 +6,7 @@ namespace Corely.IAM.Accounts.Services
     public interface IAccountService
     {
         Task<CreateResult> CreateAccountAsync(CreateAccountRequest createAccountRequest);
-
-        Task<Account> GetAccountAsync(GetAccountRequest getAccountRequest);
+        Task<Account?> GetAccountAsync(int accountId);
+        Task<Account?> GetAccountAsync(string accountName);
     }
 }
