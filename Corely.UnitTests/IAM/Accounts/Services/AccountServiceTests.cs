@@ -56,5 +56,49 @@ namespace Corely.UnitTests.IAM.Accounts.Services
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
+
+        [Fact]
+        public async Task GetAccountAsync_ReturnsAccountEntity_WhenValidAccountName()
+        {
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
+            await _accountService.CreateAccountAsync(createAccountRequest);
+
+            var getAccountRequest = GetAccountRequest.ForAccountName(VALID_ACCOUNT_NAME);
+            var account = await _accountService.GetAccountAsync(getAccountRequest);
+
+            Assert.NotNull(account);
+            Assert.Equal(VALID_ACCOUNT_NAME, account!.AccountName);
+        }
+
+        [Fact]
+        public async Task GetAccountAsync_ReturnsAccountEntity_WhenValidAccountId()
+        {
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
+            var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
+
+            var getAccountRequest = GetAccountRequest.ForAccountId(createAccountResult.CreatedId);
+            var account = await _accountService.GetAccountAsync(getAccountRequest);
+
+            Assert.NotNull(account);
+            Assert.Equal(VALID_ACCOUNT_NAME, account!.AccountName);
+        }
+
+        [Fact]
+        public async Task GetAccountAsync_ReturnsNull_WhenInvalidAccountName()
+        {
+            var getAccountRequest = GetAccountRequest.ForAccountName(VALID_ACCOUNT_NAME);
+            var account = await _accountService.GetAccountAsync(getAccountRequest);
+
+            Assert.Null(account);
+        }
+
+        [Fact]
+        public async Task GetAccountAsync_ReturnsNull_WhenInvalidAccountId()
+        {
+            var getAccountRequest = GetAccountRequest.ForAccountId(0);
+            var account = await _accountService.GetAccountAsync(getAccountRequest);
+
+            Assert.Null(account);
+        }
     }
 }

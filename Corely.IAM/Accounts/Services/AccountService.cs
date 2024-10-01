@@ -55,5 +55,28 @@ namespace Corely.IAM.Accounts.Services
                 throw new AccountExistsException($"Account {accountName} already exists");
             }
         }
+
+        public async Task<Account?> GetAccountAsync(GetAccountRequest getAccountRequest)
+        {
+            AccountEntity? accountEntity = null;
+            if (!string.IsNullOrEmpty(getAccountRequest.AccountName))
+            {
+                Logger.LogInformation("Getting account for account name {AccountName}", getAccountRequest.AccountName);
+                accountEntity = await _accountRepo.GetAsync(a => a.AccountName == getAccountRequest.AccountName);
+            }
+            else if (getAccountRequest.AccountId.HasValue)
+            {
+                Logger.LogInformation("Getting account for account id {AccountId}", getAccountRequest.AccountId);
+                accountEntity = await _accountRepo.GetAsync(getAccountRequest.AccountId.Value);
+            }
+
+            if (accountEntity == null)
+            {
+                Logger.LogWarning("Account not found for {GetAccountRequest}", getAccountRequest);
+                return null;
+            }
+
+            return MapTo<Account>(accountEntity);
+        }
     }
 }
