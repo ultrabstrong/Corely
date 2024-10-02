@@ -1,8 +1,8 @@
-﻿using Corely.IAM.AccountManagement.Models;
+﻿using Corely.IAM.Models;
 
-namespace Corely.IAM.AccountManagement.Services
+namespace Corely.IAM.Services
 {
-    public interface IAccountManagementService
+    public interface IRegistrationService
     {
         Task<RegisterResult> RegisterAsync(RegisterRequest request);
         Task<SignInResult> SignInAsync(SignInRequest request);

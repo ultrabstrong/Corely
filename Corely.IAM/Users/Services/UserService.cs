@@ -12,6 +12,10 @@ using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace Corely.IAM.Users.Services
 {
@@ -139,7 +143,23 @@ namespace Corely.IAM.Users.Services
                 return null;
             }
 
-            return userEntity.AsymmetricKey.PublicKey;
+            var privateKey = userEntity.AsymmetricKey.PrivateKey;
+            var credentials = new SigningCredentials(
+                new RsaSecurityKey(RSA.Create()),
+                SecurityAlgorithms.RsaSha256);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, userId.ToString())]),
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                SigningCredentials = credentials
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.CreateToken(tokenDescriptor);
+            var jwt = tokenHandler.WriteToken(jwtToken);
+
+            return jwt;
         }
     }
 }

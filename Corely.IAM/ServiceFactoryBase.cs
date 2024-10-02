@@ -1,10 +1,10 @@
 ﻿using Corely.Common.Models;
-using Corely.IAM.AccountManagement.Services;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
 using Corely.IAM.Security.Services;
+using Corely.IAM.Services;
 using Corely.IAM.Users.Services;
 using Corely.IAM.Validators;
 using Corely.IAM.Validators.FluentValidators;
@@ -73,7 +73,7 @@ namespace Corely.IAM
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IAccountManagementService, AccountManagementService>();
+            services.AddScoped<IRegistrationService, RegistrationService>();
         }
 
         protected abstract void AddSecurityConfigurationProvider(IServiceCollection services);

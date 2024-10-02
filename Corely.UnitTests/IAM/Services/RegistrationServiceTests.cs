@@ -1,6 +1,4 @@
 ﻿using AutoFixture;
-using Corely.IAM.AccountManagement.Models;
-using Corely.IAM.AccountManagement.Services;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Models;
@@ -8,28 +6,28 @@ using Corely.IAM.Auth.Services;
 using Corely.IAM.Enums;
 using Corely.IAM.Models;
 using Corely.IAM.Repos;
+using Corely.IAM.Services;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Services;
-using Corely.UnitTests.IAM.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.IAM.AccountManagement.Services
+namespace Corely.UnitTests.IAM.Services
 {
-    public class AccountManagementServiceTests : ServiceBaseTests
+    public class RegistrationServiceTests : ServiceBaseTests
     {
         private readonly Fixture _fixture = new();
         private readonly Mock<IUnitOfWorkProvider> _unitOfWorkProviderMock = new();
         private readonly Mock<IAccountService> _accountServiceMock;
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<IAuthService> _authServiceMock;
-        private readonly AccountManagementService _accountManagementService;
+        private readonly RegistrationService _accountManagementService;
 
         private readonly User _user;
         private bool _createAccountSuccess = true;
         private bool _createUserSuccess = true;
         private bool _createAuthSuccess = true;
 
-        public AccountManagementServiceTests() : base()
+        public RegistrationServiceTests() : base()
         {
             _user = _fixture.Build<User>()
                 .Without(u => u.SymmetricKey)
@@ -39,8 +37,8 @@ namespace Corely.UnitTests.IAM.AccountManagement.Services
             _userServiceMock = GetMockUserService();
             _authServiceMock = GetMockAuthService();
 
-            _accountManagementService = new AccountManagementService(
-                _serviceFactory.GetRequiredService<ILogger<AccountManagementService>>(),
+            _accountManagementService = new RegistrationService(
+                _serviceFactory.GetRequiredService<ILogger<RegistrationService>>(),
                 _accountServiceMock.Object,
                 _userServiceMock.Object,
                 _authServiceMock.Object,

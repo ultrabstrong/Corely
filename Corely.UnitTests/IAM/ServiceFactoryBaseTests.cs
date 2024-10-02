@@ -1,11 +1,11 @@
 ﻿using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.IAM;
-using Corely.IAM.AccountManagement.Services;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Security.Services;
+using Corely.IAM.Services;
 using Corely.IAM.Users.Services;
 using Corely.IAM.Validators;
 using Corely.Security.Encryption.Factories;
@@ -77,7 +77,7 @@ namespace Corely.UnitTests.IAM
             [typeof(IAuthService)],
             [typeof(IAccountService)],
             [typeof(IUserService)],
-            [typeof(IAccountManagementService)],
+            [typeof(IRegistrationService)],
             [typeof(ISecurityService)]
         ];
 

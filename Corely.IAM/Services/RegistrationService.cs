@@ -1,28 +1,28 @@
 ﻿using Corely.Common.Extensions;
-using Corely.IAM.AccountManagement.Models;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
+using Corely.IAM.Models;
 using Corely.IAM.Repos;
 using Corely.IAM.Users.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.AccountManagement.Services
+namespace Corely.IAM.Services
 {
-    internal class AccountManagementService : IAccountManagementService
+    internal class RegistrationService : IRegistrationService
     {
-        private readonly ILogger<AccountManagementService> _logger;
+        private readonly ILogger<RegistrationService> _logger;
         private readonly IAccountService _accountService;
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
         private readonly IUnitOfWorkProvider _uowProvider;
 
-        public AccountManagementService(
-            ILogger<AccountManagementService> logger,
+        public RegistrationService(
+            ILogger<RegistrationService> logger,
             IAccountService accountService,
             IUserService userService,
             IAuthService authService,
-            [FromKeyedServices(nameof(IAccountManagementService))]
+            [FromKeyedServices(nameof(IRegistrationService))]
             IUnitOfWorkProvider uowProvider)
         {
             _logger = logger.ThrowIfNull(nameof(logger));

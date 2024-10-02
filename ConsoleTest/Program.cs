@@ -1,7 +1,7 @@
 ﻿using ConsoleTest.SerilogCustomization;
 using Corely.Common.Providers.Redaction;
-using Corely.IAM.AccountManagement.Models;
-using Corely.IAM.AccountManagement.Services;
+using Corely.IAM.Models;
+using Corely.IAM.Services;
 using Serilog;
 
 namespace ConsoleTest
@@ -30,7 +30,7 @@ namespace ConsoleTest
             {
                 using var serviceFactory = new ServiceFactory();
 
-                var acctMgmtService = serviceFactory.GetRequiredService<IAccountManagementService>();
+                var acctMgmtService = serviceFactory.GetRequiredService<IRegistrationService>();
 
                 var registerRequest = new RegisterRequest("acct1", "un1", "email@x.y", "P@55Word");
                 //var registerResult = await acctMgmtService.RegisterAsync(registerRequest);
