@@ -31,8 +31,11 @@ namespace ConsoleTest
                 using var serviceFactory = new ServiceFactory();
 
                 var registrationService = serviceFactory.GetRequiredService<IRegistrationService>();
-                var registerRequest = new RegisterRequest("acct1", "un1", "email@x.y", "P@55Word");
-                var registerResult = await registrationService.RegisterAsync(registerRequest);
+                var registerUserRequest = new RegisterUserRequest("un1", "email@x.y", "P@55Word");
+                var registerUserResult = await registrationService.RegisterUserAsync(registerUserRequest);
+
+                var registerAccountRequest = new RegisterAccountRequest("acct1", registerUserResult.CreatedUserId);
+                var registerAccountResult = await registrationService.RegisterAccountAsync(registerAccountRequest);
 
                 var signInService = serviceFactory.GetRequiredService<ISignInService>();
                 var signInRequest = new SignInRequest("un1", "P@55Word");

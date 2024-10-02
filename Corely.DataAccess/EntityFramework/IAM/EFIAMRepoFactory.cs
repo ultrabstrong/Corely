@@ -60,6 +60,13 @@ namespace Corely.DataAccess.EntityFramework.IAM
                 _IAMDbContext.Users);
         }
 
+        public IReadonlyRepo<UserEntity> CreateReadonlyUserRepo()
+        {
+            return new EFReadonlyRepo<UserEntity>(
+                _loggerFactory.CreateLogger<EFReadonlyRepo<UserEntity>>(),
+                _IAMDbContext.Users);
+        }
+
         public IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo()
         {
             return new EFRepoExtendedGet<BasicAuthEntity>(

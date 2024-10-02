@@ -4,6 +4,8 @@ namespace Corely.IAM.Services
 {
     public interface IRegistrationService
     {
-        Task<RegisterResult> RegisterAsync(RegisterRequest request);
+        Task<RegisterUserResult> RegisterUserAsync(RegisterUserRequest request);
+
+        Task<RegisterAccountResult> RegisterAccountAsync(RegisterAccountRequest request);
     }
 }

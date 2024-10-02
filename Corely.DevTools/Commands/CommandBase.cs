@@ -162,9 +162,19 @@ namespace Corely.DevTools.Commands
             Console.WriteLine(message, ConsoleColor.Green);
         }
 
+        protected static void Success(IEnumerable<string> messages)
+        {
+            WriteColored(messages, ConsoleColor.Green);
+        }
+
         protected static void Warn(string message)
         {
             WriteColored(message, ConsoleColor.Yellow);
+        }
+
+        protected static void Warn(IEnumerable<string> messages)
+        {
+            WriteColored(messages, ConsoleColor.Yellow);
         }
 
         protected static void Error(string message)
@@ -172,10 +182,22 @@ namespace Corely.DevTools.Commands
             Console.WriteLine(message, ConsoleColor.Red);
         }
 
+        protected static void Error(IEnumerable<string> messages)
+        {
+            WriteColored(messages, ConsoleColor.Red);
+        }
+
         protected static void WriteColored(string message, ConsoleColor color)
         {
             Console.ForegroundColor = color;
             Console.WriteLine(message);
+            Console.ResetColor();
+        }
+
+        protected static void WriteColored(IEnumerable<string> messages, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(string.Join(Environment.NewLine, messages));
             Console.ResetColor();
         }
     }

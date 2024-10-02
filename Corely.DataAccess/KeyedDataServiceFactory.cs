@@ -40,6 +40,10 @@ namespace Corely.DataAccess
 
             services.AddScoped(serviceProvider => serviceProvider
                 .GetRequiredService<IIAMRepoFactory>()
+                .CreateReadonlyUserRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
                 .CreateBasicAuthRepo());
 
             services.AddKeyedScoped(nameof(IRegistrationService), (serviceProvider, _) => serviceProvider

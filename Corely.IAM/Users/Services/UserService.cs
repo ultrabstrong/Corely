@@ -1,6 +1,4 @@
 ﻿using Corely.Common.Extensions;
-using Corely.IAM.Accounts.Entities;
-using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
 using Corely.IAM.Repos;
@@ -22,12 +20,10 @@ namespace Corely.IAM.Users.Services
     internal class UserService : ServiceBase, IUserService
     {
         private readonly IRepoExtendedGet<UserEntity> _userRepo;
-        private readonly IReadonlyRepo<AccountEntity> _readonlyAccountRepo;
         private readonly ISecurityService _securityService;
 
         public UserService(
             IRepoExtendedGet<UserEntity> userRepo,
-            IReadonlyRepo<AccountEntity> readonlyAccountRepo,
             ISecurityService securityService,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
@@ -35,7 +31,6 @@ namespace Corely.IAM.Users.Services
             : base(mapProvider, validationProvider, logger)
         {
             _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
-            _readonlyAccountRepo = readonlyAccountRepo.ThrowIfNull(nameof(readonlyAccountRepo));
             _securityService = securityService.ThrowIfNull(nameof(securityService));
         }
 
@@ -47,18 +42,10 @@ namespace Corely.IAM.Users.Services
 
             await ThrowIfUserExists(user.Username, user.Email);
 
-            var accountEntity = await _readonlyAccountRepo.GetAsync(request.AccountId);
-            if (accountEntity == null)
-            {
-                Logger.LogWarning("Account with Id {AccountId} not found", request.AccountId);
-                throw new AccountDoesNotExistException($"Account with Id {request.AccountId} not found");
-            }
-
             user.SymmetricKey = _securityService.GetSymmetricKeyEncryptedWithSystemKey();
             user.AsymmetricKey = _securityService.GetAsymmetricKeyEncryptedWithSystemKey();
 
             var userEntity = MapTo<UserEntity>(user);
-            userEntity.Accounts = [accountEntity];
             var createdId = await _userRepo.CreateAsync(userEntity);
 
             Logger.LogInformation("User {Username} created with Id {Id}", user.Username, createdId);

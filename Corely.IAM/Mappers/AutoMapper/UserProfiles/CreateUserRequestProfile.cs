@@ -7,8 +7,7 @@ namespace Corely.IAM.Mappers.AutoMapper.UserProfiles
     {
         public CreateUserRequestProfile()
         {
-            CreateMap<CreateUserRequest, User>(MemberList.Source)
-                .ForSourceMember(m => m.AccountId, opt => opt.DoNotValidate());
+            CreateMap<CreateUserRequest, User>(MemberList.Source);
         }
     }
 }

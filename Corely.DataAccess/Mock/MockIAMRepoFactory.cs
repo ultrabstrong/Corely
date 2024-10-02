@@ -30,6 +30,11 @@ namespace Corely.DataAccess.Mock
             return _userRepo;
         }
 
+        public IReadonlyRepo<UserEntity> CreateReadonlyUserRepo()
+        {
+            return new MockReadonlyRepo<UserEntity>(_userRepo);
+        }
+
         public IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo()
         {
             return _basicAuthRepo;

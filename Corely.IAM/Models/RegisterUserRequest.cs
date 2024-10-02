@@ -1,7 +1,6 @@
 ﻿namespace Corely.IAM.Models
 {
-    public record RegisterRequest(
-        string AccountName,
+    public record RegisterUserRequest(
         string Username,
         string Email,
         string Password);

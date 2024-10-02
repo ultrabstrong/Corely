@@ -41,7 +41,7 @@ namespace Corely.UnitTests.IAM.Services
         [Fact]
         public void MapThenValidateTo_ReturnsValidDestination_IfSourceIsValid()
         {
-            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
             var user = _mockServiceBase.MapThenValidateTo<User>(createUserRequest);
 
             Assert.NotNull(user);
@@ -82,7 +82,7 @@ namespace Corely.UnitTests.IAM.Services
         [Fact]
         public void MapTo_ReturnsValidDestination_IfSourceIsValid()
         {
-            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
             var user = _mockServiceBase.MapTo<User>(createUserRequest);
 
             Assert.NotNull(user);
@@ -112,7 +112,7 @@ namespace Corely.UnitTests.IAM.Services
         [Fact]
         public void Validate_DoesNotThrowException_IfModelIsValid()
         {
-            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
             var user = _mockServiceBase.MapTo<User>(createUserRequest);
 
             var ex = Record.Exception(() => _mockServiceBase.Validate(user));

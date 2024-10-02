@@ -7,6 +7,8 @@ using Corely.IAM.Models;
 using Corely.IAM.Repos;
 using Corely.IAM.Security.Services;
 using Corely.IAM.Services;
+using Corely.IAM.Users.Entities;
+using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
@@ -15,10 +17,12 @@ namespace Corely.IAM.Accounts.Services
     internal class AccountService : ServiceBase, IAccountService
     {
         private readonly IRepoExtendedGet<AccountEntity> _accountRepo;
+        private readonly IReadonlyRepo<UserEntity> _userRepo;
         private readonly ISecurityService _securityService;
 
         public AccountService(
             IRepoExtendedGet<AccountEntity> accountRepo,
+            IReadonlyRepo<UserEntity> userRepo,
             ISecurityService securityService,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
@@ -26,6 +30,7 @@ namespace Corely.IAM.Accounts.Services
             : base(mapProvider, validationProvider, logger)
         {
             _accountRepo = accountRepo.ThrowIfNull(nameof(accountRepo));
+            _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
             _securityService = securityService.ThrowIfNull(nameof(securityService));
         }
 
@@ -37,9 +42,18 @@ namespace Corely.IAM.Accounts.Services
 
             await ThrowIfAccountExists(account.AccountName);
 
+            var userEntity = await _userRepo.GetAsync(request.UserIdOfOwner);
+            if (userEntity == null)
+            {
+                Logger.LogWarning("User with Id {UserId} not found", request.UserIdOfOwner);
+                throw new UserDoesNotExistException($"User with Id {request.UserIdOfOwner} not found");
+            }
+
             account.SymmetricKey = _securityService.GetSymmetricKeyEncryptedWithSystemKey();
             account.AsymmetricKey = _securityService.GetAsymmetricKeyEncryptedWithSystemKey();
+
             var accountEntity = MapTo<AccountEntity>(account);
+            accountEntity.Users = [userEntity];
             var createdId = await _accountRepo.CreateAsync(accountEntity);
 
             Logger.LogInformation("Account {Account} created with Id {Id}", account.AccountName, createdId);

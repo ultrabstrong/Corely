@@ -13,6 +13,8 @@ namespace Corely.DataAccess.EntityFramework.IAM
 
         IRepoExtendedGet<UserEntity> CreateUserRepo();
 
+        IReadonlyRepo<UserEntity> CreateReadonlyUserRepo();
+
         IRepoExtendedGet<BasicAuthEntity> CreateBasicAuthRepo();
 
         IUnitOfWorkProvider CreateUnitOfWorkProvider();

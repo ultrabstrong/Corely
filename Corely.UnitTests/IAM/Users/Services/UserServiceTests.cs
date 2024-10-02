@@ -1,6 +1,4 @@
 ﻿using AutoFixture;
-using Corely.IAM.Accounts.Entities;
-using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Mappers;
 using Corely.IAM.Repos;
 using Corely.IAM.Security.Services;
@@ -26,7 +24,6 @@ namespace Corely.UnitTests.IAM.Users.Services
         {
             _userService = new UserService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<UserEntity>>(),
-                _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<ISecurityService>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
@@ -36,8 +33,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         [Fact]
         public async Task CreateUserAsync_ThrowsUserExistsException_WhenUserExists()
         {
-            var accountId = await CreateAccount();
-            var createUserRequest = new CreateUserRequest(accountId, VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
             await _userService.CreateUserAsync(createUserRequest);
 
             Exception ex = await Record.ExceptionAsync(() => _userService.CreateUserAsync(createUserRequest));
@@ -49,30 +45,10 @@ namespace Corely.UnitTests.IAM.Users.Services
         [Fact]
         public async Task CreateUser_ReturnsCreateUserResult()
         {
-            var accountId = await CreateAccount();
-            var createUserRequest = new CreateUserRequest(accountId, VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
             var res = await _userService.CreateUserAsync(createUserRequest);
 
             Assert.True(res.IsSuccess);
-        }
-
-        private async Task<int> CreateAccount()
-        {
-            var accountId = _fixture.Create<int>();
-            var account = new AccountEntity { Id = accountId };
-            var accountRepo = _serviceFactory.GetRequiredService<IRepoExtendedGet<AccountEntity>>();
-            return await accountRepo.CreateAsync(account);
-        }
-
-        [Fact]
-        public async Task CreateUser_ThrowsAccountDoesNotExistException_WhenAccountDNE()
-        {
-            var createUserRequest = new CreateUserRequest(_fixture.Create<int>(), VALID_USERNAME, VALID_EMAIL);
-
-            Exception ex = await Record.ExceptionAsync(() => _userService.CreateUserAsync(createUserRequest));
-
-            Assert.NotNull(ex);
-            Assert.IsType<AccountDoesNotExistException>(ex);
         }
 
         [Fact]
@@ -95,8 +71,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         [Fact]
         public async Task GetUserByUseridAsync_ReturnsUser_WhenUserExists()
         {
-            var accountId = await CreateAccount();
-            var createUserRequest = new CreateUserRequest(accountId, VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
             var createResult = await _userService.CreateUserAsync(createUserRequest);
 
             var user = await _userService.GetUserAsync(createResult.CreatedId);
@@ -117,8 +92,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         [Fact]
         public async Task GetUserByUsernameAsync_ReturnsUser_WhenUserExists()
         {
-            var accountId = await CreateAccount();
-            var createUserRequest = new CreateUserRequest(accountId, VALID_USERNAME, VALID_EMAIL);
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
             await _userService.CreateUserAsync(createUserRequest);
 
             var user = await _userService.GetUserAsync(createUserRequest.Username);

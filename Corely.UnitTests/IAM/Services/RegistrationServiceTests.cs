@@ -81,36 +81,22 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public async Task RegisterAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+        public async Task RegisterUserAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
         {
-            var request = _fixture.Create<RegisterRequest>();
+            var request = _fixture.Create<RegisterUserRequest>();
 
-            var result = await _registrationService.RegisterAsync(request);
+            var result = await _registrationService.RegisterUserAsync(request);
 
             Assert.True(result.IsSuccess);
         }
 
         [Fact]
-        public async Task RegisterAsync_ReturnsFailureResult_WhenAccountServiceFails()
-        {
-            _createAccountSuccess = false;
-            var request = _fixture.Create<RegisterRequest>();
-
-            var result = await _registrationService.RegisterAsync(request);
-
-            Assert.False(result.IsSuccess);
-            _userServiceMock.Verify(m => m.CreateUserAsync(It.IsAny<CreateUserRequest>()), Times.Never);
-            _authServiceMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
-            _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
-        }
-
-        [Fact]
-        public async Task RegisterAsync_ReturnsFailureResult_WhenUserServiceFails()
+        public async Task RegisterUserAsync_ReturnsFailureResult_WhenUserServiceFails()
         {
             _createUserSuccess = false;
-            var request = _fixture.Create<RegisterRequest>();
+            var request = _fixture.Create<RegisterUserRequest>();
 
-            var result = await _registrationService.RegisterAsync(request);
+            var result = await _registrationService.RegisterUserAsync(request);
 
             Assert.False(result.IsSuccess);
             _authServiceMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
@@ -118,21 +104,52 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public async Task RegisterAsync_ReturnsFailureResult_WhenAuthServiceFails()
+        public async Task RegisterUserAsync_ReturnsFailureResult_WhenAuthServiceFails()
         {
             _createAuthSuccess = false;
-            var request = _fixture.Create<RegisterRequest>();
+            var request = _fixture.Create<RegisterUserRequest>();
 
-            var result = await _registrationService.RegisterAsync(request);
+            var result = await _registrationService.RegisterUserAsync(request);
 
             Assert.False(result.IsSuccess);
             _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
         }
 
         [Fact]
-        public async Task RegisterAsync_ThrowsArgumentNullException_WithNullRequest()
+        public async Task RegisterUserAsync_ThrowsArgumentNullException_WithNullRequest()
         {
-            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterAsync(null!));
+            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterUserAsync(null!));
+
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public async Task RegisterAccountAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+        {
+            var request = _fixture.Create<RegisterAccountRequest>();
+
+            var result = await _registrationService.RegisterAccountAsync(request);
+
+            Assert.True(result.IsSuccess);
+        }
+
+        [Fact]
+        public async Task RegisterAccountAsync_ReturnsFailureResult_WhenAccountServiceFails()
+        {
+            _createAccountSuccess = false;
+            var request = _fixture.Create<RegisterAccountRequest>();
+
+            var result = await _registrationService.RegisterAccountAsync(request);
+
+            Assert.False(result.IsSuccess);
+            _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task RegisterAccountAsync_ThrowsArgumentNullException_WithNullRequest()
+        {
+            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterAccountAsync(null!));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);

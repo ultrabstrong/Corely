@@ -2,13 +2,11 @@
 using Corely.IAM.Mappers;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 
 namespace Corely.IAM.Services
 {
     public abstract class ServiceBase
     {
-        private readonly JsonSerializerOptions _jsonSerializerOptions;
         private readonly IValidationProvider _validationProvider;
         private readonly IMapProvider _mapProvider;
 
@@ -19,11 +17,6 @@ namespace Corely.IAM.Services
             IValidationProvider validationProvider,
             ILogger logger)
         {
-            _jsonSerializerOptions = new JsonSerializerOptions
-            {
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-
             _validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
             _mapProvider = mapProvider.ThrowIfNull(nameof(mapProvider));
             Logger = logger.ThrowIfNull(nameof(logger));
@@ -47,7 +40,7 @@ namespace Corely.IAM.Services
             {
                 using var scope = Logger.BeginScope(new Dictionary<string, object?>
                 {
-                    { "MapSource", JsonSerializer.Serialize(source, _jsonSerializerOptions) }
+                    { "@MapSource", source }
                 });
 
                 Logger.LogWarning(ex, "Failed to map {MapSourceType} to {MapDestinationType}", source?.GetType()?.Name, typeof(T)?.Name);
@@ -69,10 +62,10 @@ namespace Corely.IAM.Services
                 if (ex is ValidationException validationException
                     && validationException.ValidationResult != null)
                 {
-                    state.Add("ValidationResult",
-                        JsonSerializer.Serialize(validationException.ValidationResult, _jsonSerializerOptions));
+                    state.Add("@ValidationResult", validationException.ValidationResult);
                 }
 
+                using var scope = Logger.BeginScope(state);
                 Logger.LogWarning(ex, "Validation failed for {ModelType}", model?.GetType()?.Name);
                 throw;
             }

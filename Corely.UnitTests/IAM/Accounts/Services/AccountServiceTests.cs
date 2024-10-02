@@ -6,7 +6,10 @@ using Corely.IAM.Accounts.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Repos;
 using Corely.IAM.Security.Services;
+using Corely.IAM.Users.Entities;
+using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Validators;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.IAM.Accounts.Services
@@ -23,16 +26,24 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         {
             _accountService = new AccountService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IReadonlyRepo<UserEntity>>(),
                 _serviceFactory.GetRequiredService<ISecurityService>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<AccountService>>());
         }
+        private async Task<int> CreateUser()
+        {
+            var userId = _fixture.Create<int>();
+            var user = new UserEntity { Id = userId };
+            var userRepo = _serviceFactory.GetRequiredService<IRepoExtendedGet<UserEntity>>();
+            return await userRepo.CreateAsync(user);
+        }
 
         [Fact]
-        public async Task CreateAccountAsync_ReturnsAccountEntity_WhenValidAccountName()
+        public async Task CreateAccountAsync_ThrowsAccountExistsException_WhenAccountExists()
         {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUser());
             await _accountService.CreateAccountAsync(createAccountRequest);
 
             var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(createAccountRequest));
@@ -44,10 +55,21 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         [Fact]
         public async Task CreateAccount_ReturnsCreateAccountResult()
         {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
+            var userIdOfOwner = await CreateUser();
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, userIdOfOwner);
             var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
 
             Assert.True(createAccountResult.IsSuccess);
+
+            // Verify account is linked to owner user id
+            var accountRepo = _serviceFactory.GetRequiredService<IRepoExtendedGet<AccountEntity>>();
+            var accountEntity = await accountRepo.GetAsync(
+                a => a.Id == createAccountResult.CreatedId,
+                include: q => q.Include(a => a.Users));
+            Assert.NotNull(accountEntity);
+            Assert.NotNull(accountEntity.Users);
+            Assert.Single(accountEntity.Users);
+            Assert.Equal(userIdOfOwner, accountEntity.Users.First().Id);
         }
 
         [Fact]
@@ -60,9 +82,19 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         }
 
         [Fact]
+        public async Task CreateAccount_ThrowsUserDoesNotExistException_WithInvalidUserId()
+        {
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, -1);
+            var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(createAccountRequest));
+
+            Assert.NotNull(ex);
+            Assert.IsType<UserDoesNotExistException>(ex);
+        }
+
+        [Fact]
         public async Task CreateAccount_ThrowsArgumentNullException_WithNullAccountName()
         {
-            var createAccountRequest = new CreateAccountRequest(null!);
+            var createAccountRequest = new CreateAccountRequest(null!, -1);
             var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(createAccountRequest));
 
             Assert.NotNull(ex);
@@ -80,7 +112,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         [Fact]
         public async Task GetAccountByAccountIdAsync_ReturnsAccount_WhenAccountExists()
         {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUser());
             var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
 
             var account = await _accountService.GetAccountAsync(createAccountResult.CreatedId);
@@ -100,7 +132,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         [Fact]
         public async Task GetAccountByAccountNameAsync_ReturnsAccount_WhenAccountExists()
         {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME);
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUser());
             await _accountService.CreateAccountAsync(createAccountRequest);
 
             var account = await _accountService.GetAccountAsync(VALID_ACCOUNT_NAME);
