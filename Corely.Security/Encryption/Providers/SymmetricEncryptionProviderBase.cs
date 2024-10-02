@@ -80,6 +80,11 @@ namespace Corely.Security.Encryption.Providers
             return $"{EncryptionTypeCode}:{keyVersion}:{encryptedValue}";
         }
 
+        public string? RemoveEncodedEncryptionData(string value)
+        {
+            return value?.Split(':')?.Last();
+        }
+
         protected abstract string DecryptInternal(string value, string key);
 
         protected abstract string EncryptInternal(string value, string key);

@@ -156,6 +156,24 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         }
 
         [Fact]
+        public void RemoveEncodedEncryptionData_ReturnsOnlyEncryptedValue()
+        {
+            var decrypted = _fixture.Create<string>();
+            var encrypted = _encryptionProvider.Encrypt(decrypted, _keyStoreProvider);
+
+            var noEncoding = _encryptionProvider.RemoveEncodedEncryptionData(encrypted);
+
+            Assert.DoesNotContain(':', noEncoding!);
+            Assert.EndsWith(noEncoding, encrypted);
+        }
+
+        [Fact]
+        public void RemoveEncodedEncryptionData_ReturnsNull_WithNullInput()
+        {
+            Assert.Null(_encryptionProvider.RemoveEncodedEncryptionData(null!));
+        }
+
+        [Fact]
         public abstract void EncryptionTypeCode_ReturnsCorrectCode_ForImplementation();
 
         public abstract ISymmetricEncryptionProvider GetEncryptionProvider();

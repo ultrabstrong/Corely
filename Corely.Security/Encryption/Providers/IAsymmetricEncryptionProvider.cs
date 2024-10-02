@@ -8,5 +8,6 @@ namespace Corely.Security.Encryption.Providers
         string Encrypt(string value, IAsymmetricKeyStoreProvider keyStoreProvider);
         string Decrypt(string value, IAsymmetricKeyStoreProvider keyStoreProvider);
         string ReEncrypt(string value, IAsymmetricKeyStoreProvider keyStoreProvider);
+        string? RemoveEncodedEncryptionData(string value);
     }
 }
