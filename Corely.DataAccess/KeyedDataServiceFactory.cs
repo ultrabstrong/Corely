@@ -16,10 +16,10 @@ namespace Corely.DataAccess
 
         public void AddAllDataServices(IServiceCollection services)
         {
-            AddAccountManagementDataAccessServices(services);
+            AddIAMDataAccessServices(services);
         }
 
-        public void AddAccountManagementDataAccessServices(IServiceCollection services)
+        public void AddIAMDataAccessServices(IServiceCollection services)
         {
             // All 'Account management' should belong to one connection type
             services.AddScoped(serviceProvider => serviceProvider

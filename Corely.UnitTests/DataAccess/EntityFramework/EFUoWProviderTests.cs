@@ -7,22 +7,22 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
 {
     public class EFUoWProviderTests
     {
-        private readonly Mock<IAMDbContext> _accountManagementDbContextMock;
+        private readonly Mock<IAMDbContext> _iamDbContextMock;
         private readonly EFUoWProvider _efUoWProvider;
 
         public EFUoWProviderTests()
         {
-            _accountManagementDbContextMock = GetMockAccountManagementDbContext();
-            _efUoWProvider = new(_accountManagementDbContextMock.Object);
+            _iamDbContextMock = GetMockIAMDbContext();
+            _efUoWProvider = new(_iamDbContextMock.Object);
         }
 
-        private static Mock<IAMDbContext> GetMockAccountManagementDbContext()
+        private static Mock<IAMDbContext> GetMockIAMDbContext()
         {
-            var accountManagementDbContextMock = new Mock<IAMDbContext>(new EFConfigurationFixture());
-            var mockDatabaseFacade = new Mock<DatabaseFacade>(accountManagementDbContextMock.Object);
-            accountManagementDbContextMock.SetupGet(c => c.Database).Returns(mockDatabaseFacade.Object);
+            var iamDbContextMock = new Mock<IAMDbContext>(new EFConfigurationFixture());
+            var mockDatabaseFacade = new Mock<DatabaseFacade>(iamDbContextMock.Object);
+            iamDbContextMock.SetupGet(c => c.Database).Returns(mockDatabaseFacade.Object);
 
-            return accountManagementDbContextMock;
+            return iamDbContextMock;
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
         {
             await _efUoWProvider.BeginAsync();
 
-            _accountManagementDbContextMock.Verify(c =>
+            _iamDbContextMock.Verify(c =>
                 c.Database.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -39,7 +39,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
         {
             await _efUoWProvider.CommitAsync();
 
-            _accountManagementDbContextMock.Verify(c =>
+            _iamDbContextMock.Verify(c =>
                 c.Database.CommitTransactionAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -48,7 +48,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
         {
             await _efUoWProvider.RollbackAsync();
 
-            _accountManagementDbContextMock.Verify(c =>
+            _iamDbContextMock.Verify(c =>
                 c.Database.RollbackTransactionAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -57,7 +57,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
         {
             _efUoWProvider.Dispose();
 
-            _accountManagementDbContextMock.Verify(c => c.Dispose(), Times.Once);
+            _iamDbContextMock.Verify(c => c.Dispose(), Times.Once);
         }
     }
 }

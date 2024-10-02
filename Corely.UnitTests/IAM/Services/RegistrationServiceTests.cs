@@ -20,24 +20,19 @@ namespace Corely.UnitTests.IAM.Services
         private readonly Mock<IAccountService> _accountServiceMock;
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<IAuthService> _authServiceMock;
-        private readonly RegistrationService _accountManagementService;
+        private readonly RegistrationService _registrationService;
 
-        private readonly User _user;
         private bool _createAccountSuccess = true;
         private bool _createUserSuccess = true;
         private bool _createAuthSuccess = true;
 
         public RegistrationServiceTests() : base()
         {
-            _user = _fixture.Build<User>()
-                .Without(u => u.SymmetricKey)
-                .Without(u => u.AsymmetricKey)
-                .Create();
             _accountServiceMock = GetMockAccountService();
             _userServiceMock = GetMockUserService();
             _authServiceMock = GetMockAuthService();
 
-            _accountManagementService = new RegistrationService(
+            _registrationService = new RegistrationService(
                 _serviceFactory.GetRequiredService<ILogger<RegistrationService>>(),
                 _accountServiceMock.Object,
                 _userServiceMock.Object,
@@ -68,16 +63,6 @@ namespace Corely.UnitTests.IAM.Services
                 .ReturnsAsync(() =>
                     new CreateResult(_createUserSuccess, string.Empty, _fixture.Create<int>()));
 
-            userServiceMock
-                .Setup(m => m.GetUserAsync(
-                    It.IsAny<string>()))
-                .ReturnsAsync(() => _user);
-
-            userServiceMock
-                .Setup(m => m.GetUserAsync(
-                    It.IsAny<int>()))
-                .ReturnsAsync(() => _user);
-
             return userServiceMock;
         }
 
@@ -91,10 +76,6 @@ namespace Corely.UnitTests.IAM.Services
                 .ReturnsAsync(() =>
                     new UpsertBasicAuthResult(_createAuthSuccess, string.Empty,
                         _fixture.Create<int>(), _fixture.Create<UpsertType>()));
-            authServiceMock
-                .Setup(m => m.VerifyBasicAuthAsync(
-                    It.IsAny<VerifyBasicAuthRequest>()))
-                .ReturnsAsync(true);
 
             return authServiceMock;
         }
@@ -104,7 +85,7 @@ namespace Corely.UnitTests.IAM.Services
         {
             var request = _fixture.Create<RegisterRequest>();
 
-            var result = await _accountManagementService.RegisterAsync(request);
+            var result = await _registrationService.RegisterAsync(request);
 
             Assert.True(result.IsSuccess);
         }
@@ -115,7 +96,7 @@ namespace Corely.UnitTests.IAM.Services
             _createAccountSuccess = false;
             var request = _fixture.Create<RegisterRequest>();
 
-            var result = await _accountManagementService.RegisterAsync(request);
+            var result = await _registrationService.RegisterAsync(request);
 
             Assert.False(result.IsSuccess);
             _userServiceMock.Verify(m => m.CreateUserAsync(It.IsAny<CreateUserRequest>()), Times.Never);
@@ -129,7 +110,7 @@ namespace Corely.UnitTests.IAM.Services
             _createUserSuccess = false;
             var request = _fixture.Create<RegisterRequest>();
 
-            var result = await _accountManagementService.RegisterAsync(request);
+            var result = await _registrationService.RegisterAsync(request);
 
             Assert.False(result.IsSuccess);
             _authServiceMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
@@ -142,7 +123,7 @@ namespace Corely.UnitTests.IAM.Services
             _createAuthSuccess = false;
             var request = _fixture.Create<RegisterRequest>();
 
-            var result = await _accountManagementService.RegisterAsync(request);
+            var result = await _registrationService.RegisterAsync(request);
 
             Assert.False(result.IsSuccess);
             _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
@@ -151,101 +132,7 @@ namespace Corely.UnitTests.IAM.Services
         [Fact]
         public async Task RegisterAsync_ThrowsArgumentNullException_WithNullRequest()
         {
-            var ex = await Record.ExceptionAsync(() => _accountManagementService.RegisterAsync(null!));
-
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
-
-        [Fact]
-        public async Task SignInAsync_ReturnsSuccessResultAndUpdateSuccessfulLogin_WhenUserExistsAndPasswordIsValid()
-        {
-            var request = new SignInRequest(_user.Username, _fixture.Create<string>());
-            _user.TotalSuccessfulLogins = 0;
-            _user.LastSuccessfulLoginUtc = null;
-            _user.TotalFailedLogins = 0;
-            _user.FailedLoginsSinceLastSuccess = 0;
-            _user.LastFailedLoginUtc = null;
-
-            var result = await _accountManagementService.SignInAsync(request);
-
-            Assert.True(result.IsSuccess);
-
-            _userServiceMock
-                .Verify(m => m.UpdateUserAsync(It.Is<User>(u =>
-                    HasUpdatedSuccessLogins(u))),
-                Times.Once);
-        }
-
-        private static bool HasUpdatedSuccessLogins(User modified)
-        {
-            Assert.Equal(1, modified.TotalSuccessfulLogins);
-            Assert.NotNull(modified.LastSuccessfulLoginUtc);
-            Assert.True((DateTime.UtcNow - modified.LastSuccessfulLoginUtc).Value.TotalSeconds < 5);
-            Assert.Equal(0, modified.TotalFailedLogins);
-            Assert.Equal(0, modified.FailedLoginsSinceLastSuccess);
-            Assert.Null(modified.LastFailedLoginUtc);
-            return true;
-        }
-
-        [Fact]
-        public async Task SignInAsync_ReturnsFailureResult_WhenUserDoesNotExist()
-        {
-            var request = _fixture.Create<SignInRequest>();
-
-            _userServiceMock
-                .Setup(m => m.GetUserAsync(request.Username))
-                .ReturnsAsync((User)null!);
-
-            var result = await _accountManagementService.SignInAsync(request);
-
-            Assert.False(result.IsSuccess);
-            Assert.Equal("User not found", result.Message);
-            Assert.Equal(string.Empty, result.AuthToken);
-        }
-
-        [Fact]
-        public async Task SignInAsync_ReturnsFailureResultAndUpdatedFailedLogins_WhenPasswordIsInvalid()
-        {
-            var request = new SignInRequest(_user.Username, _fixture.Create<string>());
-            _user.TotalSuccessfulLogins = 0;
-            _user.LastSuccessfulLoginUtc = null;
-            _user.TotalFailedLogins = 0;
-            _user.FailedLoginsSinceLastSuccess = 0;
-            _user.LastFailedLoginUtc = null;
-
-            _authServiceMock
-                .Setup(m => m.VerifyBasicAuthAsync(
-                    It.IsAny<VerifyBasicAuthRequest>()))
-                .ReturnsAsync(false);
-
-            var result = await _accountManagementService.SignInAsync(request);
-
-            Assert.False(result.IsSuccess);
-            Assert.Equal("Invalid password", result.Message);
-            Assert.Equal(string.Empty, result.AuthToken);
-
-            _userServiceMock
-                .Verify(m => m.UpdateUserAsync(It.Is<User>(u =>
-                    HasUpdatedFailedLogins(u))),
-                Times.Once);
-        }
-
-        private static bool HasUpdatedFailedLogins(User modified)
-        {
-            Assert.Equal(0, modified.TotalSuccessfulLogins);
-            Assert.Null(modified.LastSuccessfulLoginUtc);
-            Assert.Equal(1, modified.TotalFailedLogins);
-            Assert.Equal(1, modified.FailedLoginsSinceLastSuccess);
-            Assert.NotNull(modified.LastFailedLoginUtc);
-            Assert.True((DateTime.UtcNow - modified.LastFailedLoginUtc).Value.TotalSeconds < 5);
-            return true;
-        }
-
-        [Fact]
-        public async Task SignInAsync_ThrowsArgumentNullException_WithNullRequest()
-        {
-            var ex = await Record.ExceptionAsync(() => _accountManagementService.SignInAsync(null!));
+            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterAsync(null!));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);

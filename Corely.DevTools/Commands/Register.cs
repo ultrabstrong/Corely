@@ -13,12 +13,12 @@ namespace Corely.DevTools.Commands
         [Option("-c", "--create", Description = "Create sample json file at path")]
         private bool Create { get; init; }
 
-        private readonly IRegistrationService _accountManagementService;
+        private readonly IRegistrationService _registrationService;
 
         public Register() : base("register", "Register for a new account")
         {
             var serviceFactory = new ServiceFactory();
-            _accountManagementService = serviceFactory.GetRequiredService<IRegistrationService>();
+            _registrationService = serviceFactory.GetRequiredService<IRegistrationService>();
         }
 
         protected async override Task ExecuteAsync()
@@ -68,7 +68,7 @@ namespace Corely.DevTools.Commands
                 return;
             }
 
-            var result = await _accountManagementService.RegisterAsync(registerRequest);
+            var result = await _registrationService.RegisterAsync(registerRequest);
 
             Console.WriteLine(JsonSerializer.Serialize(result));
         }

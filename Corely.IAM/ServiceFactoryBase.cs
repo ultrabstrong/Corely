@@ -74,6 +74,7 @@ namespace Corely.IAM
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRegistrationService, RegistrationService>();
+            services.AddScoped<ISignInService, SignInService>();
         }
 
         protected abstract void AddSecurityConfigurationProvider(IServiceCollection services);

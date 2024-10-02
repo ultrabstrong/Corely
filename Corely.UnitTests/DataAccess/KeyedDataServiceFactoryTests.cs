@@ -25,9 +25,9 @@ namespace Corely.UnitTests.DataAccess
         }
 
         [Theory, MemberData(nameof(GetRequiredServiceData))]
-        public void AddAccountManagementDataAccessServices_AddsAccountManagementDataAccessServices(Type serviceType)
+        public void AddIAMDataAccessServices_AddsIAMDataAccessServices(Type serviceType)
         {
-            _keyedDataServiceFactory.AddAccountManagementDataAccessServices(_serviceCollection);
+            _keyedDataServiceFactory.AddIAMDataAccessServices(_serviceCollection);
             var serviceProvider = _serviceCollection.BuildServiceProvider();
             var service = serviceProvider.GetRequiredService(serviceType);
 

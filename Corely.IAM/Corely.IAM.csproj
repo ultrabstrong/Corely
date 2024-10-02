@@ -36,8 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AccountManagement\Models\" />
-    <Folder Include="AccountManagement\Services\" />
     <Folder Include="Enums\" />
   </ItemGroup>
 </Project>

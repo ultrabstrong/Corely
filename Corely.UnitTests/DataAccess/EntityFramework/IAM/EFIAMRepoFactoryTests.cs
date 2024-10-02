@@ -11,7 +11,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
         private readonly ServiceFactory _serviceFactory = new();
         private readonly EFIAMRepoFactory _factory;
 
-        protected override IIAMRepoFactory AccountManagementRepoFactory => _factory;
+        protected override IIAMRepoFactory IAMRepoFactory => _factory;
 
         public EFIAMRepoFactoryTests()
         {
@@ -23,11 +23,11 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
         }
 
         [Fact]
-        public void CreateDbContext_ReturnsAccountManagementDbContext()
+        public void CreateDbContext_ReturnsIAMDbContext()
         {
             var factory = GetMockFactory();
-            var accountManagementDbContext = factory.Object.CreateDbContext();
-            Assert.NotNull(accountManagementDbContext);
+            var iamDbContext = factory.Object.CreateDbContext();
+            Assert.NotNull(iamDbContext);
         }
 
         [Fact]
