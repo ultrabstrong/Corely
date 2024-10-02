@@ -1,4 +1,5 @@
 ﻿using Corely.Security.Encryption.Providers;
+using System.Security.Cryptography;
 
 namespace Corely.Security.Encryption.Factories
 {
@@ -12,7 +13,7 @@ namespace Corely.Security.Encryption.Factories
             ArgumentNullException.ThrowIfNull(defaultProviderCode, nameof(defaultProviderCode));
 
             _defaultProviderCode = defaultProviderCode;
-            _providers.Add(AsymmetricEncryptionConstants.RSA_SHA256_CODE, new RsaSha256EncryptionProvider());
+            _providers.Add(AsymmetricEncryptionConstants.RSA_CODE, new RsaEncryptionProvider(RSAEncryptionPadding.OaepSHA256));
         }
 
         public void AddProvider(string providerCode, IAsymmetricEncryptionProvider provider)
@@ -66,7 +67,7 @@ namespace Corely.Security.Encryption.Factories
         public IAsymmetricEncryptionProvider GetProvider(string providerCode)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
-            if (!_providers.ContainsKey(providerCode))
+            if (!_providers.TryGetValue(providerCode, out IAsymmetricEncryptionProvider? value))
             {
                 throw new EncryptionException($"Asymmetric encryption provider code not found: {providerCode}")
                 {
@@ -74,7 +75,7 @@ namespace Corely.Security.Encryption.Factories
                 };
             }
 
-            return _providers[providerCode];
+            return value;
         }
 
         public IAsymmetricEncryptionProvider GetProviderForDecrypting(string value)

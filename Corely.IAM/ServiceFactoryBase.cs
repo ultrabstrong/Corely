@@ -59,7 +59,7 @@ namespace Corely.IAM
             services.AddSingleton<ISymmetricKeyProvider, AesKeyProvider>();
 
             services.AddSingleton<IAsymmetricEncryptionProviderFactory, AsymmetricEncryptionProviderFactory>(serviceProvider =>
-                new AsymmetricEncryptionProviderFactory(AsymmetricEncryptionConstants.RSA_SHA256_CODE));
+                new AsymmetricEncryptionProviderFactory(AsymmetricEncryptionConstants.RSA_CODE));
             services.AddSingleton<IAsymmetricKeyProvider, RsaKeyProvider>();
 
             services.AddSingleton<IHashProviderFactory, HashProviderFactory>(_ =>

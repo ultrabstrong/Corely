@@ -3,6 +3,7 @@ using Corely.Security.Encryption.Models;
 using Corely.Security.Encryption.Providers;
 using Corely.Security.Keys;
 using Corely.Security.KeyStore;
+using System.Security.Cryptography;
 
 namespace Corely.UnitTests.Security.Encryption.Models
 {
@@ -17,7 +18,7 @@ namespace Corely.UnitTests.Security.Encryption.Models
             var (publicKey, privateKey) = new RsaKeyProvider().CreateKeys();
             _keyStoreProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
 
-            var encryptionProvider = new RsaSha256EncryptionProvider();
+            var encryptionProvider = new RsaEncryptionProvider(RSAEncryptionPadding.OaepSHA256);
             _encryptedValue = new AsymmetricEncryptedValue(encryptionProvider);
         }
 
@@ -30,7 +31,7 @@ namespace Corely.UnitTests.Security.Encryption.Models
         [Fact]
         public void Constructor_CreatesEncryptedValueWithSecret()
         {
-            var encryptionProvider = new RsaSha256EncryptionProvider();
+            var encryptionProvider = new RsaEncryptionProvider(RSAEncryptionPadding.OaepSHA256);
             var value = _fixture.Create<string>();
 
             var encryptedValue = new AsymmetricEncryptedValue(encryptionProvider) { Secret = value };

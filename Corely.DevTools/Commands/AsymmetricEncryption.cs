@@ -8,7 +8,7 @@ namespace Corely.DevTools.Commands
 {
     internal class AsymmetricEncryption : CommandBase
     {
-        private const string DEFAULT_ENCRYPTION_TYPE = AsymmetricEncryptionConstants.RSA_SHA256_CODE;
+        private const string DEFAULT_ENCRYPTION_TYPE = AsymmetricEncryptionConstants.RSA_CODE;
 
         [Argument("File with keys to validate (default), encrypt value (-e flag), or decrypt value (-d flag). Format public<newline>private", true)]
         private string KeyFile { get; init; } = null!;

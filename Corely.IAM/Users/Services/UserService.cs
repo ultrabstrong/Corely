@@ -131,20 +131,24 @@ namespace Corely.IAM.Users.Services
             }
 
             var privateKey = userEntity.AsymmetricKey.PrivateKey;
-            var credentials = new SigningCredentials(
-                new RsaSecurityKey(RSA.Create()),
-                SecurityAlgorithms.RsaSha256);
+            using var rsa = RSA.Create();
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, userId.ToString())]),
-                Expires = DateTime.UtcNow.AddMinutes(30),
-                SigningCredentials = credentials
-            };
+            rsa.ImportFromPem(privateKey.ToCharArray());
+            var rsaSecurityKey = new RsaSecurityKey(rsa);
+            var credentials = new SigningCredentials(rsaSecurityKey, SecurityAlgorithms.RsaSha256);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.CreateToken(tokenDescriptor);
-            var jwt = tokenHandler.WriteToken(jwtToken);
+
+            // Todo - include permission-based scopes & roles
+
+            var token = new JwtSecurityToken(
+                claims: [
+                    new Claim(JwtRegisteredClaimNames.Sub, "user_id"),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                ],
+                expires: DateTime.Now.Add(TimeSpan.FromSeconds(3600)),
+                signingCredentials: credentials);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
         }

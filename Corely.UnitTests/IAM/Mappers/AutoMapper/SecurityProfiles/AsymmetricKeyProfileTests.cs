@@ -12,7 +12,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
         {
             protected override AccountAsymmetricKeyEntity ApplyDestinatonModifications(AccountAsymmetricKeyEntity destination)
             {
-                destination.PrivateKey = $"{AsymmetricEncryptionConstants.RSA_SHA256_CODE}:{new Fixture().Create<string>()}";
+                destination.PrivateKey = $"{AsymmetricEncryptionConstants.RSA_CODE}:{new Fixture().Create<string>()}";
                 return destination;
             }
         }
@@ -22,7 +22,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
         {
             protected override UserAsymmetricKeyEntity ApplyDestinatonModifications(UserAsymmetricKeyEntity destination)
             {
-                destination.PrivateKey = $"{AsymmetricEncryptionConstants.RSA_SHA256_CODE}:{new Fixture().Create<string>()}";
+                destination.PrivateKey = $"{AsymmetricEncryptionConstants.RSA_CODE}:{new Fixture().Create<string>()}";
                 return destination;
             }
         }
