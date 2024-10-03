@@ -1,5 +1,5 @@
 ﻿using Corely.IAM;
-using Corely.Security.Keys;
+using Corely.Security.Encryption.Providers;
 using Corely.Security.KeyStore;
 
 namespace Corely.DevTools
@@ -10,7 +10,8 @@ namespace Corely.DevTools
 
         public SecurityConfigurationProvider()
         {
-            _symmetricKey = new AesKeyProvider().CreateKey();
+            var encryptionProvider = new AesEncryptionProvider();
+            _symmetricKey = encryptionProvider.GetSymmetricKeyProvider().CreateKey();
         }
 
         public ISymmetricKeyStoreProvider GetSystemSymmetricKey()

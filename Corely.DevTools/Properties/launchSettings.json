@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Corely.DevTools": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "asym-encrypt -c"
     }
   }
 }

@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using Corely.Security.Keys;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Corely.Security.Encryption.Providers
@@ -7,6 +8,7 @@ namespace Corely.Security.Encryption.Providers
     {
         public override string EncryptionTypeCode => AsymmetricEncryptionConstants.RSA_CODE;
 
+        private readonly RsaKeyProvider _rsaKeyProvider = new();
         private readonly RSAEncryptionPadding _rsaEncryptionPadding;
 
         public RsaEncryptionProvider(RSAEncryptionPadding rsaEncryptionPadding)
@@ -39,5 +41,7 @@ namespace Corely.Security.Encryption.Providers
                 return Convert.ToBase64String(encryptedBytes);
             }
         }
+
+        public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => _rsaKeyProvider;
     }
 }

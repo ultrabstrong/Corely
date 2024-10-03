@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Corely.Security.Signature.Providers
 {
-    public sealed class RsaSignatureProvider : SignatureProviderBase
+    public sealed class RsaSignatureProvider : AsymmetricSignatureProviderBase
     {
         public override string SignatureTypeCode => SignatureConstants.RSA_CODE;
 

@@ -1,6 +1,6 @@
 ﻿namespace Corely.Security.KeyStore
 {
-    public class FileAsymmetricKeyStoreProvider : IAsymmetricEncryptionKeyStoreProvider, IAsymmetricSignatureKeyStoreProvider
+    public class FileAsymmetricKeyStoreProvider : IAsymmetricKeyStoreProvider
     {
         private readonly string _filePath;
         private readonly int _version = 1;

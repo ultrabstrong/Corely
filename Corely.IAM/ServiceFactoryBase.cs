@@ -12,7 +12,6 @@ using Corely.Security.Encryption;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Hashing;
 using Corely.Security.Hashing.Factories;
-using Corely.Security.Keys;
 using Corely.Security.PasswordValidation.Providers;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,11 +55,9 @@ namespace Corely.IAM
         {
             services.AddSingleton<ISymmetricEncryptionProviderFactory, SymmetricEncryptionProviderFactory>(serviceProvider =>
                 new SymmetricEncryptionProviderFactory(SymmetricEncryptionConstants.AES_CODE));
-            services.AddSingleton<ISymmetricKeyProvider, AesKeyProvider>();
 
             services.AddSingleton<IAsymmetricEncryptionProviderFactory, AsymmetricEncryptionProviderFactory>(serviceProvider =>
                 new AsymmetricEncryptionProviderFactory(AsymmetricEncryptionConstants.RSA_CODE));
-            services.AddSingleton<IAsymmetricEncryptionKeyProvider, RsaKeyProvider>();
 
             services.AddSingleton<IHashProviderFactory, HashProviderFactory>(_ =>
                 new HashProviderFactory(HashConstants.SALTED_SHA256_CODE));

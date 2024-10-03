@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Corely.Security.Signature.Providers
 {
-    public sealed class ECDsaSignatureProvider : SignatureProviderBase
+    public sealed class ECDsaSignatureProvider : AsymmetricSignatureProviderBase
     {
         public override string SignatureTypeCode => SignatureConstants.ECDSA_CODE;
 

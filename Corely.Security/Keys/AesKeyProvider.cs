@@ -2,7 +2,7 @@
 
 namespace Corely.Security.Keys
 {
-    public sealed class AesKeyProvider : ISymmetricKeyProvider
+    internal sealed class AesKeyProvider : ISymmetricKeyProvider
     {
         public string CreateKey()
         {

@@ -1,5 +1,6 @@
 ﻿using Corely.Security.Encryption;
 using Corely.Security.Encryption.Providers;
+using Corely.Security.Keys;
 
 namespace Corely.UnitTests.Security.Encryption.Providers
 {
@@ -8,6 +9,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         private class MockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => TEST_ENCRYPTION_TYPE_CODE;
+            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
             protected override string EncryptInternal(string value, string key) => $"{Guid.NewGuid()}{value}";
             protected override string DecryptInternal(string value, string key) => value[36..];
         }
@@ -15,6 +17,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         private class NullMockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => null!;
+            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
@@ -22,6 +25,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         private class EmptyMockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => string.Empty;
+            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
@@ -29,6 +33,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         private class WhitespaceMockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => " ";
+            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
@@ -36,6 +41,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         private class ColonMockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => "as:df";
+            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
             protected override string EncryptInternal(string value, string key) => value;
             protected override string DecryptInternal(string value, string key) => value;
         }
@@ -85,6 +91,11 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         public override ISymmetricEncryptionProvider GetEncryptionProvider()
         {
             return new MockEncryptionProvider();
+        }
+
+        public override void GetSymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation()
+        {
+            // Don't need to test if MockEncryptionProvider returns the correct key provider
         }
     }
 }

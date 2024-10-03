@@ -5,14 +5,14 @@ using Corely.Security.Signature.Providers;
 
 namespace Corely.UnitTests.Security.Signature.Providers
 {
-    public abstract class SignatureProviderGenericTests
+    public abstract class AsymmetricSignatureProviderGenericTests
     {
         private readonly Fixture _fixture = new();
-        private readonly IAsymmetricSignatureKeyProvider _keyProvider;
+        private readonly IAsymmetricKeyProvider _keyProvider;
         private readonly InMemoryAsymmetricKeyStoreProvider _keyStoreProvider;
-        private readonly ISignatureProvider _signatureProvider;
+        private readonly IAsymmetricSignatureProvider _signatureProvider;
 
-        public SignatureProviderGenericTests()
+        public AsymmetricSignatureProviderGenericTests()
         {
             _keyProvider = GetKeyProvider();
             var (publicKey, privateKey) = _keyProvider.CreateKeys();
@@ -97,8 +97,8 @@ namespace Corely.UnitTests.Security.Signature.Providers
         [Fact]
         public abstract void SignatureTypeCode_ReturnsCorrectCode_ForImplementation();
 
-        public abstract ISignatureProvider GetSignatureProvider(string expectedVerifyKey);
+        public abstract IAsymmetricSignatureProvider GetSignatureProvider(string expectedVerifyKey);
 
-        public abstract IAsymmetricSignatureKeyProvider GetKeyProvider();
+        public abstract IAsymmetricKeyProvider GetKeyProvider();
     }
 }

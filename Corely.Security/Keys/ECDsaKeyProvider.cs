@@ -2,7 +2,7 @@
 
 namespace Corely.Security.Keys
 {
-    public sealed class EcdsaKeyProvider : IAsymmetricSignatureKeyProvider
+    internal sealed class EcdsaKeyProvider : IAsymmetricKeyProvider
     {
         public readonly ECCurve _ecCurve;
 

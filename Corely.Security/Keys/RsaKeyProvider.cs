@@ -2,7 +2,7 @@
 
 namespace Corely.Security.Keys
 {
-    public sealed class RsaKeyProvider : IAsymmetricEncryptionKeyProvider, IAsymmetricSignatureKeyProvider
+    internal sealed class RsaKeyProvider : IAsymmetricKeyProvider
     {
         public const int DEFAULT_KEY_SIZE = 2048;
 

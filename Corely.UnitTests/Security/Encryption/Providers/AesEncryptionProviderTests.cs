@@ -1,5 +1,6 @@
 ﻿using Corely.Security.Encryption;
 using Corely.Security.Encryption.Providers;
+using Corely.Security.Keys;
 
 namespace Corely.UnitTests.Security.Encryption.Providers
 {
@@ -15,6 +16,14 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         public override ISymmetricEncryptionProvider GetEncryptionProvider()
         {
             return new AesEncryptionProvider();
+        }
+
+        public override void GetSymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation()
+        {
+            var keyProvider = _aesEncryptionProvider.GetSymmetricKeyProvider();
+
+            Assert.NotNull(keyProvider);
+            Assert.IsType<AesKeyProvider>(keyProvider);
         }
     }
 }

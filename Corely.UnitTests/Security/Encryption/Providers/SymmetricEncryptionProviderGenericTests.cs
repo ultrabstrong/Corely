@@ -176,6 +176,9 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         [Fact]
         public abstract void EncryptionTypeCode_ReturnsCorrectCode_ForImplementation();
 
+        [Fact]
+        public abstract void GetSymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation();
+
         public abstract ISymmetricEncryptionProvider GetEncryptionProvider();
 
     }

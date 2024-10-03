@@ -1,7 +1,6 @@
 ﻿using Corely.DevTools.Attributes;
 using Corely.Security.Encryption;
 using Corely.Security.Encryption.Factories;
-using Corely.Security.Keys;
 using Corely.Security.KeyStore;
 
 namespace Corely.DevTools.Commands
@@ -10,7 +9,9 @@ namespace Corely.DevTools.Commands
     {
         private const string DEFAULT_ENCRYPTION_TYPE = AsymmetricEncryptionConstants.RSA_CODE;
 
-        [Argument("File with keys to validate (default), encrypt value (-e flag), or decrypt value (-d flag). Format public<newline>private", true)]
+        private readonly AsymmetricEncryptionProviderFactory _encryptionProviderFactory = new(DEFAULT_ENCRYPTION_TYPE);
+
+        [Argument("File with keys to validate (default), encrypt value (-e flag), or decrypt value (-d flag). Format public<newline>private", false)]
         private string KeyFile { get; init; } = null!;
 
         [Argument("Code for encryption type to use (hint: use -l to list codes. default used if code not provided)", false)]
@@ -41,6 +42,17 @@ namespace Corely.DevTools.Commands
             {
                 ListProviders();
             }
+
+            if ((Create
+                || !string.IsNullOrEmpty(ToEncrypt)
+                || !string.IsNullOrEmpty(ToDecrypt)
+                || Validate)
+                && !File.Exists(KeyFile))
+            {
+                Error($"{nameof(KeyFile)} does not exist: {KeyFile}");
+                return;
+            }
+
             if (Create)
             {
                 CreateKeys();
@@ -79,10 +91,9 @@ namespace Corely.DevTools.Commands
             return (keys[0], keys[1]);
         }
 
-        private static void ListProviders()
+        private void ListProviders()
         {
-            var encryptionProviderFactory = new AsymmetricEncryptionProviderFactory(DEFAULT_ENCRYPTION_TYPE);
-            var providers = encryptionProviderFactory.ListProviders();
+            var providers = _encryptionProviderFactory.ListProviders();
             foreach (var (providerCode, providerType) in providers)
             {
                 Console.WriteLine($"Code {providerCode} = {providerType.Name} {(providerCode == DEFAULT_ENCRYPTION_TYPE ? "(default)" : "")}");
@@ -91,34 +102,36 @@ namespace Corely.DevTools.Commands
 
         private void CreateKeys()
         {
-            var (publicKey, privateKey) = new RsaKeyProvider().CreateKeys();
+            var asymmetricEncryptionProvider = _encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE);
+            var (publicKey, privateKey) = asymmetricEncryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
             File.WriteAllText(KeyFile, $"{publicKey}{Environment.NewLine}{privateKey}");
             Console.WriteLine($"Keys written to {KeyFile}");
         }
 
         private void ValidateKey()
         {
+            var asymmetricEncryptionProvider = _encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE);
             var (publicKey, privateKey) = ReadKeysFromFile();
-            var isValid = new RsaKeyProvider().IsKeyValid(publicKey, privateKey);
+            var isValid = asymmetricEncryptionProvider.GetAsymmetricKeyProvider().IsKeyValid(publicKey, privateKey);
             Console.WriteLine($"Keys are {(isValid ? "valid" : "invalid")}");
         }
 
         private void Encrypt()
         {
-            var encryptionProviderFactory = new AsymmetricEncryptionProviderFactory(DEFAULT_ENCRYPTION_TYPE);
             var (publicKey, privateKey) = ReadKeysFromFile();
             var keyProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
-            var encrypted = encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
+            var encrypted = _encryptionProviderFactory
+                .GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
                 .Encrypt(ToEncrypt, keyProvider);
             Console.WriteLine(encrypted);
         }
 
         private void Decrypt()
         {
-            var encryptionProviderFactory = new AsymmetricEncryptionProviderFactory(DEFAULT_ENCRYPTION_TYPE);
             var (publicKey, privateKey) = ReadKeysFromFile();
             var keyProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
-            var decrypted = encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
+            var decrypted = _encryptionProviderFactory
+                .GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
                 .Decrypt(ToDecrypt, keyProvider);
             Console.WriteLine(decrypted);
         }

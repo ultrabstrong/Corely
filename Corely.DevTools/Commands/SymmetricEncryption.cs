@@ -1,7 +1,6 @@
 ﻿using Corely.DevTools.Attributes;
 using Corely.Security.Encryption;
 using Corely.Security.Encryption.Factories;
-using Corely.Security.Keys;
 using Corely.Security.KeyStore;
 
 namespace Corely.DevTools.Commands
@@ -9,6 +8,8 @@ namespace Corely.DevTools.Commands
     internal class SymmetricEncryption : CommandBase
     {
         private const string DEFAULT_ENCRYPTION_TYPE = SymmetricEncryptionConstants.AES_CODE;
+
+        private readonly SymmetricEncryptionProviderFactory _encryptionProviderFactory = new(DEFAULT_ENCRYPTION_TYPE);
 
         [Argument("Key to validate (default), encrypt value (-e flag), or decrypt value (-d flag)", false)]
         private string Key { get; init; } = null!;
@@ -68,42 +69,43 @@ namespace Corely.DevTools.Commands
             }
         }
 
-        private static void ListProviders()
+        private void ListProviders()
         {
-            var encryptionProviderFactory = new SymmetricEncryptionProviderFactory(DEFAULT_ENCRYPTION_TYPE);
-            var providers = encryptionProviderFactory.ListProviders();
+            var providers = _encryptionProviderFactory.ListProviders();
             foreach (var (providerCode, providerType) in providers)
             {
                 Console.WriteLine($"Code {providerCode} = {providerType.Name} {(providerCode == DEFAULT_ENCRYPTION_TYPE ? "(default)" : "")}");
             }
         }
 
-        private static void CreateKey()
+        private void CreateKey()
         {
-            var key = new AesKeyProvider().CreateKey();
+            var encryptionProvider = _encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE);
+            var key = encryptionProvider.GetSymmetricKeyProvider().CreateKey();
             Console.WriteLine(key);
         }
 
         private void ValidateKey()
         {
-            var isValid = new AesKeyProvider().IsKeyValid(Key);
+            var encryptionProvider = _encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE);
+            var isValid = encryptionProvider.GetSymmetricKeyProvider().IsKeyValid(Key);
             Console.WriteLine($"Key is {(isValid ? "valid" : "invalid")}");
         }
 
         private void Encrypt()
         {
-            var encryptionProviderFactory = new SymmetricEncryptionProviderFactory(DEFAULT_ENCRYPTION_TYPE);
             var keyProvider = new InMemorySymmetricKeyStoreProvider(Key);
-            var encrypted = encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
+            var encrypted = _encryptionProviderFactory
+                .GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
                 .Encrypt(ToEncrypt, keyProvider);
             Console.WriteLine(encrypted);
         }
 
         private void Decrypt()
         {
-            var encryptionProviderFactory = new SymmetricEncryptionProviderFactory(DEFAULT_ENCRYPTION_TYPE);
             var keyProvider = new InMemorySymmetricKeyStoreProvider(Key);
-            var decrypted = encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
+            var decrypted = _encryptionProviderFactory
+                .GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
                 .Decrypt(ToDecrypt, keyProvider);
             Console.WriteLine(decrypted);
         }

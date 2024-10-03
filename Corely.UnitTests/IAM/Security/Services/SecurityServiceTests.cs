@@ -1,7 +1,6 @@
 ﻿using Corely.IAM;
 using Corely.IAM.Security.Services;
 using Corely.Security.Encryption.Factories;
-using Corely.Security.Keys;
 
 namespace Corely.UnitTests.IAM.Security.Services
 {
@@ -13,9 +12,8 @@ namespace Corely.UnitTests.IAM.Security.Services
             var serviceFactory = new ServiceFactory();
             _securityService = new(
                 serviceFactory.GetRequiredService<ISecurityConfigurationProvider>(),
-                serviceFactory.GetRequiredService<ISymmetricKeyProvider>(),
                 serviceFactory.GetRequiredService<ISymmetricEncryptionProviderFactory>(),
-                serviceFactory.GetRequiredService<IAsymmetricEncryptionKeyProvider>());
+                serviceFactory.GetRequiredService<IAsymmetricEncryptionProviderFactory>());
         }
 
         [Fact]

@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace Corely.UnitTests.Security.Signature.Providers
 {
-    public class RsaSignatureProviderTests : SignatureProviderGenericTests
+    public class RsaSignatureProviderTests : AsymmetricSignatureProviderGenericTests
     {
         private readonly RsaSignatureProvider _rsaSignatureProvider = new(HashAlgorithmName.SHA256);
 
@@ -14,12 +14,12 @@ namespace Corely.UnitTests.Security.Signature.Providers
             Assert.Equal(SignatureConstants.RSA_CODE, _rsaSignatureProvider.SignatureTypeCode);
         }
 
-        public override ISignatureProvider GetSignatureProvider(string expectedVerifyKey)
+        public override IAsymmetricSignatureProvider GetSignatureProvider(string expectedVerifyKey)
         {
             return new RsaSignatureProvider(HashAlgorithmName.SHA256);
         }
 
-        public override IAsymmetricSignatureKeyProvider GetKeyProvider()
+        public override IAsymmetricKeyProvider GetKeyProvider()
         {
             return new RsaKeyProvider();
         }

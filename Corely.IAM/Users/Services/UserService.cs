@@ -130,13 +130,10 @@ namespace Corely.IAM.Users.Services
                 return null;
             }
 
-            var privateKey = userEntity.AsymmetricKey.PrivateKey;
-            using var rsa = RSA.Create();
-
-            rsa.ImportFromPem(privateKey.ToCharArray());
-            var rsaSecurityKey = new RsaSecurityKey(rsa);
-            var credentials = new SigningCredentials(rsaSecurityKey, SecurityAlgorithms.RsaSha256);
-
+            // Todo - use our own RSA key pair
+            var credentials = new SigningCredentials(
+                new RsaSecurityKey(RSA.Create()),
+                SecurityAlgorithms.RsaSha256);
 
             // Todo - include permission-based scopes & roles
 

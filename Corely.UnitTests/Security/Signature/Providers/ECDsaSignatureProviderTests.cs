@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace Corely.UnitTests.Security.Signature.Providers
 {
-    public class ECDsaSignatureProviderTests : SignatureProviderGenericTests
+    public class ECDsaSignatureProviderTests : AsymmetricSignatureProviderGenericTests
     {
         private readonly ECDsaSignatureProvider _ecDsaSignatureProvider = new(HashAlgorithmName.SHA256);
 
@@ -14,12 +14,12 @@ namespace Corely.UnitTests.Security.Signature.Providers
             Assert.Equal(SignatureConstants.ECDSA_CODE, _ecDsaSignatureProvider.SignatureTypeCode);
         }
 
-        public override ISignatureProvider GetSignatureProvider(string expectedVerifyKey)
+        public override IAsymmetricSignatureProvider GetSignatureProvider(string expectedVerifyKey)
         {
             return new ECDsaSignatureProvider(HashAlgorithmName.SHA256);
         }
 
-        public override IAsymmetricSignatureKeyProvider GetKeyProvider()
+        public override IAsymmetricKeyProvider GetKeyProvider()
         {
             return new EcdsaKeyProvider();
         }

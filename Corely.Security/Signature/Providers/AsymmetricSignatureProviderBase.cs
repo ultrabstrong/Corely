@@ -2,11 +2,11 @@
 
 namespace Corely.Security.Signature.Providers
 {
-    public abstract class SignatureProviderBase : ISignatureProvider
+    public abstract class AsymmetricSignatureProviderBase : IAsymmetricSignatureProvider
     {
         public abstract string SignatureTypeCode { get; }
 
-        public SignatureProviderBase()
+        public AsymmetricSignatureProviderBase()
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(SignatureTypeCode, nameof(SignatureTypeCode));
 
@@ -19,14 +19,14 @@ namespace Corely.Security.Signature.Providers
             }
         }
 
-        public string Sign(string data, IAsymmetricEncryptionKeyStoreProvider keyStoreProvider)
+        public string Sign(string data, IAsymmetricKeyStoreProvider keyStoreProvider)
         {
             ArgumentNullException.ThrowIfNull(data, nameof(data));
             var (_, privateKey) = keyStoreProvider.GetCurrentKeys();
             return SignInternal(data, privateKey);
         }
 
-        public bool Verify(string data, string signature, IAsymmetricEncryptionKeyStoreProvider keyStoreProvider)
+        public bool Verify(string data, string signature, IAsymmetricKeyStoreProvider keyStoreProvider)
         {
             ArgumentNullException.ThrowIfNull(data, nameof(data));
             ArgumentNullException.ThrowIfNull(signature, nameof(signature));

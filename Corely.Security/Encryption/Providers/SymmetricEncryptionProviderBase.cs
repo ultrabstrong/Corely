@@ -1,4 +1,5 @@
-﻿using Corely.Security.KeyStore;
+﻿using Corely.Security.Keys;
+using Corely.Security.KeyStore;
 
 namespace Corely.Security.Encryption.Providers
 {
@@ -84,6 +85,8 @@ namespace Corely.Security.Encryption.Providers
         {
             return value?.Split(':')?.Last();
         }
+
+        public abstract ISymmetricKeyProvider GetSymmetricKeyProvider();
 
         protected abstract string DecryptInternal(string value, string key);
 
