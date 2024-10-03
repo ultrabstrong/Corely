@@ -1,4 +1,5 @@
-﻿using Corely.Security.Keys;
+﻿using AutoFixture;
+using Corely.Security.Keys;
 using Corely.Security.Signature;
 using Corely.Security.Signature.Providers;
 
@@ -6,36 +7,46 @@ namespace Corely.UnitTests.Security.Signature.Providers
 {
     public sealed class AsymmetricSignatureProviderBaseTests : AsymmetricSignatureProviderGenericTests
     {
+        private class MockAsymmetricKeyProvider : IAsymmetricKeyProvider
+        {
+            private readonly Fixture _fixture = new();
+
+            public (string PublicKey, string PrivateKey) CreateKeys()
+            {
+                var key = _fixture.Create<string>();
+                return (key, key); // This allows us to mock signature verification success / failure
+            }
+
+            public bool IsKeyValid(string publicKey, string privateKey) => true;
+        }
+
         private class MockSignatureProvider : AsymmetricSignatureProviderBase
         {
             public override string SignatureTypeCode => TEST_ENCRYPTION_TYPE_CODE;
-
-            private readonly string _expectedVerifyKey;
-
-            public MockSignatureProvider(string expectedVerifyKey)
-            {
-                _expectedVerifyKey = expectedVerifyKey;
-            }
+            private readonly MockAsymmetricKeyProvider _mockKeyProvider = new();
 
             private string lastValue = string.Empty;
             private string lastSignature = string.Empty;
 
+            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => _mockKeyProvider;
+
             protected override string SignInternal(string value, string privateKey)
             {
                 lastValue = value;
-                lastSignature = $"{Guid.NewGuid()}{value}";
+                lastSignature = $"{value}{privateKey}";
                 return lastSignature;
             }
 
             protected override bool VerifyInternal(string value, string signature, string publicKey) =>
                 lastValue == value
                 && lastSignature == signature
-                && _expectedVerifyKey == publicKey;
+                && lastSignature.EndsWith(publicKey);
         }
 
         private class NullMockSignatureProvider : AsymmetricSignatureProviderBase
         {
             public override string SignatureTypeCode => null!;
+            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
             protected override string SignInternal(string value, string privateKey) => value;
             protected override bool VerifyInternal(string value, string signature, string publicKey) => false;
         }
@@ -43,6 +54,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         private class EmptyMockSignatureProvider : AsymmetricSignatureProviderBase
         {
             public override string SignatureTypeCode => string.Empty;
+            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
             protected override string SignInternal(string value, string privateKey) => value;
             protected override bool VerifyInternal(string value, string signature, string publicKey) => false;
         }
@@ -50,6 +62,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         private class WhitespaceMockSignatureProvider : AsymmetricSignatureProviderBase
         {
             public override string SignatureTypeCode => " ";
+            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
             protected override string SignInternal(string value, string privateKey) => value;
             protected override bool VerifyInternal(string value, string signature, string publicKey) => false;
         }
@@ -57,13 +70,14 @@ namespace Corely.UnitTests.Security.Signature.Providers
         private class ColonMockSignatureProvider : AsymmetricSignatureProviderBase
         {
             public override string SignatureTypeCode => "as:df";
+            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
             protected override string SignInternal(string value, string privateKey) => value;
             protected override bool VerifyInternal(string value, string signature, string publicKey) => false;
         }
 
         private const string TEST_ENCRYPTION_TYPE_CODE = "00";
 
-        private readonly MockSignatureProvider _mockSignatureProvider = new(string.Empty);
+        private readonly MockSignatureProvider _mockSignatureProvider = new();
 
         [Fact]
         public void NullEncryptionTypeCode_ThrowsArgumentNullException_OnBuild()
@@ -103,14 +117,18 @@ namespace Corely.UnitTests.Security.Signature.Providers
             Assert.Equal(TEST_ENCRYPTION_TYPE_CODE, _mockSignatureProvider.SignatureTypeCode);
         }
 
-        public override IAsymmetricSignatureProvider GetSignatureProvider(string expectedVerifyKey)
+        [Fact]
+        public override void GetAsymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation()
         {
-            return new MockSignatureProvider(expectedVerifyKey);
+            var keyProvider = _mockSignatureProvider.GetAsymmetricKeyProvider();
+
+            Assert.NotNull(keyProvider);
+            Assert.IsType<MockAsymmetricKeyProvider>(keyProvider);
         }
 
-        public override IAsymmetricKeyProvider GetKeyProvider()
+        public override IAsymmetricSignatureProvider GetSignatureProvider()
         {
-            return new RsaKeyProvider();
+            return new MockSignatureProvider();
         }
     }
 }

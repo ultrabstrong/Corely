@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using Corely.Security.Keys;
 using Corely.Security.KeyStore;
 using Corely.Security.Signature.Providers;
 
@@ -8,16 +7,14 @@ namespace Corely.UnitTests.Security.Signature.Providers
     public abstract class AsymmetricSignatureProviderGenericTests
     {
         private readonly Fixture _fixture = new();
-        private readonly IAsymmetricKeyProvider _keyProvider;
-        private readonly InMemoryAsymmetricKeyStoreProvider _keyStoreProvider;
         private readonly IAsymmetricSignatureProvider _signatureProvider;
+        private readonly InMemoryAsymmetricKeyStoreProvider _keyStoreProvider;
 
         public AsymmetricSignatureProviderGenericTests()
         {
-            _keyProvider = GetKeyProvider();
-            var (publicKey, privateKey) = _keyProvider.CreateKeys();
+            _signatureProvider = GetSignatureProvider();
+            var (publicKey, privateKey) = _signatureProvider.GetAsymmetricKeyProvider().CreateKeys();
             _keyStoreProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
-            _signatureProvider = GetSignatureProvider(publicKey);
         }
 
         [Fact]
@@ -78,7 +75,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         {
             var data = _fixture.Create<string>();
             var signature = _signatureProvider.Sign(data, _keyStoreProvider);
-            var (publicKey, privateKey) = _keyProvider.CreateKeys();
+            var (publicKey, privateKey) = _signatureProvider.GetAsymmetricKeyProvider().CreateKeys();
             var keyStoreProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
 
             var result = _signatureProvider.Verify(data, signature, keyStoreProvider);
@@ -97,8 +94,9 @@ namespace Corely.UnitTests.Security.Signature.Providers
         [Fact]
         public abstract void SignatureTypeCode_ReturnsCorrectCode_ForImplementation();
 
-        public abstract IAsymmetricSignatureProvider GetSignatureProvider(string expectedVerifyKey);
+        [Fact]
+        public abstract void GetAsymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation();
 
-        public abstract IAsymmetricKeyProvider GetKeyProvider();
+        public abstract IAsymmetricSignatureProvider GetSignatureProvider();
     }
 }

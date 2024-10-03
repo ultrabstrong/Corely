@@ -9,19 +9,24 @@ namespace Corely.UnitTests.Security.Signature.Providers
     {
         private readonly RsaSignatureProvider _rsaSignatureProvider = new(HashAlgorithmName.SHA256);
 
+        [Fact]
         public override void SignatureTypeCode_ReturnsCorrectCode_ForImplementation()
         {
             Assert.Equal(SignatureConstants.RSA_CODE, _rsaSignatureProvider.SignatureTypeCode);
         }
 
-        public override IAsymmetricSignatureProvider GetSignatureProvider(string expectedVerifyKey)
+        [Fact]
+        public override void GetAsymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation()
         {
-            return new RsaSignatureProvider(HashAlgorithmName.SHA256);
+            var keyProvider = _rsaSignatureProvider.GetAsymmetricKeyProvider();
+
+            Assert.NotNull(keyProvider);
+            Assert.IsType<RsaKeyProvider>(keyProvider);
         }
 
-        public override IAsymmetricKeyProvider GetKeyProvider()
+        public override IAsymmetricSignatureProvider GetSignatureProvider()
         {
-            return new RsaKeyProvider();
+            return new RsaSignatureProvider(HashAlgorithmName.SHA256);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using Corely.Security.Encryption;
 using Corely.Security.Encryption.Providers;
-using Corely.Security.Keys;
 using Corely.Security.KeyStore;
 using Corely.UnitTests.ClassData;
 
@@ -10,16 +9,14 @@ namespace Corely.UnitTests.Security.Encryption.Providers
     public abstract class AsymmetricEncryptionProviderGenericTests
     {
         private readonly Fixture _fixture = new();
-        private readonly RsaKeyProvider _keyProvider;
-        private readonly InMemoryAsymmetricKeyStoreProvider _keyStoreProvider;
         private readonly IAsymmetricEncryptionProvider _encryptionProvider;
+        private readonly InMemoryAsymmetricKeyStoreProvider _keyStoreProvider;
 
         public AsymmetricEncryptionProviderGenericTests()
         {
-            _keyProvider = new RsaKeyProvider();
-            var (publicKey, privateKey) = _keyProvider.CreateKeys();
-            _keyStoreProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
             _encryptionProvider = GetEncryptionProvider();
+            var (publicKey, privateKey) = _encryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
+            _keyStoreProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
         }
 
         [Fact]
@@ -87,7 +84,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
             var originalDecrypted = _fixture.Create<string>();
             var encrypted = _encryptionProvider.Encrypt(originalDecrypted, _keyStoreProvider);
 
-            var (publicKey, privateKey) = _keyProvider.CreateKeys();
+            var (publicKey, privateKey) = _encryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
             _keyStoreProvider.Add(publicKey, privateKey);
 
             var decrypted = _encryptionProvider.Decrypt(encrypted, _keyStoreProvider);
@@ -146,7 +143,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
             var originalDecrypted = _fixture.Create<string>();
             var originalEncrypted = _encryptionProvider.Encrypt(originalDecrypted, _keyStoreProvider);
 
-            var (publicKey, privateKey) = _keyProvider.CreateKeys();
+            var (publicKey, privateKey) = _encryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
             _keyStoreProvider.Add(publicKey, privateKey);
 
             var encrypted = _encryptionProvider.ReEncrypt(originalEncrypted, _keyStoreProvider);

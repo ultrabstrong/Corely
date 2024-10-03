@@ -9,19 +9,24 @@ namespace Corely.UnitTests.Security.Signature.Providers
     {
         private readonly ECDsaSignatureProvider _ecDsaSignatureProvider = new(HashAlgorithmName.SHA256);
 
+        [Fact]
         public override void SignatureTypeCode_ReturnsCorrectCode_ForImplementation()
         {
             Assert.Equal(SignatureConstants.ECDSA_CODE, _ecDsaSignatureProvider.SignatureTypeCode);
         }
 
-        public override IAsymmetricSignatureProvider GetSignatureProvider(string expectedVerifyKey)
+        [Fact]
+        public override void GetAsymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation()
         {
-            return new ECDsaSignatureProvider(HashAlgorithmName.SHA256);
+            var keyProvider = _ecDsaSignatureProvider.GetAsymmetricKeyProvider();
+
+            Assert.NotNull(keyProvider);
+            Assert.IsType<EcdsaKeyProvider>(keyProvider);
         }
 
-        public override IAsymmetricKeyProvider GetKeyProvider()
+        public override IAsymmetricSignatureProvider GetSignatureProvider()
         {
-            return new EcdsaKeyProvider();
+            return new ECDsaSignatureProvider(HashAlgorithmName.SHA256);
         }
     }
 }

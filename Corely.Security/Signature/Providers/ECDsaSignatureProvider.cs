@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using Corely.Security.Keys;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Corely.Security.Signature.Providers
@@ -7,6 +8,7 @@ namespace Corely.Security.Signature.Providers
     {
         public override string SignatureTypeCode => SignatureConstants.ECDSA_CODE;
 
+        private readonly EcdsaKeyProvider _ecdsaKeyProvider = new();
         private readonly HashAlgorithmName _hashAlgorithm;
 
         public ECDsaSignatureProvider(HashAlgorithmName hashAlgorithm)
@@ -39,6 +41,7 @@ namespace Corely.Security.Signature.Providers
                 return ecdsa.VerifyData(dataToVerify, signatureBytes, _hashAlgorithm);
             }
         }
-    }
 
+        public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => _ecdsaKeyProvider;
+    }
 }

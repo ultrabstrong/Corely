@@ -9,21 +9,23 @@ namespace Corely.UnitTests.Security.Encryption.Providers
     {
         private readonly RsaEncryptionProvider _rsaEncryptionProvider = new(RSAEncryptionPadding.OaepSHA256);
 
+        [Fact]
         public override void EncryptionTypeCode_ReturnsCorrectCode_ForImplementation()
         {
             Assert.Equal(AsymmetricEncryptionConstants.RSA_CODE, _rsaEncryptionProvider.EncryptionTypeCode);
         }
 
-        public override IAsymmetricEncryptionProvider GetEncryptionProvider()
-        {
-            return new RsaEncryptionProvider(RSAEncryptionPadding.OaepSHA256);
-        }
+        [Fact]
         public override void GetAsymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation()
         {
             var keyProvider = _rsaEncryptionProvider.GetAsymmetricKeyProvider();
 
             Assert.NotNull(keyProvider);
             Assert.IsType<RsaKeyProvider>(keyProvider);
+        }
+        public override IAsymmetricEncryptionProvider GetEncryptionProvider()
+        {
+            return new RsaEncryptionProvider(RSAEncryptionPadding.OaepSHA256);
         }
     }
 }

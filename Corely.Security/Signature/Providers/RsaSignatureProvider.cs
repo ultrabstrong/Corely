@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using Corely.Security.Keys;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Corely.Security.Signature.Providers
@@ -7,6 +8,7 @@ namespace Corely.Security.Signature.Providers
     {
         public override string SignatureTypeCode => SignatureConstants.RSA_CODE;
 
+        private readonly RsaKeyProvider _rsaKeyProvider = new();
         private readonly HashAlgorithmName _hashAlgorithm;
 
         public RsaSignatureProvider(HashAlgorithmName hashAlgorithm)
@@ -39,6 +41,7 @@ namespace Corely.Security.Signature.Providers
                 return rsa.VerifyData(dataToVerify, signatureBytes, _hashAlgorithm, RSASignaturePadding.Pkcs1);
             }
         }
-    }
 
+        public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => _rsaKeyProvider;
+    }
 }

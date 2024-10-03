@@ -6,10 +6,17 @@ namespace Corely.UnitTests.Security.Encryption.Providers
 {
     public sealed class SymmetricEncryptionProviderBaseTests : SymmetricEncryptionProviderGenericTests
     {
+        private class MockSymmetricKeyProvider : ISymmetricKeyProvider
+        {
+            public string CreateKey() => string.Empty;
+            public bool IsKeyValid(string key) => true;
+        }
+
         private class MockEncryptionProvider : SymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => TEST_ENCRYPTION_TYPE_CODE;
-            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
+            private readonly MockSymmetricKeyProvider _mockKeyProvider = new();
+            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => _mockKeyProvider;
             protected override string EncryptInternal(string value, string key) => $"{Guid.NewGuid()}{value}";
             protected override string DecryptInternal(string value, string key) => value[36..];
         }
@@ -88,14 +95,18 @@ namespace Corely.UnitTests.Security.Encryption.Providers
             Assert.Equal(TEST_ENCRYPTION_TYPE_CODE, _mockEncryptionProvider.EncryptionTypeCode);
         }
 
+        [Fact]
+        public override void GetSymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation()
+        {
+            var keyProvider = _mockEncryptionProvider.GetSymmetricKeyProvider();
+
+            Assert.NotNull(keyProvider);
+            Assert.IsType<MockSymmetricKeyProvider>(keyProvider);
+        }
+
         public override ISymmetricEncryptionProvider GetEncryptionProvider()
         {
             return new MockEncryptionProvider();
-        }
-
-        public override void GetSymmetricKeyProvider_ReturnsCorrectKeyProvider_ForImplementation()
-        {
-            // Don't need to test if MockEncryptionProvider returns the correct key provider
         }
     }
 }

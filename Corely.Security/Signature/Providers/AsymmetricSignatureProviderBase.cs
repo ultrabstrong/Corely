@@ -1,4 +1,5 @@
-﻿using Corely.Security.KeyStore;
+﻿using Corely.Security.Keys;
+using Corely.Security.KeyStore;
 
 namespace Corely.Security.Signature.Providers
 {
@@ -33,6 +34,8 @@ namespace Corely.Security.Signature.Providers
             var (publicKey, _) = keyStoreProvider.GetCurrentKeys();
             return VerifyInternal(data, signature, publicKey);
         }
+
+        public abstract IAsymmetricKeyProvider GetAsymmetricKeyProvider();
 
         protected abstract string SignInternal(string value, string privateKey);
 
