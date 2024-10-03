@@ -21,7 +21,7 @@ namespace Corely.Security.Encryption.Models
         }
         private string _secret = string.Empty;
 
-        public void Set(string decryptedValue, IAsymmetricKeyStoreProvider provider)
+        public void Set(string decryptedValue, IAsymmetricEncryptionKeyStoreProvider provider)
         {
             var encryptedValue = _encryptionProvider.Encrypt(decryptedValue, provider);
             lock (_lock)
@@ -30,12 +30,12 @@ namespace Corely.Security.Encryption.Models
             }
         }
 
-        public string GetDecrypted(IAsymmetricKeyStoreProvider provider)
+        public string GetDecrypted(IAsymmetricEncryptionKeyStoreProvider provider)
         {
             return _encryptionProvider.Decrypt(Secret, provider);
         }
 
-        public void ReEncrypt(IAsymmetricKeyStoreProvider provider)
+        public void ReEncrypt(IAsymmetricEncryptionKeyStoreProvider provider)
         {
             _secret = _encryptionProvider.ReEncrypt(Secret, provider);
         }

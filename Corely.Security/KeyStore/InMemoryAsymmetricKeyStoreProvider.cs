@@ -1,6 +1,6 @@
 ﻿namespace Corely.Security.KeyStore
 {
-    public class InMemoryAsymmetricKeyStoreProvider : IAsymmetricKeyStoreProvider
+    public class InMemoryAsymmetricKeyStoreProvider : IAsymmetricEncryptionKeyStoreProvider, IAsymmetricSignatureKeyStoreProvider
     {
         private readonly Dictionary<int, (string, string)> _keys = [];
         private int _version = 0;
@@ -15,8 +15,6 @@
         {
             _keys.Add(++_version, (publicKey, privateKey));
         }
-
-        public (string PublicKey, string PrivateKey) GetCurrentKeys() => _keys[_version];
 
         public int GetCurrentVersion() => _version;
 
@@ -33,5 +31,6 @@
             return keys;
         }
 
+        public (string PublicKey, string PrivateKey) GetCurrentKeys() => _keys[_version];
     }
 }

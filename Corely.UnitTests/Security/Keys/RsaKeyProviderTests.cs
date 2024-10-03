@@ -31,7 +31,7 @@ namespace Corely.UnitTests.Security.Keys
         }
 
         [Fact]
-        public void CreateKeyPair_ReturnsValidKeyPair()
+        public void CreateKeys_ReturnsValidKeys()
         {
             var (publicKey, privateKey) = _rsaKeyProvider.CreateKeys();
             Assert.NotEmpty(publicKey);

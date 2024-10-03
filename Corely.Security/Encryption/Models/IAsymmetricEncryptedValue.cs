@@ -5,8 +5,8 @@ namespace Corely.Security.Encryption.Models
     public interface IAsymmetricEncryptedValue
     {
         string Secret { get; }
-        void Set(string decryptedValue, IAsymmetricKeyStoreProvider provider);
-        string GetDecrypted(IAsymmetricKeyStoreProvider provider);
-        void ReEncrypt(IAsymmetricKeyStoreProvider provider);
+        void Set(string decryptedValue, IAsymmetricEncryptionKeyStoreProvider provider);
+        string GetDecrypted(IAsymmetricEncryptionKeyStoreProvider provider);
+        void ReEncrypt(IAsymmetricEncryptionKeyStoreProvider provider);
     }
 }

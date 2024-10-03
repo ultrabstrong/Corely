@@ -1,6 +1,6 @@
 ﻿namespace Corely.Security.Keys
 {
-    public interface IAsymmetricKeyProvider
+    public interface IAsymmetricEncryptionKeyProvider
     {
         (string PublicKey, string PrivateKey) CreateKeys();
         bool IsKeyValid(string publicKey, string privateKey);

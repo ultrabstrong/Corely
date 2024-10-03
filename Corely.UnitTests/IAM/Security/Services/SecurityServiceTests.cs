@@ -15,7 +15,7 @@ namespace Corely.UnitTests.IAM.Security.Services
                 serviceFactory.GetRequiredService<ISecurityConfigurationProvider>(),
                 serviceFactory.GetRequiredService<ISymmetricKeyProvider>(),
                 serviceFactory.GetRequiredService<ISymmetricEncryptionProviderFactory>(),
-                serviceFactory.GetRequiredService<IAsymmetricKeyProvider>());
+                serviceFactory.GetRequiredService<IAsymmetricEncryptionKeyProvider>());
         }
 
         [Fact]

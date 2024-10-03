@@ -8,23 +8,26 @@ namespace Corely.UnitTests.Security.KeyStore
     {
         private readonly Fixture _fixture = new();
         private readonly FileAsymmetricKeyStoreProvider _fileKeyStoreProvider;
-        private readonly string _fileKey;
+        private readonly string _filePublicKey;
+        private readonly string _filePrivateKey;
 
         public FileAsymmetricKeyStoreProviderTests()
         {
-            _fileKey = _fixture.Create<string>();
+            _filePublicKey = _fixture.Create<string>();
+            _filePrivateKey = _fixture.Create<string>();
             var fileKeyStoreProvider = new Mock<FileAsymmetricKeyStoreProvider>(_fixture.Create<string>());
             fileKeyStoreProvider.Protected()
-                .Setup<string>("GetFileContents")
-                .Returns(() => _fileKey);
+                .Setup<(string, string)>("GetFileContents")
+                .Returns(() => (_filePublicKey, _filePrivateKey));
             _fileKeyStoreProvider = fileKeyStoreProvider.Object;
         }
 
         [Fact]
         public void GetCurrentKey_ReturnsKey()
         {
-            var key = _fileKeyStoreProvider.GetCurrentKey();
-            Assert.Equal(_fileKey, key);
+            var (publicKey, privateKey) = _fileKeyStoreProvider.GetCurrentKeys();
+            Assert.Equal(_filePublicKey, publicKey);
+            Assert.Equal(_filePrivateKey, privateKey);
         }
 
         [Fact]
@@ -40,8 +43,9 @@ namespace Corely.UnitTests.Security.KeyStore
         [InlineData(2)]
         public void Get_ReturnsVersion1_WithAnyVersion(int version)
         {
-            var key = _fileKeyStoreProvider.Get(version);
-            Assert.Equal(_fileKey, key);
+            var (publicKey, privateKey) = _fileKeyStoreProvider.Get(version);
+            Assert.Equal(_filePublicKey, publicKey);
+            Assert.Equal(_filePrivateKey, privateKey);
         }
     }
 }

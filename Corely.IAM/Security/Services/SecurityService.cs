@@ -12,13 +12,13 @@ namespace Corely.IAM.Security.Services
         private readonly ISecurityConfigurationProvider _securityConfigurationProvider;
         private readonly ISymmetricKeyProvider _symmetricKeyProvider;
         private readonly ISymmetricEncryptionProvider _symmetricEncryptionProvider;
-        private readonly IAsymmetricKeyProvider _asymmetricKeyProvider;
+        private readonly IAsymmetricEncryptionKeyProvider _asymmetricKeyProvider;
 
         public SecurityService(
             ISecurityConfigurationProvider securityConfigurationProvider,
             ISymmetricKeyProvider symmetricKeyProvider,
             ISymmetricEncryptionProviderFactory symmetricEncryptionProviderFactory,
-            IAsymmetricKeyProvider asymmetricKeyProvider)
+            IAsymmetricEncryptionKeyProvider asymmetricKeyProvider)
         {
             _securityConfigurationProvider = securityConfigurationProvider.ThrowIfNull(nameof(securityConfigurationProvider));
 

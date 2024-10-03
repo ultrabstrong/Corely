@@ -1,9 +1,9 @@
 ﻿namespace Corely.Security.KeyStore
 {
-    public interface IAsymmetricKeyStoreProvider
+    public interface IAsymmetricEncryptionKeyStoreProvider
     {
-        (string PublicKey, string PrivateKey) GetCurrentKeys();
         int GetCurrentVersion();
         (string PublicKey, string PrivateKey) Get(int version);
+        (string PublicKey, string PrivateKey) GetCurrentKeys();
     }
 }

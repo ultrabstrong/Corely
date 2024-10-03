@@ -15,8 +15,6 @@
             _keys.Add(++_version, key);
         }
 
-        public string GetCurrentKey() => _keys[_version];
-
         public int GetCurrentVersion() => _version;
 
         public string Get(int version)
@@ -31,5 +29,7 @@
 
             return key;
         }
+
+        public string GetCurrentKey() => _keys[_version];
     }
 }

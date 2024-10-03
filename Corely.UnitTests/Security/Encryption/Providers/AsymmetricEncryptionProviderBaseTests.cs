@@ -3,7 +3,7 @@ using Corely.Security.Encryption.Providers;
 
 namespace Corely.UnitTests.Security.Encryption.Providers
 {
-    public class AsymmetricEncryptionProviderBaseTests : AsymmetricEncryptionProviderGenericTests
+    public sealed class AsymmetricEncryptionProviderBaseTests : AsymmetricEncryptionProviderGenericTests
     {
         private class MockEncryptionProvider : AsymmetricEncryptionProviderBase
         {

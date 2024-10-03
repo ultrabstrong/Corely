@@ -8,7 +8,6 @@ namespace Corely.UnitTests.Security.Encryption.Providers
     {
         private readonly RsaEncryptionProvider _rsaEncryptionProvider = new(RSAEncryptionPadding.OaepSHA256);
 
-        [Fact]
         public override void EncryptionTypeCode_ReturnsCorrectCode_ForImplementation()
         {
             Assert.Equal(AsymmetricEncryptionConstants.RSA_CODE, _rsaEncryptionProvider.EncryptionTypeCode);

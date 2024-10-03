@@ -7,7 +7,6 @@ namespace Corely.UnitTests.Security.Encryption.Providers
     {
         private readonly AesEncryptionProvider _aesEncryptionProvider = new();
 
-        [Fact]
         public override void EncryptionTypeCode_ReturnsCorrectCode_ForImplementation()
         {
             Assert.Equal(SymmetricEncryptionConstants.AES_CODE, _aesEncryptionProvider.EncryptionTypeCode);

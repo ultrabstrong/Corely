@@ -19,7 +19,7 @@ namespace Corely.Security.Encryption.Providers
             }
         }
 
-        public string Encrypt(string value, IAsymmetricKeyStoreProvider keyStoreProvider)
+        public string Encrypt(string value, IAsymmetricEncryptionKeyStoreProvider keyStoreProvider)
         {
             ArgumentNullException.ThrowIfNull(value, nameof(value));
             var (publicKey, _) = keyStoreProvider.GetCurrentKeys();
@@ -28,7 +28,7 @@ namespace Corely.Security.Encryption.Providers
             return FormatEncryptedValue(encryptedValue, version);
         }
 
-        public string Decrypt(string value, IAsymmetricKeyStoreProvider keyStoreProvider)
+        public string Decrypt(string value, IAsymmetricEncryptionKeyStoreProvider keyStoreProvider)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(value));
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
@@ -61,7 +61,7 @@ namespace Corely.Security.Encryption.Providers
             return (parts[2], keyVersion);
         }
 
-        public string ReEncrypt(string value, IAsymmetricKeyStoreProvider keyStoreProvider)
+        public string ReEncrypt(string value, IAsymmetricEncryptionKeyStoreProvider keyStoreProvider)
         {
             (var encryptedValue, var version) = ValidateForKeyVersion(value);
 
