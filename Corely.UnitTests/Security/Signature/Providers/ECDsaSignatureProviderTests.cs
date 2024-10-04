@@ -12,7 +12,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         [Fact]
         public override void SignatureTypeCode_ReturnsCorrectCode_ForImplementation()
         {
-            Assert.Equal(SignatureConstants.ECDSA_CODE, _ecDsaSignatureProvider.SignatureTypeCode);
+            Assert.Equal(AsymmetricSignatureConstants.ECDSA_SHA256_CODE, _ecDsaSignatureProvider.SignatureTypeCode);
         }
 
         [Fact]

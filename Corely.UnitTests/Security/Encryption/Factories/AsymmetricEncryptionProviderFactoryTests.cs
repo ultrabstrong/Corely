@@ -8,17 +8,12 @@ namespace Corely.UnitTests.Security.Encryption.Factories
 {
     public class AsymmetricEncryptionProviderFactoryTests
     {
-        private readonly string _defaultProviderCode = AsymmetricEncryptionConstants.RSA_CODE;
-        private readonly AsymmetricEncryptionProviderFactory _encryptionProviderFactory;
+        private const string DEFAULT_PROVIDER_CODE = AsymmetricEncryptionConstants.RSA_CODE;
+        private readonly AsymmetricEncryptionProviderFactory _encryptionProviderFactory = new(DEFAULT_PROVIDER_CODE);
         private readonly Fixture _fixture = new();
 
-        public AsymmetricEncryptionProviderFactoryTests()
-        {
-            _encryptionProviderFactory = new(_defaultProviderCode);
-        }
-
         [Fact]
-        public void AddProvider_AddProvider()
+        public void AddProvider_AddsProvider()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<IAsymmetricEncryptionProvider>().Object;
@@ -69,7 +64,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
         }
 
         [Fact]
-        public void UpdateProvider_UpdateProvider()
+        public void UpdateProvider_UpdatesProvider()
         {
             var providerCode = _fixture.Create<string>();
             var originalProvider = new Mock<IAsymmetricEncryptionProvider>().Object;
@@ -126,11 +121,10 @@ namespace Corely.UnitTests.Security.Encryption.Factories
             var encryptionProvider = _encryptionProviderFactory.GetDefaultProvider();
 
             Assert.NotNull(encryptionProvider);
-            Assert.Equal(_defaultProviderCode, encryptionProvider.EncryptionTypeCode);
+            Assert.Equal(DEFAULT_PROVIDER_CODE, encryptionProvider.EncryptionTypeCode);
         }
 
-        [Theory]
-        [InlineData(AsymmetricEncryptionConstants.RSA_CODE, typeof(RsaEncryptionProvider))]
+        [Theory, MemberData(nameof(GetProviderData))]
         public void GetProvider_ReturnEncryptionProvider(string code, Type expectedType)
         {
             var encryptionProvider = _encryptionProviderFactory.GetProvider(code);
@@ -152,8 +146,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
                 || ex is EncryptionException);
         }
 
-        [Theory]
-        [InlineData(AsymmetricEncryptionConstants.RSA_CODE, typeof(RsaEncryptionProvider))]
+        [Theory, MemberData(nameof(GetProviderData))]
         public void GetProviderForDecrypting_ReturnsEncryptionProvider(string code, Type expectedType)
         {
             var encryptedValue = $"{code}:1:{_fixture.Create<string>()}";
@@ -192,6 +185,11 @@ namespace Corely.UnitTests.Security.Encryption.Factories
             Assert.NotNull(updatedProviders);
             Assert.NotEmpty(updatedProviders);
             Assert.True(providers.Count < updatedProviders.Count);
+        }
+
+        public static IEnumerable<object[]> GetProviderData()
+        {
+            yield return new object[] { AsymmetricEncryptionConstants.RSA_CODE, typeof(RsaEncryptionProvider) };
         }
     }
 }

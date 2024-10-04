@@ -12,7 +12,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         [Fact]
         public override void SignatureTypeCode_ReturnsCorrectCode_ForImplementation()
         {
-            Assert.Equal(SignatureConstants.RSA_CODE, _rsaSignatureProvider.SignatureTypeCode);
+            Assert.Equal(AsymmetricSignatureConstants.RSA_SHA256_CODE, _rsaSignatureProvider.SignatureTypeCode);
         }
 
         [Fact]

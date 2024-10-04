@@ -8,14 +8,9 @@ namespace Corely.UnitTests.Security.Hashing.Factories
 {
     public class HashProviderFactoryTests
     {
-        private readonly string _defaultProviderCode = HashConstants.SALTED_SHA256_CODE;
+        private const string DEFAULT_PROVIDER_CODE = HashConstants.SALTED_SHA256_CODE;
+        private readonly HashProviderFactory _hashProviderFactory = new(DEFAULT_PROVIDER_CODE);
         private readonly Fixture _fixture = new();
-        private readonly HashProviderFactory _hashProviderFactory;
-
-        public HashProviderFactoryTests()
-        {
-            _hashProviderFactory = new HashProviderFactory(_defaultProviderCode);
-        }
 
         [Fact]
         public void AddProvider_AddsProvider()
@@ -125,12 +120,10 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         {
             var hashProvider = _hashProviderFactory.GetDefaultProvider();
             Assert.NotNull(hashProvider);
-            Assert.Equal(_defaultProviderCode, hashProvider.HashTypeCode);
+            Assert.Equal(DEFAULT_PROVIDER_CODE, hashProvider.HashTypeCode);
         }
 
-        [Theory]
-        [InlineData(HashConstants.SALTED_SHA256_CODE, typeof(Sha256SaltedHashProvider))]
-        [InlineData(HashConstants.SALTED_SHA512_CODE, typeof(Sha512SaltedHashProvider))]
+        [Theory, MemberData(nameof(GetProviderData))]
         public void GetProvider_ReturnProvider(string providerCode, Type expectedType)
         {
             var hashProvider = _hashProviderFactory.GetProvider(providerCode);
@@ -152,9 +145,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
                 || ex is HashException);
         }
 
-        [Theory]
-        [InlineData(HashConstants.SALTED_SHA256_CODE, typeof(Sha256SaltedHashProvider))]
-        [InlineData(HashConstants.SALTED_SHA512_CODE, typeof(Sha512SaltedHashProvider))]
+        [Theory, MemberData(nameof(GetProviderData))]
         public void GetProviderToVerify_ReturnHashProvider(string providerCode, Type expectedType)
         {
             var fixture = new Fixture();
@@ -193,6 +184,12 @@ namespace Corely.UnitTests.Security.Hashing.Factories
             Assert.NotNull(updatedProviders);
             Assert.NotEmpty(updatedProviders);
             Assert.True(providers.Count < updatedProviders.Count);
+        }
+
+        public static IEnumerable<object[]> GetProviderData()
+        {
+            yield return new object[] { HashConstants.SALTED_SHA256_CODE, typeof(Sha256SaltedHashProvider) };
+            yield return new object[] { HashConstants.SALTED_SHA512_CODE, typeof(Sha512SaltedHashProvider) };
         }
     }
 }

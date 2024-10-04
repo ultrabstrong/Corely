@@ -6,7 +6,7 @@ namespace Corely.Security.Signature.Providers
 {
     public sealed class RsaSignatureProvider : AsymmetricSignatureProviderBase
     {
-        public override string SignatureTypeCode => SignatureConstants.RSA_CODE;
+        public override string SignatureTypeCode => AsymmetricSignatureConstants.RSA_SHA256_CODE;
 
         private readonly RsaKeyProvider _rsaKeyProvider = new();
         private readonly HashAlgorithmName _hashAlgorithm;

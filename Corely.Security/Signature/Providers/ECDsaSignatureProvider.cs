@@ -6,7 +6,7 @@ namespace Corely.Security.Signature.Providers
 {
     public sealed class ECDsaSignatureProvider : AsymmetricSignatureProviderBase
     {
-        public override string SignatureTypeCode => SignatureConstants.ECDSA_CODE;
+        public override string SignatureTypeCode => AsymmetricSignatureConstants.ECDSA_SHA256_CODE;
 
         private readonly EcdsaKeyProvider _ecdsaKeyProvider = new();
         private readonly HashAlgorithmName _hashAlgorithm;

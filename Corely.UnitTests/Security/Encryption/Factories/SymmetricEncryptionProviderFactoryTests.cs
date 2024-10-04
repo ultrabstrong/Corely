@@ -8,17 +8,12 @@ namespace Corely.UnitTests.Security.Encryption.Factories
 {
     public class SymmetricEncryptionProviderFactoryTests
     {
-        private readonly string _defaultProviderCode = SymmetricEncryptionConstants.AES_CODE;
-        private readonly SymmetricEncryptionProviderFactory _encryptionProviderFactory;
+        private const string DEFAULT_PROVIDER_CODE = SymmetricEncryptionConstants.AES_CODE;
+        private readonly SymmetricEncryptionProviderFactory _encryptionProviderFactory = new(DEFAULT_PROVIDER_CODE);
         private readonly Fixture _fixture = new();
 
-        public SymmetricEncryptionProviderFactoryTests()
-        {
-            _encryptionProviderFactory = new(_defaultProviderCode);
-        }
-
         [Fact]
-        public void AddProvider_AddProvider()
+        public void AddProvider_AddsProvider()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<ISymmetricEncryptionProvider>().Object;
@@ -125,11 +120,10 @@ namespace Corely.UnitTests.Security.Encryption.Factories
         {
             var encryptionProvider = _encryptionProviderFactory.GetDefaultProvider();
             Assert.NotNull(encryptionProvider);
-            Assert.Equal(_defaultProviderCode, encryptionProvider.EncryptionTypeCode);
+            Assert.Equal(DEFAULT_PROVIDER_CODE, encryptionProvider.EncryptionTypeCode);
         }
 
-        [Theory]
-        [InlineData(SymmetricEncryptionConstants.AES_CODE, typeof(AesEncryptionProvider))]
+        [Theory, MemberData(nameof(GetProviderData))]
         public void GetProvider_ReturnEncryptionProvider(string code, Type expectedType)
         {
             var encryptionProvider = _encryptionProviderFactory.GetProvider(code);
@@ -151,8 +145,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
                 || ex is EncryptionException);
         }
 
-        [Theory]
-        [InlineData(SymmetricEncryptionConstants.AES_CODE, typeof(AesEncryptionProvider))]
+        [Theory, MemberData(nameof(GetProviderData))]
         public void GetProviderForDecrypting_ReturnsEncryptionProvider(string code, Type expectedType)
         {
             var encryptedValue = $"{code}:1:{_fixture.Create<string>()}";
@@ -191,6 +184,11 @@ namespace Corely.UnitTests.Security.Encryption.Factories
             Assert.NotNull(updatedProviders);
             Assert.NotEmpty(updatedProviders);
             Assert.True(providers.Count < updatedProviders.Count);
+        }
+
+        public static IEnumerable<object[]> GetProviderData()
+        {
+            yield return new object[] { SymmetricEncryptionConstants.AES_CODE, typeof(AesEncryptionProvider) };
         }
     }
 }
