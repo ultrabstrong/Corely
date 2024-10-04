@@ -37,7 +37,5 @@ namespace Corely.DataAccess.Mock.Repos
             Entities.Remove(entity);
             return Task.CompletedTask;
         }
-
-        internal List<T> GetEntities() => Entities;
     }
 }

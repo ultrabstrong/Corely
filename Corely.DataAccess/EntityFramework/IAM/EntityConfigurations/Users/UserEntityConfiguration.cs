@@ -18,8 +18,7 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Users
         {
             ConfigureGenericTypes(builder);
 
-            builder.Property(e => e.Enabled)
-                .HasDefaultValue(true)
+            builder.Property(e => e.Disabled)
                 .IsRequired();
 
             builder.Property(e => e.Username)

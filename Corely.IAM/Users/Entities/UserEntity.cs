@@ -10,7 +10,7 @@ namespace Corely.IAM.Users.Entities
         public int Id { get; set; }
         public string Username { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public bool Enabled { get; set; }
+        public bool Disabled { get; set; }
         public int TotalSuccessfulLogins { get; set; }
         public DateTime? LastSuccessfulLoginUtc { get; set; }
         public int FailedLoginsSinceLastSuccess { get; set; }

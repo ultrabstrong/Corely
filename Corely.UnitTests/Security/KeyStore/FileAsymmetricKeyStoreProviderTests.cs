@@ -17,8 +17,8 @@ namespace Corely.UnitTests.Security.KeyStore
             _filePrivateKey = _fixture.Create<string>();
             var fileKeyStoreProvider = new Mock<FileAsymmetricKeyStoreProvider>(_fixture.Create<string>());
             fileKeyStoreProvider.Protected()
-                .Setup<(string, string)>("GetFileContents")
-                .Returns(() => (_filePublicKey, _filePrivateKey));
+                .Setup<string>("GetFileContents")
+                .Returns(() => $"{_filePublicKey}{Environment.NewLine}{_filePrivateKey}");
             _fileKeyStoreProvider = fileKeyStoreProvider.Object;
         }
 

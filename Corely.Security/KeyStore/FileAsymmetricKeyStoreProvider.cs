@@ -12,14 +12,18 @@
 
         public int GetCurrentVersion() => _version;
 
-        public (string PublicKey, string PrivateKey) Get(int version) => GetFileContents();
-
-        public (string PublicKey, string PrivateKey) GetCurrentKeys() => GetFileContents();
-
-        protected virtual (string PublicKey, string PrivateKey) GetFileContents()
+        public (string PublicKey, string PrivateKey) Get(int version)
         {
-            var keys = File.ReadAllText(_filePath).Split(Environment.NewLine);
+            var keys = GetFileContents().Split(Environment.NewLine);
             return (keys[0], keys[1]);
         }
+
+        public (string PublicKey, string PrivateKey) GetCurrentKeys()
+        {
+            var keys = GetFileContents().Split(Environment.NewLine);
+            return (keys[0], keys[1]);
+        }
+
+        protected virtual string GetFileContents() => File.ReadAllText(_filePath);
     }
 }

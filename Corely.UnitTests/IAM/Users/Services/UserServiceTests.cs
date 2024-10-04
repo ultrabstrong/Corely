@@ -101,5 +101,19 @@ namespace Corely.UnitTests.IAM.Users.Services
             Assert.Equal(createUserRequest.Username, user.Username);
             Assert.Equal(createUserRequest.Email, user.Email);
         }
+
+        [Fact]
+        public async Task UpdateUserAsync_UpdatesUser()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            await _userService.CreateUserAsync(createUserRequest);
+            var user = await _userService.GetUserAsync(createUserRequest.Username);
+            user!.Disabled = false;
+
+            await _userService.UpdateUserAsync(user);
+            var updatedUser = await _userService.GetUserAsync(createUserRequest.Username);
+
+            Assert.False(updatedUser.Disabled);
+        }
     }
 }
