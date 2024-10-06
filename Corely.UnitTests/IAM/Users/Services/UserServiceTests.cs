@@ -113,7 +113,7 @@ namespace Corely.UnitTests.IAM.Users.Services
             await _userService.UpdateUserAsync(user);
             var updatedUser = await _userService.GetUserAsync(createUserRequest.Username);
 
-            Assert.False(updatedUser.Disabled);
+            Assert.False(updatedUser!.Disabled);
         }
     }
 }

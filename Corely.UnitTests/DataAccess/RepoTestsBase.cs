@@ -27,15 +27,16 @@ namespace Corely.UnitTests.DataAccess
         public async Task Create_ThenUpdate_Updates()
         {
             var entity = fixture.Create<T>();
-            var updateEntity = fixture.Create<T>();
-            updateEntity.Id = entity.Id;
-            updateEntity.CreatedUtc = entity.CreatedUtc;
-
             await Repo.CreateAsync(entity);
-            await Repo.UpdateAsync(updateEntity);
+
+            entity.Id = entity.Id;
+            entity.CreatedUtc = entity.CreatedUtc;
+
+            await Repo.UpdateAsync(entity);
             var result = await Repo.GetAsync(entity.Id);
 
-            result.Should().BeEquivalentTo(updateEntity, options => options.Excluding(m => m.ModifiedUtc));
+            result.Should().BeEquivalentTo(entity, options => options
+                .Excluding(m => m.ModifiedUtc));
         }
 
         [Fact]

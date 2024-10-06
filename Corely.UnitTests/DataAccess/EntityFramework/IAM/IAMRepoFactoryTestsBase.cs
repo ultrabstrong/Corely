@@ -37,6 +37,13 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
         }
 
         [Fact]
+        public void CreateReadonlyUserRepo_ReturnsMockReadonlyUserRepo()
+        {
+            var readonlyUserRepo = IAMRepoFactory.CreateReadonlyUserRepo();
+            Assert.NotNull(readonlyUserRepo);
+        }
+
+        [Fact]
         public void CreateUnitOfWorkProvider_ReturnsUowProvider()
         {
             var uowProvider = IAMRepoFactory.CreateUnitOfWorkProvider();

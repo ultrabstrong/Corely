@@ -18,12 +18,6 @@ namespace Corely.DataAccess.EntityFramework.Repos
         {
         }
 
-        public async Task<T?> GetAsync(Expression<Func<T, bool>> query,
-            Expression<Func<T, object>>? include = null)
-        {
-            return await _dbSet.GetAsync(query, include);
-        }
-
         public async Task<T?> GetAsync(
             Expression<Func<T, bool>> query,
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
