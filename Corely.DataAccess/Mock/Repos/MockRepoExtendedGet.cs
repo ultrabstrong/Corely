@@ -8,14 +8,6 @@ namespace Corely.DataAccess.Mock.Repos
         : MockRepo<T>, IRepoExtendedGet<T>
         where T : IHasIdPk
     {
-        public virtual Task<T?> GetAsync(Expression<Func<T, bool>> query,
-            Expression<Func<T, object>>? include = null)
-        {
-            ArgumentNullException.ThrowIfNull(query);
-            var predicate = query.Compile();
-            return Task.FromResult(Entities.FirstOrDefault(predicate));
-        }
-
         public virtual async Task<T?> GetAsync(
             Expression<Func<T, bool>> query,
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,

@@ -4,7 +4,7 @@ using Corely.UnitTests.Fixtures;
 
 namespace Corely.UnitTests.DataAccess.Mock.Repos
 {
-    public class MockRepoExtendedGetTests : RepoExtendedGetTestsBase<EntityFixture>
+    public class MockRepoExtendedGetTests : RepoExtendedGetTestsBase
     {
         private readonly MockRepoExtendedGet<EntityFixture> _mockRepoFixture = new();
         protected override IRepoExtendedGet<EntityFixture> Repo => _mockRepoFixture;
