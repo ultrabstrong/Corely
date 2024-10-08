@@ -1,7 +1,6 @@
 ﻿using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
 using Corely.IAM.Entities;
-using Corely.IAM.Security.Entities;
 
 namespace Corely.IAM.Users.Entities
 {

@@ -1,4 +1,6 @@
-﻿namespace Corely.IAM.Security.Entities
+﻿using Corely.IAM.Security.Entities;
+
+namespace Corely.IAM.Accounts.Entities
 {
     public class AccountSymmetricKeyEntity : SymmetricKeyEntity
     {

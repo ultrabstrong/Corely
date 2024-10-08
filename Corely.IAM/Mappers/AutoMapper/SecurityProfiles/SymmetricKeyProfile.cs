@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Security.Entities;
 using Corely.IAM.Security.Models;
+using Corely.IAM.Users.Entities;
 
 namespace Corely.IAM.Mappers.AutoMapper.SecurityProfiles
 {
@@ -8,6 +10,9 @@ namespace Corely.IAM.Mappers.AutoMapper.SecurityProfiles
     {
         public SymmetricKeyProfile()
         {
+            CreateMap<SymmetricKey, SymmetricKeyEntity>()
+                .ReverseMap();
+
             CreateMap<SymmetricKey, AccountSymmetricKeyEntity>()
                 .ForMember(m => m.AccountId, opt => opt.Ignore())
                 .ReverseMap();
