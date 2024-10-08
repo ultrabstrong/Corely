@@ -49,8 +49,7 @@ namespace Corely.DataAccess.EntityFramework.Repos
             if (existingEntity == null)
             {
                 // attach new entity instance to local context for tracking
-                _dbSet.Attach(entity);
-                _dbSet.Entry(entity).State = EntityState.Modified;
+                _dbSet.Attach(entity).State = EntityState.Modified;
             }
             else
             {
