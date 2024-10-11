@@ -4,6 +4,7 @@ using Corely.DataAccess.EntityFramework.IAM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Corely.DataAccessMigrations.Migrations
 {
     [DbContext(typeof(IAMDbContext))]
-    partial class IAMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241011032207_MultipleAccountSecurityKeys")]
+    partial class MultipleAccountSecurityKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

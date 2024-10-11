@@ -4,7 +4,8 @@ namespace Corely.IAM.Security.Services
 {
     public interface ISecurityService
     {
-        SymmetricKey GetSymmetricKeyEncryptedWithSystemKey();
-        AsymmetricKey GetAsymmetricKeyEncryptedWithSystemKey();
+        SymmetricKey GetSymmetricEncryptionKeyEncryptedWithSystemKey();
+        AsymmetricKey GetAsymmetricEncryptionKeyEncryptedWithSystemKey();
+        AsymmetricKey GetAsymmetricSignatureKeyEncryptedWithSystemKey();
     }
 }

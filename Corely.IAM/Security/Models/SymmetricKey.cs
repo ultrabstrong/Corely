@@ -1,9 +1,12 @@
-﻿using Corely.Security.Encryption.Models;
+﻿using Corely.IAM.Security.Enums;
+using Corely.Security.Encryption.Models;
 
 namespace Corely.IAM.Security.Models
 {
     public class SymmetricKey
     {
+        public int Id { get; set; }
+        public KeyUsedFor KeyUsedFor { get; set; }
         public int Version { get; set; }
         public ISymmetricEncryptedValue Key { get; set; } = null!;
         public DateTime CreatedUtc { get; set; }

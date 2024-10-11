@@ -26,14 +26,14 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts
             builder.HasMany(e => e.Users)
                 .WithMany(e => e.Accounts);
 
-            builder.HasOne(e => e.SymmetricKey)
+            builder.HasMany(e => e.SymmetricKeys)
                 .WithOne()
-                .HasForeignKey<AccountSymmetricKeyEntity>(p => p.AccountId)
+                .HasForeignKey(p => p.AccountId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(e => e.AsymmetricKey)
+            builder.HasMany(e => e.AsymmetricKeys)
                 .WithOne()
-                .HasForeignKey<AccountAsymmetricKeyEntity>(p => p.AccountId)
+                .HasForeignKey(p => p.AccountId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

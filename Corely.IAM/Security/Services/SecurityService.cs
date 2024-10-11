@@ -1,4 +1,5 @@
 ﻿using Corely.Common.Extensions;
+using Corely.IAM.Security.Enums;
 using Corely.IAM.Security.Models;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Models;
@@ -28,13 +29,14 @@ namespace Corely.IAM.Security.Services
                 .GetDefaultProvider();
         }
 
-        public SymmetricKey GetSymmetricKeyEncryptedWithSystemKey()
+        public SymmetricKey GetSymmetricEncryptionKeyEncryptedWithSystemKey()
         {
             var systemKeyStoreProvider = _securityConfigurationProvider.GetSystemSymmetricKey();
             var decryptedKey = _symmetricEncryptionProvider.GetSymmetricKeyProvider().CreateKey();
             var encryptedKey = _symmetricEncryptionProvider.Encrypt(decryptedKey, systemKeyStoreProvider);
             var symmetricKey = new SymmetricKey
             {
+                KeyUsedFor = KeyUsedFor.Encryption,
                 Version = systemKeyStoreProvider.GetCurrentVersion(),
                 Key = new SymmetricEncryptedValue(_symmetricEncryptionProvider)
                 {
@@ -44,13 +46,32 @@ namespace Corely.IAM.Security.Services
             return symmetricKey;
         }
 
-        public AsymmetricKey GetAsymmetricKeyEncryptedWithSystemKey()
+        public AsymmetricKey GetAsymmetricEncryptionKeyEncryptedWithSystemKey()
         {
             var systemKeyStoreProvider = _securityConfigurationProvider.GetSystemSymmetricKey();
             var (publickey, privateKey) = _asymmetricEncryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
             var encryptedPrivateKey = _symmetricEncryptionProvider.Encrypt(privateKey, systemKeyStoreProvider);
             var asymmetricKey = new AsymmetricKey
             {
+                KeyUsedFor = KeyUsedFor.Encryption,
+                Version = systemKeyStoreProvider.GetCurrentVersion(),
+                PublicKey = publickey,
+                PrivateKey = new SymmetricEncryptedValue(_symmetricEncryptionProvider)
+                {
+                    Secret = encryptedPrivateKey
+                }
+            };
+            return asymmetricKey;
+        }
+
+        public AsymmetricKey GetAsymmetricSignatureKeyEncryptedWithSystemKey()
+        {
+            var systemKeyStoreProvider = _securityConfigurationProvider.GetSystemSymmetricKey();
+            var (publickey, privateKey) = _asymmetricEncryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
+            var encryptedPrivateKey = _symmetricEncryptionProvider.Encrypt(privateKey, systemKeyStoreProvider);
+            var asymmetricKey = new AsymmetricKey
+            {
+                KeyUsedFor = KeyUsedFor.Signature,
                 Version = systemKeyStoreProvider.GetCurrentVersion(),
                 PublicKey = publickey,
                 PrivateKey = new SymmetricEncryptedValue(_symmetricEncryptionProvider)

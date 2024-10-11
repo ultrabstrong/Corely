@@ -49,8 +49,10 @@ namespace Corely.IAM.Accounts.Services
                 throw new UserDoesNotExistException($"User with Id {request.UserIdOfOwner} not found");
             }
 
-            account.SymmetricKey = _securityService.GetSymmetricKeyEncryptedWithSystemKey();
-            account.AsymmetricKey = _securityService.GetAsymmetricKeyEncryptedWithSystemKey();
+            account.SymmetricKeys = [_securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
+            account.AsymmetricKeys = [
+                _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
+                _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey()];
 
             var accountEntity = MapTo<AccountEntity>(account);
             accountEntity.Users = [userEntity];

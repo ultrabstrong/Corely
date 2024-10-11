@@ -17,9 +17,9 @@ namespace Corely.UnitTests.IAM.Security.Services
         }
 
         [Fact]
-        public void GetSymmetricKeyEncryptedWithSystemKey_ReturnsSymmetricKey()
+        public void GetSymmetricEncryptionKeyEncryptedWithSystemKey_ReturnsSymmetricKey()
         {
-            var result = _securityService.GetSymmetricKeyEncryptedWithSystemKey();
+            var result = _securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey();
 
             Assert.NotNull(result);
             Assert.NotNull(result.Key);
@@ -27,9 +27,20 @@ namespace Corely.UnitTests.IAM.Security.Services
         }
 
         [Fact]
-        public void GetAsymmetricKeyEncryptedWithSystemKey_ReturnsAsymmetricKey()
+        public void GetAsymmetricEncryptionKeyEncryptedWithSystemKey_ReturnsAsymmetricKey()
         {
-            var result = _securityService.GetAsymmetricKeyEncryptedWithSystemKey();
+            var result = _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey();
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.PublicKey);
+            Assert.NotNull(result.PrivateKey);
+            Assert.True(result.Version > -1);
+        }
+
+        [Fact]
+        public void GetAsymmetricSignatureKeyEncryptedWithSystemKey_ReturnsAsymmetricKey()
+        {
+            var result = _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
 
             Assert.NotNull(result);
             Assert.NotNull(result.PublicKey);

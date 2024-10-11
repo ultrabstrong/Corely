@@ -42,8 +42,8 @@ namespace Corely.IAM.Users.Services
 
             await ThrowIfUserExists(user.Username, user.Email);
 
-            user.SymmetricKey = _securityService.GetSymmetricKeyEncryptedWithSystemKey();
-            user.AsymmetricKey = _securityService.GetAsymmetricKeyEncryptedWithSystemKey();
+            user.SymmetricKey = _securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey();
+            user.AsymmetricKey = _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey();
 
             var userEntity = MapTo<UserEntity>(user);
             var createdId = await _userRepo.CreateAsync(userEntity);

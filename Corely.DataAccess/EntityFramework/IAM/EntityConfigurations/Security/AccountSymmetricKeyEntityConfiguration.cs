@@ -15,9 +15,8 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Security
         {
             ConfigureGenericTypes(builder);
 
-            builder.HasKey(e => e.AccountId);
-            builder.Property(e => e.AccountId)
-                .ValueGeneratedNever();
+            builder.HasIndex(e => new { e.AccountId, e.KeyUsedFor })
+              .IsUnique();
 
             builder.Property(m => m.Key)
                 .IsRequired()
