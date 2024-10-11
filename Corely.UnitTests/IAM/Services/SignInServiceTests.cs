@@ -21,8 +21,8 @@ namespace Corely.UnitTests.IAM.Services
         public SignInServiceTests() : base()
         {
             _user = _fixture.Build<User>()
-                .Without(u => u.SymmetricKey)
-                .Without(u => u.AsymmetricKey)
+                .Without(u => u.SymmetricKeys)
+                .Without(u => u.AsymmetricKeys)
                 .Create();
 
             _userServiceMock = GetMockUserService();

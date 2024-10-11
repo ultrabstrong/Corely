@@ -18,8 +18,8 @@ namespace Corely.IAM.Users.Entities
         public DateTime CreatedUtc { get; set; }
         public DateTime ModifiedUtc { get; set; }
         public virtual UserDetailsEntity? Details { get; set; }
-        public virtual UserSymmetricKeyEntity? SymmetricKey { get; init; }
-        public virtual UserAsymmetricKeyEntity? AsymmetricKey { get; init; }
+        public virtual ICollection<UserSymmetricKeyEntity>? SymmetricKeys { get; init; }
+        public virtual ICollection<UserAsymmetricKeyEntity>? AsymmetricKeys { get; init; }
         public virtual BasicAuthEntity? BasicAuth { get; set; }
         public virtual ICollection<AccountEntity>? Accounts { get; set; }
     }

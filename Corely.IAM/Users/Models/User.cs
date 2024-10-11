@@ -16,7 +16,7 @@ namespace Corely.IAM.Users.Models
         public DateTime CreatedUtc { get; set; }
         public DateTime ModifiedUtc { get; set; }
         public UserDetails? Details { get; init; }
-        public SymmetricKey? SymmetricKey { get; set; } = null!;
-        public AsymmetricKey? AsymmetricKey { get; set; } = null!;
+        public List<SymmetricKey>? SymmetricKeys { get; set; } = null!;
+        public List<AsymmetricKey>? AsymmetricKeys { get; set; } = null!;
     }
 }

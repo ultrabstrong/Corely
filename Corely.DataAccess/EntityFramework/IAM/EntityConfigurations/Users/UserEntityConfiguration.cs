@@ -39,14 +39,14 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Users
                 .HasForeignKey<UserDetailsEntity>(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(p => p.SymmetricKey)
+            builder.HasMany(e => e.SymmetricKeys)
                 .WithOne()
-                .HasForeignKey<UserSymmetricKeyEntity>(p => p.UserId)
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(p => p.AsymmetricKey)
+            builder.HasMany(e => e.AsymmetricKeys)
                 .WithOne()
-                .HasForeignKey<UserAsymmetricKeyEntity>(p => p.UserId)
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(p => p.BasicAuth)

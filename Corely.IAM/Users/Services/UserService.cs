@@ -42,8 +42,10 @@ namespace Corely.IAM.Users.Services
 
             await ThrowIfUserExists(user.Username, user.Email);
 
-            user.SymmetricKey = _securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey();
-            user.AsymmetricKey = _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey();
+            user.SymmetricKeys = [_securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
+            user.AsymmetricKeys = [
+                _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
+                _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey()];
 
             var userEntity = MapTo<UserEntity>(user);
             var createdId = await _userRepo.CreateAsync(userEntity);
@@ -116,7 +118,7 @@ namespace Corely.IAM.Users.Services
             var userEntity = await _userRepo.GetAsync(
                 u => u.Id == userId,
                 include: q => q
-                    .Include(u => u.AsymmetricKey));
+                    .Include(u => u.AsymmetricKeys));
 
             if (userEntity == null)
             {
@@ -124,7 +126,7 @@ namespace Corely.IAM.Users.Services
                 return null;
             }
 
-            if (userEntity.AsymmetricKey == null)
+            if (userEntity.AsymmetricKeys == null)
             {
                 Logger.LogWarning("User with Id {UserId} does not have an asymmetric key", userId);
                 return null;

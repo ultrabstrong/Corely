@@ -3,7 +3,7 @@ using Corely.IAM.Security.Constants;
 using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Security
+namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Users
 {
     internal class UserSymmetricKeyEntityConfiguration : EntityConfigurationBase<UserSymmetricKeyEntity>
     {
@@ -15,9 +15,8 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Security
         {
             ConfigureGenericTypes(builder);
 
-            builder.HasKey(e => e.UserId);
-            builder.Property(e => e.UserId)
-                .ValueGeneratedNever();
+            builder.HasIndex(e => new { e.UserId, e.KeyUsedFor })
+              .IsUnique();
 
             builder.Property(m => m.Key)
                 .IsRequired()

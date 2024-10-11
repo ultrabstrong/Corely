@@ -3,7 +3,7 @@ using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Security.Constants;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Security
+namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts
 {
     internal class AccountSymmetricKeyEntityConfiguration : EntityConfigurationBase<AccountSymmetricKeyEntity>
     {
