@@ -119,14 +119,16 @@ namespace Corely.DataAccessMigrations.Migrations
                 table: "AccountSymmetricKeys",
                 column: "AccountId",
                 principalTable: "Accounts",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AccountAsymmetricKeys_Accounts_AccountId",
                 table: "AccountAsymmetricKeys",
                 column: "AccountId",
                 principalTable: "Accounts",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
             // END CUSTOM
         }
 
@@ -199,14 +201,16 @@ namespace Corely.DataAccessMigrations.Migrations
                 table: "AccountSymmetricKeys",
                 column: "AccountId",
                 principalTable: "Accounts",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AccountAsymmetricKeys_Accounts_AccountId",
                 table: "AccountAsymmetricKeys",
                 column: "AccountId",
                 principalTable: "Accounts",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
             // END CUSTOM
         }
     }
