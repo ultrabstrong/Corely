@@ -7,5 +7,6 @@ namespace Corely.IAM.Security.Services
         SymmetricKey GetSymmetricEncryptionKeyEncryptedWithSystemKey();
         AsymmetricKey GetAsymmetricEncryptionKeyEncryptedWithSystemKey();
         AsymmetricKey GetAsymmetricSignatureKeyEncryptedWithSystemKey();
+        string DecryptWithSystemKey(string encryptedValue);
     }
 }

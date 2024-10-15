@@ -30,19 +30,19 @@ namespace Corely.Security.Keys
         {
             try
             {
-                using (var ecdsa = ECDsa.Create())
-                {
-                    var publicKeyBytes = Convert.FromBase64String(publicKey);
-                    var privateKeyBytes = Convert.FromBase64String(privateKey);
+                var publicKeyBytes = Convert.FromBase64String(publicKey);
+                var privateKeyBytes = Convert.FromBase64String(privateKey);
 
-                    ecdsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
-                    var testPublicKey = GetPublicKey(ecdsa);
+                using var ecdsa = ECDsa.Create();
 
-                    ecdsa.ImportPkcs8PrivateKey(privateKeyBytes, out _);
-                    var testPrivateKey = GetPrivateKey(ecdsa);
+                ecdsa.ImportPkcs8PrivateKey(privateKeyBytes, out _);
+                var testPrivateKey = GetPrivateKey(ecdsa);
 
-                    return testPublicKey == publicKey && testPrivateKey == privateKey;
-                }
+                ecdsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
+                var testPublicKey = GetPublicKey(ecdsa);
+
+
+                return testPublicKey == publicKey && testPrivateKey == privateKey;
             }
             catch
             {

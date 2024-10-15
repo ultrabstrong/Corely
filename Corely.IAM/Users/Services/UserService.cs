@@ -2,6 +2,7 @@
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
 using Corely.IAM.Repos;
+using Corely.IAM.Security.Enums;
 using Corely.IAM.Security.Services;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Entities;
@@ -126,16 +127,24 @@ namespace Corely.IAM.Users.Services
                 return null;
             }
 
-            if (userEntity.AsymmetricKeys == null)
+            var signatureKey = userEntity.AsymmetricKeys?.FirstOrDefault(k => k.KeyUsedFor == KeyUsedFor.Signature);
+            if (signatureKey == null)
             {
-                Logger.LogWarning("User with Id {UserId} does not have an asymmetric key", userId);
+                Logger.LogWarning("User with Id {UserId} does not have an asymmetric signature key", userId);
                 return null;
             }
 
-            // Todo - use our own RSA key pair
+            var privateKey = _securityService.DecryptWithSystemKey(signatureKey.PrivateKey);
+            var privateKeyBytes = Convert.FromBase64String(privateKey);
+
+            using var ecdsa = ECDsa.Create();
+            ecdsa.ImportPkcs8PrivateKey(privateKeyBytes, out _);
+
+            var ecdsaSecurityKey = new ECDsaSecurityKey(ecdsa);
+
             var credentials = new SigningCredentials(
-                new RsaSecurityKey(RSA.Create()),
-                SecurityAlgorithms.RsaSha256);
+                ecdsaSecurityKey,
+                SecurityAlgorithms.EcdsaSha256);
 
             // Todo - include permission-based scopes & roles
 
