@@ -61,5 +61,16 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
             var result = _validator.TestValidate(symmetricKey);
             result.ShouldHaveValidationErrorFor(x => x.Version);
         }
+
+        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
+        public void SymmetricKeyValidator_HasValidationError_WhenProviderTypeCodeInvalid(string providerTypeCode)
+        {
+            var symmetricKey = new SymmetricKey
+            {
+                ProviderTypeCode = providerTypeCode
+            };
+            var result = _validator.TestValidate(symmetricKey);
+            result.ShouldHaveValidationErrorFor(x => x.ProviderTypeCode);
+        }
     }
 }

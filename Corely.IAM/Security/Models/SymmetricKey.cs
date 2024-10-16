@@ -7,6 +7,7 @@ namespace Corely.IAM.Security.Models
     {
         public int Id { get; set; }
         public KeyUsedFor KeyUsedFor { get; set; }
+        public string ProviderTypeCode { get; set; } = null!;
         public int Version { get; set; }
         public ISymmetricEncryptedValue Key { get; set; } = null!;
         public DateTime CreatedUtc { get; set; }

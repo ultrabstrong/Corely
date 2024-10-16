@@ -21,6 +21,13 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts
             builder.Property(m => m.Key)
                 .IsRequired()
                 .HasMaxLength(SymmetricKeyConstants.KEY_MAX_LENGTH);
+
+
+            builder.Property(m => m.Version)
+                .IsRequired();
+
+            builder.Property(m => m.ProviderTypeCode)
+                .IsRequired();
         }
     }
 }

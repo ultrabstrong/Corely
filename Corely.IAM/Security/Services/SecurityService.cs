@@ -45,6 +45,7 @@ namespace Corely.IAM.Security.Services
             var symmetricKey = new SymmetricKey
             {
                 KeyUsedFor = KeyUsedFor.Encryption,
+                ProviderTypeCode = _symmetricEncryptionProvider.EncryptionTypeCode,
                 Version = systemKeyStoreProvider.GetCurrentVersion(),
                 Key = new SymmetricEncryptedValue(_symmetricEncryptionProvider)
                 {
@@ -62,6 +63,7 @@ namespace Corely.IAM.Security.Services
             var asymmetricKey = new AsymmetricKey
             {
                 KeyUsedFor = KeyUsedFor.Encryption,
+                ProviderTypeCode = _asymmetricEncryptionProvider.EncryptionTypeCode,
                 Version = systemKeyStoreProvider.GetCurrentVersion(),
                 PublicKey = publickey,
                 PrivateKey = new SymmetricEncryptedValue(_symmetricEncryptionProvider)
@@ -80,6 +82,7 @@ namespace Corely.IAM.Security.Services
             var asymmetricKey = new AsymmetricKey
             {
                 KeyUsedFor = KeyUsedFor.Signature,
+                ProviderTypeCode = _asymmetricSignatureProvider.SignatureTypeCode,
                 Version = systemKeyStoreProvider.GetCurrentVersion(),
                 PublicKey = publickey,
                 PrivateKey = new SymmetricEncryptedValue(_symmetricEncryptionProvider)

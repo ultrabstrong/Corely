@@ -18,6 +18,9 @@ namespace Corely.IAM.Validators.FluentValidators.Security
 
             RuleFor(m => m.Version)
                 .GreaterThanOrEqualTo(SymmetricKeyConstants.VERSION_MIN_VALUE);
+
+            RuleFor(m => m.ProviderTypeCode)
+                .NotEmpty();
         }
     }
 }

@@ -69,5 +69,22 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
             var result = _validator.TestValidate(asymmetricKey);
             result.ShouldHaveValidationErrorFor(x => x.Version);
         }
+
+        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
+        public void AsymmetricKeyValidator_HasValidationError_WhenProviderTypeCodeInvalid(string providerTypeCode)
+        {
+            var asymmetricKey = new AsymmetricKey
+            {
+                Version = AsymmetricKeyConstants.VERSION_MIN_VALUE,
+                PublicKey = "public key",
+                PrivateKey = new SymmetricEncryptedValue(new AesEncryptionProvider())
+                {
+                    Secret = "private key"
+                },
+                ProviderTypeCode = providerTypeCode
+            };
+            var result = _validator.TestValidate(asymmetricKey);
+            result.ShouldHaveValidationErrorFor(x => x.ProviderTypeCode);
+        }
     }
 }

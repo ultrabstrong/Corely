@@ -22,6 +22,12 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts
 
             builder.Property(m => m.PrivateKey)
                 .IsRequired();
+
+            builder.Property(m => m.Version)
+                .IsRequired();
+
+            builder.Property(m => m.ProviderTypeCode)
+                .IsRequired();
         }
     }
 }

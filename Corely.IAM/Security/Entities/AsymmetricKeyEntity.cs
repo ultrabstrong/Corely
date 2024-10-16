@@ -6,6 +6,7 @@ namespace Corely.IAM.Security.Entities
     public class AsymmetricKeyEntity : IHasCreatedUtc, IHasModifiedUtc
     {
         public KeyUsedFor KeyUsedFor { get; set; }
+        public string ProviderTypeCode { get; set; } = null!;
         public int Version { get; set; }
         public string PublicKey { get; set; } = null!;
         public string PrivateKey { get; set; } = null!;

@@ -6,6 +6,7 @@ namespace Corely.IAM.Security.Entities
     public class SymmetricKeyEntity : IHasCreatedUtc, IHasModifiedUtc
     {
         public KeyUsedFor KeyUsedFor { get; set; }
+        public string ProviderTypeCode { get; set; } = null!;
         public int Version { get; set; }
         public string Key { get; set; } = null!;
         public DateTime CreatedUtc { get; set; }
