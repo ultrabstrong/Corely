@@ -18,15 +18,18 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Users
             builder.HasIndex(e => new { e.UserId, e.KeyUsedFor })
               .IsUnique();
 
-            builder.Property(m => m.Key)
-                .IsRequired()
-                .HasMaxLength(SymmetricKeyConstants.KEY_MAX_LENGTH);
+            builder.Property(m => m.KeyUsedFor)
+                .HasConversion<string>();
+
+            builder.Property(m => m.ProviderTypeCode)
+                .IsRequired();
 
             builder.Property(m => m.Version)
                 .IsRequired();
 
-            builder.Property(m => m.ProviderTypeCode)
-                .IsRequired();
+            builder.Property(m => m.Key)
+                .IsRequired()
+                .HasMaxLength(SymmetricKeyConstants.KEY_MAX_LENGTH);
         }
     }
 }

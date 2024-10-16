@@ -17,16 +17,19 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Accounts
             builder.HasIndex(e => new { e.AccountId, e.KeyUsedFor })
                 .IsUnique();
 
-            builder.Property(m => m.PublicKey)
-                .IsRequired();
+            builder.Property(m => m.KeyUsedFor)
+                .HasConversion<string>();
 
-            builder.Property(m => m.PrivateKey)
+            builder.Property(m => m.ProviderTypeCode)
                 .IsRequired();
 
             builder.Property(m => m.Version)
                 .IsRequired();
 
-            builder.Property(m => m.ProviderTypeCode)
+            builder.Property(m => m.PublicKey)
+                .IsRequired();
+
+            builder.Property(m => m.PrivateKey)
                 .IsRequired();
         }
     }
