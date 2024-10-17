@@ -25,36 +25,31 @@ namespace Corely.UnitTests.Security.Encryption.Providers
             protected override string DecryptInternal(string value, string key) => value[36..];
         }
 
-        private class NullMockEncryptionProvider : AsymmetricEncryptionProviderBase
+        private abstract class MockAsymmetricEncryptionProviderBase : AsymmetricEncryptionProviderBase
+        {
+            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
+            protected override string EncryptInternal(string value, string key) => value;
+            protected override string DecryptInternal(string value, string key) => value;
+        }
+
+        private class NullMockEncryptionProvider : MockAsymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => null!;
-            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
-            protected override string EncryptInternal(string value, string key) => value;
-            protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class EmptyMockEncryptionProvider : AsymmetricEncryptionProviderBase
+        private class EmptyMockEncryptionProvider : MockAsymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => string.Empty;
-            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
-            protected override string EncryptInternal(string value, string key) => value;
-            protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class WhitespaceMockEncryptionProvider : AsymmetricEncryptionProviderBase
+        private class WhitespaceMockEncryptionProvider : MockAsymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => " ";
-            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
-            protected override string EncryptInternal(string value, string key) => value;
-            protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class ColonMockEncryptionProvider : AsymmetricEncryptionProviderBase
+        private class ColonMockEncryptionProvider : MockAsymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => "as:df";
-            public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
-            protected override string EncryptInternal(string value, string key) => value;
-            protected override string DecryptInternal(string value, string key) => value;
         }
 
         private const string TEST_ENCRYPTION_TYPE_CODE = "00";

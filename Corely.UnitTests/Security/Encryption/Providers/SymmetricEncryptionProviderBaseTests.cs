@@ -21,36 +21,31 @@ namespace Corely.UnitTests.Security.Encryption.Providers
             protected override string DecryptInternal(string value, string key) => value[36..];
         }
 
-        private class NullMockEncryptionProvider : SymmetricEncryptionProviderBase
+        private abstract class MockSymmetricEncryptionProviderBase : SymmetricEncryptionProviderBase
+        {
+            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
+            protected override string EncryptInternal(string value, string key) => value;
+            protected override string DecryptInternal(string value, string key) => value;
+        }
+
+        private class NullMockEncryptionProvider : MockSymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => null!;
-            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
-            protected override string EncryptInternal(string value, string key) => value;
-            protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class EmptyMockEncryptionProvider : SymmetricEncryptionProviderBase
+        private class EmptyMockEncryptionProvider : MockSymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => string.Empty;
-            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
-            protected override string EncryptInternal(string value, string key) => value;
-            protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class WhitespaceMockEncryptionProvider : SymmetricEncryptionProviderBase
+        private class WhitespaceMockEncryptionProvider : MockSymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => " ";
-            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
-            protected override string EncryptInternal(string value, string key) => value;
-            protected override string DecryptInternal(string value, string key) => value;
         }
 
-        private class ColonMockEncryptionProvider : SymmetricEncryptionProviderBase
+        private class ColonMockEncryptionProvider : MockSymmetricEncryptionProviderBase
         {
             public override string EncryptionTypeCode => "as:df";
-            public override ISymmetricKeyProvider GetSymmetricKeyProvider() => null!;
-            protected override string EncryptInternal(string value, string key) => value;
-            protected override string DecryptInternal(string value, string key) => value;
         }
 
         private const string TEST_ENCRYPTION_TYPE_CODE = "00";

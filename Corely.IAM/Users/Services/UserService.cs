@@ -11,10 +11,8 @@ using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 
 namespace Corely.IAM.Users.Services
 {
@@ -135,16 +133,7 @@ namespace Corely.IAM.Users.Services
             }
 
             var privateKey = _securityService.DecryptWithSystemKey(signatureKey.PrivateKey);
-            var privateKeyBytes = Convert.FromBase64String(privateKey);
-
-            using var ecdsa = ECDsa.Create();
-            ecdsa.ImportPkcs8PrivateKey(privateKeyBytes, out _);
-
-            var ecdsaSecurityKey = new ECDsaSecurityKey(ecdsa);
-
-            var credentials = new SigningCredentials(
-                ecdsaSecurityKey,
-                SecurityAlgorithms.EcdsaSha256);
+            var credentials = _securityService.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, privateKey);
 
             // Todo - include permission-based scopes & roles
 

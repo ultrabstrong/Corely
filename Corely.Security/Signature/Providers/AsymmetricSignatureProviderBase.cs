@@ -1,5 +1,6 @@
 ﻿using Corely.Security.Keys;
 using Corely.Security.KeyStore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Corely.Security.Signature.Providers
 {
@@ -41,6 +42,8 @@ namespace Corely.Security.Signature.Providers
         }
 
         public abstract IAsymmetricKeyProvider GetAsymmetricKeyProvider();
+
+        public abstract SigningCredentials GetSigningCredentials(string privateKey);
 
         protected abstract string SignInternal(string value, string privateKey);
 

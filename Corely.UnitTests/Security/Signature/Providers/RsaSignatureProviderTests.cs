@@ -1,6 +1,7 @@
 ﻿using Corely.Security.Keys;
 using Corely.Security.Signature;
 using Corely.Security.Signature.Providers;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 
 namespace Corely.UnitTests.Security.Signature.Providers
@@ -22,6 +23,16 @@ namespace Corely.UnitTests.Security.Signature.Providers
 
             Assert.NotNull(keyProvider);
             Assert.IsType<RsaKeyProvider>(keyProvider);
+        }
+
+        [Fact]
+        public void GetSigningCredentials_ReturnsCorrectSigningCredentials_ForImplementation()
+        {
+            var (_, privateKey) = _rsaSignatureProvider.GetAsymmetricKeyProvider().CreateKeys();
+            var signingCredentials = _rsaSignatureProvider.GetSigningCredentials(privateKey);
+            Assert.NotNull(signingCredentials);
+            Assert.Equal(SecurityAlgorithms.RsaSha256, signingCredentials.Algorithm);
+            Assert.IsType<RsaSecurityKey>(signingCredentials.Key);
         }
 
         public override IAsymmetricSignatureProvider GetSignatureProvider()

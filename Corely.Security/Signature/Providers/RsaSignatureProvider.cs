@@ -1,4 +1,5 @@
 ﻿using Corely.Security.Keys;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -40,6 +41,13 @@ namespace Corely.Security.Signature.Providers
                 rsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
                 return rsa.VerifyData(dataToVerify, signatureBytes, _hashAlgorithm, RSASignaturePadding.Pkcs1);
             }
+        }
+
+        public override SigningCredentials GetSigningCredentials(string privateKey)
+        {
+            var rsa = RSA.Create();
+            rsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
+            return new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256);
         }
 
         public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => _rsaKeyProvider;

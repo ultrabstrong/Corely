@@ -1,4 +1,5 @@
 ﻿using Corely.IAM.Security.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Corely.IAM.Security.Services
 {
@@ -8,5 +9,6 @@ namespace Corely.IAM.Security.Services
         AsymmetricKey GetAsymmetricEncryptionKeyEncryptedWithSystemKey();
         AsymmetricKey GetAsymmetricSignatureKeyEncryptedWithSystemKey();
         string DecryptWithSystemKey(string encryptedValue);
+        SigningCredentials GetAsymmetricSigningCredentials(string providerTypeCode, string privateKey);
     }
 }

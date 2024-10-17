@@ -1,4 +1,5 @@
 ﻿using Corely.Security.Keys;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -40,6 +41,13 @@ namespace Corely.Security.Signature.Providers
                 ecdsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
                 return ecdsa.VerifyData(dataToVerify, signatureBytes, _hashAlgorithm);
             }
+        }
+
+        public override SigningCredentials GetSigningCredentials(string privateKey)
+        {
+            var ecdsa = ECDsa.Create();
+            ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
+            return new SigningCredentials(new ECDsaSecurityKey(ecdsa), SecurityAlgorithms.EcdsaSha256);
         }
 
         public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => _ecdsaKeyProvider;

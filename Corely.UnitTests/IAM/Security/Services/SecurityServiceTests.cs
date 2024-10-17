@@ -10,6 +10,7 @@ namespace Corely.UnitTests.IAM.Security.Services
 {
     public class SecurityServiceTests
     {
+        private readonly ISecurityConfigurationProvider _securityConfigurationProvider;
         private readonly ISymmetricEncryptionProvider _symmetricEncryptionProvider;
         private readonly IAsymmetricEncryptionProvider _asymmetricEncryptionProvider;
         private readonly IAsymmetricSignatureProvider _asymmetricSignatureProvider;
@@ -17,6 +18,8 @@ namespace Corely.UnitTests.IAM.Security.Services
         public SecurityServiceTests()
         {
             var serviceFactory = new ServiceFactory();
+
+            _securityConfigurationProvider = serviceFactory.GetRequiredService<ISecurityConfigurationProvider>();
 
             var symmetricEncryptionProviderFactory = serviceFactory.GetRequiredService<ISymmetricEncryptionProviderFactory>();
             _symmetricEncryptionProvider = symmetricEncryptionProviderFactory.GetDefaultProvider();
@@ -28,7 +31,7 @@ namespace Corely.UnitTests.IAM.Security.Services
             _asymmetricSignatureProvider = asymmetricSignatureProviderFactory.GetDefaultProvider();
 
             _securityService = new(
-                serviceFactory.GetRequiredService<ISecurityConfigurationProvider>(),
+                _securityConfigurationProvider,
                 symmetricEncryptionProviderFactory,
                 asymmetricEncryptionProviderFactory,
                 asymmetricSignatureProviderFactory);
@@ -88,6 +91,17 @@ namespace Corely.UnitTests.IAM.Security.Services
             Assert.True(_asymmetricSignatureProvider
                 .GetAsymmetricKeyProvider()
                 .IsKeyValid(result.PublicKey, decryptedPrivateKey));
+        }
+
+        [Fact]
+        public void DecryptWithSystemKey_ReturnsDecryptedValue()
+        {
+            var symmetricKey = _securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey();
+            var expectedDecryptedValue = symmetricKey.Key.GetDecrypted(_securityConfigurationProvider.GetSystemSymmetricKey());
+
+            var decryptedValue = _securityService.DecryptWithSystemKey(symmetricKey.Key.Secret);
+
+            Assert.Equal(expectedDecryptedValue, decryptedValue);
         }
     }
 }

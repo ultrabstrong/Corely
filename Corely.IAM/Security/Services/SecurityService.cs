@@ -3,18 +3,17 @@ using Corely.IAM.Security.Enums;
 using Corely.IAM.Security.Models;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Models;
-using Corely.Security.Encryption.Providers;
 using Corely.Security.Signature.Factories;
-using Corely.Security.Signature.Providers;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Corely.IAM.Security.Services
 {
     internal class SecurityService : ISecurityService
     {
         private readonly ISecurityConfigurationProvider _securityConfigurationProvider;
-        private readonly ISymmetricEncryptionProvider _symmetricEncryptionProvider;
-        private readonly IAsymmetricEncryptionProvider _asymmetricEncryptionProvider;
-        private readonly IAsymmetricSignatureProvider _asymmetricSignatureProvider;
+        private readonly ISymmetricEncryptionProviderFactory _symmetricEncryptionProviderFactory;
+        private readonly IAsymmetricEncryptionProviderFactory _asymmetricEncryptionProviderFactory;
+        private readonly IAsymmetricSignatureProviderFactory _asymmetricSignatureProviderFactory;
 
         public SecurityService(
             ISecurityConfigurationProvider securityConfigurationProvider,
@@ -24,30 +23,30 @@ namespace Corely.IAM.Security.Services
         {
             _securityConfigurationProvider = securityConfigurationProvider.ThrowIfNull(nameof(securityConfigurationProvider));
 
-            _symmetricEncryptionProvider = symmetricEncryptionProviderFactory
-                .ThrowIfNull(nameof(symmetricEncryptionProviderFactory))
-                .GetDefaultProvider();
+            _symmetricEncryptionProviderFactory = symmetricEncryptionProviderFactory
+                .ThrowIfNull(nameof(symmetricEncryptionProviderFactory));
 
-            _asymmetricEncryptionProvider = asymmetricEncryptionProviderFactory
-                .ThrowIfNull(nameof(asymmetricEncryptionProviderFactory))
-                .GetDefaultProvider();
+            _asymmetricEncryptionProviderFactory = asymmetricEncryptionProviderFactory
+                .ThrowIfNull(nameof(asymmetricEncryptionProviderFactory));
 
-            _asymmetricSignatureProvider = asymmetricSignatureProviderFactory
-                .ThrowIfNull(nameof(asymmetricSignatureProviderFactory))
-                .GetDefaultProvider();
+            _asymmetricSignatureProviderFactory = asymmetricSignatureProviderFactory
+                .ThrowIfNull(nameof(asymmetricSignatureProviderFactory));
         }
 
         public SymmetricKey GetSymmetricEncryptionKeyEncryptedWithSystemKey()
         {
             var systemKeyStoreProvider = _securityConfigurationProvider.GetSystemSymmetricKey();
-            var decryptedKey = _symmetricEncryptionProvider.GetSymmetricKeyProvider().CreateKey();
-            var encryptedKey = _symmetricEncryptionProvider.Encrypt(decryptedKey, systemKeyStoreProvider);
+            var symmetricEncryptionProvider = _symmetricEncryptionProviderFactory.GetDefaultProvider();
+
+            var decryptedKey = symmetricEncryptionProvider.GetSymmetricKeyProvider().CreateKey();
+            var encryptedKey = symmetricEncryptionProvider.Encrypt(decryptedKey, systemKeyStoreProvider);
+
             var symmetricKey = new SymmetricKey
             {
                 KeyUsedFor = KeyUsedFor.Encryption,
-                ProviderTypeCode = _symmetricEncryptionProvider.EncryptionTypeCode,
+                ProviderTypeCode = symmetricEncryptionProvider.EncryptionTypeCode,
                 Version = systemKeyStoreProvider.GetCurrentVersion(),
-                Key = new SymmetricEncryptedValue(_symmetricEncryptionProvider)
+                Key = new SymmetricEncryptedValue(symmetricEncryptionProvider)
                 {
                     Secret = encryptedKey
                 }
@@ -58,15 +57,19 @@ namespace Corely.IAM.Security.Services
         public AsymmetricKey GetAsymmetricEncryptionKeyEncryptedWithSystemKey()
         {
             var systemKeyStoreProvider = _securityConfigurationProvider.GetSystemSymmetricKey();
-            var (publickey, privateKey) = _asymmetricEncryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
-            var encryptedPrivateKey = _symmetricEncryptionProvider.Encrypt(privateKey, systemKeyStoreProvider);
+            var asymmetricEncryptionProvider = _asymmetricEncryptionProviderFactory.GetDefaultProvider();
+            var symmetricEncryptionProvider = _symmetricEncryptionProviderFactory.GetDefaultProvider();
+
+            var (publickey, privateKey) = asymmetricEncryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
+            var encryptedPrivateKey = symmetricEncryptionProvider.Encrypt(privateKey, systemKeyStoreProvider);
+
             var asymmetricKey = new AsymmetricKey
             {
                 KeyUsedFor = KeyUsedFor.Encryption,
-                ProviderTypeCode = _asymmetricEncryptionProvider.EncryptionTypeCode,
+                ProviderTypeCode = asymmetricEncryptionProvider.EncryptionTypeCode,
                 Version = systemKeyStoreProvider.GetCurrentVersion(),
                 PublicKey = publickey,
-                PrivateKey = new SymmetricEncryptedValue(_symmetricEncryptionProvider)
+                PrivateKey = new SymmetricEncryptedValue(symmetricEncryptionProvider)
                 {
                     Secret = encryptedPrivateKey
                 }
@@ -77,15 +80,19 @@ namespace Corely.IAM.Security.Services
         public AsymmetricKey GetAsymmetricSignatureKeyEncryptedWithSystemKey()
         {
             var systemKeyStoreProvider = _securityConfigurationProvider.GetSystemSymmetricKey();
-            var (publickey, privateKey) = _asymmetricSignatureProvider.GetAsymmetricKeyProvider().CreateKeys();
-            var encryptedPrivateKey = _symmetricEncryptionProvider.Encrypt(privateKey, systemKeyStoreProvider);
+            var asymmetricSignatureProvider = _asymmetricSignatureProviderFactory.GetDefaultProvider();
+            var symmetricEncryptionProvider = _symmetricEncryptionProviderFactory.GetDefaultProvider();
+
+            var (publickey, privateKey) = asymmetricSignatureProvider.GetAsymmetricKeyProvider().CreateKeys();
+            var encryptedPrivateKey = symmetricEncryptionProvider.Encrypt(privateKey, systemKeyStoreProvider);
+
             var asymmetricKey = new AsymmetricKey
             {
                 KeyUsedFor = KeyUsedFor.Signature,
-                ProviderTypeCode = _asymmetricSignatureProvider.SignatureTypeCode,
+                ProviderTypeCode = asymmetricSignatureProvider.SignatureTypeCode,
                 Version = systemKeyStoreProvider.GetCurrentVersion(),
                 PublicKey = publickey,
-                PrivateKey = new SymmetricEncryptedValue(_symmetricEncryptionProvider)
+                PrivateKey = new SymmetricEncryptedValue(symmetricEncryptionProvider)
                 {
                     Secret = encryptedPrivateKey
                 }
@@ -101,7 +108,15 @@ namespace Corely.IAM.Security.Services
             }
 
             var systemKeyStoreProvider = _securityConfigurationProvider.GetSystemSymmetricKey();
-            return _symmetricEncryptionProvider.Decrypt(encryptedValue, systemKeyStoreProvider);
+
+            var symmetricEncryptionProvider = _symmetricEncryptionProviderFactory.GetDefaultProvider();
+            return symmetricEncryptionProvider.Decrypt(encryptedValue, systemKeyStoreProvider);
+        }
+
+        public SigningCredentials GetAsymmetricSigningCredentials(string providerTypeCode, string privateKey)
+        {
+            var asymmetricSignatureProvider = _asymmetricSignatureProviderFactory.GetProvider(providerTypeCode);
+            return asymmetricSignatureProvider.GetSigningCredentials(privateKey);
         }
     }
 }
