@@ -35,15 +35,8 @@ namespace Corely.Security.Keys
                 return false;
             }
 
-            try
-            {
-                var keyBytes = Convert.FromBase64String(key);
-                return keyBytes.Length == _keySize;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            var keyBytes = Convert.FromBase64String(key);
+            return keyBytes.Length == _keySize;
         }
     }
 }
