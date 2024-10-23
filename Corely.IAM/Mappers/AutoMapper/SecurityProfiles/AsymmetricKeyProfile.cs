@@ -11,13 +11,16 @@ namespace Corely.IAM.Mappers.AutoMapper.SecurityProfiles
         public AsymmetricKeyProfile()
         {
             CreateMap<AsymmetricKey, AsymmetricKeyEntity>()
+                .ForMember(m => m.EncryptedPrivateKey, opt => opt.MapFrom(src => src.PrivateKey))
                 .ReverseMap();
 
             CreateMap<AsymmetricKey, AccountAsymmetricKeyEntity>()
+                .IncludeBase<AsymmetricKey, AsymmetricKeyEntity>()
                 .ForMember(m => m.AccountId, opt => opt.Ignore())
                 .ReverseMap();
 
             CreateMap<AsymmetricKey, UserAsymmetricKeyEntity>()
+                .IncludeBase<AsymmetricKey, AsymmetricKeyEntity>()
                 .ForMember(m => m.UserId, opt => opt.Ignore())
                 .ReverseMap();
         }

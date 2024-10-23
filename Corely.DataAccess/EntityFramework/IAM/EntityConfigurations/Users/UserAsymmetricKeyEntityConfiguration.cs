@@ -29,7 +29,7 @@ namespace Corely.DataAccess.EntityFramework.IAM.EntityConfigurations.Users
             builder.Property(m => m.PublicKey)
                 .IsRequired();
 
-            builder.Property(m => m.PrivateKey)
+            builder.Property(m => m.EncryptedPrivateKey)
                 .IsRequired();
         }
     }

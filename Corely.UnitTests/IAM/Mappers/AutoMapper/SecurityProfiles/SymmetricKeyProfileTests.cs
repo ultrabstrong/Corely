@@ -14,7 +14,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
         {
             protected override SymmetricKeyEntity ApplyDestinatonModifications(SymmetricKeyEntity destination)
             {
-                destination.Key = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
+                destination.EncryptedKey = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
                 return destination;
             }
         }
@@ -24,7 +24,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
         {
             protected override AccountSymmetricKeyEntity ApplyDestinatonModifications(AccountSymmetricKeyEntity destination)
             {
-                destination.Key = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
+                destination.EncryptedKey = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
                 return destination;
             }
         }
@@ -34,7 +34,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
         {
             protected override UserSymmetricKeyEntity ApplyDestinatonModifications(UserSymmetricKeyEntity destination)
             {
-                destination.Key = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
+                destination.EncryptedKey = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
                 return destination;
             }
         }

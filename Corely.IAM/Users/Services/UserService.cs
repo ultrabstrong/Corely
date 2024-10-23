@@ -132,7 +132,7 @@ namespace Corely.IAM.Users.Services
                 return null;
             }
 
-            var privateKey = _securityService.DecryptWithSystemKey(signatureKey.PrivateKey);
+            var privateKey = _securityService.DecryptWithSystemKey(signatureKey.EncryptedPrivateKey);
             var credentials = _securityService.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, privateKey);
 
             // Todo - include permission-based scopes & roles

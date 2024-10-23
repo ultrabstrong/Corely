@@ -8,7 +8,7 @@ namespace Corely.IAM.Security.Entities
         public KeyUsedFor KeyUsedFor { get; set; }
         public string ProviderTypeCode { get; set; } = null!;
         public int Version { get; set; }
-        public string Key { get; set; } = null!;
+        public string EncryptedKey { get; set; } = null!;
         public DateTime CreatedUtc { get; set; }
         public DateTime ModifiedUtc { get; set; }
     }

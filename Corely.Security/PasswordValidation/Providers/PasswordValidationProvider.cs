@@ -48,12 +48,12 @@ namespace Corely.Security.PasswordValidation.Providers
             var hasDigit = !RequireNumber;
             var hasSpecial = !RequireSpecialCharacter;
 
-            foreach (var ch in password)
+            foreach (var c in password)
             {
-                if (!hasUppercase && char.IsUpper(ch)) hasUppercase = true;
-                if (!hasLowercase && char.IsLower(ch)) hasLowercase = true;
-                if (!hasDigit && char.IsDigit(ch)) hasDigit = true;
-                if (!hasSpecial && !char.IsLetterOrDigit(ch)) hasSpecial = true;
+                if (!hasUppercase && char.IsUpper(c)) hasUppercase = true;
+                if (!hasLowercase && char.IsLower(c)) hasLowercase = true;
+                if (!hasDigit && char.IsDigit(c)) hasDigit = true;
+                if (!hasSpecial && !char.IsLetterOrDigit(c)) hasSpecial = true;
             }
 
             var validationResults = new List<string>();
