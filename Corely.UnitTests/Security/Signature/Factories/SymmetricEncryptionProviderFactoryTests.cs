@@ -6,17 +6,17 @@ using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Security.Signature.Factories
 {
-    public class AsymmetricSignatureProviderFactoryTests
+    public class SymmetricEncryptionProviderFactoryTests
     {
-        private const string DEFAULT_PROVIDER_CODE = AsymmetricSignatureConstants.ECDSA_SHA256_CODE;
-        private readonly AsymmetricSignatureProviderFactory _signatureProviderFactory = new(DEFAULT_PROVIDER_CODE);
+        private const string DEFAULT_PROVIDER_CODE = SymmetricSignatureConstants.HMAC_SHA256_CODE;
+        private readonly SymmetricSignatureProviderFactory _signatureProviderFactory = new(DEFAULT_PROVIDER_CODE);
         private readonly Fixture _fixture = new();
 
         [Fact]
         public void AddProvider_AddsProvider()
         {
             var providerCode = _fixture.Create<string>();
-            var provider = new Mock<IAsymmetricSignatureProvider>().Object;
+            var provider = new Mock<ISymmetricSignatureProvider>().Object;
 
             _signatureProviderFactory.AddProvider(providerCode, provider);
             var signatureProvider = _signatureProviderFactory.GetProvider(providerCode);
@@ -28,7 +28,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
         public void AddProvider_ThrowsSignatureProviderException_WithExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
-            var provider = new Mock<IAsymmetricSignatureProvider>().Object;
+            var provider = new Mock<ISymmetricSignatureProvider>().Object;
 
             _signatureProviderFactory.AddProvider(providerCode, provider);
             var ex = Record.Exception(() => _signatureProviderFactory.AddProvider(providerCode, provider));
@@ -42,8 +42,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
         [InlineData(":")]
         public void AddProvider_Throws_WithInvalidCode(string providerCode)
         {
-            var provider = new Mock<IAsymmetricSignatureProvider>().Object;
-
+            var provider = new Mock<ISymmetricSignatureProvider>().Object;
             var ex = Record.Exception(() => _signatureProviderFactory.AddProvider(providerCode, provider));
 
             Assert.NotNull(ex);
@@ -67,8 +66,8 @@ namespace Corely.UnitTests.Security.Signature.Factories
         public void UpdateProvider_UpdatesProvider()
         {
             var providerCode = _fixture.Create<string>();
-            var provider = new Mock<IAsymmetricSignatureProvider>().Object;
-            var updatedProvider = new Mock<IAsymmetricSignatureProvider>().Object;
+            var provider = new Mock<ISymmetricSignatureProvider>().Object;
+            var updatedProvider = new Mock<ISymmetricSignatureProvider>().Object;
 
             _signatureProviderFactory.AddProvider(providerCode, provider);
             _signatureProviderFactory.UpdateProvider(providerCode, updatedProvider);
@@ -81,7 +80,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
         public void UpdateProvider_ThrowsSignatureProviderException_WithNonExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
-            var provider = new Mock<IAsymmetricSignatureProvider>().Object;
+            var provider = new Mock<ISymmetricSignatureProvider>().Object;
 
             var ex = Record.Exception(() => _signatureProviderFactory.UpdateProvider(providerCode, provider));
 
@@ -94,8 +93,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
         [InlineData(":")]
         public void UpdateProvider_Throws_WithInvalidCode(string providerCode)
         {
-            var provider = new Mock<IAsymmetricSignatureProvider>().Object;
-
+            var provider = new Mock<ISymmetricSignatureProvider>().Object;
             var ex = Record.Exception(() => _signatureProviderFactory.UpdateProvider(providerCode, provider));
 
             Assert.NotNull(ex);
@@ -108,7 +106,6 @@ namespace Corely.UnitTests.Security.Signature.Factories
         public void UpdateProvider_ThrowsArgumentNullException_WithNullProvider()
         {
             var providerCode = _fixture.Create<string>();
-
             var ex = Record.Exception(() => _signatureProviderFactory.UpdateProvider(providerCode, null));
 
             Assert.NotNull(ex);
@@ -130,7 +127,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
             var signatureProvider = _signatureProviderFactory.GetProvider(providerCode);
 
             Assert.NotNull(signatureProvider);
-            Assert.IsType(providerType, signatureProvider);
+            Assert.Equal(providerType, signatureProvider.GetType());
         }
 
         [Theory]
@@ -172,10 +169,10 @@ namespace Corely.UnitTests.Security.Signature.Factories
         }
 
         [Fact]
-        public void ListProviders_ReturnsListOfProviders()
+        public void ListProviders_ReturnsProviders()
         {
             var providerCode = _fixture.Create<string>();
-            var provider = new Mock<IAsymmetricSignatureProvider>().Object;
+            var provider = new Mock<ISymmetricSignatureProvider>().Object;
 
             var providers = _signatureProviderFactory.ListProviders();
             _signatureProviderFactory.AddProvider(providerCode, provider);
@@ -190,8 +187,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
 
         public static IEnumerable<object[]> GetProviderData()
         {
-            yield return new object[] { AsymmetricSignatureConstants.ECDSA_SHA256_CODE, typeof(ECDsaSignatureProvider) };
-            yield return new object[] { AsymmetricSignatureConstants.RSA_SHA256_CODE, typeof(RsaSignatureProvider) };
+            yield return new object[] { SymmetricSignatureConstants.HMAC_SHA256_CODE, typeof(HmacSha256SignatureProvider) };
         }
     }
 }

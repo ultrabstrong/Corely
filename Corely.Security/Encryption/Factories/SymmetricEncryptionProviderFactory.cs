@@ -86,12 +86,12 @@ namespace Corely.Security.Encryption.Factories
             return GetProvider(parts[0]);
         }
 
-        public List<(string providerCode, Type providerType)> ListProviders()
+        public List<(string ProviderCode, Type ProviderType)> ListProviders()
         {
             return _providers
                 .Select(kvp => (
-                    providerCode: kvp.Key,
-                    providerType: kvp.Value.GetType()))
+                    ProviderCode: kvp.Key,
+                    ProviderType: kvp.Value.GetType()))
                 .ToList();
         }
     }

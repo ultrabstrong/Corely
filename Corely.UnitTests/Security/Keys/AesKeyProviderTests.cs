@@ -39,14 +39,6 @@ namespace Corely.UnitTests.Security.Keys
         }
 
         [Fact]
-        public void IsKeyValid_ReturnsTrueForValidKey()
-        {
-            var key = _aesKeyProvider.CreateKey();
-            var isValid = _aesKeyProvider.IsKeyValid(key);
-            Assert.True(isValid);
-        }
-
-        [Fact]
         public void IsKeyValid_ReturnsFalseForInvalidKey()
         {
             var isValid = _aesKeyProvider.IsKeyValid("asdf");

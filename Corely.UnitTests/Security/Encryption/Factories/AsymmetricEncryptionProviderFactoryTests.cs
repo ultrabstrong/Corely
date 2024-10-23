@@ -74,7 +74,7 @@ namespace Corely.UnitTests.Security.Encryption.Factories
             _encryptionProviderFactory.UpdateProvider(providerCode, updatedProvider);
             var encryptionProvider = _encryptionProviderFactory.GetProvider(providerCode);
 
-            Assert.Equal(updatedProvider, encryptionProvider);
+            Assert.Same(updatedProvider, encryptionProvider);
         }
 
         [Fact]

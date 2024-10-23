@@ -12,9 +12,8 @@ namespace Corely.Security.Keys
         {
             if (keySize < 0 || keySize % 8 != 0)
             {
-                throw new ArgumentException("Key size must be a positive multiple of 8.", nameof(keySize));
+                throw new ArgumentOutOfRangeException(nameof(keySize), "Key size must be a positive multiple of 8.");
             }
-
             _keySize = keySize;
         }
 

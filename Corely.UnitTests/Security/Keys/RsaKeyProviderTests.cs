@@ -27,7 +27,7 @@ namespace Corely.UnitTests.Security.Keys
         {
             var ex = Record.Exception(() => new RsaKeyProvider(keySize));
             Assert.NotNull(ex);
-            Assert.IsType<ArgumentException>(ex);
+            Assert.IsType<ArgumentOutOfRangeException>(ex);
         }
 
         [Fact]

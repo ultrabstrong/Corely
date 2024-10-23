@@ -6,6 +6,6 @@
         void UpdateProvider(string providerCode, T provider);
         T GetDefaultProvider();
         T GetProvider(string providerCode);
-        List<(string providerCode, Type providerType)> ListProviders();
+        List<(string ProviderCode, Type ProviderType)> ListProviders();
     }
 }

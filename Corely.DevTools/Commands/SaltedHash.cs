@@ -31,9 +31,9 @@ namespace Corely.DevTools.Commands
         {
             var hashProviderFactor = new HashProviderFactory(HashTypeCode);
             var providers = hashProviderFactor.ListProviders();
-            foreach (var (ProviderCode, ProviderType) in providers)
+            foreach (var (providerCode, providerType) in providers)
             {
-                Console.WriteLine($"Code {ProviderCode} = {ProviderType.Name}");
+                Console.WriteLine($"Code {providerCode} = {providerType.Name}");
             }
         }
 
