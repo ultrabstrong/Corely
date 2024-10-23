@@ -5,14 +5,14 @@ using Corely.Security.Signature.Factories;
 
 namespace Corely.DevTools.Commands
 {
-    internal class SymmetricSignature : CommandBase
+    internal class AsymmetricSignature : CommandBase
     {
-        private const string DEFAULT_SIGNATURE_TYPE = SymmetricSignatureConstants.HMAC_SHA256_CODE;
+        private const string DEFAULT_SIGNATURE_TYPE = AsymmetricSignatureConstants.ECDSA_SHA256_CODE;
 
-        private readonly SymmetricSignatureProviderFactory _signatureProviderFactory = new(DEFAULT_SIGNATURE_TYPE);
+        private readonly AsymmetricSignatureProviderFactory _signatureProviderFactory = new(DEFAULT_SIGNATURE_TYPE);
 
-        [Argument("Key to sign message (default), validate (-v flag), or verify signature (-s flag)", false)]
-        private string Key { get; init; } = null!;
+        [Argument("File with keys to sign message (default), validate (-v flag), or decrypt value (-d flag). Format public<newline>private", false)]
+        private string KeyFile { get; init; } = null!;
 
         [Argument("Message to sign or verify", false)]
         private string Message { get; init; } = null!;
@@ -20,10 +20,10 @@ namespace Corely.DevTools.Commands
         [Argument("Code for signature type to use (hint: use -l to list codes. default used if code not provided)", false)]
         private string SignatureTypeCode { get; init; } = DEFAULT_SIGNATURE_TYPE;
 
-        [Option("-l", "--list", Description = "List symmetric signature providers")]
+        [Option("-l", "--list", Description = "List asymmetric signature providers")]
         private bool List { get; init; }
 
-        [Option("-c", "--create", Description = "Create a new symmetric key")]
+        [Option("-c", "--create", Description = "Create new asymmetric keys")]
         private bool Create { get; init; }
 
         [Option("-s", "--signature", Description = "Signature to verify")]
@@ -32,7 +32,7 @@ namespace Corely.DevTools.Commands
         [Option("-v", "--validate", Description = "Validate a key")]
         private bool Validate { get; init; }
 
-        public SymmetricSignature() : base("sym-sign", "Symmetric signature operations", "Use at least one flag to perform an operation")
+        public AsymmetricSignature() : base("asym-sign", "Asymmetric signature operations", "Use at least one flag to perform an operation")
         {
         }
 
@@ -44,7 +44,7 @@ namespace Corely.DevTools.Commands
             }
             if (Create)
             {
-                CreateKey();
+                CreateKeys();
             }
             if (!string.IsNullOrEmpty(Message))
             {
@@ -72,6 +72,17 @@ namespace Corely.DevTools.Commands
             }
         }
 
+        private (string publicKey, string privateKey) ReadKeysFromFile()
+        {
+            var keys = File.ReadAllLines(KeyFile);
+            if (keys.Length != 2)
+            {
+                throw new Exception("Invalid key file format. Must be public<newline>private");
+            }
+
+            return (keys[0], keys[1]);
+        }
+
         private void ListProviders()
         {
             var providers = _signatureProviderFactory.ListProviders();
@@ -81,23 +92,26 @@ namespace Corely.DevTools.Commands
             }
         }
 
-        private void CreateKey()
+        private void CreateKeys()
         {
-            var signatureProvider = _signatureProviderFactory.GetProvider(SignatureTypeCode);
-            var key = signatureProvider.GetSymmetricKeyProvider().CreateKey();
-            Console.WriteLine(key);
+            var asymmetricEncryptionProvider = _signatureProviderFactory.GetProvider(SignatureTypeCode);
+            var (publicKey, privateKey) = asymmetricEncryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
+            File.WriteAllText(KeyFile, $"{publicKey}{Environment.NewLine}{privateKey}");
+            Console.WriteLine($"Keys written to {KeyFile}");
         }
 
         private void ValidateKey()
         {
-            var signatureProvider = _signatureProviderFactory.GetProvider(SignatureTypeCode);
-            var isValid = signatureProvider.GetSymmetricKeyProvider().IsKeyValid(Key);
-            Console.WriteLine($"Key is {(isValid ? "valid" : "invalid")}");
+            var asymmetricEncryptionProvider = _signatureProviderFactory.GetProvider(SignatureTypeCode);
+            var (publicKey, privateKey) = ReadKeysFromFile();
+            var isValid = asymmetricEncryptionProvider.GetAsymmetricKeyProvider().IsKeyValid(publicKey, privateKey);
+            Console.WriteLine(isValid ? "Keys are valid" : "Keys are not valid");
         }
 
         private void Sign()
         {
-            var keyProvider = new InMemorySymmetricKeyStoreProvider(Key);
+            var (publicKey, privateKey) = ReadKeysFromFile();
+            var keyProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
             var signature = _signatureProviderFactory
                 .GetProvider(SignatureTypeCode)
                 .Sign(Message, keyProvider);
@@ -106,11 +120,12 @@ namespace Corely.DevTools.Commands
 
         private void Verify()
         {
-            var keyProvider = new InMemorySymmetricKeyStoreProvider(Key);
+            var (publicKey, privateKey) = ReadKeysFromFile();
+            var keyProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
             var isValid = _signatureProviderFactory
                 .GetProvider(SignatureTypeCode)
                 .Verify(Message, Signature, keyProvider);
-            Console.WriteLine($"Signature is {(isValid ? "valid" : "invalid")} for message");
+            Console.WriteLine(isValid ? "Signature is valid" : "Signature is not valid");
         }
     }
 }

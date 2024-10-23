@@ -15,12 +15,12 @@ namespace Corely.DevTools.Commands
         private string KeyFile { get; init; } = null!;
 
         [Argument("Code for encryption type to use (hint: use -l to list codes. default used if code not provided)", false)]
-        private string EncryptionTypeCode { get; init; } = null!;
+        private string EncryptionTypeCode { get; init; } = DEFAULT_ENCRYPTION_TYPE;
 
         [Option("-l", "--list", Description = "List asymmetric encryption providers")]
         private bool List { get; init; }
 
-        [Option("-c", "--create", Description = "Create a new asymmetric keys")]
+        [Option("-c", "--create", Description = "Create new asymmetric keys")]
         private bool Create { get; init; }
 
         [Option("-e", "--encrypt", Description = "Encrypt a value")]
@@ -102,7 +102,7 @@ namespace Corely.DevTools.Commands
 
         private void CreateKeys()
         {
-            var asymmetricEncryptionProvider = _encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE);
+            var asymmetricEncryptionProvider = _encryptionProviderFactory.GetProvider(EncryptionTypeCode);
             var (publicKey, privateKey) = asymmetricEncryptionProvider.GetAsymmetricKeyProvider().CreateKeys();
             File.WriteAllText(KeyFile, $"{publicKey}{Environment.NewLine}{privateKey}");
             Console.WriteLine($"Keys written to {KeyFile}");
@@ -110,7 +110,7 @@ namespace Corely.DevTools.Commands
 
         private void ValidateKey()
         {
-            var asymmetricEncryptionProvider = _encryptionProviderFactory.GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE);
+            var asymmetricEncryptionProvider = _encryptionProviderFactory.GetProvider(EncryptionTypeCode);
             var (publicKey, privateKey) = ReadKeysFromFile();
             var isValid = asymmetricEncryptionProvider.GetAsymmetricKeyProvider().IsKeyValid(publicKey, privateKey);
             Console.WriteLine($"Keys are {(isValid ? "valid" : "invalid")}");
@@ -121,7 +121,7 @@ namespace Corely.DevTools.Commands
             var (publicKey, privateKey) = ReadKeysFromFile();
             var keyProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
             var encrypted = _encryptionProviderFactory
-                .GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
+                .GetProvider(EncryptionTypeCode)
                 .Encrypt(ToEncrypt, keyProvider);
             Console.WriteLine(encrypted);
         }
@@ -131,7 +131,7 @@ namespace Corely.DevTools.Commands
             var (publicKey, privateKey) = ReadKeysFromFile();
             var keyProvider = new InMemoryAsymmetricKeyStoreProvider(publicKey, privateKey);
             var decrypted = _encryptionProviderFactory
-                .GetProvider(EncryptionTypeCode ?? DEFAULT_ENCRYPTION_TYPE)
+                .GetProvider(EncryptionTypeCode)
                 .Decrypt(ToDecrypt, keyProvider);
             Console.WriteLine(decrypted);
         }
