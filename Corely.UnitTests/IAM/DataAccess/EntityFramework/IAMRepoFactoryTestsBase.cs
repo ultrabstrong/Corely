@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using Corely.IAM.DataAccess.EntityFramework;
 
-namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
+namespace Corely.UnitTests.IAM.DataAccess.EntityFramework
 {
     public abstract class IAMRepoFactoryTestsBase
     {

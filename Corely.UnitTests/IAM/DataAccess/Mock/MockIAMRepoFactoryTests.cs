@@ -1,8 +1,8 @@
 ﻿using Corely.IAM.DataAccess.EntityFramework;
 using Corely.IAM.DataAccess.Mock;
-using Corely.UnitTests.DataAccess.EntityFramework.IAM;
+using Corely.UnitTests.IAM.DataAccess.EntityFramework;
 
-namespace Corely.UnitTests.DataAccess.Mock
+namespace Corely.UnitTests.IAM.DataAccess.Mock
 {
     public class MockIAMRepoFactoryTests : IAMRepoFactoryTestsBase
     {
