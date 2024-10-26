@@ -1,8 +1,8 @@
-﻿using Corely.DataAccess;
-using Corely.DataAccess.Connections;
+﻿using Corely.DataAccess.Connections;
 using Corely.IAM;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
+using Corely.IAM.DataAccess;
 using Corely.IAM.Mappers;
 using Corely.IAM.Security.Services;
 using Corely.IAM.Services;

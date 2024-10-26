@@ -1,4 +1,4 @@
-﻿using Corely.IAM.Repos;
+﻿using Corely.DataAccess.Interfaces.UnitOfWork;
 
 namespace Corely.DataAccess.Mock
 {

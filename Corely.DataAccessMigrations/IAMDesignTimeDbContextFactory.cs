@@ -1,4 +1,4 @@
-﻿using Corely.DataAccess.EntityFramework.IAM;
+﻿using Corely.IAM.DataAccess.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 

@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
-using Corely.IAM.Entities;
-using Corely.IAM.Repos;
+using Corely.DataAccess.Interfaces.Entities;
+using Corely.DataAccess.Interfaces.Repos;
 
 namespace Corely.UnitTests.DataAccess
 {

@@ -1,12 +1,12 @@
 ﻿using Corely.Common.Extensions;
-using Corely.IAM.Entities;
-using Corely.IAM.Repos;
+using Corely.DataAccess.Interfaces.Entities;
+using Corely.DataAccess.Interfaces.Repos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.EntityFramework.Repos
 {
-    internal class EFRepo<T>
+    public class EFRepo<T>
         : IRepo<T>
         where T : class, IHasIdPk
     {

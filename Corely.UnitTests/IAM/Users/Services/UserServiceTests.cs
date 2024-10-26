@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
+using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Mappers;
-using Corely.IAM.Repos;
 using Corely.IAM.Security.Services;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Exceptions;

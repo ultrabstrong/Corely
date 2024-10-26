@@ -1,11 +1,11 @@
 ﻿using Corely.DataAccess.EntityFramework.Configurations;
-using Corely.IAM.Entities;
+using Corely.DataAccess.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.EntityFramework
 {
-    internal abstract class EntityConfigurationBase<T>
+    public abstract class EntityConfigurationBase<T>
         : IEntityTypeConfiguration<T>
         where T : class
     {

@@ -1,10 +1,10 @@
 ﻿using Corely.Common.Models;
-using Corely.IAM.Repos;
+using Corely.DataAccess.Interfaces.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace Corely.DataAccess.EntityFramework
 {
-    internal class EFUoWProvider : DisposeBase, IUnitOfWorkProvider
+    public class EFUoWProvider : DisposeBase, IUnitOfWorkProvider
     {
         private readonly DbContext _dbContext;
 

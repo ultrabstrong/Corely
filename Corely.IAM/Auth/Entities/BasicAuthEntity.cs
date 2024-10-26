@@ -1,4 +1,4 @@
-﻿using Corely.IAM.Entities;
+﻿using Corely.DataAccess.Interfaces.Entities;
 using Corely.IAM.Users.Entities;
 
 namespace Corely.IAM.Auth.Entities

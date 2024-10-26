@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using Corely.DataAccess.EntityFramework.IAM;
+using Corely.IAM.DataAccess.EntityFramework;
 
 namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
 {

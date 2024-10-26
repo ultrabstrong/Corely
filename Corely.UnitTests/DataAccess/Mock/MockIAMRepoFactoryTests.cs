@@ -1,5 +1,5 @@
-﻿using Corely.DataAccess.EntityFramework.IAM;
-using Corely.DataAccess.Mock;
+﻿using Corely.IAM.DataAccess.EntityFramework;
+using Corely.IAM.DataAccess.Mock;
 using Corely.UnitTests.DataAccess.EntityFramework.IAM;
 
 namespace Corely.UnitTests.DataAccess.Mock

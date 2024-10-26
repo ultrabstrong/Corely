@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Corely.Common\Corely.Common.csproj" />
-    <ProjectReference Include="..\Corely.IAM\Corely.IAM.csproj" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Corely.UnitTests" />

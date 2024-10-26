@@ -17,11 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Corely.DataAccess\Corely.DataAccess.csproj" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <ProjectReference Include="..\Corely.IAM\Corely.IAM.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿using Corely.IAM.Entities;
+﻿using Corely.DataAccess.Interfaces.Entities;
 
 namespace Corely.UnitTests.Fixtures
 {

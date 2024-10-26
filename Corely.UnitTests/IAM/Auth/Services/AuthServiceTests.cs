@@ -1,9 +1,9 @@
-﻿using Corely.IAM.Auth.Entities;
+﻿using Corely.DataAccess.Interfaces.Repos;
+using Corely.IAM.Auth.Entities;
 using Corely.IAM.Auth.Models;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Enums;
 using Corely.IAM.Mappers;
-using Corely.IAM.Repos;
 using Corely.IAM.Validators;
 using Corely.Security.Password;
 using Corely.Security.PasswordValidation.Providers;

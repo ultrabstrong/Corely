@@ -1,7 +1,7 @@
-﻿using Corely.DataAccess;
-using Corely.DataAccess.Connections;
+﻿using Corely.DataAccess.Connections;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM;
+using Corely.IAM.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

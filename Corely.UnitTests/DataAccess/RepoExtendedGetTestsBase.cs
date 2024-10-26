@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using Corely.IAM.Repos;
+using Corely.DataAccess.Interfaces.Repos;
 using Corely.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 

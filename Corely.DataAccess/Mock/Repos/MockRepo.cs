@@ -1,9 +1,9 @@
-﻿using Corely.IAM.Entities;
-using Corely.IAM.Repos;
+﻿using Corely.DataAccess.Interfaces.Entities;
+using Corely.DataAccess.Interfaces.Repos;
 
 namespace Corely.DataAccess.Mock.Repos
 {
-    internal class MockRepo<T>
+    public class MockRepo<T>
         : IRepo<T>
         where T : IHasIdPk
     {

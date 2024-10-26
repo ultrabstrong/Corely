@@ -1,10 +1,10 @@
-﻿using Corely.IAM.Entities;
-using Corely.IAM.Repos;
+﻿using Corely.DataAccess.Interfaces.Entities;
+using Corely.DataAccess.Interfaces.Repos;
 using System.Linq.Expressions;
 
 namespace Corely.DataAccess.Mock.Repos
 {
-    internal class MockRepoExtendedGet<T>
+    public class MockRepoExtendedGet<T>
         : MockRepo<T>, IRepoExtendedGet<T>
         where T : IHasIdPk
     {

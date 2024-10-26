@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
+using Corely.DataAccess.Interfaces.Repos;
 using Corely.DataAccess.Mock.Repos;
-using Corely.IAM.Repos;
 using Corely.UnitTests.Fixtures;
 
 namespace Corely.UnitTests.DataAccess.Mock.Repos

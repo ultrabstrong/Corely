@@ -1,9 +1,9 @@
 ﻿using ConsoleTest.SerilogCustomization;
-using Corely.DataAccess;
 using Corely.DataAccess.Connections;
 using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM;
+using Corely.IAM.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
