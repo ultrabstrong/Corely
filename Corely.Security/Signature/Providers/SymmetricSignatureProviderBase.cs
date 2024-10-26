@@ -37,11 +37,6 @@ namespace Corely.Security.Signature.Providers
 
         }
 
-        public string? RemoveEncodedSignatureData(string value)
-        {
-            return value?.Split(':')?.Last();
-        }
-
         public abstract ISymmetricKeyProvider GetSymmetricKeyProvider();
 
         public abstract SigningCredentials GetSigningCredentials(string key);

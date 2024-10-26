@@ -10,7 +10,6 @@ namespace Corely.Security.Signature.Providers
         ISymmetricKeyProvider GetSymmetricKeyProvider();
         string Sign(string data, ISymmetricKeyStoreProvider keyStoreProvider);
         bool Verify(string data, string signature, ISymmetricKeyStoreProvider keyStoreProvider);
-        string? RemoveEncodedSignatureData(string value);
         SigningCredentials GetSigningCredentials(string key);
     }
 }

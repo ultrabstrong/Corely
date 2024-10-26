@@ -36,11 +36,6 @@ namespace Corely.Security.Signature.Providers
             return VerifyInternal(data, signature, publicKey);
         }
 
-        public string? RemoveEncodedSignatureData(string value)
-        {
-            return value?.Split(':')?.Last();
-        }
-
         public abstract IAsymmetricKeyProvider GetAsymmetricKeyProvider();
 
         public abstract SigningCredentials GetSigningCredentials(string privateKey);

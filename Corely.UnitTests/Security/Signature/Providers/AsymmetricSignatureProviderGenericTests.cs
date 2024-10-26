@@ -92,24 +92,6 @@ namespace Corely.UnitTests.Security.Signature.Providers
         }
 
         [Fact]
-        public void RemoveEncodedSignatureData_ReturnsOnlySignedValue()
-        {
-            var data = _fixture.Create<string>();
-            var signature = _signatureProvider.Sign(data, _keyStoreProvider);
-
-            var noEncoding = _signatureProvider.RemoveEncodedSignatureData(signature);
-
-            Assert.DoesNotContain(':', noEncoding!);
-            Assert.EndsWith(noEncoding, signature);
-        }
-
-        [Fact]
-        public void RemoveEncodedSignatureData_ReturnsNull_WithNullInput()
-        {
-            Assert.Null(_signatureProvider.RemoveEncodedSignatureData(null!));
-        }
-
-        [Fact]
         public abstract void SignatureTypeCode_ReturnsCorrectCode_ForImplementation();
 
         [Fact]
