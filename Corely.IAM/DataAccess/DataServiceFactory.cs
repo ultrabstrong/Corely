@@ -6,7 +6,7 @@ namespace Corely.IAM.DataAccess
 {
     public class DataServiceFactory
     {
-        public static KeyedDataServiceFactory<T> RegisterConnection<T>(IDataAccessConnection<T> connection, IServiceCollection services)
+        public static KeyedDataServiceFactory RegisterConnection<T>(IDataAccessConnection<T> connection, IServiceCollection services)
         {
             // Keyed is used to allow multiple connections to be registered
             services.AddKeyedSingleton(connection.ConnectionName,
@@ -19,7 +19,7 @@ namespace Corely.IAM.DataAccess
                     serviceProvider.GetRequiredService<ILoggerFactory>(),
                     serviceProvider.GetRequiredKeyedService<IDataAccessConnection<T>>(key)));
 
-            return new KeyedDataServiceFactory<T>(connection.ConnectionName);
+            return new KeyedDataServiceFactory(connection.ConnectionName);
         }
     }
 }

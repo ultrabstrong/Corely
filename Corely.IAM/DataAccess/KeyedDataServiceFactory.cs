@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.IAM.DataAccess
 {
-    public class KeyedDataServiceFactory<T>
+    public class KeyedDataServiceFactory
     {
         private readonly string _connectionKey;
 

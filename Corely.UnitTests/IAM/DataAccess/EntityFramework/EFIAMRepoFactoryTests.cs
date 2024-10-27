@@ -4,7 +4,7 @@ using Corely.IAM.DataAccess.EntityFramework;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.DataAccess.EntityFramework.IAM
+namespace Corely.UnitTests.IAM.DataAccess.EntityFramework
 {
     public class EFIAMRepoFactoryTests : IAMRepoFactoryTestsBase
     {

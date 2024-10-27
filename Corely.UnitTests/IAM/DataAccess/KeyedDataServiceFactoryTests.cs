@@ -15,7 +15,7 @@ namespace Corely.UnitTests.IAM.DataAccess
     {
         private readonly Fixture _fixture = new();
         private readonly ServiceCollection _serviceCollection = new();
-        private readonly KeyedDataServiceFactory<string> _keyedDataServiceFactory;
+        private readonly KeyedDataServiceFactory _keyedDataServiceFactory;
 
         public KeyedDataServiceFactoryTests()
         {
