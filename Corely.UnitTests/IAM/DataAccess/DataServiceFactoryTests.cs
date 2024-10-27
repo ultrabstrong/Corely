@@ -1,6 +1,11 @@
-﻿using AutoFixture;
-using Corely.DataAccess.Connections;
+﻿using Corely.DataAccess.Connections;
+using Corely.DataAccess.Interfaces.Repos;
+using Corely.DataAccess.Interfaces.UnitOfWork;
+using Corely.IAM.Accounts.Entities;
+using Corely.IAM.Auth.Entities;
 using Corely.IAM.DataAccess;
+using Corely.IAM.DataAccess.EntityFramework;
+using Corely.IAM.Users.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -8,30 +13,52 @@ namespace Corely.UnitTests.IAM.DataAccess
 {
     public class DataServiceFactoryTests
     {
-        private readonly Fixture _fixture = new();
-        private readonly ServiceCollection _serviceCollection = new();
-        private readonly DataAccessConnection<string> _connection;
+        private const string CONNECTION_NAME = ConnectionNames.Mock;
+
+        private readonly ServiceProvider _serviceProvider;
 
         public DataServiceFactoryTests()
         {
-            _serviceCollection.AddScoped<ILoggerFactory, LoggerFactory>();
-            _connection = new DataAccessConnection<string>(_fixture.Create<string>(), _fixture.Create<string>());
+            var connection = new DataAccessConnection<string>(CONNECTION_NAME, string.Empty);
+
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddScoped<ILoggerFactory, LoggerFactory>();
+
+            DataServiceFactory.RegisterConnection(connection, serviceCollection);
+
+            _serviceProvider = serviceCollection.BuildServiceProvider();
+
         }
 
-        [Theory, MemberData(nameof(GetRequiredServiceData))]
+        [Theory, MemberData(nameof(GetRequiredKeyedServiceData))]
         public void RegisterConnection_RegistersConnection(Type serviceType)
         {
-            DataServiceFactory.RegisterConnection(_connection, _serviceCollection);
-            var serviceProvider = _serviceCollection.BuildServiceProvider();
-            var service = serviceProvider.GetRequiredKeyedService(serviceType, _connection.ConnectionName);
+            var service = _serviceProvider.GetRequiredKeyedService(serviceType, CONNECTION_NAME);
+            Assert.NotNull(service);
+        }
 
+        public static IEnumerable<object[]> GetRequiredKeyedServiceData =>
+        [
+            [typeof(IDataAccessConnection<string>)],
+            [typeof(IGenericRepoFactory)]
+        ];
+
+        [Theory, MemberData(nameof(GetRequiredServiceData))]
+        public void RegisterConnection_RegistersService(Type serviceType)
+        {
+            var service = _serviceProvider.GetRequiredService(serviceType);
             Assert.NotNull(service);
         }
 
         public static IEnumerable<object[]> GetRequiredServiceData =>
         [
-            [typeof(IDataAccessConnection<string>)],
-            [typeof(IGenericRepoFactory)]
+            [typeof(IIAMRepoFactory)],
+            [typeof(IRepoExtendedGet<AccountEntity>)],
+            [typeof(IReadonlyRepo<AccountEntity>)],
+            [typeof(IRepoExtendedGet<UserEntity>)],
+            [typeof(IReadonlyRepo<UserEntity>)],
+            [typeof(IRepoExtendedGet<BasicAuthEntity>)],
+            [typeof(IUnitOfWorkProvider)]
         ];
     }
 }

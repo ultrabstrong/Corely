@@ -1,4 +1,5 @@
 ﻿using Corely.DataAccess.Connections;
+using Corely.IAM.DataAccess.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -19,8 +20,33 @@ namespace Corely.IAM.DataAccess
                     serviceProvider.GetRequiredService<ILoggerFactory>(),
                     serviceProvider.GetRequiredKeyedService<IDataAccessConnection<T>>(key)));
 
-            var keyedDataServiceFactory = new KeyedDataServiceFactory(connection.ConnectionName);
-            keyedDataServiceFactory.AddAllDataServices(services);
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredKeyedService<IGenericRepoFactory>(connection.ConnectionName)
+                .CreateIAMRepoFactory());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateAccountRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateReadonlyAccountRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateUserRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateReadonlyUserRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateBasicAuthRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateUnitOfWorkProvider());
         }
     }
 }

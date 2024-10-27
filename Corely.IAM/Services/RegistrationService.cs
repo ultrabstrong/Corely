@@ -4,7 +4,6 @@ using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Models;
 using Corely.IAM.Users.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM.Services
@@ -22,7 +21,6 @@ namespace Corely.IAM.Services
             IAccountService accountService,
             IUserService userService,
             IAuthService authService,
-            [FromKeyedServices(nameof(IRegistrationService))]
             IUnitOfWorkProvider uowProvider)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
