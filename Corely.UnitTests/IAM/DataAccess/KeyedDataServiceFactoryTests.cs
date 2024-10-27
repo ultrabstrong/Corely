@@ -21,7 +21,8 @@ namespace Corely.UnitTests.IAM.DataAccess
         {
             _serviceCollection.AddScoped<ILoggerFactory, LoggerFactory>();
             var connection = new DataAccessConnection<string>(ConnectionNames.Mock, _fixture.Create<string>());
-            _keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, _serviceCollection);
+            DataServiceFactory.RegisterConnection(connection, _serviceCollection);
+            _keyedDataServiceFactory = new KeyedDataServiceFactory(connection.ConnectionName);
         }
 
         [Theory, MemberData(nameof(GetRequiredServiceData))]

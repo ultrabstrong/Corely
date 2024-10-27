@@ -39,8 +39,7 @@ namespace Corely.DevTools
             var connection = new DataAccessConnection<EFConnection>(
                 ConnectionNames.EntityFramework,
                 new EFConnection(new EFConfiguration(ConfigurationProvider.GetConnectionString())));
-            var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
-            keyedDataServiceFactory.AddAllDataServices(services);
+            DataServiceFactory.RegisterConnection(connection, services);
         }
 
         protected override void AddSecurityConfigurationProvider(IServiceCollection services)

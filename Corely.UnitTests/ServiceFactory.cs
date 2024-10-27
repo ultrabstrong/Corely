@@ -34,8 +34,7 @@ namespace Corely.UnitTests
             // EF in memory db connection
             //var connection = new DataAccessConnection<EFConnection>(ConnectionNames.EntityFramework, new EFConnection(new InMemoryConfig()));
 
-            var keyedDataServiceFactory = DataServiceFactory.RegisterConnection(connection, services);
-            keyedDataServiceFactory.AddAllDataServices(services);
+            DataServiceFactory.RegisterConnection(connection, services);
         }
 
         protected override void AddSecurityConfigurationProvider(IServiceCollection services)
