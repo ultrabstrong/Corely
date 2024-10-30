@@ -1,5 +1,7 @@
 ﻿using Corely.DataAccess.Connections;
+using Corely.DataAccess.EntityFramework;
 using Corely.IAM.DataAccess.EntityFramework;
+using Corely.IAM.DataAccess.Mock;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -13,16 +15,20 @@ namespace Corely.IAM.DataAccess
             services.AddKeyedSingleton(connection.ConnectionName,
                 (serviceProvider, key) => connection);
 
-            // Keyed is to register generic repo factories for each connection
-            services.AddKeyedSingleton<IGenericRepoFactory>(
-                connection.ConnectionName,
-                (serviceProvider, key) => new GenericRepoFactory<T>(
-                    serviceProvider.GetRequiredService<ILoggerFactory>(),
-                    serviceProvider.GetRequiredKeyedService<IDataAccessConnection<T>>(key)));
-
-            services.AddScoped(serviceProvider => serviceProvider
-                .GetRequiredKeyedService<IGenericRepoFactory>(connection.ConnectionName)
-                .CreateIAMRepoFactory());
+            services.AddScoped<IIAMRepoFactory>(serviceProvider =>
+                {
+                    return connection.ConnectionName switch
+                    {
+                        ConnectionNames.EntityFramework =>
+                            new EFIAMRepoFactory(
+                                serviceProvider.GetRequiredService<ILoggerFactory>(),
+                                ((IDataAccessConnection<EFConnection>)connection).GetConnection()),
+                        ConnectionNames.Mock =>
+                            new MockIAMRepoFactory(),
+                        _ =>
+                            throw new ArgumentOutOfRangeException(connection.ConnectionName),
+                    };
+                });
 
             services.AddScoped(serviceProvider => serviceProvider
                 .GetRequiredService<IIAMRepoFactory>()
