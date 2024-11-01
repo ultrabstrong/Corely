@@ -1,11 +1,16 @@
 ﻿using Corely.DataAccess.Connections;
+using Corely.DataAccess.Interfaces.Repos;
+using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.IAM;
+using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Services;
+using Corely.IAM.Auth.Entities;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.DataAccess;
 using Corely.IAM.Mappers;
 using Corely.IAM.Security.Services;
 using Corely.IAM.Services;
+using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Services;
 using Corely.IAM.Validators;
 using Corely.Security.Encryption.Factories;
@@ -35,7 +40,7 @@ namespace Corely.UnitTests.IAM
                 services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             }
 
-            protected override void AddDataAccessServices(IServiceCollection services)
+            protected override void RegisterConnection(IServiceCollection services)
             {
                 var connection = new DataAccessConnection<string>(ConnectionNames.Mock, string.Empty);
                 DataServiceFactory.RegisterConnection(connection, services);
@@ -76,7 +81,14 @@ namespace Corely.UnitTests.IAM
             [typeof(IAccountService)],
             [typeof(IUserService)],
             [typeof(IRegistrationService)],
-            [typeof(ISecurityService)]
+            [typeof(ISecurityService)],
+
+            [typeof(IRepoExtendedGet<AccountEntity>)],
+            [typeof(IReadonlyRepo<AccountEntity>)],
+            [typeof(IRepoExtendedGet<UserEntity>)],
+            [typeof(IReadonlyRepo<UserEntity>)],
+            [typeof(IRepoExtendedGet<BasicAuthEntity>)],
+            [typeof(IUnitOfWorkProvider)]
         ];
 
         private object? GetRequiredService(Type serviceType)

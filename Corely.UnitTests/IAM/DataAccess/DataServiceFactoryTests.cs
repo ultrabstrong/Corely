@@ -1,14 +1,9 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Connections;
 using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.Interfaces.Repos;
-using Corely.DataAccess.Interfaces.UnitOfWork;
-using Corely.IAM.Accounts.Entities;
-using Corely.IAM.Auth.Entities;
 using Corely.IAM.DataAccess;
 using Corely.IAM.DataAccess.EntityFramework;
 using Corely.IAM.DataAccess.Mock;
-using Corely.IAM.Users.Entities;
 using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,9 +15,9 @@ namespace Corely.UnitTests.IAM.DataAccess
         private const string CONNECTION_NAME = ConnectionNames.Mock;
 
         private static readonly Fixture _fixture = new();
-        private readonly ServiceProvider _serviceProvider;
 
-        public DataServiceFactoryTests()
+        [Fact]
+        public void RegisterConnection_RegistersIAMRepoFactory()
         {
             var connection = new DataAccessConnection<string>(CONNECTION_NAME, string.Empty);
 
@@ -31,27 +26,10 @@ namespace Corely.UnitTests.IAM.DataAccess
 
             DataServiceFactory.RegisterConnection(connection, serviceCollection);
 
-            _serviceProvider = serviceCollection.BuildServiceProvider();
-
-        }
-
-        [Theory, MemberData(nameof(GetRequiredServiceData))]
-        public void RegisterConnection_RegistersService(Type serviceType)
-        {
-            var service = _serviceProvider.GetRequiredService(serviceType);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var service = serviceProvider.GetRequiredService<IIAMRepoFactory>();
             Assert.NotNull(service);
         }
-
-        public static IEnumerable<object[]> GetRequiredServiceData =>
-        [
-            [typeof(IIAMRepoFactory)],
-            [typeof(IRepoExtendedGet<AccountEntity>)],
-            [typeof(IReadonlyRepo<AccountEntity>)],
-            [typeof(IRepoExtendedGet<UserEntity>)],
-            [typeof(IReadonlyRepo<UserEntity>)],
-            [typeof(IRepoExtendedGet<BasicAuthEntity>)],
-            [typeof(IUnitOfWorkProvider)]
-        ];
 
         [Fact]
         public void CreateIAMRepoFactory_ReturnsCorrectType_WithMockConnection()

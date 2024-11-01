@@ -29,30 +29,6 @@ namespace Corely.IAM.DataAccess
                             throw new ArgumentOutOfRangeException(connection.ConnectionName),
                     };
                 });
-
-            services.AddScoped(serviceProvider => serviceProvider
-                .GetRequiredService<IIAMRepoFactory>()
-                .CreateAccountRepo());
-
-            services.AddScoped(serviceProvider => serviceProvider
-                .GetRequiredService<IIAMRepoFactory>()
-                .CreateReadonlyAccountRepo());
-
-            services.AddScoped(serviceProvider => serviceProvider
-                .GetRequiredService<IIAMRepoFactory>()
-                .CreateUserRepo());
-
-            services.AddScoped(serviceProvider => serviceProvider
-                .GetRequiredService<IIAMRepoFactory>()
-                .CreateReadonlyUserRepo());
-
-            services.AddScoped(serviceProvider => serviceProvider
-                .GetRequiredService<IIAMRepoFactory>()
-                .CreateBasicAuthRepo());
-
-            services.AddScoped(serviceProvider => serviceProvider
-                .GetRequiredService<IIAMRepoFactory>()
-                .CreateUnitOfWorkProvider());
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Corely.UnitTests
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
         }
 
-        protected override void AddDataAccessServices(IServiceCollection services)
+        protected override void RegisterConnection(IServiceCollection services)
         {
             // Corely mock db connection
             var connection = new DataAccessConnection<string>(ConnectionNames.Mock, string.Empty);

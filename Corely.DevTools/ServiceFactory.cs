@@ -34,7 +34,7 @@ namespace Corely.DevTools
             services.AddLogging(builder => builder.AddSerilog(logger: Log.Logger, dispose: false));
         }
 
-        protected override void AddDataAccessServices(IServiceCollection services)
+        protected override void RegisterConnection(IServiceCollection services)
         {
             var connection = new DataAccessConnection<EFConnection>(
                 ConnectionNames.EntityFramework,

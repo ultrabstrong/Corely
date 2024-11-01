@@ -56,7 +56,7 @@ namespace ConsoleTest
             services.AddLogging(builder => builder.AddSerilog(logger: Log.Logger, dispose: false));
         }
 
-        protected override void AddDataAccessServices(IServiceCollection services)
+        protected override void RegisterConnection(IServiceCollection services)
         {
             // Corely mock db connection
             // var connection = new DataAccessConnection<string>(ConnectionNames.Mock, string.Empty);

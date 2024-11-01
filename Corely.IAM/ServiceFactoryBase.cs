@@ -1,6 +1,7 @@
 ﻿using Corely.Common.Models;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
+using Corely.IAM.DataAccess.EntityFramework;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
 using Corely.IAM.Security.Services;
@@ -33,7 +34,8 @@ namespace Corely.IAM
             AddValidator(services);
             AddSecurityServices(services);
             AddSecurityConfigurationProvider(services);
-            AddDataAccessServices(services);
+            RegisterConnection(services);
+            AddDataServices(services);
             AddDomainServices(services);
             AddPasswordValidation(services);
 
@@ -70,6 +72,33 @@ namespace Corely.IAM
             services.AddSingleton<ISecurityService, SecurityService>();
         }
 
+        private static void AddDataServices(IServiceCollection services)
+        {
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateAccountRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateReadonlyAccountRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateUserRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateReadonlyUserRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateBasicAuthRepo());
+
+            services.AddScoped(serviceProvider => serviceProvider
+                .GetRequiredService<IIAMRepoFactory>()
+                .CreateUnitOfWorkProvider());
+        }
+
         private static void AddDomainServices(IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
@@ -81,7 +110,7 @@ namespace Corely.IAM
 
         protected abstract void AddSecurityConfigurationProvider(IServiceCollection services);
         protected abstract void AddLogger(IServiceCollection services);
-        protected abstract void AddDataAccessServices(IServiceCollection services);
+        protected abstract void RegisterConnection(IServiceCollection services);
 
         protected virtual void AddPasswordValidation(IServiceCollection services)
         {
