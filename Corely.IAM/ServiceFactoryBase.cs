@@ -92,9 +92,6 @@ namespace Corely.IAM
         public T GetRequiredService<T>() where T : notnull
             => _serviceProvider.GetRequiredService<T>();
 
-        public T GetRequiredKeyedService<T>(string key) where T : notnull
-            => _serviceProvider.GetRequiredKeyedService<T>(key);
-
         protected override void DisposeManagedResources()
             => _serviceProvider?.Dispose();
 

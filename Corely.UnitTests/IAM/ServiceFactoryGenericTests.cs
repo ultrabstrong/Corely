@@ -64,15 +64,6 @@ namespace Corely.UnitTests.IAM
                 .Invoke(ServiceFactory, null);
         }
 
-        private object? GetRequiredKeyedService(Type serviceType, string key)
-        {
-            var methodInfo = ServiceFactory.GetType()
-                .GetMethod(nameof(ServiceFactory.GetRequiredKeyedService));
-
-            return methodInfo?.MakeGenericMethod(serviceType)
-                .Invoke(ServiceFactory, [key]);
-        }
-
         [Fact]
         public void ServiceFactoryBase_DisposesServiceProviderCorrectly()
         {

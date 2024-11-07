@@ -5,6 +5,7 @@ using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Providers;
 using Corely.Security.Signature.Factories;
 using Corely.Security.Signature.Providers;
+using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.IAM.Security.Services
 {
@@ -102,6 +103,26 @@ namespace Corely.UnitTests.IAM.Security.Services
             var decryptedValue = _securityService.DecryptWithSystemKey(symmetricKey.Key.Secret);
 
             Assert.Equal(expectedDecryptedValue, decryptedValue);
+        }
+
+
+        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
+        public void DecryptWithSystemKey_ReturnsEmptyString_WithEmptyInput(string encryptedValue)
+        {
+            var decryptedValue = _securityService.DecryptWithSystemKey(encryptedValue);
+
+            Assert.Equal(string.Empty, decryptedValue);
+        }
+
+        [Fact]
+        public void GetAsymmetricSigningCredentials_ReturnsSigningCredentials()
+        {
+            var asymmetricKey = _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
+            var privateKey = _securityService.DecryptWithSystemKey(asymmetricKey.PrivateKey.Secret);
+
+            var credentials = _securityService.GetAsymmetricSigningCredentials(asymmetricKey.ProviderTypeCode, privateKey);
+
+            Assert.NotNull(credentials);
         }
     }
 }
