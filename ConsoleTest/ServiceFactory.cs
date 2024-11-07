@@ -1,18 +1,15 @@
 ﻿using ConsoleTest.SerilogCustomization;
-using Corely.DataAccess.Connections;
-using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM;
-using Corely.IAM.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Reflection;
 
 namespace ConsoleTest
 {
-    internal class ServiceFactory : ServiceFactoryBase
+    internal class ServiceFactory : ServiceFactoryEFDb
     {
         private class MySqlEFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
         {
@@ -51,30 +48,19 @@ namespace ConsoleTest
             }
         }
 
-        protected override void AddLogger(IServiceCollection services)
+        protected override void AddLogging(ILoggingBuilder builder)
         {
-            services.AddLogging(builder => builder.AddSerilog(logger: Log.Logger, dispose: false));
+            builder.AddSerilog(logger: Log.Logger, dispose: false);
         }
 
-        protected override void RegisterConnection(IServiceCollection services)
+        protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
         {
-            // Corely mock db connection
-            // var connection = new DataAccessConnection<string>(ConnectionNames.Mock, string.Empty);
-
-            // EF in memory db connection
-            //var connection = new DataAccessConnection<EFConnection>(ConnectionNames.EntityFramework, new EFConnection(new InMemoryConfig()));
-
-            // EF mysql db connection
-            var connection = new DataAccessConnection<EFConnection>(
-                ConnectionNames.EntityFramework,
-                new EFConnection(new MySqlEFConfiguration(ConfigurationProvider.GetConnectionString())));
-
-            DataServiceFactory.RegisterConnection(connection, services);
+            return new SecurityConfigurationProvider();
         }
 
-        protected override void AddSecurityConfigurationProvider(IServiceCollection services)
+        protected override IEFConfiguration GetEFConfiguraiton()
         {
-            services.AddScoped<ISecurityConfigurationProvider, SecurityConfigurationProvider>();
+            return new MySqlEFConfiguration(ConfigurationProvider.GetConnectionString());
         }
     }
 }

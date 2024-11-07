@@ -15,16 +15,17 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
         public EFReadonlyRepoTests()
         {
             var serviceFactory = new ServiceFactory();
-            var dbSet = GetDbSet();
+            var dbContext = GetDbContext();
+            var dbSet = dbContext.Set<EntityFixture>();
 
             _efReadonlyRepo = new(
                 serviceFactory.GetRequiredService<ILogger<EFReadonlyRepo<EntityFixture>>>(),
-                dbSet);
+                dbContext);
 
             _getId = dbSet.Skip(1).First().Id;
         }
 
-        private static DbSet<EntityFixture> GetDbSet()
+        private static DbContextFixture GetDbContext()
         {
             var fixture = new Fixture();
             var options = new DbContextOptionsBuilder<DbContextFixture>()
@@ -40,7 +41,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
             }
             dbContext.SaveChanges();
 
-            return dbContext.Entities;
+            return dbContext;
         }
 
         protected override IReadonlyRepo<EntityFixture> Repo => _efReadonlyRepo;

@@ -1,18 +1,13 @@
-﻿using Corely.DataAccess.Interfaces.Repos;
-using Corely.DataAccess.Interfaces.UnitOfWork;
-using Corely.DataAccess.Mock;
-using Corely.DataAccess.Mock.Repos;
-using Corely.IAM;
+﻿using Corely.IAM;
 using Corely.Security.KeyStore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Corely.UnitTests.IAM
 {
-    public class ServiceFactoryBaseTests : ServiceFactoryGenericTests
+    public class ServiceFactoryMockDbTests : ServiceFactoryGenericTests
     {
-        private class MockServiceFactory : ServiceFactoryBase
+        private class MockServiceFactory : ServiceFactoryMockDb
         {
             private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
             {
@@ -27,14 +22,6 @@ namespace Corely.UnitTests.IAM
             protected override void AddLogging(ILoggingBuilder builder)
             {
                 builder.AddProvider(NullLoggerProvider.Instance);
-            }
-
-            protected override void AddDataServices(IServiceCollection services)
-            {
-                services.AddSingleton(typeof(IRepo<>), typeof(MockRepo<>));
-                services.AddSingleton(typeof(IRepoExtendedGet<>), typeof(MockRepoExtendedGet<>));
-                services.AddSingleton(typeof(IReadonlyRepo<>), typeof(MockReadonlyRepo<>));
-                services.AddSingleton<IUnitOfWorkProvider, MockUoWProvider>();
             }
         }
 

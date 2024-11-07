@@ -1,18 +1,15 @@
-﻿using Corely.DataAccess.Interfaces.Repos;
-using Corely.DataAccess.Interfaces.UnitOfWork;
-using Corely.DataAccess.Mock;
-using Corely.DataAccess.Mock.Repos;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM;
 using Corely.Security.KeyStore;
-using Microsoft.Extensions.DependencyInjection;
+using Corely.UnitTests.Fixtures;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Corely.UnitTests.IAM
 {
-    public class ServiceFactoryBaseTests : ServiceFactoryGenericTests
+    public class ServiceFactoryEFDbTests : ServiceFactoryGenericTests
     {
-        private class MockServiceFactory : ServiceFactoryBase
+        private class MockServiceFactory : ServiceFactoryEFDb
         {
             private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
             {
@@ -29,12 +26,9 @@ namespace Corely.UnitTests.IAM
                 builder.AddProvider(NullLoggerProvider.Instance);
             }
 
-            protected override void AddDataServices(IServiceCollection services)
+            protected override IEFConfiguration GetEFConfiguraiton()
             {
-                services.AddSingleton(typeof(IRepo<>), typeof(MockRepo<>));
-                services.AddSingleton(typeof(IRepoExtendedGet<>), typeof(MockRepoExtendedGet<>));
-                services.AddSingleton(typeof(IReadonlyRepo<>), typeof(MockReadonlyRepo<>));
-                services.AddSingleton<IUnitOfWorkProvider, MockUoWProvider>();
+                return new EFConfigurationFixture();
             }
         }
 

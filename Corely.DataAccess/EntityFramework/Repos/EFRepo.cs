@@ -10,26 +10,24 @@ namespace Corely.DataAccess.EntityFramework.Repos
         : IRepo<T>
         where T : class, IHasIdPk
     {
-        private readonly Func<Task> _saveChangesAsync;
-
         protected readonly ILogger<EFRepo<T>> _logger;
+        protected readonly DbContext _dbContext;
         protected readonly DbSet<T> _dbSet;
 
         public EFRepo(
             ILogger<EFRepo<T>> logger,
-            Func<Task> saveChangesAsync,
-            DbSet<T> dbSet)
+            DbContext dbContext)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
-            _saveChangesAsync = saveChangesAsync.ThrowIfNull(nameof(saveChangesAsync));
-            _dbSet = dbSet.ThrowIfNull(nameof(dbSet));
+            _dbContext = dbContext.ThrowIfNull(nameof(dbContext));
+            _dbSet = dbContext.Set<T>();
             _logger.LogDebug("{RepoType} created for {EntityType}", GetType().Name.Split('`')[0], typeof(T).Name);
         }
 
         public virtual async Task<int> CreateAsync(T entity)
         {
             var newEntity = await _dbSet.AddAsync(entity);
-            await _saveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return newEntity.Entity.Id;
         }
 
@@ -56,13 +54,13 @@ namespace Corely.DataAccess.EntityFramework.Repos
                 // update existing tracked entity instance with new entity values
                 _dbSet.Entry(existingEntity).CurrentValues.SetValues(entity);
             }
-            await _saveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         public virtual async Task DeleteAsync(T entity)
         {
             _dbSet.Remove(entity);
-            await _saveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

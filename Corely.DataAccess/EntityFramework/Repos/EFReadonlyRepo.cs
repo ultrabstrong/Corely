@@ -15,10 +15,10 @@ namespace Corely.DataAccess.EntityFramework.Repos
 
         public EFReadonlyRepo(
             ILogger<EFReadonlyRepo<T>> logger,
-            DbSet<T> dbSet)
+            DbContext context)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
-            _dbSet = dbSet.ThrowIfNull(nameof(dbSet));
+            _dbSet = context.Set<T>().ThrowIfNull(nameof(context));
             _logger.LogDebug("{RepoType} created for {EntityType}", GetType().Name.Split('`')[0], typeof(T).Name);
         }
 

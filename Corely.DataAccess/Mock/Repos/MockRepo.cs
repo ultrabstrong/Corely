@@ -7,7 +7,7 @@ namespace Corely.DataAccess.Mock.Repos
         : IRepo<T>
         where T : IHasIdPk
     {
-        protected readonly List<T> Entities = [];
+        public readonly List<T> Entities = [];
 
         public Task<int> CreateAsync(T entity)
         {

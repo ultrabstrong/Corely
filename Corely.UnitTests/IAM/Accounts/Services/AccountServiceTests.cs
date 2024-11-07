@@ -36,7 +36,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         {
             var userId = _fixture.Create<int>();
             var user = new UserEntity { Id = userId };
-            var userRepo = _serviceFactory.GetRequiredService<IRepoExtendedGet<UserEntity>>();
+            var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
             return await userRepo.CreateAsync(user);
         }
 

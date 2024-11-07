@@ -1,18 +1,15 @@
-﻿using Corely.DataAccess.Connections;
-using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.Configurations;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.DevTools.SerilogCustomization;
 using Corely.IAM;
-using Corely.IAM.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Reflection;
 
 namespace Corely.DevTools
 {
-    internal class ServiceFactory : ServiceFactoryBase
+    internal class ServiceFactory : ServiceFactoryEFDb
     {
         private class EFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
         {
@@ -29,22 +26,19 @@ namespace Corely.DevTools
             }
         }
 
-        protected override void AddLogger(IServiceCollection services)
+        protected override void AddLogging(ILoggingBuilder builder)
         {
-            services.AddLogging(builder => builder.AddSerilog(logger: Log.Logger, dispose: false));
+            builder.AddSerilog(logger: Log.Logger, dispose: false);
         }
 
-        protected override void RegisterConnection(IServiceCollection services)
+        protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
         {
-            var connection = new DataAccessConnection<EFConnection>(
-                ConnectionNames.EntityFramework,
-                new EFConnection(new EFConfiguration(ConfigurationProvider.GetConnectionString())));
-            DataServiceFactory.RegisterConnection(connection, services);
+            return new SecurityConfigurationProvider();
         }
 
-        protected override void AddSecurityConfigurationProvider(IServiceCollection services)
+        protected override IEFConfiguration GetEFConfiguraiton()
         {
-            services.AddScoped<ISecurityConfigurationProvider, SecurityConfigurationProvider>();
+            return new EFConfiguration(ConfigurationProvider.GetConnectionString());
         }
     }
 }
