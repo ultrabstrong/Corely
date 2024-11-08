@@ -31,7 +31,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
 
             public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => _mockKeyProvider;
 
-            public override SigningCredentials GetSigningCredentials(string privateKey) => null!;
+            public override SigningCredentials GetSigningCredentials(string key, bool isKeyPrivate) => null!;
 
             protected override string SignInternal(string value, string privateKey)
             {
@@ -49,7 +49,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         private abstract class MockAsymmetricSignatureProviderBase : AsymmetricSignatureProviderBase
         {
             public override IAsymmetricKeyProvider GetAsymmetricKeyProvider() => null!;
-            public override SigningCredentials GetSigningCredentials(string privateKey) => null!;
+            public override SigningCredentials GetSigningCredentials(string key, bool isKeyPrivate) => null!;
             protected override string SignInternal(string value, string privateKey) => value;
             protected override bool VerifyInternal(string value, string signature, string publicKey) => false;
         }

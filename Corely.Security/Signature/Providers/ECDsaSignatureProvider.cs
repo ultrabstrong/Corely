@@ -43,10 +43,13 @@ namespace Corely.Security.Signature.Providers
             }
         }
 
-        public override SigningCredentials GetSigningCredentials(string privateKey)
+        public override SigningCredentials GetSigningCredentials(string key, bool isKeyPrivate)
         {
             var ecdsa = ECDsa.Create();
-            ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
+            if (isKeyPrivate)
+                ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(key), out _);
+            else
+                ecdsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(key), out _);
             return new SigningCredentials(new ECDsaSecurityKey(ecdsa), SecurityAlgorithms.EcdsaSha256);
         }
 

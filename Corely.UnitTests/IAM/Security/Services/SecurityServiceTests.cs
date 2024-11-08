@@ -115,12 +115,23 @@ namespace Corely.UnitTests.IAM.Security.Services
         }
 
         [Fact]
-        public void GetAsymmetricSigningCredentials_ReturnsSigningCredentials()
+        public void GetAsymmetricSigningCredentials_ReturnsSigningCredentials_WithPrivateKey()
         {
             var asymmetricKey = _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
             var privateKey = _securityService.DecryptWithSystemKey(asymmetricKey.PrivateKey.Secret);
 
-            var credentials = _securityService.GetAsymmetricSigningCredentials(asymmetricKey.ProviderTypeCode, privateKey);
+            var credentials = _securityService.GetAsymmetricSigningCredentials(asymmetricKey.ProviderTypeCode, privateKey, true);
+
+            Assert.NotNull(credentials);
+        }
+
+        [Fact]
+        public void GetAsymmetricSigningCredentials_ReturnsSigningCredentials_WithPublicKey()
+        {
+            var asymmetricKey = _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
+            var publicKey = asymmetricKey.PublicKey;
+
+            var credentials = _securityService.GetAsymmetricSigningCredentials(asymmetricKey.ProviderTypeCode, publicKey, false);
 
             Assert.NotNull(credentials);
         }

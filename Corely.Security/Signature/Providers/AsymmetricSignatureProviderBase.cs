@@ -38,7 +38,7 @@ namespace Corely.Security.Signature.Providers
 
         public abstract IAsymmetricKeyProvider GetAsymmetricKeyProvider();
 
-        public abstract SigningCredentials GetSigningCredentials(string privateKey);
+        public abstract SigningCredentials GetSigningCredentials(string key, bool isKeyPrivate);
 
         protected abstract string SignInternal(string value, string privateKey);
 

@@ -10,6 +10,6 @@ namespace Corely.Security.Signature.Providers
         IAsymmetricKeyProvider GetAsymmetricKeyProvider();
         string Sign(string data, IAsymmetricKeyStoreProvider keyStoreProvider);
         bool Verify(string data, string signature, IAsymmetricKeyStoreProvider keyStoreProvider);
-        SigningCredentials GetSigningCredentials(string privateKey);
+        SigningCredentials GetSigningCredentials(string key, bool isKeyPrivate);
     }
 }

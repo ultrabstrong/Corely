@@ -11,6 +11,7 @@ using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -114,10 +115,78 @@ namespace Corely.IAM.Users.Services
 
         public async Task<string?> GetUserAuthTokenAsync(int userId)
         {
+            var signatureKey = await GetUserAsymmetricKey(userId);
+            if (signatureKey == null)
+            {
+                return null;
+            }
+
+            var privateKey = _securityService.DecryptWithSystemKey(signatureKey.EncryptedPrivateKey);
+            var credentials = _securityService.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, privateKey, true);
+
+            // Todo - include permission-based scopes & roles
+
+            var token = new JwtSecurityToken(
+                issuer: typeof(UserService).FullName,
+                claims: [
+                    new Claim(JwtRegisteredClaimNames.Sub, "user_id"),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                ],
+                expires: DateTime.Now.Add(TimeSpan.FromSeconds(3600)),
+                signingCredentials: credentials);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+        }
+
+        public async Task<bool> IsUserAuthTokenValidAsync(int userId, string authToken)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            if (!tokenHandler.CanReadToken(authToken))
+            {
+                Logger.LogInformation("Auth token is in invalid format");
+                return false;
+            }
+
+            var signatureKey = await GetUserAsymmetricKey(userId);
+            if (signatureKey == null)
+            {
+                return false;
+            }
+
+            var credentials = _securityService.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, signatureKey.PublicKey, false);
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = credentials.Key,
+                ValidateIssuer = true,
+                ValidIssuer = typeof(UserService).FullName,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            try
+            {
+                tokenHandler.ValidateToken(authToken, validationParameters, out _);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogInformation("Token validation failed: {Error}", ex.Message);
+                return false;
+            }
+        }
+
+        private async Task<UserAsymmetricKeyEntity?> GetUserAsymmetricKey(int userId)
+        {
             var userEntity = await _userRepo.GetAsync(
-                u => u.Id == userId,
-                include: q => q
-                    .Include(u => u.AsymmetricKeys));
+               u => u.Id == userId,
+               include: q => q
+                   .Include(u => u.AsymmetricKeys));
 
             if (userEntity == null)
             {
@@ -132,22 +201,7 @@ namespace Corely.IAM.Users.Services
                 return null;
             }
 
-            var privateKey = _securityService.DecryptWithSystemKey(signatureKey.EncryptedPrivateKey);
-            var credentials = _securityService.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, privateKey);
-
-            // Todo - include permission-based scopes & roles
-
-            var token = new JwtSecurityToken(
-                claims: [
-                    new Claim(JwtRegisteredClaimNames.Sub, "user_id"),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                ],
-                expires: DateTime.Now.Add(TimeSpan.FromSeconds(3600)),
-                signingCredentials: credentials);
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwt;
+            return signatureKey;
         }
     }
 }

@@ -113,10 +113,10 @@ namespace Corely.IAM.Security.Services
             return symmetricEncryptionProvider.Decrypt(encryptedValue, systemKeyStoreProvider);
         }
 
-        public SigningCredentials GetAsymmetricSigningCredentials(string providerTypeCode, string privateKey)
+        public SigningCredentials GetAsymmetricSigningCredentials(string providerTypeCode, string key, bool isKeyPrivate)
         {
             var asymmetricSignatureProvider = _asymmetricSignatureProviderFactory.GetProvider(providerTypeCode);
-            return asymmetricSignatureProvider.GetSigningCredentials(privateKey);
+            return asymmetricSignatureProvider.GetSigningCredentials(key, isKeyPrivate);
         }
     }
 }

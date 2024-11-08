@@ -9,6 +9,6 @@ namespace Corely.IAM.Security.Services
         AsymmetricKey GetAsymmetricEncryptionKeyEncryptedWithSystemKey();
         AsymmetricKey GetAsymmetricSignatureKeyEncryptedWithSystemKey();
         string DecryptWithSystemKey(string encryptedValue);
-        SigningCredentials GetAsymmetricSigningCredentials(string providerTypeCode, string privateKey);
+        SigningCredentials GetAsymmetricSigningCredentials(string providerTypeCode, string key, bool isKeyPrivate);
     }
 }

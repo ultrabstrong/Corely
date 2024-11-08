@@ -25,12 +25,17 @@ namespace Corely.UnitTests.Security.Signature.Providers
             Assert.IsType<EcdsaKeyProvider>(keyProvider);
         }
 
-        [Fact]
-        public void GetSigningCredentials_ReturnsCorrectSigningCredentials_ForImplementation()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetSigningCredentials_ReturnsCorrectSigningCredentials_ForImplementation(bool isKeyPrivate)
         {
-            var (_, privateKey) = _ecDsaSignatureProvider.GetAsymmetricKeyProvider().CreateKeys();
+            var (publicKey, privateKey) = _ecDsaSignatureProvider.GetAsymmetricKeyProvider().CreateKeys();
 
-            var signingCredentials = _ecDsaSignatureProvider.GetSigningCredentials(privateKey);
+            var signingCredentials = isKeyPrivate
+                ? _ecDsaSignatureProvider.GetSigningCredentials(privateKey, true)
+                : _ecDsaSignatureProvider.GetSigningCredentials(publicKey, false);
+
             Assert.NotNull(signingCredentials);
             Assert.Equal(SecurityAlgorithms.EcdsaSha256, signingCredentials.Algorithm);
             Assert.IsType<ECDsaSecurityKey>(signingCredentials.Key);

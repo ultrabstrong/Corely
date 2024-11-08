@@ -25,11 +25,17 @@ namespace Corely.UnitTests.Security.Signature.Providers
             Assert.IsType<RsaKeyProvider>(keyProvider);
         }
 
-        [Fact]
-        public void GetSigningCredentials_ReturnsCorrectSigningCredentials_ForImplementation()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetSigningCredentials_ReturnsCorrectSigningCredentials_ForImplementation(bool isKeyPrivate)
         {
-            var (_, privateKey) = _rsaSignatureProvider.GetAsymmetricKeyProvider().CreateKeys();
-            var signingCredentials = _rsaSignatureProvider.GetSigningCredentials(privateKey);
+            var (publicKey, privateKey) = _rsaSignatureProvider.GetAsymmetricKeyProvider().CreateKeys();
+
+            var signingCredentials = isKeyPrivate
+                ? _rsaSignatureProvider.GetSigningCredentials(privateKey, true)
+                : _rsaSignatureProvider.GetSigningCredentials(publicKey, false);
+
             Assert.NotNull(signingCredentials);
             Assert.Equal(SecurityAlgorithms.RsaSha256, signingCredentials.Algorithm);
             Assert.IsType<RsaSecurityKey>(signingCredentials.Key);

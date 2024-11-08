@@ -43,10 +43,13 @@ namespace Corely.Security.Signature.Providers
             }
         }
 
-        public override SigningCredentials GetSigningCredentials(string privateKey)
+        public override SigningCredentials GetSigningCredentials(string key, bool isKeyPrivate)
         {
             var rsa = RSA.Create();
-            rsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
+            if (isKeyPrivate)
+                rsa.ImportPkcs8PrivateKey(Convert.FromBase64String(key), out _);
+            else
+                rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(key), out _);
             return new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256);
         }
 

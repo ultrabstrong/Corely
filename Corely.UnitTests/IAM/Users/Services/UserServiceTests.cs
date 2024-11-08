@@ -8,6 +8,7 @@ using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Services;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Corely.UnitTests.IAM.Users.Services
 {
@@ -114,6 +115,112 @@ namespace Corely.UnitTests.IAM.Users.Services
             var updatedUser = await _userService.GetUserAsync(createUserRequest.Username);
 
             Assert.False(updatedUser!.Disabled);
+        }
+
+        [Fact]
+        public async Task GetUserAuthTokenAsync_ReturnsAuthToken()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createResult = await _userService.CreateUserAsync(createUserRequest);
+
+            var token = await _userService.GetUserAuthTokenAsync(createResult.CreatedId);
+
+            Assert.NotNull(token);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            Assert.Equal(typeof(UserService).FullName, jwtToken.Issuer);
+            Assert.Contains(jwtToken.Claims, c => c.Type == JwtRegisteredClaimNames.Sub && c.Value == "user_id");
+            Assert.Contains(jwtToken.Claims, c => c.Type == JwtRegisteredClaimNames.Jti);
+        }
+
+        [Fact]
+        public async Task GetUserAuthTokenAsync_ReturnsNull_WhenUserDNE()
+        {
+            var token = await _userService.GetUserAuthTokenAsync(_fixture.Create<int>());
+
+            Assert.Null(token);
+        }
+
+        [Fact]
+        public async Task GetUserAuthTokenAsync_ReturnsNull_WhenSignatureKeyDNE()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createResult = await _userService.CreateUserAsync(createUserRequest);
+
+            var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
+            var user = await userRepo.GetAsync(createResult.CreatedId);
+            user?.SymmetricKeys?.Clear();
+            user?.AsymmetricKeys?.Clear();
+            await userRepo.UpdateAsync(user!);
+
+            var token = await _userService.GetUserAuthTokenAsync(createResult.CreatedId);
+
+            Assert.Null(token);
+        }
+
+        [Fact]
+        public async Task IsUserAuthTokenValidAsync_ReturnsTrue_WithValidToken()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createResult = await _userService.CreateUserAsync(createUserRequest);
+            var token = await _userService.GetUserAuthTokenAsync(createResult.CreatedId);
+
+            var isValid = await _userService.IsUserAuthTokenValidAsync(createResult.CreatedId, token!);
+
+            Assert.True(isValid);
+        }
+
+        [Fact]
+        public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WithInvalidTokenFormat()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createResult = await _userService.CreateUserAsync(createUserRequest);
+            var token = await _userService.GetUserAuthTokenAsync(createResult.CreatedId);
+
+            var isValid = await _userService.IsUserAuthTokenValidAsync(createResult.CreatedId, token! + "invalid");
+
+            Assert.False(isValid);
+        }
+
+        [Fact]
+        public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WhenUserDNE()
+        {
+            var isValid = await _userService.IsUserAuthTokenValidAsync(_fixture.Create<int>(), _fixture.Create<string>());
+
+            Assert.False(isValid);
+        }
+
+        [Fact]
+        public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WhenSignatureKeyDNE()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createResult = await _userService.CreateUserAsync(createUserRequest);
+            var token = await _userService.GetUserAuthTokenAsync(createResult.CreatedId);
+
+            var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
+            var user = await userRepo.GetAsync(createResult.CreatedId);
+            user?.SymmetricKeys?.Clear();
+            user?.AsymmetricKeys?.Clear();
+            await userRepo.UpdateAsync(user!);
+
+            var isValid = await _userService.IsUserAuthTokenValidAsync(createResult.CreatedId, token!);
+
+            Assert.False(isValid);
+        }
+
+        [Fact]
+        public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WithInvalidToken()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createResult = await _userService.CreateUserAsync(createUserRequest);
+
+            var token = new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken());
+
+            var isValid = await _userService.IsUserAuthTokenValidAsync(createResult.CreatedId, token! + "invalid");
+
+            Assert.False(isValid);
         }
     }
 }
