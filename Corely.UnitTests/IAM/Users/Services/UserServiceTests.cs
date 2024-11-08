@@ -222,5 +222,40 @@ namespace Corely.UnitTests.IAM.Users.Services
 
             Assert.False(isValid);
         }
+
+        [Fact]
+        public async Task GetAsymmetricSignatureVerificationKeyAsync_ReturnsKey()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createResult = await _userService.CreateUserAsync(createUserRequest);
+
+            var key = await _userService.GetAsymmetricSignatureVerificationKeyAsync(createResult.CreatedId);
+
+            Assert.NotNull(key);
+        }
+
+        [Fact]
+        public async Task GetAsymmetricSignatureVerificationKeyAsync_ReturnsNull_WhenUserDNE()
+        {
+            var key = await _userService.GetAsymmetricSignatureVerificationKeyAsync(_fixture.Create<int>());
+
+            Assert.Null(key);
+        }
+
+        [Fact]
+        public async Task GetAsymmetricSignatureVerificationKeyAsync_ReturnsNull_WhenSignatureKeyDNE()
+        {
+            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+            var createResult = await _userService.CreateUserAsync(createUserRequest);
+
+            var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
+            var user = await userRepo.GetAsync(createResult.CreatedId);
+            user?.AsymmetricKeys?.Clear();
+            await userRepo.UpdateAsync(user!);
+
+            var key = await _userService.GetAsymmetricSignatureVerificationKeyAsync(createResult.CreatedId);
+
+            Assert.Null(key);
+        }
     }
 }

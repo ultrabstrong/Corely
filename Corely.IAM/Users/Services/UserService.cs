@@ -115,7 +115,7 @@ namespace Corely.IAM.Users.Services
 
         public async Task<string?> GetUserAuthTokenAsync(int userId)
         {
-            var signatureKey = await GetUserAsymmetricKey(userId);
+            var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
             if (signatureKey == null)
             {
                 return null;
@@ -150,7 +150,7 @@ namespace Corely.IAM.Users.Services
                 return false;
             }
 
-            var signatureKey = await GetUserAsymmetricKey(userId);
+            var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
             if (signatureKey == null)
             {
                 return false;
@@ -181,7 +181,18 @@ namespace Corely.IAM.Users.Services
             }
         }
 
-        private async Task<UserAsymmetricKeyEntity?> GetUserAsymmetricKey(int userId)
+        public async Task<string?> GetAsymmetricSignatureVerificationKeyAsync(int userId)
+        {
+            var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
+            if (signatureKey == null)
+            {
+                return null;
+            }
+
+            return signatureKey.PublicKey;
+        }
+
+        private async Task<UserAsymmetricKeyEntity?> GetUserAsymmetricKeyAsync(int userId, KeyUsedFor keyUse)
         {
             var userEntity = await _userRepo.GetAsync(
                u => u.Id == userId,
@@ -194,7 +205,7 @@ namespace Corely.IAM.Users.Services
                 return null;
             }
 
-            var signatureKey = userEntity.AsymmetricKeys?.FirstOrDefault(k => k.KeyUsedFor == KeyUsedFor.Signature);
+            var signatureKey = userEntity.AsymmetricKeys?.FirstOrDefault(k => k.KeyUsedFor == keyUse);
             if (signatureKey == null)
             {
                 Logger.LogWarning("User with Id {UserId} does not have an asymmetric signature key", userId);

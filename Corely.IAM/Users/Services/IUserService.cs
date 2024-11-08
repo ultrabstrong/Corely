@@ -11,5 +11,6 @@ namespace Corely.IAM.Users.Services
         Task UpdateUserAsync(User user);
         Task<string?> GetUserAuthTokenAsync(int userId);
         Task<bool> IsUserAuthTokenValidAsync(int userId, string authToken);
+        Task<string?> GetAsymmetricSignatureVerificationKeyAsync(int userId);
     }
 }
