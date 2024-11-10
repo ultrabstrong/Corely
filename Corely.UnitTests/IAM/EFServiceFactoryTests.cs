@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Corely.UnitTests.IAM
 {
-    public class ServiceFactoryEFDbTests : ServiceFactoryGenericTests
+    public class EFServiceFactoryTests : ServiceFactoryGenericTests
     {
-        private class MockServiceFactory : ServiceFactoryEFDb
+        private class MockServiceFactory : EFServiceFactory
         {
             private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
             {

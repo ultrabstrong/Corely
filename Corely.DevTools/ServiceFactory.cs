@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Corely.DevTools
 {
-    internal class ServiceFactory : ServiceFactoryEFDb
+    internal class ServiceFactory : EFServiceFactory
     {
         private class EFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
         {

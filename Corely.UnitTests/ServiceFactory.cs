@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Corely.UnitTests
 {
-    public class ServiceFactory : ServiceFactoryMockDb
+    public class ServiceFactory : MockDbServiceFactory
     {
         protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
         {

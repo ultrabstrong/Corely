@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace ConsoleTest
 {
-    internal class ServiceFactory : ServiceFactoryEFDb
+    internal class ServiceFactory : EFServiceFactory
     {
         private class MySqlEFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
         {

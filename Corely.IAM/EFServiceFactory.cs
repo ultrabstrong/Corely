@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.IAM
 {
-    public abstract class ServiceFactoryEFDb : ServiceFactoryBase
+    public abstract class EFServiceFactory : ServiceFactoryBase
     {
         protected override void AddDataServices(IServiceCollection services)
         {

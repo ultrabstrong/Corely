@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.IAM
 {
-    public abstract class ServiceFactoryMockDb : ServiceFactoryBase
+    public abstract class MockDbServiceFactory : ServiceFactoryBase
     {
         protected override void AddDataServices(IServiceCollection services)
         {
