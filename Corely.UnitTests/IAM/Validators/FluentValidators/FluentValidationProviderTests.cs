@@ -9,7 +9,6 @@ using FluentValidationResult = FluentValidation.Results.ValidationResult;
 namespace Corely.UnitTests.IAM.Validators.FluentValidators
 {
     public class FluentValidationProviderTests
-        : IDisposable
     {
         private const string INVALID_STRING = "invalid string";
 
@@ -74,12 +73,6 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators
             var ex = Record.Exception(() => _provider.ThrowIfInvalid(value));
             Assert.NotNull(ex);
             Assert.IsType<CorelyValidationException>(ex);
-        }
-
-        public void Dispose()
-        {
-            _serviceFactory?.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }

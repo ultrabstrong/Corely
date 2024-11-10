@@ -1,6 +1,8 @@
 ﻿using Corely.Common.Providers.Redaction;
 using Corely.DevTools.Commands;
 using Corely.DevTools.SerilogCustomization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.CommandLine;
 using System.Reflection;
@@ -23,14 +25,27 @@ namespace Corely.DevTools
 
             try
             {
-                var rootCommand = new RootCommand();
-                foreach (var command in GetCommands())
-                {
-                    if (command != null)
+                using var host = new HostBuilder()
+                    .ConfigureServices((hostContext, services) =>
                     {
-                        rootCommand.AddCommand(command);
-                    }
-                }
+                        ServiceFactory.Instance.AddIAMServices(services);
+
+                        var commandBaseTypes = AppDomain.CurrentDomain
+                        .GetAssemblies()
+                        .SelectMany(a => a.GetTypes())
+                        .Where(t => t.IsSubclassOf(typeof(CommandBase)) && !t.IsAbstract);
+
+                        foreach (var type in commandBaseTypes)
+                        {
+                            services.AddTransient(type);
+                        }
+
+                        services.AddTransient<RootCommand>();
+                    })
+                    .Build();
+
+                using var scope = host.Services.CreateScope();
+                var rootCommand = GetRootCommand(scope.ServiceProvider);
                 await rootCommand.InvokeAsync(args);
             }
             catch (Exception ex)
@@ -40,8 +55,7 @@ namespace Corely.DevTools
             Log.CloseAndFlush();
             Log.Logger.Information("Program finished.");
         }
-
-        static List<CommandBase?> GetCommands()
+        static RootCommand GetRootCommand(IServiceProvider serviceProvider)
         {
             var commandInstances = AppDomain.CurrentDomain
                 .GetAssemblies()
@@ -51,37 +65,39 @@ namespace Corely.DevTools
                     type.Namespace != null &&
                     type.Namespace.StartsWith("Corely.DevTools.Commands") &&
                     type.IsSubclassOf(typeof(CommandBase)))
-                .Select(type => Activator.CreateInstance(type) as CommandBase)
+                .Select(type => serviceProvider.GetService(type) as CommandBase)
+                .Where(instance => instance != null)
                 .ToList();
 
+            var rootCommand = serviceProvider.GetRequiredService<RootCommand>();
             foreach (var command in commandInstances)
             {
                 if (command != null)
                 {
-                    AddSubCommands(command);
+                    AddSubCommands(serviceProvider, command);
+                    rootCommand.AddCommand(command);
                 }
             }
 
-            return commandInstances;
+            return rootCommand;
         }
 
-        static void AddSubCommands(CommandBase command)
+        static void AddSubCommands(IServiceProvider serviceProvider, CommandBase command)
         {
             var subCommandInstances = command
                 .GetType()
                 .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(type => type.IsSubclassOf(typeof(CommandBase)))
-                .Select(type => Activator.CreateInstance(type) as CommandBase)
+                .Select(type => serviceProvider.GetService(type) as CommandBase)
+                .Where(instance => instance != null)
                 .ToList();
 
             foreach (var subCommand in subCommandInstances)
             {
-                if (subCommand != null)
-                {
-                    AddSubCommands(subCommand);
-                    command.AddCommand(subCommand);
-                }
+                AddSubCommands(serviceProvider, subCommand!);
+                command.AddCommand(subCommand!);
             }
         }
+
     }
 }

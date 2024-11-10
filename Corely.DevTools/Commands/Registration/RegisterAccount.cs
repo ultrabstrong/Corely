@@ -1,4 +1,5 @@
-﻿using Corely.DevTools.Attributes;
+﻿using Corely.Common.Extensions;
+using Corely.DevTools.Attributes;
 using Corely.IAM.Models;
 using Corely.IAM.Services;
 using Corely.IAM.Validators;
@@ -19,10 +20,9 @@ namespace Corely.DevTools.Commands.Registration
 
             private readonly IRegistrationService _registrationService;
 
-            public RegisterAccount() : base("account", "Register a new account")
+            public RegisterAccount(IRegistrationService registrationService) : base("account", "Register a new account")
             {
-                var serviceFactory = new ServiceFactory();
-                _registrationService = serviceFactory.GetRequiredService<IRegistrationService>();
+                _registrationService = registrationService.ThrowIfNull(nameof(registrationService));
             }
 
             protected async override Task ExecuteAsync()

@@ -2,6 +2,8 @@
 using Corely.Common.Providers.Redaction;
 using Corely.IAM.Models;
 using Corely.IAM.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace ConsoleTest
@@ -28,16 +30,21 @@ namespace ConsoleTest
 
             try
             {
-                using var serviceFactory = new ServiceFactory();
+                using var host = new HostBuilder()
+                    .ConfigureServices((hostContext, services) =>
+                    {
+                        ServiceFactory.Instance.AddIAMServices(services);
+                    })
+                    .Build();
 
-                var registrationService = serviceFactory.GetRequiredService<IRegistrationService>();
+                var registrationService = host.Services.GetRequiredService<IRegistrationService>();
                 var registerUserRequest = new RegisterUserRequest("un1", "email@x.y", "P@55Word");
                 var registerUserResult = await registrationService.RegisterUserAsync(registerUserRequest);
 
                 var registerAccountRequest = new RegisterAccountRequest("acct1", registerUserResult.CreatedUserId);
                 var registerAccountResult = await registrationService.RegisterAccountAsync(registerAccountRequest);
 
-                var signInService = serviceFactory.GetRequiredService<ISignInService>();
+                var signInService = host.Services.GetRequiredService<ISignInService>();
                 var signInRequest = new SignInRequest("un1", "P@55Word");
                 var signInResult = await signInService.SignInAsync(signInRequest);
             }

@@ -1,5 +1,4 @@
-﻿using Corely.Common.Models;
-using Corely.IAM.Accounts.Services;
+﻿using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
@@ -21,14 +20,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM
 {
-    public abstract class ServiceFactoryBase : DisposeBase
+    public abstract class ServiceFactoryBase
     {
-        private readonly ServiceProvider _serviceProvider;
-
-        protected ServiceFactoryBase()
+        public void AddIAMServices(IServiceCollection services)
         {
-            var services = new ServiceCollection();
-
             services.AddLogging(AddLogging);
             AddMapper(services);
             AddValidator(services);
@@ -37,8 +32,6 @@ namespace Corely.IAM
             AddDomainServices(services);
             AddPasswordValidation(services);
             services.AddScoped(serviceProvider => GetSecurityConfigurationProvider());
-
-            _serviceProvider = services.BuildServiceProvider();
         }
 
         private static void AddMapper(IServiceCollection services)
@@ -88,12 +81,5 @@ namespace Corely.IAM
         {
             services.AddScoped<IPasswordValidationProvider, PasswordValidationProvider>();
         }
-
-        public T GetRequiredService<T>() where T : notnull
-            => _serviceProvider.GetRequiredService<T>();
-
-        protected override void DisposeManagedResources()
-            => _serviceProvider?.Dispose();
-
     }
 }

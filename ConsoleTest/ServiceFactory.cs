@@ -11,6 +11,11 @@ namespace ConsoleTest
 {
     internal class ServiceFactory : EFServiceFactory
     {
+        private static readonly Lazy<ServiceFactory> _instance = new(() => new ServiceFactory());
+        public static ServiceFactory Instance => _instance.Value;
+
+        private ServiceFactory() { }
+
         private class MySqlEFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
         {
             public override void Configure(DbContextOptionsBuilder optionsBuilder)

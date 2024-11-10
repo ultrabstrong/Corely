@@ -4,7 +4,6 @@ using AutoMapper;
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper
 {
     public abstract class ProfileTestsBase<TSource, TDestination>
-        : IDisposable
         where TSource : class
     {
         protected readonly IMapper mapper;
@@ -40,10 +39,5 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper
         }
         protected virtual object[] GetSourceParams() => [];
 
-        public void Dispose()
-        {
-            _serviceFactory?.Dispose();
-            GC.SuppressFinalize(this);
-        }
     }
 }

@@ -12,7 +12,7 @@ using Corely.IAM.Validators;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Hashing.Factories;
 using Corely.Security.PasswordValidation.Providers;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.UnitTests.IAM
 {
@@ -23,7 +23,11 @@ namespace Corely.UnitTests.IAM
         [Theory, MemberData(nameof(GetRequiredServiceData))]
         public void ServiceFactoryBase_ProvidesService(Type serviceType)
         {
-            var service = GetRequiredService(serviceType);
+            var serviceCollection = new ServiceCollection();
+            ServiceFactory.AddIAMServices(serviceCollection);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            var service = serviceProvider.GetRequiredService(serviceType);
 
             Assert.NotNull(service);
         }
@@ -54,26 +58,5 @@ namespace Corely.UnitTests.IAM
 
             [typeof(IUnitOfWorkProvider)]
         ];
-
-        private object? GetRequiredService(Type serviceType)
-        {
-            var methodInfo = ServiceFactory.GetType()
-                .GetMethod(nameof(ServiceFactory.GetRequiredService));
-
-            return methodInfo?.MakeGenericMethod(serviceType)
-                .Invoke(ServiceFactory, null);
-        }
-
-        [Fact]
-        public void ServiceFactoryBase_DisposesServiceProviderCorrectly()
-        {
-            var mockServiceFactory = ServiceFactory;
-
-            mockServiceFactory.Dispose();
-            var ex = Record.Exception(() => mockServiceFactory.GetRequiredService<ILogger>());
-
-            Assert.NotNull(ex);
-            Assert.IsType<ObjectDisposedException>(ex);
-        }
     }
 }
