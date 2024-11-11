@@ -10,8 +10,8 @@ namespace Corely.UnitTests.Security.PasswordValidation.Providers
             MinimumLength = 8,
             RequireUppercase = true,
             RequireLowercase = true,
-            RequireNumber = true,
-            RequireSpecialCharacter = true
+            RequireDigit = true,
+            RequireNonAlphanumeric = true
         };
 
         [Theory, MemberData(nameof(ValidatePassword_ReturnsExpectedResult_Data))]

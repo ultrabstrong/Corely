@@ -9,7 +9,7 @@ namespace ConsoleTest
 
         public SecurityConfigurationProvider()
         {
-            _symmetricKey = ConfigurationProvider.GetSystemKey();
+            _symmetricKey = ConfigurationProvider.GetSystemSymmetricEncryptionKey();
         }
 
         public ISymmetricKeyStoreProvider GetSystemSymmetricKey()

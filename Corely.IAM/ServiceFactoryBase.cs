@@ -30,8 +30,8 @@ namespace Corely.IAM
             AddSecurityServices(services);
             AddDataServices(services);
             AddDomainServices(services);
-            AddPasswordValidation(services);
             services.AddScoped(serviceProvider => GetSecurityConfigurationProvider());
+            services.AddScoped(serviceProvider => GetPasswordValidation());
         }
 
         private static void AddMapper(IServiceCollection services)
@@ -77,9 +77,9 @@ namespace Corely.IAM
         protected abstract void AddLogging(ILoggingBuilder builder);
         protected abstract void AddDataServices(IServiceCollection services);
 
-        protected virtual void AddPasswordValidation(IServiceCollection services)
+        protected virtual IPasswordValidationProvider GetPasswordValidation()
         {
-            services.AddScoped<IPasswordValidationProvider, PasswordValidationProvider>();
+            return new PasswordValidationProvider();
         }
     }
 }

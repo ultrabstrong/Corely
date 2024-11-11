@@ -9,8 +9,8 @@ namespace Corely.Security.PasswordValidation.Providers
         public int MinimumLength { get; init; } = 5;
         public bool RequireUppercase { get; init; } = true;
         public bool RequireLowercase { get; init; } = true;
-        public bool RequireNumber { get; init; } = true;
-        public bool RequireSpecialCharacter { get; init; } = false;
+        public bool RequireDigit { get; init; } = true;
+        public bool RequireNonAlphanumeric { get; init; } = false;
 
         private Regex Regex => _regex ??= CreateRegex();
         private Regex? _regex;
@@ -22,8 +22,8 @@ namespace Corely.Security.PasswordValidation.Providers
             patternBuilder.Append('^');
             if (RequireUppercase) patternBuilder.Append("(?=.*[A-Z])");
             if (RequireLowercase) patternBuilder.Append("(?=.*[a-z])");
-            if (RequireNumber) patternBuilder.Append("(?=.*[0-9])");
-            if (RequireSpecialCharacter) patternBuilder.Append("(?=.*[^A-Za-z0-9])");
+            if (RequireDigit) patternBuilder.Append("(?=.*[0-9])");
+            if (RequireNonAlphanumeric) patternBuilder.Append("(?=.*[^A-Za-z0-9])");
             patternBuilder.Append($".{{{MinimumLength},}}$");
 
             return new Regex(patternBuilder.ToString());
@@ -45,8 +45,8 @@ namespace Corely.Security.PasswordValidation.Providers
         {
             var hasUppercase = !RequireUppercase;
             var hasLowercase = !RequireLowercase;
-            var hasDigit = !RequireNumber;
-            var hasSpecial = !RequireSpecialCharacter;
+            var hasDigit = !RequireDigit;
+            var hasSpecial = !RequireNonAlphanumeric;
 
             foreach (var c in password)
             {

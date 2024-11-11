@@ -5,8 +5,8 @@
         int MinimumLength { get; }
         bool RequireUppercase { get; }
         bool RequireLowercase { get; }
-        bool RequireNumber { get; }
-        bool RequireSpecialCharacter { get; }
+        bool RequireDigit { get; }
+        bool RequireNonAlphanumeric { get; }
 
         PasswordValidationResult ValidatePassword(string password);
     }

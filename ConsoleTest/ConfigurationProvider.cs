@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Corely.Security.PasswordValidation.Providers;
+using Microsoft.Extensions.Configuration;
 
 namespace ConsoleTest
 {
@@ -17,20 +18,16 @@ namespace ConsoleTest
             _configuration = builder.Build();
         }
 
-        public static string GetConnectionString()
-        {
-            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
+        public static string GetConnectionString() =>
+            _configuration.GetConnectionString("DefaultConnection")
+            ?? throw new Exception($"DefaultConnection string not found in {SETTINGS_FILE_NAME}");
 
-            return connectionString
-                ?? throw new Exception($"DefaultConnection string not found in {SETTINGS_FILE_NAME}");
-        }
+        public static string GetSystemSymmetricEncryptionKey() =>
+            _configuration["SystemSymmetricEncryptionKey"]
+            ?? throw new Exception($"SystemSymmetricEncryptionKey not found in {SETTINGS_FILE_NAME}");
 
-        public static string GetSystemKey()
-        {
-            string? systemKey = _configuration["SystemKey"];
-
-            return systemKey
-                ?? throw new Exception($"SystemKey not found in {SETTINGS_FILE_NAME}");
-        }
+        public static PasswordValidationProvider GetPasswordValidationProvider() =>
+            _configuration.GetSection("PasswordValidation").Get<PasswordValidationProvider>()
+            ?? throw new Exception($"PasswordValidation section not found in {SETTINGS_FILE_NAME}");
     }
 }
