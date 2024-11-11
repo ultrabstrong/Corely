@@ -5,6 +5,7 @@ using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Services;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Mappers;
+using Corely.IAM.Security.Models;
 using Corely.IAM.Security.Services;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Services;
@@ -13,6 +14,7 @@ using Corely.Security.Encryption.Factories;
 using Corely.Security.Hashing.Factories;
 using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Corely.UnitTests.IAM
 {
@@ -36,6 +38,7 @@ namespace Corely.UnitTests.IAM
         [
             [typeof(ISecurityConfigurationProvider)],
             [typeof(IPasswordValidationProvider)],
+            [typeof(IOptions<SecurityOptions>)],
 
             [typeof(IMapProvider)],
 

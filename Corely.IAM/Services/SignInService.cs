@@ -1,8 +1,10 @@
 ﻿using Corely.Common.Extensions;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Models;
+using Corely.IAM.Security.Models;
 using Corely.IAM.Users.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Corely.IAM.Services
 {
@@ -11,15 +13,18 @@ namespace Corely.IAM.Services
         private readonly ILogger<SignInService> _logger;
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
+        private readonly SecurityOptions _securityOptions;
 
         public SignInService(
             ILogger<SignInService> logger,
             IUserService userService,
-            IAuthService authService)
+            IAuthService authService,
+            IOptions<SecurityOptions> securityOptions)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
             _userService = userService.ThrowIfNull(nameof(userService));
             _authService = authService.ThrowIfNull(nameof(_authService));
+            _securityOptions = securityOptions.ThrowIfNull(nameof(securityOptions)).Value;
         }
 
         public async Task<SignInResult> SignInAsync(SignInRequest request)
@@ -35,9 +40,11 @@ namespace Corely.IAM.Services
                 return new SignInResult(false, "User not found", string.Empty);
             }
 
-            // Todo : Add check for too many failed logins
-            // May need to be controlled through some sort of new ISettingsProvider
-            // Implement this after the other Todos are complete
+            if (user.FailedLoginsSinceLastSuccess >= _securityOptions.MaxLoginAttempts)
+            {
+                _logger.LogDebug("User {Username} is locked out", request.Username);
+                return new SignInResult(false, "User is locked out", string.Empty);
+            }
 
             var isValidPassword = await _authService.VerifyBasicAuthAsync(new(user.Id, request.Password));
             if (!isValidPassword)

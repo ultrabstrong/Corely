@@ -1,6 +1,7 @@
 ﻿using ConsoleTest.SerilogCustomization;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM;
+using Corely.IAM.Security.Models;
 using Corely.Security.PasswordValidation.Providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -60,18 +61,15 @@ namespace ConsoleTest
         }
 
         protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
-        {
-            return new SecurityConfigurationProvider();
-        }
+            => new SecurityConfigurationProvider();
 
         protected override IEFConfiguration GetEFConfiguraiton()
-        {
-            return new MySqlEFConfiguration(ConfigurationProvider.GetConnectionString());
-        }
+            => new MySqlEFConfiguration(ConfigurationProvider.GetConnectionString());
 
         protected override IPasswordValidationProvider GetPasswordValidation()
-        {
-            return ConfigurationProvider.GetPasswordValidationProvider();
-        }
+            => ConfigurationProvider.GetPasswordValidationProvider();
+
+        protected override SecurityOptions GetSecurityOptions() =>
+            ConfigurationProvider.GetSecurityOptions();
     }
 }

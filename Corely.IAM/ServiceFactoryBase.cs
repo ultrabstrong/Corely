@@ -2,6 +2,7 @@
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
+using Corely.IAM.Security.Models;
 using Corely.IAM.Security.Services;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Services;
@@ -32,6 +33,7 @@ namespace Corely.IAM
             AddDomainServices(services);
             services.AddScoped(serviceProvider => GetSecurityConfigurationProvider());
             services.AddScoped(serviceProvider => GetPasswordValidation());
+            services.Configure<SecurityOptions>(serviceProvider => GetSecurityOptions());
         }
 
         private static void AddMapper(IServiceCollection services)
@@ -80,6 +82,11 @@ namespace Corely.IAM
         protected virtual IPasswordValidationProvider GetPasswordValidation()
         {
             return new PasswordValidationProvider();
+        }
+
+        protected virtual SecurityOptions GetSecurityOptions()
+        {
+            return new SecurityOptions();
         }
     }
 }

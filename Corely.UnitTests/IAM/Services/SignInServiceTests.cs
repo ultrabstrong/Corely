@@ -2,15 +2,19 @@
 using Corely.IAM.Auth.Models;
 using Corely.IAM.Auth.Services;
 using Corely.IAM.Models;
+using Corely.IAM.Security.Models;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Corely.UnitTests.IAM.Services
 {
     public class SignInServiceTests : ServiceBaseTests
     {
+        private const int MAX_LOGIN_ATTEMPTS = 5;
+
         private readonly Fixture _fixture = new();
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<IAuthService> _authServiceMock;
@@ -31,7 +35,11 @@ namespace Corely.UnitTests.IAM.Services
             _signInService = new SignInService(
                 _serviceFactory.GetRequiredService<ILogger<SignInService>>(),
                 _userServiceMock.Object,
-                _authServiceMock.Object);
+                _authServiceMock.Object,
+                Options.Create(new SecurityOptions()
+                {
+                    MaxLoginAttempts = MAX_LOGIN_ATTEMPTS
+                }));
         }
 
         private Mock<IUserService> GetMockUserService()
@@ -103,6 +111,19 @@ namespace Corely.UnitTests.IAM.Services
 
             Assert.False(result.IsSuccess);
             Assert.Equal("User not found", result.Message);
+            Assert.Equal(string.Empty, result.AuthToken);
+        }
+
+        [Fact]
+        public async Task SignInAsync_ReturnsFailureResult_WhenUserIsLockedOut()
+        {
+            var request = new SignInRequest(_user.Username, _fixture.Create<string>());
+            _user.FailedLoginsSinceLastSuccess = MAX_LOGIN_ATTEMPTS;
+
+            var result = await _signInService.SignInAsync(request);
+
+            Assert.False(result.IsSuccess);
+            Assert.Equal("User is locked out", result.Message);
             Assert.Equal(string.Empty, result.AuthToken);
         }
 
