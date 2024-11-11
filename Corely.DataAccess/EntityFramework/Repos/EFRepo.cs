@@ -59,6 +59,21 @@ namespace Corely.DataAccess.EntityFramework.Repos
 
         public virtual async Task DeleteAsync(T entity)
         {
+            if (!await _dbSet.AnyAsync(e => e.Id == entity.Id))
+            {
+                return;
+            }
+            _dbSet.Remove(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            if (entity == null)
+            {
+                return;
+            }
             _dbSet.Remove(entity);
             await _dbContext.SaveChangesAsync();
         }

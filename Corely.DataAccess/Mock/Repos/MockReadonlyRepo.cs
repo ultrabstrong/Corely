@@ -11,6 +11,7 @@ namespace Corely.DataAccess.Mock.Repos
 
         public MockReadonlyRepo(IRepo<T> mockRepo)
         {
+            // Use the same Entities list for all mocks to simulate a single data store
             _mockRepo = mockRepo;
         }
 

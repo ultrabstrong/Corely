@@ -12,6 +12,7 @@ namespace Corely.DataAccess.Mock.Repos
 
         public MockRepoExtendedGet(IRepo<T> mockRepo)
         {
+            // Use the same Entities list for all mocks to simulate a single data store
             _mockRepo = (MockRepo<T>)mockRepo;
         }
 
@@ -44,5 +45,7 @@ namespace Corely.DataAccess.Mock.Repos
         }
 
         public async Task DeleteAsync(T entity) => await _mockRepo.DeleteAsync(entity);
+
+        public async Task DeleteAsync(int id) => await _mockRepo.DeleteAsync(id);
     }
 }

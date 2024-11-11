@@ -37,5 +37,11 @@ namespace Corely.DataAccess.Mock.Repos
             Entities.Remove(entity);
             return Task.CompletedTask;
         }
+
+        public Task DeleteAsync(int id)
+        {
+            Entities.RemoveAll(u => u.Id == id);
+            return Task.CompletedTask;
+        }
     }
 }

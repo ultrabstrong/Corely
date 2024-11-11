@@ -91,13 +91,19 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
         }
 
         [Fact]
-        public async Task DeleteAsync_DeletesEntity()
+        public async Task DeleteAsync_HandlesNonexistantEntity()
         {
-            await _efRepo.DeleteAsync(_setupEntity);
+            var ex = await Record.ExceptionAsync(() => _efRepo.DeleteAsync(_testEntity));
 
-            var entity = _dbSet.Find(_setupEntity.Id);
+            Assert.Null(ex);
+        }
 
-            Assert.Null(entity);
+        [Fact]
+        public async Task DeleteAsync_Id_HandlesNonexistantEntity()
+        {
+            var ex = await Record.ExceptionAsync(() => _efRepo.DeleteAsync(_testEntity.Id));
+
+            Assert.Null(ex);
         }
     }
 }

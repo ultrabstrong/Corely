@@ -68,5 +68,17 @@ namespace Corely.UnitTests.DataAccess
 
             Assert.Null(result);
         }
+
+        [Fact]
+        public async Task Create_ThenDeleteById_Deletes()
+        {
+            var entity = fixture.Create<T>();
+
+            await Repo.CreateAsync(entity);
+            await Repo.DeleteAsync(entity.Id);
+            var result = await Repo.GetAsync(entity.Id);
+
+            Assert.Null(result);
+        }
     }
 }
