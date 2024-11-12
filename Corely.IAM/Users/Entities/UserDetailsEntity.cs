@@ -2,7 +2,7 @@
 
 namespace Corely.IAM.Users.Entities
 {
-    public class UserDetailsEntity : IHasCreatedUtc, IHasModifiedUtc
+    internal class UserDetailsEntity : IHasCreatedUtc, IHasModifiedUtc
     {
         public int UserId { get; set; }
         public UserEntity User { get; set; } = null!;

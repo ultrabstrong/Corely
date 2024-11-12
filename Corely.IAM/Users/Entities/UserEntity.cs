@@ -4,7 +4,7 @@ using Corely.IAM.Auth.Entities;
 
 namespace Corely.IAM.Users.Entities
 {
-    public class UserEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
+    internal class UserEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     {
         public int Id { get; set; }
         public string Username { get; set; } = null!;

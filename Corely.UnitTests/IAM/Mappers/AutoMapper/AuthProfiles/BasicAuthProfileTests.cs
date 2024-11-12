@@ -5,12 +5,17 @@ using Corely.Security.Hashing;
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.AuthProfiles
 {
     public class BasicAuthProfileTests
-        : BidirectionalProfileTestsBase<BasicAuth, BasicAuthEntity>
+        : BidirectionalProfileDelegateTestsBase
     {
-        protected override BasicAuthEntity ApplyDestinatonModifications(BasicAuthEntity destination)
+        private class Delegate : BidirectionalProfileTestsBase<BasicAuth, BasicAuthEntity>
         {
-            destination.Password = $"{HashConstants.SALTED_SHA256_CODE}:{destination.Password}";
-            return destination;
+            protected override BasicAuthEntity ApplyDestinatonModifications(BasicAuthEntity destination)
+            {
+                destination.Password = $"{HashConstants.SALTED_SHA256_CODE}:{destination.Password}";
+                return destination;
+            }
         }
+
+        protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
     }
 }

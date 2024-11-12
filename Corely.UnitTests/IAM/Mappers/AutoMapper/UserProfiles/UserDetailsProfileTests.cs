@@ -4,7 +4,10 @@ using Corely.IAM.Users.Models;
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.UserProfiles
 {
     public class UserDetailsProfileTests
-        : BidirectionalProfileTestsBase<UserDetails, UserDetailsEntity>
+        : BidirectionalProfileDelegateTestsBase
     {
+        private class Delegate : BidirectionalProfileTestsBase<UserDetails, UserDetailsEntity>;
+
+        protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
     }
 }

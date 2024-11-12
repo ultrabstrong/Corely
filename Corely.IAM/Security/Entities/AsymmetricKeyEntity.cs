@@ -3,7 +3,7 @@ using Corely.IAM.Security.Enums;
 
 namespace Corely.IAM.Security.Entities
 {
-    public class AsymmetricKeyEntity : IHasCreatedUtc, IHasModifiedUtc
+    internal class AsymmetricKeyEntity : IHasCreatedUtc, IHasModifiedUtc
     {
         public KeyUsedFor KeyUsedFor { get; set; }
         public string ProviderTypeCode { get; set; } = null!;

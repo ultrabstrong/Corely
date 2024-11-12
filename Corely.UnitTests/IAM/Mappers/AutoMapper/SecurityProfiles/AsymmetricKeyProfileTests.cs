@@ -10,33 +10,49 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.SecurityProfiles
     public class AsymmetricKeyProfileTests
     {
         public class ToAsymmetricKeyEntity
-            : BidirectionalProfileTestsBase<AsymmetricKey, AsymmetricKeyEntity>
+            : BidirectionalProfileDelegateTestsBase
         {
-            protected override AsymmetricKeyEntity ApplyDestinatonModifications(AsymmetricKeyEntity destination)
+            private class Delegate : BidirectionalProfileTestsBase<AsymmetricKey, AsymmetricKeyEntity>
             {
-                destination.EncryptedPrivateKey = $"{AsymmetricEncryptionConstants.RSA_CODE}:{new Fixture().Create<string>()}";
-                return destination;
+                protected override AsymmetricKeyEntity ApplyDestinatonModifications(AsymmetricKeyEntity destination)
+                {
+                    destination.EncryptedPrivateKey = $"{AsymmetricEncryptionConstants.RSA_CODE}:{new Fixture().Create<string>()}";
+                    return destination;
+                }
             }
+
+            protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
         }
 
         public class ToAccountAsymmetricKeyEntity
-            : BidirectionalProfileTestsBase<AsymmetricKey, AccountAsymmetricKeyEntity>
+            : BidirectionalProfileDelegateTestsBase
         {
-            protected override AccountAsymmetricKeyEntity ApplyDestinatonModifications(AccountAsymmetricKeyEntity destination)
+            private class Delegate : BidirectionalProfileTestsBase<AsymmetricKey, AccountAsymmetricKeyEntity>
             {
-                destination.EncryptedPrivateKey = $"{AsymmetricEncryptionConstants.RSA_CODE}:{new Fixture().Create<string>()}";
-                return destination;
+                protected override AccountAsymmetricKeyEntity ApplyDestinatonModifications(AccountAsymmetricKeyEntity destination)
+                {
+                    destination.EncryptedPrivateKey = $"{AsymmetricEncryptionConstants.RSA_CODE}:{new Fixture().Create<string>()}";
+                    return destination;
+                }
             }
+
+            protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
         }
 
         public class ToUserAsymmetricKeyEntity
-            : BidirectionalProfileTestsBase<AsymmetricKey, UserAsymmetricKeyEntity>
+            : BidirectionalProfileDelegateTestsBase
         {
-            protected override UserAsymmetricKeyEntity ApplyDestinatonModifications(UserAsymmetricKeyEntity destination)
+            private class Delegate : BidirectionalProfileTestsBase<AsymmetricKey, UserAsymmetricKeyEntity>
             {
-                destination.EncryptedPrivateKey = $"{AsymmetricEncryptionConstants.RSA_CODE}:{new Fixture().Create<string>()}";
-                return destination;
+
+                protected override UserAsymmetricKeyEntity ApplyDestinatonModifications(UserAsymmetricKeyEntity destination)
+                {
+                    destination.EncryptedPrivateKey = $"{AsymmetricEncryptionConstants.RSA_CODE}:{new Fixture().Create<string>()}";
+                    return destination;
+                }
             }
+
+            protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
         }
     }
 }

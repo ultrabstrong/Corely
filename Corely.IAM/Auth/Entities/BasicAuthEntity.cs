@@ -3,7 +3,7 @@ using Corely.IAM.Users.Entities;
 
 namespace Corely.IAM.Auth.Entities
 {
-    public class BasicAuthEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
+    internal class BasicAuthEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     {
         public int Id { get; set; }
         public int UserId { get; set; }
