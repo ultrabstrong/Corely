@@ -12,12 +12,12 @@ namespace Corely.IAM
         protected override void AddDataServices(IServiceCollection services)
         {
             services.AddScoped(serviceProvider => GetEFConfiguraiton());
-            services.AddDbContext<IAMDbContext>();
+            services.AddDbContext<IamDbContext>();
             // Todo : Explore adding context-specific repos to allow for multiple contexts
-            services.AddScoped(typeof(IRepo<>), typeof(IAMEFRepo<>));
-            services.AddScoped(typeof(IRepoExtendedGet<>), typeof(IAMEFRepoExtendedGet<>));
-            services.AddScoped(typeof(IReadonlyRepo<>), typeof(IAMEFReadonlyRepo<>));
-            services.AddScoped<IUnitOfWorkProvider, IAMEFUoWProvider>();
+            services.AddScoped(typeof(IRepo<>), typeof(IamEfRepo<>));
+            services.AddScoped(typeof(IRepoExtendedGet<>), typeof(IamEfRepoExtendedGet<>));
+            services.AddScoped(typeof(IReadonlyRepo<>), typeof(IamEfReadonlyRepo<>));
+            services.AddScoped<IUnitOfWorkProvider, IamEfUoWProvider>();
         }
 
         protected abstract IEFConfiguration GetEFConfiguraiton();

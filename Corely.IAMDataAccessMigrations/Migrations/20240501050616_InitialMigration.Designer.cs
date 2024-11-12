@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Corely.IAMDataAccessMigrations.Migrations
 {
-    [DbContext(typeof(IAMDbContext))]
+    [DbContext(typeof(IamDbContext))]
     [Migration("20240501050616_InitialMigration")]
     partial class InitialMigration
     {

@@ -4,12 +4,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM.DataAccess.EntityFramework.Repos
 {
-    internal sealed class IAMEFRepoExtendedGet<T> : EFRepoExtendedGet<T>
+    // Extend EFRepo so we can specifically register the IAMDbContext
+    // otherwise DI container won't know which that the context should be used for EFRepo
+    internal sealed class IamEfRepoExtendedGet<T> : EFRepoExtendedGet<T>
         where T : class, IHasIdPk
     {
-        public IAMEFRepoExtendedGet(
-            ILogger<EFRepoExtendedGet<T>> logger,
-            IAMDbContext dbContext)
+        public IamEfRepoExtendedGet(
+            ILogger<IamEfRepoExtendedGet<T>> logger,
+            IamDbContext dbContext)
             : base(logger, dbContext)
         {
         }

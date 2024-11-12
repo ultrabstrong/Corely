@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Corely.IAMDataAccessMigrations
 {
-    internal class IAMDesignTimeDbContextFactory : IDesignTimeDbContextFactory<IAMDbContext>
+    internal class IAMDesignTimeDbContextFactory : IDesignTimeDbContextFactory<IamDbContext>
     {
 
-        public IAMDbContext CreateDbContext(string[] args)
+        public IamDbContext CreateDbContext(string[] args)
         {
             var configuration = new EFMySqlConfiguration(ConfigurationProvider.GetConnectionString());
-            var optionsBuilder = new DbContextOptionsBuilder<IAMDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<IamDbContext>();
             configuration.Configure(optionsBuilder);
-            return new IAMDbContext(configuration);
+            return new IamDbContext(configuration);
         }
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Corely.IAM.DataAccess.EntityFramework
 {
-    internal sealed class IAMEFUoWProvider : EFUoWProvider
+    internal sealed class IamEfUoWProvider : EFUoWProvider
     {
-        public IAMEFUoWProvider(IAMDbContext dbContext)
+        public IamEfUoWProvider(IamDbContext dbContext)
             : base(dbContext)
         {
         }

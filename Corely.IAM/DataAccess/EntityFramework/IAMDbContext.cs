@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corely.IAM.DataAccess.EntityFramework
 {
-    internal class IAMDbContext : DbContext
+    internal class IamDbContext : DbContext
     {
         private readonly IEFConfiguration _configuration;
 
-        public IAMDbContext(IEFConfiguration configuration)
+        public IamDbContext(IEFConfiguration configuration)
             : base()
         {
             _configuration = configuration;

@@ -9,7 +9,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
     public class EFUoWProviderTests
     {
         private readonly Mock<IDbContextTransaction> _transaction = new();
-        private readonly Mock<IAMDbContext> _iamDbContextMock;
+        private readonly Mock<IamDbContext> _iamDbContextMock;
         private readonly EFUoWProvider _efUoWProvider;
 
         public EFUoWProviderTests()
@@ -18,9 +18,9 @@ namespace Corely.UnitTests.DataAccess.EntityFramework
             _efUoWProvider = new(_iamDbContextMock.Object);
         }
 
-        private Mock<IAMDbContext> GetMockIAMDbContext()
+        private Mock<IamDbContext> GetMockIAMDbContext()
         {
-            var iamDbContextMock = new Mock<IAMDbContext>(new EFConfigurationFixture());
+            var iamDbContextMock = new Mock<IamDbContext>(new EFConfigurationFixture());
             var mockDatabaseFacade = new Mock<DatabaseFacade>(iamDbContextMock.Object);
             mockDatabaseFacade.Setup(d => d.BeginTransactionAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => _transaction.Object);

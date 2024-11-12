@@ -4,12 +4,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM.DataAccess.EntityFramework.Repos
 {
-    internal sealed class IAMEFReadonlyRepo<T> : EFReadonlyRepo<T>
+    // Extend EFRepo so we can specifically register the IAMDbContext
+    // otherwise DI container won't know which that the context should be used for EFRepo
+    internal sealed class IamEfReadonlyRepo<T> : EFReadonlyRepo<T>
         where T : class, IHasIdPk
     {
-        public IAMEFReadonlyRepo(
-            ILogger<EFReadonlyRepo<T>> logger,
-            IAMDbContext dbContext)
+        public IamEfReadonlyRepo(
+            ILogger<IamEfReadonlyRepo<T>> logger,
+            IamDbContext dbContext)
             : base(logger, dbContext)
         {
         }
