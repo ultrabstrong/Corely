@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Corely.IAM.Security.Services
 {
-    public interface ISecurityService
+    internal interface ISecurityService
     {
         SymmetricKey GetSymmetricEncryptionKeyEncryptedWithSystemKey();
         AsymmetricKey GetAsymmetricEncryptionKeyEncryptedWithSystemKey();

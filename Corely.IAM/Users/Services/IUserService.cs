@@ -3,7 +3,7 @@ using Corely.IAM.Users.Models;
 
 namespace Corely.IAM.Users.Services
 {
-    public interface IUserService
+    internal interface IUserService
     {
         Task<CreateResult> CreateUserAsync(CreateUserRequest createUserRequest);
         Task<User?> GetUserAsync(int userId);
