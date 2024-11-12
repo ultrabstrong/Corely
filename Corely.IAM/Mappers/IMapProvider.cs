@@ -1,6 +1,6 @@
 ﻿namespace Corely.IAM.Mappers
 {
-    public interface IMapProvider
+    internal interface IMapProvider
     {
         public TDestination MapTo<TDestination>(object model);
     }

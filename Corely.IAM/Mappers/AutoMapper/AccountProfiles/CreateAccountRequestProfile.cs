@@ -3,7 +3,7 @@ using Corely.IAM.Accounts.Models;
 
 namespace Corely.IAM.Mappers.AutoMapper.AccountProfiles
 {
-    public class CreateAccountRequestProfile : Profile
+    internal class CreateAccountRequestProfile : Profile
     {
         public CreateAccountRequestProfile()
         {

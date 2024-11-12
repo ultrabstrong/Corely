@@ -7,15 +7,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
 {
-    public class EFRepoTests : RepoTestsBase<EntityFixture>
+    public class EFRepoTests : RepoTestsBase
     {
         protected override IRepo<EntityFixture> Repo => _efRepo;
 
         private readonly EFRepo<EntityFixture> _efRepo;
         private readonly DbSet<EntityFixture> _dbSet;
 
-        private readonly EntityFixture _setupEntity = new() { Id = 1 };
-        private readonly EntityFixture _testEntity = new() { Id = 2 };
+        private readonly EntityFixture _testEntity = new() { Id = 1 };
 
         public EFRepoTests()
         {
@@ -27,8 +26,6 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
                     .Options);
 
             _dbSet = dbContext.Set<EntityFixture>();
-            _dbSet.Add(_setupEntity);
-            dbContext.SaveChanges();
 
             var logger = serviceFactory.GetRequiredService<ILogger<EFRepo<EntityFixture>>>();
 
@@ -50,22 +47,25 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
         [Fact]
         public async Task GetAsync_ReturnsEntity()
         {
-            var entity = await _efRepo.GetAsync(_setupEntity.Id);
-            Assert.Equal(_setupEntity, entity);
+            await _efRepo.CreateAsync(_testEntity);
+
+            var entity = await _efRepo.GetAsync(_testEntity.Id);
+            Assert.Equal(_testEntity, entity);
         }
 
         [Fact]
         public async Task UpdateAsync_AttachesUntrackedEntity()
         {
-            _dbSet.Entry(_setupEntity).State = EntityState.Detached;
+            await _efRepo.CreateAsync(_testEntity);
+            _dbSet.Entry(_testEntity).State = EntityState.Detached;
 
-            var entity = new EntityFixture { Id = _setupEntity.Id };
+            var entity = new EntityFixture { Id = _testEntity.Id };
             await _efRepo.UpdateAsync(entity);
 
             var updatedEntity = _dbSet.Find(entity.Id);
             Assert.NotNull(updatedEntity);
 
-            Assert.NotEqual(_setupEntity, updatedEntity);
+            Assert.NotEqual(_testEntity, updatedEntity);
             Assert.Equal(entity, updatedEntity);
 
             Assert.InRange(
@@ -77,7 +77,8 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
         [Fact]
         public async Task UpdateAsync_UpdatesExistingEntity()
         {
-            var untrackedSetupEntity = new EntityFixture { Id = _setupEntity.Id };
+            await _efRepo.CreateAsync(_testEntity);
+            var untrackedSetupEntity = new EntityFixture { Id = _testEntity.Id };
 
             await _efRepo.UpdateAsync(untrackedSetupEntity);
 
@@ -85,7 +86,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
             // It should find and update ModifiedUtc of the original entity
             // This has the added benefit of testing the ModifiedUtc update
             Assert.InRange(
-                _setupEntity.ModifiedUtc,
+                _testEntity.ModifiedUtc,
                 DateTime.UtcNow.AddSeconds(-2),
                 DateTime.UtcNow);
         }

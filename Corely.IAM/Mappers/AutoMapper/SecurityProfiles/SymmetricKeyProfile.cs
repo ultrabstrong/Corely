@@ -6,7 +6,7 @@ using Corely.IAM.Users.Entities;
 
 namespace Corely.IAM.Mappers.AutoMapper.SecurityProfiles
 {
-    public class SymmetricKeyProfile : Profile
+    internal class SymmetricKeyProfile : Profile
     {
         public SymmetricKeyProfile()
         {

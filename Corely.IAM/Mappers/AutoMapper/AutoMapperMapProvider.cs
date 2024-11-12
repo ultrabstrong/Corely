@@ -2,7 +2,7 @@
 
 namespace Corely.IAM.Mappers.AutoMapper
 {
-    public class AutoMapperMapProvider : IMapProvider
+    internal sealed class AutoMapperMapProvider : IMapProvider
     {
         private readonly IMapper _mapper;
 

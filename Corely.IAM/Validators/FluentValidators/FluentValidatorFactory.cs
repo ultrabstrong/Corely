@@ -2,7 +2,7 @@
 
 namespace Corely.IAM.Validators.FluentValidators
 {
-    public sealed class FluentValidatorFactory : IFluentValidatorFactory
+    internal sealed class FluentValidatorFactory : IFluentValidatorFactory
     {
         private readonly IServiceProvider _serviceProvider;
 

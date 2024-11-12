@@ -1,21 +1,20 @@
 ﻿using AutoFixture;
-using Corely.DataAccess.Interfaces.Entities;
 using Corely.DataAccess.Interfaces.Repos;
+using Corely.UnitTests.Fixtures;
 using FluentAssertions;
 
 namespace Corely.UnitTests.DataAccess
 {
-    public abstract class RepoTestsBase<T>
-        where T : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
+    public abstract class RepoTestsBase
     {
         protected readonly Fixture fixture = new();
-        protected abstract IRepo<T> Repo { get; }
+        protected abstract IRepo<EntityFixture> Repo { get; }
 
 
         [Fact]
         public async Task Create_ThenGet_ReturnsAdded()
         {
-            var entity = fixture.Create<T>();
+            var entity = fixture.Create<EntityFixture>();
 
             await Repo.CreateAsync(entity);
             var result = await Repo.GetAsync(entity.Id);
@@ -26,27 +25,30 @@ namespace Corely.UnitTests.DataAccess
         [Fact]
         public async Task Create_ThenUpdate_Updates()
         {
-            var entity = fixture.Create<T>();
+            var entity = fixture.Create<EntityFixture>();
             await Repo.CreateAsync(entity);
 
-            entity.Id = entity.Id;
-            entity.CreatedUtc = entity.CreatedUtc;
+            var updateEntity = fixture.Create<EntityFixture>();
+            updateEntity.Id = entity.Id;
+            updateEntity.CreatedUtc = entity.CreatedUtc;
+            await Repo.UpdateAsync(updateEntity);
 
-            await Repo.UpdateAsync(entity);
             var result = await Repo.GetAsync(entity.Id);
 
-            result.Should().BeEquivalentTo(entity, options => options
-                .Excluding(m => m.ModifiedUtc));
+            result.Should()
+                .BeEquivalentTo(entity, options => options
+                .Excluding(m => m.ModifiedUtc)
+                .Excluding(m => m.NavigationProperty));
         }
 
         [Fact]
         public async Task Create_ThenUpdate_UpdatesModifiedUtc()
         {
-            var entity = fixture.Create<T>();
+            var entity = fixture.Create<EntityFixture>();
             entity.ModifiedUtc = DateTime.UtcNow;
             var originalModifiedUtc = entity.ModifiedUtc;
 
-            var updateEntity = fixture.Create<T>();
+            var updateEntity = fixture.Create<EntityFixture>();
             updateEntity.Id = entity.Id;
 
             await Repo.CreateAsync(entity);
@@ -60,7 +62,7 @@ namespace Corely.UnitTests.DataAccess
         [Fact]
         public async Task Create_ThenDelete_Deletes()
         {
-            var entity = fixture.Create<T>();
+            var entity = fixture.Create<EntityFixture>();
 
             await Repo.CreateAsync(entity);
             await Repo.DeleteAsync(entity);
@@ -72,7 +74,7 @@ namespace Corely.UnitTests.DataAccess
         [Fact]
         public async Task Create_ThenDeleteById_Deletes()
         {
-            var entity = fixture.Create<T>();
+            var entity = fixture.Create<EntityFixture>();
 
             await Repo.CreateAsync(entity);
             await Repo.DeleteAsync(entity.Id);

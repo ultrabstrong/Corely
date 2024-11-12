@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM.Services
 {
-    public abstract class ServiceBase
+    internal abstract class ServiceBase
     {
         private readonly IValidationProvider _validationProvider;
         private readonly IMapProvider _mapProvider;

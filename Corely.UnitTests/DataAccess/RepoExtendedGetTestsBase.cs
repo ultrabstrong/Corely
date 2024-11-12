@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Corely.UnitTests.DataAccess
 {
-    public abstract class RepoExtendedGetTestsBase : RepoTestsBase<EntityFixture>
+    public abstract class RepoExtendedGetTestsBase : RepoTestsBase
     {
         protected abstract override IRepoExtendedGet<EntityFixture> Repo { get; }
 
