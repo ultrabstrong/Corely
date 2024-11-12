@@ -1,9 +1,7 @@
-﻿using Corely.DataAccess.EntityFramework.Configurations;
+﻿using Corely.DataAccess.EntityFramework;
+using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Auth.Entities;
-using Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Accounts;
-using Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Auth;
-using Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Users;
 using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,17 +28,17 @@ namespace Corely.IAM.DataAccess.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new AccountSymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
-            modelBuilder.ApplyConfiguration(new AccountAsymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
+            var configurationType = typeof(EntityConfigurationBase<>);
+            var configurations = GetType().Assembly.GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract && t.BaseType != null
+                            && t.BaseType.IsGenericType
+                            && t.BaseType.GetGenericTypeDefinition() == configurationType);
 
-            modelBuilder.ApplyConfiguration(new AccountEntityConfiguration(_configuration.GetDbTypes()));
-
-            modelBuilder.ApplyConfiguration(new UserSymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
-            modelBuilder.ApplyConfiguration(new UserAsymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
-
-            modelBuilder.ApplyConfiguration(new UserEntityConfiguration(_configuration.GetDbTypes()));
-
-            modelBuilder.ApplyConfiguration(new BasicAuthEntityConfiguration(_configuration.GetDbTypes()));
+            foreach (var config in configurations)
+            {
+                var instance = Activator.CreateInstance(config, _configuration.GetDbTypes());
+                modelBuilder.ApplyConfiguration((dynamic)instance!);
+            }
         }
     }
 }
