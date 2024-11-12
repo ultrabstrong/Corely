@@ -13,10 +13,8 @@ namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Accounts
         {
         }
 
-        public override void Configure(EntityTypeBuilder<AccountEntity> builder)
+        protected override void ConfigureInternal(EntityTypeBuilder<AccountEntity> builder)
         {
-            ConfigureGenericTypes(builder);
-
             builder.Property(e => e.AccountName)
                 .IsRequired()
                 .HasMaxLength(AccountConstants.ACCOUNT_NAME_MAX_LENGTH);

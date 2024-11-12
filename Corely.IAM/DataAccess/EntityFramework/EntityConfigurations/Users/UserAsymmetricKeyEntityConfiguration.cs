@@ -11,10 +11,8 @@ namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Users
         {
         }
 
-        public override void Configure(EntityTypeBuilder<UserAsymmetricKeyEntity> builder)
+        protected override void ConfigureInternal(EntityTypeBuilder<UserAsymmetricKeyEntity> builder)
         {
-            ConfigureGenericTypes(builder);
-
             builder.HasIndex(e => new { e.UserId, e.KeyUsedFor })
                 .IsUnique();
 

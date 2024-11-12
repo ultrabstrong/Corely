@@ -11,10 +11,8 @@ namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Accounts
         {
         }
 
-        public override void Configure(EntityTypeBuilder<AccountAsymmetricKeyEntity> builder)
+        protected override void ConfigureInternal(EntityTypeBuilder<AccountAsymmetricKeyEntity> builder)
         {
-            ConfigureGenericTypes(builder);
-
             builder.HasIndex(e => new { e.AccountId, e.KeyUsedFor })
                 .IsUnique();
 

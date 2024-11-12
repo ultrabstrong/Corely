@@ -12,10 +12,8 @@ namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Accounts
         {
         }
 
-        public override void Configure(EntityTypeBuilder<AccountSymmetricKeyEntity> builder)
+        protected override void ConfigureInternal(EntityTypeBuilder<AccountSymmetricKeyEntity> builder)
         {
-            ConfigureGenericTypes(builder);
-
             builder.HasIndex(e => new { e.AccountId, e.KeyUsedFor })
               .IsUnique();
 

@@ -14,10 +14,8 @@ namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Users
         {
         }
 
-        public override void Configure(EntityTypeBuilder<UserEntity> builder)
+        protected override void ConfigureInternal(EntityTypeBuilder<UserEntity> builder)
         {
-            ConfigureGenericTypes(builder);
-
             builder.Property(e => e.Disabled)
                 .IsRequired();
 

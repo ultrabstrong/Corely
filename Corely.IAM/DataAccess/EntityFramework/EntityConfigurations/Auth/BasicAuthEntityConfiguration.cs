@@ -12,10 +12,8 @@ namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Auth
         {
         }
 
-        public override void Configure(EntityTypeBuilder<BasicAuthEntity> builder)
+        protected override void ConfigureInternal(EntityTypeBuilder<BasicAuthEntity> builder)
         {
-            ConfigureGenericTypes(builder);
-
             builder.Property(x => x.Password)
                 .IsRequired()
                 .HasMaxLength(BasicAuthConstants.PASSWORD_MAX_LENGTH);

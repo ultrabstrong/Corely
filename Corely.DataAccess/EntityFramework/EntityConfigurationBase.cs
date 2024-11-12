@@ -16,9 +16,7 @@ namespace Corely.DataAccess.EntityFramework
             EFDbTypes = efDbTypes;
         }
 
-        public abstract void Configure(EntityTypeBuilder<T> builder);
-
-        protected void ConfigureGenericTypes(EntityTypeBuilder<T> builder)
+        public void Configure(EntityTypeBuilder<T> builder)
         {
             if (typeof(T).Name.EndsWith("Entity"))
             {
@@ -52,6 +50,10 @@ namespace Corely.DataAccess.EntityFramework
                     .HasDefaultValueSql(EFDbTypes.UTCDateColumnDefaultValue)
                     .IsRequired();
             }
+
+            ConfigureInternal(builder);
         }
+
+        protected abstract void ConfigureInternal(EntityTypeBuilder<T> builder);
     }
 }
