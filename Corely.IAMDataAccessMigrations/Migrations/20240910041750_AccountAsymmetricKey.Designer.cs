@@ -9,18 +9,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Corely.DataAccessMigrations.Migrations
+namespace Corely.IAMDataAccessMigrations.Migrations
 {
     [DbContext(typeof(IAMDbContext))]
-    [Migration("20241004032808_UserDisabledInsteadOfEnabled")]
-    partial class UserDisabledInsteadOfEnabled
+    [Migration("20240910041750_AccountAsymmetricKey")]
+    partial class AccountAsymmetricKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -164,65 +164,6 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.ToTable("AccountSymmetricKeys", (string)null);
                 });
 
-            modelBuilder.Entity("Corely.IAM.Security.Entities.UserAsymmetricKeyEntity", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<DateTime>("ModifiedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<string>("PrivateKey")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PublicKey")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("UserAsymmetricKeys", (string)null);
-                });
-
-            modelBuilder.Entity("Corely.IAM.Security.Entities.UserSymmetricKeyEntity", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<DateTime>("ModifiedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("UserSymmetricKeys", (string)null);
-                });
-
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
                 {
                     b.Property<int>("UserId")
@@ -269,13 +210,15 @@ namespace Corely.DataAccessMigrations.Migrations
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
-                    b.Property<bool>("Disabled")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(254)
                         .HasColumnType("varchar(254)");
+
+                    b.Property<bool>("Enabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
 
                     b.Property<int>("FailedLoginsSinceLastSuccess")
                         .HasColumnType("int");
@@ -357,24 +300,6 @@ namespace Corely.DataAccessMigrations.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Corely.IAM.Security.Entities.UserAsymmetricKeyEntity", b =>
-                {
-                    b.HasOne("Corely.IAM.Users.Entities.UserEntity", null)
-                        .WithOne("AsymmetricKey")
-                        .HasForeignKey("Corely.IAM.Security.Entities.UserAsymmetricKeyEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Corely.IAM.Security.Entities.UserSymmetricKeyEntity", b =>
-                {
-                    b.HasOne("Corely.IAM.Users.Entities.UserEntity", null)
-                        .WithOne("SymmetricKey")
-                        .HasForeignKey("Corely.IAM.Security.Entities.UserSymmetricKeyEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
                 {
                     b.HasOne("Corely.IAM.Users.Entities.UserEntity", "User")
@@ -388,20 +313,18 @@ namespace Corely.DataAccessMigrations.Migrations
 
             modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountEntity", b =>
                 {
-                    b.Navigation("AsymmetricKey");
+                    b.Navigation("AsymmetricKey")
+                        .IsRequired();
 
-                    b.Navigation("SymmetricKey");
+                    b.Navigation("SymmetricKey")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserEntity", b =>
                 {
-                    b.Navigation("AsymmetricKey");
-
                     b.Navigation("BasicAuth");
 
                     b.Navigation("Details");
-
-                    b.Navigation("SymmetricKey");
                 });
 #pragma warning restore 612, 618
         }

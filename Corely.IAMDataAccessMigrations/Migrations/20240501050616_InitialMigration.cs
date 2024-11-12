@@ -1,10 +1,9 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Corely.DataAccessMigrations.Migrations
+namespace Corely.IAMDataAccessMigrations.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration

@@ -4,16 +4,19 @@ using Corely.IAM.DataAccess.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Corely.DataAccessMigrations.Migrations
+namespace Corely.IAMDataAccessMigrations.Migrations
 {
     [DbContext(typeof(IAMDbContext))]
-    partial class IAMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241112042749_RemoveUserDetails")]
+    partial class RemoveUserDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

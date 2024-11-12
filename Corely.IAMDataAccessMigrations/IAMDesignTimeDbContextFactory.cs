@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Corely.DataAccessMigrations
+namespace Corely.IAMDataAccessMigrations
 {
     internal class IAMDesignTimeDbContextFactory : IDesignTimeDbContextFactory<IAMDbContext>
     {

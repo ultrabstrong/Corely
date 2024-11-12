@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAM", "Corely.IAM\Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.DevTools", "Corely.DevTools\Corely.DevTools.csproj", "{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.DataAccessMigrations", "Corely.DataAccessMigrations\Corely.DataAccessMigrations.csproj", "{792DE99D-F0A7-47B9-85F6-B566B04CF643}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAMDataAccessMigrations", "Corely.IAMDataAccessMigrations\Corely.IAMDataAccessMigrations.csproj", "{792DE99D-F0A7-47B9-85F6-B566B04CF643}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.Security", "Corely.Security\Corely.Security.csproj", "{5E136CE2-0014-46E8-A9FB-1BF8F32E24E6}"
 EndProject

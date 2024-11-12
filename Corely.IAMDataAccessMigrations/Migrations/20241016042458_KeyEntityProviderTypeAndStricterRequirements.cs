@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Corely.DataAccessMigrations.Migrations
+namespace Corely.IAMDataAccessMigrations.Migrations
 {
     /// <inheritdoc />
     public partial class KeyEntityProviderTypeAndStricterRequirements : Migration

@@ -9,18 +9,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Corely.DataAccessMigrations.Migrations
+namespace Corely.IAMDataAccessMigrations.Migrations
 {
     [DbContext(typeof(IAMDbContext))]
-    [Migration("20241016045329_KeyUsedForStringConversion")]
-    partial class KeyUsedForStringConversion
+    [Migration("20240501050616_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -38,54 +38,6 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("AccountEntityUserEntity");
-                });
-
-            modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountAsymmetricKeyEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<string>("KeyUsedFor")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("ModifiedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<string>("PrivateKey")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ProviderTypeCode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PublicKey")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId", "KeyUsedFor")
-                        .IsUnique();
-
-                    b.ToTable("AccountAsymmetricKeys", (string)null);
                 });
 
             modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountEntity", b =>
@@ -111,57 +63,17 @@ namespace Corely.DataAccessMigrations.Migrations
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
+                    b.Property<int>("SymmetricKeyId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountName")
                         .IsUnique();
 
+                    b.HasIndex("SymmetricKeyId");
+
                     b.ToTable("Accounts", (string)null);
-                });
-
-            modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountSymmetricKeyEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("KeyUsedFor")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("ModifiedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<string>("ProviderTypeCode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId", "KeyUsedFor")
-                        .IsUnique();
-
-                    b.ToTable("AccountSymmetricKeys", (string)null);
                 });
 
             modelBuilder.Entity("Corely.IAM.Auth.Entities.BasicAuthEntity", b =>
@@ -198,7 +110,7 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.ToTable("BasicAuths", (string)null);
                 });
 
-            modelBuilder.Entity("Corely.IAM.Users.Entities.UserAsymmetricKeyEntity", b =>
+            modelBuilder.Entity("Corely.IAM.Security.Entities.SymmetricKeyEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,39 +123,22 @@ namespace Corely.DataAccessMigrations.Migrations
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
-                    b.Property<string>("KeyUsedFor")
+                    b.Property<string>("Key")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<DateTime>("ModifiedUtc")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
-                    b.Property<string>("PrivateKey")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ProviderTypeCode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PublicKey")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Version")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "KeyUsedFor")
-                        .IsUnique();
-
-                    b.ToTable("UserAsymmetricKeys", (string)null);
+                    b.ToTable("SymmetricKeys", (string)null);
                 });
 
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
@@ -292,13 +187,15 @@ namespace Corely.DataAccessMigrations.Migrations
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
-                    b.Property<bool>("Disabled")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(254)
                         .HasColumnType("varchar(254)");
+
+                    b.Property<bool>("Enabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
 
                     b.Property<int>("FailedLoginsSinceLastSuccess")
                         .HasColumnType("int");
@@ -336,51 +233,6 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Corely.IAM.Users.Entities.UserSymmetricKeyEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("KeyUsedFor")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("ModifiedUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<string>("ProviderTypeCode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId", "KeyUsedFor")
-                        .IsUnique();
-
-                    b.ToTable("UserSymmetricKeys", (string)null);
-                });
-
             modelBuilder.Entity("AccountEntityUserEntity", b =>
                 {
                     b.HasOne("Corely.IAM.Accounts.Entities.AccountEntity", null)
@@ -396,22 +248,15 @@ namespace Corely.DataAccessMigrations.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountAsymmetricKeyEntity", b =>
+            modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountEntity", b =>
                 {
-                    b.HasOne("Corely.IAM.Accounts.Entities.AccountEntity", null)
-                        .WithMany("AsymmetricKeys")
-                        .HasForeignKey("AccountId")
+                    b.HasOne("Corely.IAM.Security.Entities.SymmetricKeyEntity", "SymmetricKey")
+                        .WithMany()
+                        .HasForeignKey("SymmetricKeyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountSymmetricKeyEntity", b =>
-                {
-                    b.HasOne("Corely.IAM.Accounts.Entities.AccountEntity", null)
-                        .WithMany("SymmetricKeys")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("SymmetricKey");
                 });
 
             modelBuilder.Entity("Corely.IAM.Auth.Entities.BasicAuthEntity", b =>
@@ -425,15 +270,6 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Corely.IAM.Users.Entities.UserAsymmetricKeyEntity", b =>
-                {
-                    b.HasOne("Corely.IAM.Users.Entities.UserEntity", null)
-                        .WithMany("AsymmetricKeys")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
                 {
                     b.HasOne("Corely.IAM.Users.Entities.UserEntity", "User")
@@ -445,31 +281,11 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Corely.IAM.Users.Entities.UserSymmetricKeyEntity", b =>
-                {
-                    b.HasOne("Corely.IAM.Users.Entities.UserEntity", null)
-                        .WithMany("SymmetricKeys")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountEntity", b =>
-                {
-                    b.Navigation("AsymmetricKeys");
-
-                    b.Navigation("SymmetricKeys");
-                });
-
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserEntity", b =>
                 {
-                    b.Navigation("AsymmetricKeys");
-
                     b.Navigation("BasicAuth");
 
                     b.Navigation("Details");
-
-                    b.Navigation("SymmetricKeys");
                 });
 #pragma warning restore 612, 618
         }

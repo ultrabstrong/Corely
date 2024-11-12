@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Corely.DataAccessMigrations
+namespace Corely.IAMDataAccessMigrations
 {
     internal static class ConfigurationProvider
     {

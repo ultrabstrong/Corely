@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Corely.DataAccessMigrations.Migrations
+namespace Corely.IAMDataAccessMigrations.Migrations
 {
     [DbContext(typeof(IAMDbContext))]
-    [Migration("20240927042617_UserEncryptionKeys")]
-    partial class UserEncryptionKeys
+    [Migration("20241004032808_UserDisabledInsteadOfEnabled")]
+    partial class UserDisabledInsteadOfEnabled
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -264,23 +264,18 @@ namespace Corely.DataAccessMigrations.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AsymmetricKeyUserId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedUtc")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
+                    b.Property<bool>("Disabled")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(254)
                         .HasColumnType("varchar(254)");
-
-                    b.Property<bool>("Enabled")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(true);
 
                     b.Property<int>("FailedLoginsSinceLastSuccess")
                         .HasColumnType("int");
@@ -296,9 +291,6 @@ namespace Corely.DataAccessMigrations.Migrations
                         .HasColumnType("TIMESTAMP")
                         .HasDefaultValueSql("(UTC_TIMESTAMP)");
 
-                    b.Property<int?>("SymmetricKeyUserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TotalFailedLogins")
                         .HasColumnType("int");
 
@@ -312,12 +304,8 @@ namespace Corely.DataAccessMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AsymmetricKeyUserId");
-
                     b.HasIndex("Email")
                         .IsUnique();
-
-                    b.HasIndex("SymmetricKeyUserId");
 
                     b.HasIndex("Username")
                         .IsUnique();
@@ -369,6 +357,24 @@ namespace Corely.DataAccessMigrations.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Corely.IAM.Security.Entities.UserAsymmetricKeyEntity", b =>
+                {
+                    b.HasOne("Corely.IAM.Users.Entities.UserEntity", null)
+                        .WithOne("AsymmetricKey")
+                        .HasForeignKey("Corely.IAM.Security.Entities.UserAsymmetricKeyEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Corely.IAM.Security.Entities.UserSymmetricKeyEntity", b =>
+                {
+                    b.HasOne("Corely.IAM.Users.Entities.UserEntity", null)
+                        .WithOne("SymmetricKey")
+                        .HasForeignKey("Corely.IAM.Security.Entities.UserSymmetricKeyEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserDetailsEntity", b =>
                 {
                     b.HasOne("Corely.IAM.Users.Entities.UserEntity", "User")
@@ -380,21 +386,6 @@ namespace Corely.DataAccessMigrations.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Corely.IAM.Users.Entities.UserEntity", b =>
-                {
-                    b.HasOne("Corely.IAM.Security.Entities.UserAsymmetricKeyEntity", "AsymmetricKey")
-                        .WithMany()
-                        .HasForeignKey("AsymmetricKeyUserId");
-
-                    b.HasOne("Corely.IAM.Security.Entities.UserSymmetricKeyEntity", "SymmetricKey")
-                        .WithMany()
-                        .HasForeignKey("SymmetricKeyUserId");
-
-                    b.Navigation("AsymmetricKey");
-
-                    b.Navigation("SymmetricKey");
-                });
-
             modelBuilder.Entity("Corely.IAM.Accounts.Entities.AccountEntity", b =>
                 {
                     b.Navigation("AsymmetricKey");
@@ -404,9 +395,13 @@ namespace Corely.DataAccessMigrations.Migrations
 
             modelBuilder.Entity("Corely.IAM.Users.Entities.UserEntity", b =>
                 {
+                    b.Navigation("AsymmetricKey");
+
                     b.Navigation("BasicAuth");
 
                     b.Navigation("Details");
+
+                    b.Navigation("SymmetricKey");
                 });
 #pragma warning restore 612, 618
         }

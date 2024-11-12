@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace Corely.DataAccessMigrations
+namespace Corely.IAMDataAccessMigrations
 {
     internal class EFMySqlConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
     {
