@@ -19,9 +19,7 @@ namespace Corely.DataAccessMigrations
 
         public static string GetConnectionString()
         {
-            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
-
-            return connectionString
+            return _configuration.GetConnectionString("DefaultConnection")
                 ?? throw new Exception($"DefaultConnection string not found in {SETTINGS_FILE_NAME}");
         }
     }

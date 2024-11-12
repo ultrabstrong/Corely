@@ -35,11 +35,6 @@ namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Users
             builder.HasIndex(e => e.Email)
                 .IsUnique();
 
-            builder.HasOne(p => p.Details)
-                .WithOne(d => d.User)
-                .HasForeignKey<UserDetailsEntity>(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasMany(e => e.SymmetricKeys)
                 .WithOne()
                 .HasForeignKey(p => p.UserId)

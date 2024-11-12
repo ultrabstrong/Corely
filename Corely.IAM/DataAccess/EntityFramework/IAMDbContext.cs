@@ -21,7 +21,6 @@ namespace Corely.IAM.DataAccess.EntityFramework
 
         public DbSet<AccountEntity> Accounts { get; set; } = null!;
         public DbSet<UserEntity> Users { get; set; } = null!;
-        public DbSet<UserDetailsEntity> UserDetails { get; set; } = null!;
         public DbSet<BasicAuthEntity> BasicAuths { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -40,7 +39,6 @@ namespace Corely.IAM.DataAccess.EntityFramework
             modelBuilder.ApplyConfiguration(new UserAsymmetricKeyEntityConfiguration(_configuration.GetDbTypes()));
 
             modelBuilder.ApplyConfiguration(new UserEntityConfiguration(_configuration.GetDbTypes()));
-            modelBuilder.ApplyConfiguration(new UserDetailsEntityConfiguration(_configuration.GetDbTypes()));
 
             modelBuilder.ApplyConfiguration(new BasicAuthEntityConfiguration(_configuration.GetDbTypes()));
         }
