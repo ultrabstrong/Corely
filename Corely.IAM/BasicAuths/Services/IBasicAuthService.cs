@@ -1,8 +1,8 @@
-﻿using Corely.IAM.Auth.Models;
+﻿using Corely.IAM.BasicAuths.Models;
 
-namespace Corely.IAM.Auth.Services
+namespace Corely.IAM.BasicAuths.Services
 {
-    internal interface IAuthService
+    internal interface IBasicAuthService
     {
         Task<UpsertBasicAuthResult> UpsertBasicAuthAsync(UpsertBasicAuthRequest request);
         Task<bool> VerifyBasicAuthAsync(VerifyBasicAuthRequest request);

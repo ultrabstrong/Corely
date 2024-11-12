@@ -1,7 +1,7 @@
 ﻿using Corely.DataAccess.Interfaces.Repos;
-using Corely.IAM.Auth.Entities;
-using Corely.IAM.Auth.Models;
-using Corely.IAM.Auth.Services;
+using Corely.IAM.BasicAuths.Entities;
+using Corely.IAM.BasicAuths.Models;
+using Corely.IAM.BasicAuths.Services;
 using Corely.IAM.Enums;
 using Corely.IAM.Mappers;
 using Corely.IAM.Validators;
@@ -16,16 +16,16 @@ namespace Corely.UnitTests.IAM.Auth.Services
         private const string VALID_PASSWORD = "Password1!";
 
         private readonly ServiceFactory _serviceFactory = new();
-        private readonly AuthService _authService;
+        private readonly BasicAuthService _authService;
 
         public AuthServiceTests()
         {
-            _authService = new AuthService(
+            _authService = new BasicAuthService(
                 _serviceFactory.GetRequiredService<IRepoExtendedGet<BasicAuthEntity>>(),
                 _serviceFactory.GetRequiredService<IPasswordValidationProvider>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _serviceFactory.GetRequiredService<ILogger<AuthService>>());
+                _serviceFactory.GetRequiredService<ILogger<BasicAuthService>>());
         }
 
         [Fact]

@@ -1,5 +1,5 @@
-﻿using Corely.IAM.Auth.Entities;
-using Corely.IAM.Auth.Models;
+﻿using Corely.IAM.BasicAuths.Entities;
+using Corely.IAM.BasicAuths.Models;
 using Corely.Security.Hashing;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.AuthProfiles

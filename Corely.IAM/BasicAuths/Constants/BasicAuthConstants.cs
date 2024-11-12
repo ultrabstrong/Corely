@@ -1,4 +1,4 @@
-﻿namespace Corely.IAM.Auth.Constants
+﻿namespace Corely.IAM.BasicAuths.Constants
 {
     public static class BasicAuthConstants
     {

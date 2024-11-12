@@ -1,4 +1,4 @@
-﻿namespace Corely.IAM.Auth.Models
+﻿namespace Corely.IAM.BasicAuths.Models
 {
     public record VerifyBasicAuthRequest(
         int UserId,

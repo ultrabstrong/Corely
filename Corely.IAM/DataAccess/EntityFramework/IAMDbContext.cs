@@ -1,7 +1,7 @@
 ﻿using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Accounts.Entities;
-using Corely.IAM.Auth.Entities;
+using Corely.IAM.BasicAuths.Entities;
 using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 

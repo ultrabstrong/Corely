@@ -1,5 +1,5 @@
 ﻿using Corely.Common.Extensions;
-using Corely.IAM.Auth.Services;
+using Corely.IAM.BasicAuths.Services;
 using Corely.IAM.Models;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Users.Services;
@@ -12,13 +12,13 @@ namespace Corely.IAM.Services
     {
         private readonly ILogger<SignInService> _logger;
         private readonly IUserService _userService;
-        private readonly IAuthService _authService;
+        private readonly IBasicAuthService _authService;
         private readonly SecurityOptions _securityOptions;
 
         public SignInService(
             ILogger<SignInService> logger,
             IUserService userService,
-            IAuthService authService,
+            IBasicAuthService authService,
             IOptions<SecurityOptions> securityOptions)
         {
             _logger = logger.ThrowIfNull(nameof(logger));

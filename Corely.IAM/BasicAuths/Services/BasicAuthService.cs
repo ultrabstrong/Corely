@@ -1,7 +1,7 @@
 ﻿using Corely.Common.Extensions;
 using Corely.DataAccess.Interfaces.Repos;
-using Corely.IAM.Auth.Entities;
-using Corely.IAM.Auth.Models;
+using Corely.IAM.BasicAuths.Entities;
+using Corely.IAM.BasicAuths.Models;
 using Corely.IAM.Enums;
 using Corely.IAM.Mappers;
 using Corely.IAM.Services;
@@ -10,19 +10,19 @@ using Corely.Security.Password;
 using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.Auth.Services
+namespace Corely.IAM.BasicAuths.Services
 {
-    internal class AuthService : ServiceBase, IAuthService
+    internal class BasicAuthService : ServiceBase, IBasicAuthService
     {
         private readonly IRepoExtendedGet<BasicAuthEntity> _basicAuthRepo;
         private readonly IPasswordValidationProvider _passwordValidationProvider;
 
-        public AuthService(
+        public BasicAuthService(
             IRepoExtendedGet<BasicAuthEntity> basicAuthRepo,
             IPasswordValidationProvider passwordValidationProvider,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
-            ILogger<AuthService> logger)
+            ILogger<BasicAuthService> logger)
             : base(mapProvider, validationProvider, logger)
         {
             _basicAuthRepo = basicAuthRepo.ThrowIfNull(nameof(basicAuthRepo));

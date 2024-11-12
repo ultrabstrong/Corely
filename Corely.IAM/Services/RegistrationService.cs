@@ -1,7 +1,7 @@
 ﻿using Corely.Common.Extensions;
 using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.IAM.Accounts.Services;
-using Corely.IAM.Auth.Services;
+using Corely.IAM.BasicAuths.Services;
 using Corely.IAM.Models;
 using Corely.IAM.Users.Services;
 using Microsoft.Extensions.Logging;
@@ -13,14 +13,14 @@ namespace Corely.IAM.Services
         private readonly ILogger<RegistrationService> _logger;
         private readonly IAccountService _accountService;
         private readonly IUserService _userService;
-        private readonly IAuthService _authService;
+        private readonly IBasicAuthService _authService;
         private readonly IUnitOfWorkProvider _uowProvider;
 
         public RegistrationService(
             ILogger<RegistrationService> logger,
             IAccountService accountService,
             IUserService userService,
-            IAuthService authService,
+            IBasicAuthService authService,
             IUnitOfWorkProvider uowProvider)
         {
             _logger = logger.ThrowIfNull(nameof(logger));

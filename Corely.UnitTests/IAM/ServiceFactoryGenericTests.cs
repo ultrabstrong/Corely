@@ -3,7 +3,7 @@ using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.IAM;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Services;
-using Corely.IAM.Auth.Services;
+using Corely.IAM.BasicAuths.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Security.Services;
@@ -48,7 +48,7 @@ namespace Corely.UnitTests.IAM
             [typeof(IAsymmetricEncryptionProviderFactory)],
             [typeof(IHashProviderFactory)],
 
-            [typeof(IAuthService)],
+            [typeof(IBasicAuthService)],
             [typeof(IAccountService)],
             [typeof(IUserService)],
             [typeof(IRegistrationService)],

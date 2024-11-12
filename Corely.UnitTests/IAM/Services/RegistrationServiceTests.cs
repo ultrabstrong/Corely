@@ -2,8 +2,8 @@
 using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Services;
-using Corely.IAM.Auth.Models;
-using Corely.IAM.Auth.Services;
+using Corely.IAM.BasicAuths.Models;
+using Corely.IAM.BasicAuths.Services;
 using Corely.IAM.Enums;
 using Corely.IAM.Models;
 using Corely.IAM.Services;
@@ -19,7 +19,7 @@ namespace Corely.UnitTests.IAM.Services
         private readonly Mock<IUnitOfWorkProvider> _unitOfWorkProviderMock = new();
         private readonly Mock<IAccountService> _accountServiceMock;
         private readonly Mock<IUserService> _userServiceMock;
-        private readonly Mock<IAuthService> _authServiceMock;
+        private readonly Mock<IBasicAuthService> _authServiceMock;
         private readonly RegistrationService _registrationService;
 
         private bool _createAccountSuccess = true;
@@ -66,9 +66,9 @@ namespace Corely.UnitTests.IAM.Services
             return userServiceMock;
         }
 
-        private Mock<IAuthService> GetMockAuthService()
+        private Mock<IBasicAuthService> GetMockAuthService()
         {
-            var authServiceMock = new Mock<IAuthService>();
+            var authServiceMock = new Mock<IBasicAuthService>();
 
             authServiceMock
                 .Setup(m => m.UpsertBasicAuthAsync(

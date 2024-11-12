@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
-using Corely.IAM.Auth.Models;
-using Corely.IAM.Auth.Services;
+using Corely.IAM.BasicAuths.Models;
+using Corely.IAM.BasicAuths.Services;
 using Corely.IAM.Models;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Services;
@@ -17,7 +17,7 @@ namespace Corely.UnitTests.IAM.Services
 
         private readonly Fixture _fixture = new();
         private readonly Mock<IUserService> _userServiceMock;
-        private readonly Mock<IAuthService> _authServiceMock;
+        private readonly Mock<IBasicAuthService> _authServiceMock;
         private readonly SignInService _signInService;
 
         private readonly User _user;
@@ -54,9 +54,9 @@ namespace Corely.UnitTests.IAM.Services
             return userServiceMock;
         }
 
-        private static Mock<IAuthService> GetMockAuthService()
+        private static Mock<IBasicAuthService> GetMockAuthService()
         {
-            var authServiceMock = new Mock<IAuthService>();
+            var authServiceMock = new Mock<IBasicAuthService>();
 
             authServiceMock
                 .Setup(m => m.VerifyBasicAuthAsync(

@@ -1,7 +1,7 @@
 ﻿using Corely.DataAccess.Interfaces.Entities;
 using Corely.IAM.Users.Entities;
 
-namespace Corely.IAM.Auth.Entities
+namespace Corely.IAM.BasicAuths.Entities
 {
     internal class BasicAuthEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     {
