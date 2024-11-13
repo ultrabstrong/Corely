@@ -52,6 +52,7 @@ namespace Corely.UnitTests.IAM
             [typeof(IAccountService)],
             [typeof(IUserService)],
             [typeof(IRegistrationService)],
+            [typeof(IDeregistrationService)],
             [typeof(ISecurityService)],
 
             // Repos are registered as generics. Only need to test each one once.

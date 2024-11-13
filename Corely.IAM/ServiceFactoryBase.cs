@@ -72,6 +72,7 @@ namespace Corely.IAM
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBasicAuthService, BasicAuthService>();
             services.AddScoped<IRegistrationService, RegistrationService>();
+            services.AddScoped<IDeregistrationService, DeregistrationService>();
             services.AddScoped<ISignInService, SignInService>();
         }
 
