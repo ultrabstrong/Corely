@@ -1,6 +1,6 @@
 ﻿using Corely.IAM.BasicAuths.Constants;
 using Corely.IAM.BasicAuths.Models;
-using Corely.IAM.Validators.FluentValidators.Auth;
+using Corely.IAM.Validators.FluentValidators.BasicAuth;
 using Corely.Security.Hashing.Models;
 using Corely.Security.Hashing.Providers;
 using Corely.UnitTests.ClassData;
