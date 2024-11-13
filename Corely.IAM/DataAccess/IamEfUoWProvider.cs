@@ -1,6 +1,6 @@
 ﻿using Corely.DataAccess.EntityFramework;
 
-namespace Corely.IAM.DataAccess.EntityFramework
+namespace Corely.IAM.DataAccess
 {
     internal sealed class IamEfUoWProvider : EFUoWProvider
     {

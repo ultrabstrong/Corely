@@ -1,11 +1,10 @@
 ﻿using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Accounts.Constants;
-using Corely.IAM.Accounts.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Accounts
+namespace Corely.IAM.Accounts.Entities
 {
     internal sealed class AccountEntityConfiguration : EntityConfigurationBase<AccountEntity>
     {

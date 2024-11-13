@@ -1,8 +1,7 @@
 ﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.DataAccess.Interfaces.UnitOfWork;
-using Corely.IAM.DataAccess.EntityFramework;
-using Corely.IAM.DataAccess.EntityFramework.Repos;
+using Corely.IAM.DataAccess;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.IAM

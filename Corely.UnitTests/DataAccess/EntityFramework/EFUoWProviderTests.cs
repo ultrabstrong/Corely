@@ -1,5 +1,5 @@
 ﻿using Corely.DataAccess.EntityFramework;
-using Corely.IAM.DataAccess.EntityFramework;
+using Corely.IAM.DataAccess;
 using Corely.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;

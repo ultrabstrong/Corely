@@ -5,7 +5,7 @@ using Corely.IAM.BasicAuths.Entities;
 using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Corely.IAM.DataAccess.EntityFramework
+namespace Corely.IAM.DataAccess
 {
     internal class IamDbContext : DbContext
     {

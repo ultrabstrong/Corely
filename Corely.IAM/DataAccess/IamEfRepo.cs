@@ -2,15 +2,15 @@
 using Corely.DataAccess.Interfaces.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.DataAccess.EntityFramework.Repos
+namespace Corely.IAM.DataAccess
 {
     // Extend EFRepo so we can specifically register the IAMDbContext
     // otherwise DI container won't know which that the context should be used for EFRepo
-    internal sealed class IamEfRepoExtendedGet<T> : EFRepoExtendedGet<T>
+    internal sealed class IamEfRepo<T> : EFRepo<T>
         where T : class, IHasIdPk
     {
-        public IamEfRepoExtendedGet(
-            ILogger<IamEfRepoExtendedGet<T>> logger,
+        public IamEfRepo(
+            ILogger<IamEfRepo<T>> logger,
             IamDbContext dbContext)
             : base(logger, dbContext)
         {
