@@ -2,7 +2,7 @@
 using Corely.IAM.Security.Models;
 using FluentValidation;
 
-namespace Corely.IAM.Validators.FluentValidators.Security
+namespace Corely.IAM.Security.Validators
 {
     internal class SymmetricKeyValidator : AbstractValidator<SymmetricKey>
     {

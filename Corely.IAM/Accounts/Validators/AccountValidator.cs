@@ -2,7 +2,7 @@
 using Corely.IAM.Accounts.Models;
 using FluentValidation;
 
-namespace Corely.IAM.Validators.FluentValidators.Accounts
+namespace Corely.IAM.Accounts.Validators
 {
     internal class AccountValidator : AbstractValidator<Account>
     {

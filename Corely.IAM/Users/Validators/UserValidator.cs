@@ -2,7 +2,7 @@
 using Corely.IAM.Users.Models;
 using FluentValidation;
 
-namespace Corely.IAM.Validators.FluentValidators.Users
+namespace Corely.IAM.Users.Validators
 {
     internal class UserValidator : AbstractValidator<User>
     {

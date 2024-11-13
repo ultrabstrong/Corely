@@ -1,12 +1,12 @@
 ﻿using Corely.IAM.Security.Constants;
 using Corely.IAM.Security.Models;
-using Corely.IAM.Validators.FluentValidators.Security;
+using Corely.IAM.Security.Validators;
 using Corely.Security.Encryption.Models;
 using Corely.Security.Encryption.Providers;
 using Corely.UnitTests.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.IAM.Validators.FluentValidators.Security
+namespace Corely.UnitTests.IAM.Security.Validators
 {
     public class SymmetricKeyValidatorTests
     {

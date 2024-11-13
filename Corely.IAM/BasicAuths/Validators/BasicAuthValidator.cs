@@ -1,9 +1,9 @@
 ﻿using Corely.IAM.BasicAuths.Constants;
 using FluentValidation;
 
-namespace Corely.IAM.Validators.FluentValidators.BasicAuth
+namespace Corely.IAM.BasicAuths.Validators
 {
-    internal class BasicAuthValidator : AbstractValidator<BasicAuths.Models.BasicAuth>
+    internal class BasicAuthValidator : AbstractValidator<Models.BasicAuth>
     {
         public BasicAuthValidator()
         {

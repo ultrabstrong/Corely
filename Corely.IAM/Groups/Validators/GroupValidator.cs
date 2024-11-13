@@ -2,7 +2,7 @@
 using Corely.IAM.Groups.Models;
 using FluentValidation;
 
-namespace Corely.IAM.Validators.FluentValidators.Groups
+namespace Corely.IAM.Groups.Validators
 {
     internal class GroupValidator : AbstractValidator<Group>
     {

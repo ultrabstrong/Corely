@@ -39,6 +39,5 @@
 
   <ItemGroup>
     <Folder Include="Enums\" />
-    <Folder Include="Validators\FluentValidators\Security\" />
   </ItemGroup>
 </Project>

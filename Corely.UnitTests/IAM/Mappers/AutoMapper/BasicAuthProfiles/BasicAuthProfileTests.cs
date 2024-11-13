@@ -1,13 +1,12 @@
 ﻿using Corely.IAM.BasicAuths.Entities;
-using Corely.IAM.BasicAuths.Models;
 using Corely.Security.Hashing;
 
-namespace Corely.UnitTests.IAM.Mappers.AutoMapper.AuthProfiles
+namespace Corely.UnitTests.IAM.Mappers.AutoMapper.BasicAuthProfiles
 {
     public class BasicAuthProfileTests
         : BidirectionalProfileDelegateTestsBase
     {
-        private class Delegate : BidirectionalProfileTestsBase<BasicAuth, BasicAuthEntity>
+        private class Delegate : BidirectionalProfileTestsBase<Corely.IAM.BasicAuths.Models.BasicAuth, BasicAuthEntity>
         {
             protected override BasicAuthEntity ApplyDestinatonModifications(BasicAuthEntity destination)
             {

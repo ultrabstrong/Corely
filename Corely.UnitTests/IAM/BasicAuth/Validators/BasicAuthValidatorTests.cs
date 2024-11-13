@@ -1,12 +1,11 @@
 ﻿using Corely.IAM.BasicAuths.Constants;
-using Corely.IAM.BasicAuths.Models;
-using Corely.IAM.Validators.FluentValidators.BasicAuth;
+using Corely.IAM.BasicAuths.Validators;
 using Corely.Security.Hashing.Models;
 using Corely.Security.Hashing.Providers;
 using Corely.UnitTests.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.IAM.Validators.FluentValidators.Auth
+namespace Corely.UnitTests.IAM.BasicAuth.Validators
 {
     public class BasicAuthValidatorTests
     {
@@ -17,7 +16,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Auth
         [MemberData(nameof(InvalidPasswordData))]
         public void BasicAuthValidator_HasValidationError_WhenPasswordInvalid(string password)
         {
-            var basicAuth = new BasicAuth
+            var basicAuth = new Corely.IAM.BasicAuths.Models.BasicAuth
             {
                 Password = new HashedValue(Mock.Of<IHashProvider>())
                 {
@@ -38,7 +37,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators.Auth
         [Fact]
         public void BasicAuthValidator_HasValidationError_WhenPasswordIsNull()
         {
-            var basicAuth = new BasicAuth
+            var basicAuth = new Corely.IAM.BasicAuths.Models.BasicAuth
             {
                 Password = null
             };
