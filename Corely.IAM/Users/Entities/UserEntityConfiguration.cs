@@ -33,6 +33,14 @@ namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Users
             builder.HasIndex(e => e.Email)
                 .IsUnique();
 
+            builder.HasOne(p => p.BasicAuth)
+                .WithOne(d => d.User)
+                .HasForeignKey<BasicAuthEntity>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(e => e.Groups)
+                .WithMany(e => e.Users);
+
             builder.HasMany(e => e.SymmetricKeys)
                 .WithOne()
                 .HasForeignKey(p => p.UserId)
@@ -41,11 +49,6 @@ namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Users
             builder.HasMany(e => e.AsymmetricKeys)
                 .WithOne()
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(p => p.BasicAuth)
-                .WithOne(d => d.User)
-                .HasForeignKey<BasicAuthEntity>(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

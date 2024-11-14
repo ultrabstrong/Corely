@@ -24,6 +24,11 @@ namespace Corely.IAM.Accounts.Entities
             builder.HasMany(e => e.Users)
                 .WithMany(e => e.Accounts);
 
+            builder.HasMany(e => e.Groups)
+                .WithOne(e => e.Account)
+                .HasForeignKey(p => p.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.HasMany(e => e.SymmetricKeys)
                 .WithOne()
                 .HasForeignKey(p => p.AccountId)
