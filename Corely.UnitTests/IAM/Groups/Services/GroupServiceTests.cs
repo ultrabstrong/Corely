@@ -24,7 +24,7 @@ namespace Corely.UnitTests.IAM.Groups.Services
         public GroupServiceTests()
         {
             _groupService = new GroupService(
-                _serviceFactory.GetRequiredService<IRepoExtendedGet<GroupEntity>>(),
+                _serviceFactory.GetRequiredService<IRepo<GroupEntity>>(),
                 _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
@@ -73,7 +73,7 @@ namespace Corely.UnitTests.IAM.Groups.Services
             Assert.True(createGroupResult.IsSuccess);
 
             // Verify group is linked to account id
-            var groupRepo = _serviceFactory.GetRequiredService<IRepoExtendedGet<GroupEntity>>();
+            var groupRepo = _serviceFactory.GetRequiredService<IRepo<GroupEntity>>();
             var groupEntity = await groupRepo.GetAsync(
                 g => g.Id == createGroupResult.CreatedId,
                 include: q => q.Include(g => g.Account));

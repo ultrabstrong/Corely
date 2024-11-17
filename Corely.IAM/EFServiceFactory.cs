@@ -12,10 +12,8 @@ namespace Corely.IAM
         {
             services.AddScoped(serviceProvider => GetEFConfiguraiton());
             services.AddDbContext<IamDbContext>();
-            // Todo : Explore adding context-specific repos to allow for multiple contexts
-            services.AddScoped(typeof(IRepo<>), typeof(IamEfRepo<>));
-            services.AddScoped(typeof(IRepoExtendedGet<>), typeof(IamEfRepoExtendedGet<>));
             services.AddScoped(typeof(IReadonlyRepo<>), typeof(IamEfReadonlyRepo<>));
+            services.AddScoped(typeof(IRepo<>), typeof(IamEfRepo<>));
             services.AddScoped<IUnitOfWorkProvider, IamEfUoWProvider>();
         }
 

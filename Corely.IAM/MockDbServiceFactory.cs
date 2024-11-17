@@ -10,9 +10,8 @@ namespace Corely.IAM
     {
         protected override void AddDataServices(IServiceCollection services)
         {
-            services.AddSingleton(typeof(IRepo<>), typeof(MockRepo<>));
-            services.AddSingleton(typeof(IRepoExtendedGet<>), typeof(MockRepoExtendedGet<>));
             services.AddSingleton(typeof(IReadonlyRepo<>), typeof(MockReadonlyRepo<>));
+            services.AddSingleton(typeof(IRepo<>), typeof(MockRepo<>));
             services.AddSingleton<IUnitOfWorkProvider, MockUoWProvider>();
         }
     }

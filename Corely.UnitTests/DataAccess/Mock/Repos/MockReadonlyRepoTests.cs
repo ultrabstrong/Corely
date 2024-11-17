@@ -5,7 +5,7 @@ using Corely.UnitTests.Fixtures;
 
 namespace Corely.UnitTests.DataAccess.Mock.Repos
 {
-    public class MockReadonlyRepoTests : ReadonlyRepoTestsBase<EntityFixture>
+    public class MockReadonlyRepoTests : ReadonlyRepoTestsBase
     {
 
         private readonly MockReadonlyRepo<EntityFixture> _mockReadonlyRepo;
@@ -15,7 +15,7 @@ namespace Corely.UnitTests.DataAccess.Mock.Repos
         {
             var mockRepo = new MockRepo<EntityFixture>();
 
-            var entityList = fixture.CreateMany<EntityFixture>(5).ToList();
+            var entityList = Fixture.CreateMany<EntityFixture>(5).ToList();
             foreach (var entity in entityList)
             {
                 mockRepo.CreateAsync(entity);
@@ -26,7 +26,7 @@ namespace Corely.UnitTests.DataAccess.Mock.Repos
         }
 
 
-        protected override IReadonlyRepo<EntityFixture> Repo => _mockReadonlyRepo;
+        protected override IReadonlyRepo<EntityFixture> ReadonlyRepo => _mockReadonlyRepo;
 
         protected override int GetId => _getId;
     }

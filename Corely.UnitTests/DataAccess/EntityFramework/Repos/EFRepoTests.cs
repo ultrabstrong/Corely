@@ -10,8 +10,10 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
     public class EFRepoTests : RepoTestsBase
     {
         protected override IRepo<EntityFixture> Repo => _efRepo;
+        protected override int GetId => PrepIdForReadonlyRepo();
 
         private readonly EFRepo<EntityFixture> _efRepo;
+        private readonly DbContext _dbContext;
         private readonly DbSet<EntityFixture> _dbSet;
 
         private readonly EntityFixture _testEntity = new() { Id = 1 };
@@ -20,18 +22,25 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
         {
             var serviceFactory = new ServiceFactory();
 
-            var dbContext = new DbContextFixture(
+            _dbContext = new DbContextFixture(
                 new DbContextOptionsBuilder<DbContextFixture>()
                     .UseInMemoryDatabase(databaseName: new Fixture().Create<string>())
                     .Options);
 
-            _dbSet = dbContext.Set<EntityFixture>();
+            _dbSet = _dbContext.Set<EntityFixture>();
 
             var logger = serviceFactory.GetRequiredService<ILogger<EFRepo<EntityFixture>>>();
 
             _efRepo = new EFRepo<EntityFixture>(
                 logger,
-                dbContext);
+                _dbContext);
+        }
+
+        private int PrepIdForReadonlyRepo()
+        {
+            _dbSet.AddRange(Fixture.CreateMany<EntityFixture>(5));
+            _dbContext.SaveChanges();
+            return _dbSet.Skip(1).First().Id;
         }
 
         [Fact]

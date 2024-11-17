@@ -14,11 +14,11 @@ namespace Corely.IAM.BasicAuths.Services
 {
     internal class BasicAuthService : ServiceBase, IBasicAuthService
     {
-        private readonly IRepoExtendedGet<BasicAuthEntity> _basicAuthRepo;
+        private readonly IRepo<BasicAuthEntity> _basicAuthRepo;
         private readonly IPasswordValidationProvider _passwordValidationProvider;
 
         public BasicAuthService(
-            IRepoExtendedGet<BasicAuthEntity> basicAuthRepo,
+            IRepo<BasicAuthEntity> basicAuthRepo,
             IPasswordValidationProvider passwordValidationProvider,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,

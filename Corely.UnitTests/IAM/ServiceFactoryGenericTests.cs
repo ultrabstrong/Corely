@@ -58,9 +58,8 @@ namespace Corely.UnitTests.IAM
             [typeof(ISecurityService)],
 
             // Repos are registered as generics. Only need to test each one once.
-            [typeof(IRepo<AccountEntity>)],
-            [typeof(IRepoExtendedGet<AccountEntity>)],
             [typeof(IReadonlyRepo<AccountEntity>)],
+            [typeof(IRepo<AccountEntity>)],
 
             [typeof(IUnitOfWorkProvider)]
         ];

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
 {
-    public class EFReadonlyRepoTests : ReadonlyRepoTestsBase<EntityFixture>
+    public class EFReadonlyRepoTests : ReadonlyRepoTestsBase
     {
         private readonly EFReadonlyRepo<EntityFixture> _efReadonlyRepo;
         private readonly int _getId;
@@ -44,7 +44,7 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
             return dbContext;
         }
 
-        protected override IReadonlyRepo<EntityFixture> Repo => _efReadonlyRepo;
+        protected override IReadonlyRepo<EntityFixture> ReadonlyRepo => _efReadonlyRepo;
 
         protected override int GetId => _getId;
     }

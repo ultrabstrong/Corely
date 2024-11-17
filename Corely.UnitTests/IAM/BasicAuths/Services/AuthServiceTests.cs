@@ -21,7 +21,7 @@ namespace Corely.UnitTests.IAM.BasicAuths.Services
         public AuthServiceTests()
         {
             _authService = new BasicAuthService(
-                _serviceFactory.GetRequiredService<IRepoExtendedGet<BasicAuthEntity>>(),
+                _serviceFactory.GetRequiredService<IRepo<BasicAuthEntity>>(),
                 _serviceFactory.GetRequiredService<IPasswordValidationProvider>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),

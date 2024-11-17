@@ -24,7 +24,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         public UserServiceTests()
         {
             _userService = new UserService(
-                _serviceFactory.GetRequiredService<IRepoExtendedGet<UserEntity>>(),
+                _serviceFactory.GetRequiredService<IRepo<UserEntity>>(),
                 _serviceFactory.GetRequiredService<ISecurityService>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),

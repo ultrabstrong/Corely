@@ -1,13 +1,16 @@
 ﻿using Corely.DataAccess.Interfaces.Entities;
 using Corely.DataAccess.Interfaces.Repos;
+using System.Linq.Expressions;
 
 namespace Corely.DataAccess.Mock.Repos
 {
     public class MockRepo<T>
         : IRepo<T>
-        where T : IHasIdPk
+        where T : class, IHasIdPk
     {
         public readonly List<T> Entities = [];
+
+        public MockRepo() : base() { }
 
         public Task<int> CreateAsync(T entity)
         {
@@ -18,6 +21,28 @@ namespace Corely.DataAccess.Mock.Repos
         public virtual Task<T?> GetAsync(int id)
         {
             return Task.FromResult(Entities.FirstOrDefault(u => u.Id == id));
+        }
+
+        public virtual async Task<T?> GetAsync(
+            Expression<Func<T, bool>> query,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            Func<IQueryable<T>, IQueryable<T>>? include = null)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            var predicate = query.Compile();
+            var queryable = Entities.AsQueryable();
+
+            if (include != null)
+            {
+                queryable = include(queryable);
+            }
+
+            if (orderBy != null)
+            {
+                queryable = orderBy(queryable);
+            }
+
+            return await Task.FromResult(queryable.FirstOrDefault(predicate));
         }
 
         public virtual Task UpdateAsync(T entity)

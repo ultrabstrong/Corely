@@ -16,12 +16,12 @@ namespace Corely.IAM.Accounts.Services
 {
     internal class AccountService : ServiceBase, IAccountService
     {
-        private readonly IRepoExtendedGet<AccountEntity> _accountRepo;
+        private readonly IRepo<AccountEntity> _accountRepo;
         private readonly IReadonlyRepo<UserEntity> _userRepo;
         private readonly ISecurityService _securityService;
 
         public AccountService(
-            IRepoExtendedGet<AccountEntity> accountRepo,
+            IRepo<AccountEntity> accountRepo,
             IReadonlyRepo<UserEntity> userRepo,
             ISecurityService securityService,
             IMapProvider mapProvider,

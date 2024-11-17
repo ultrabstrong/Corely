@@ -19,11 +19,11 @@ namespace Corely.IAM.Users.Services
 {
     internal class UserService : ServiceBase, IUserService
     {
-        private readonly IRepoExtendedGet<UserEntity> _userRepo;
+        private readonly IRepo<UserEntity> _userRepo;
         private readonly ISecurityService _securityService;
 
         public UserService(
-            IRepoExtendedGet<UserEntity> userRepo,
+            IRepo<UserEntity> userRepo,
             ISecurityService securityService,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,

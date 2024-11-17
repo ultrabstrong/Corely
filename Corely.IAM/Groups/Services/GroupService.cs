@@ -15,11 +15,11 @@ namespace Corely.IAM.Groups.Services
 {
     internal class GroupService : ServiceBase, IGroupService
     {
-        private readonly IRepoExtendedGet<GroupEntity> _groupRepo;
+        private readonly IRepo<GroupEntity> _groupRepo;
         private readonly IReadonlyRepo<AccountEntity> _accountRepo;
 
         public GroupService(
-            IRepoExtendedGet<GroupEntity> groupRepo,
+            IRepo<GroupEntity> groupRepo,
             IReadonlyRepo<AccountEntity> accountRepo,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,

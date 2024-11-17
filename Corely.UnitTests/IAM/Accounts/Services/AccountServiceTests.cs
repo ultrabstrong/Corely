@@ -25,7 +25,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         public AccountServiceTests()
         {
             _accountService = new AccountService(
-                _serviceFactory.GetRequiredService<IRepoExtendedGet<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IRepo<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IReadonlyRepo<UserEntity>>(),
                 _serviceFactory.GetRequiredService<ISecurityService>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
@@ -64,7 +64,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
             Assert.True(createAccountResult.IsSuccess);
 
             // Verify account is linked to owner user id
-            var accountRepo = _serviceFactory.GetRequiredService<IRepoExtendedGet<AccountEntity>>();
+            var accountRepo = _serviceFactory.GetRequiredService<IRepo<AccountEntity>>();
             var accountEntity = await accountRepo.GetAsync(
                 a => a.Id == createAccountResult.CreatedId,
                 include: q => q.Include(a => a.Users));
