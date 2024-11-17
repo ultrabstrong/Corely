@@ -12,7 +12,7 @@ namespace Corely.DataAccess.Mock.Repos
 
         public MockRepo() : base() { }
 
-        public Task<int> CreateAsync(T entity)
+        public virtual Task<int> CreateAsync(T entity)
         {
             Entities.Add(entity);
             return Task.FromResult(entity.Id);
@@ -45,6 +45,13 @@ namespace Corely.DataAccess.Mock.Repos
             return await Task.FromResult(queryable.FirstOrDefault(predicate));
         }
 
+        public virtual Task<bool> AnyAsync(Expression<Func<T, bool>> query)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            var predicate = query.Compile();
+            return Task.FromResult(Entities.Any(predicate));
+        }
+
         public virtual Task UpdateAsync(T entity)
         {
             if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
@@ -63,7 +70,7 @@ namespace Corely.DataAccess.Mock.Repos
             return Task.CompletedTask;
         }
 
-        public Task DeleteAsync(int id)
+        public virtual Task DeleteAsync(int id)
         {
             Entities.RemoveAll(u => u.Id == id);
             return Task.CompletedTask;

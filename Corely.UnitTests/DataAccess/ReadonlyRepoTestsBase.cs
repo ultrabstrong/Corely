@@ -2,6 +2,7 @@
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Corely.UnitTests.DataAccess
 {
@@ -70,6 +71,47 @@ namespace Corely.UnitTests.DataAccess
             includeMock.Verify(
                 m => m(It.IsAny<IQueryable<EntityFixture>>()),
                 Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAsync_Throws_WithNullQuery()
+        {
+            var ex = await Record.ExceptionAsync(() => ReadonlyRepo.GetAsync(null!));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public async Task AnyAsync_ReturnsTrue_WhenEntityExists()
+        {
+            var id = GetId;
+            var result = await ReadonlyRepo.AnyAsync(u => u.Id == id);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task AnyAsync_Throws_WithNullQuery()
+        {
+            var ex = await Record.ExceptionAsync(() => ReadonlyRepo.AnyAsync(null!));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public void AllRepoMethodsAreVirtual()
+        {
+            var readonlyRepoType = ReadonlyRepo.GetType();
+
+            var methods = readonlyRepoType.GetMethods(
+                BindingFlags.Public |
+                BindingFlags.NonPublic |
+                BindingFlags.Instance |
+                BindingFlags.DeclaredOnly);
+
+            foreach (var method in methods)
+            {
+                Assert.True(method.IsVirtual, $"Method {method.Name} is not marked virtual");
+            }
         }
     }
 }

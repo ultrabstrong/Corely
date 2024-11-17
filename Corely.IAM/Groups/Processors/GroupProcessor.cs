@@ -54,9 +54,8 @@ namespace Corely.IAM.Groups.Processors
 
         private async Task ThrowIfGroupExists(int accountId, string groupName)
         {
-            var existingGroup = await _groupRepo.GetAsync(g =>
-                g.AccountId == accountId && g.GroupName == groupName);
-            if (existingGroup != null)
+            if (await _groupRepo.AnyAsync(g =>
+                g.AccountId == accountId && g.GroupName == groupName))
             {
                 Logger.LogWarning("Group with name {GroupName} already exists", groupName);
                 throw new GroupExistsException($"Group with name {groupName} already exists");

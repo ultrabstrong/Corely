@@ -64,8 +64,7 @@ namespace Corely.IAM.Accounts.Processors
 
         private async Task ThrowIfAccountExists(string accountName)
         {
-            var existingAccount = await _accountRepo.GetAsync(a => a.AccountName == accountName);
-            if (existingAccount != null)
+            if (await _accountRepo.AnyAsync(a => a.AccountName == accountName))
             {
                 Logger.LogWarning("Account {Account} already exists", accountName);
                 throw new AccountExistsException($"Account {accountName} already exists");

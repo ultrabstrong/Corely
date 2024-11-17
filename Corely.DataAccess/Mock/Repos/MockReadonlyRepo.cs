@@ -22,5 +22,7 @@ namespace Corely.DataAccess.Mock.Repos
             Expression<Func<T, bool>> query,
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
             Func<IQueryable<T>, IQueryable<T>>? include = null) => await _mockRepo.GetAsync(query, orderBy, include);
+
+        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> query) => await _mockRepo.AnyAsync(query);
     }
 }

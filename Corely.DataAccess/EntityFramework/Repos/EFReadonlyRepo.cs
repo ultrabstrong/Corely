@@ -28,11 +28,12 @@ namespace Corely.DataAccess.EntityFramework.Repos
             return await DbSet.FindAsync(id);
         }
 
-        public async Task<T?> GetAsync(
+        public virtual async Task<T?> GetAsync(
            Expression<Func<T, bool>> query,
            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
            Func<IQueryable<T>, IQueryable<T>>? include = null)
         {
+            ArgumentNullException.ThrowIfNull(query);
             var queryable = DbSet.AsQueryable();
 
             if (include != null)
@@ -46,6 +47,12 @@ namespace Corely.DataAccess.EntityFramework.Repos
             }
 
             return await queryable.FirstOrDefaultAsync(query);
+        }
+
+        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> query)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            return await DbSet.AnyAsync(query);
         }
     }
 }
