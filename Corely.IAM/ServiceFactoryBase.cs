@@ -26,32 +26,15 @@ namespace Corely.IAM
     {
         public void AddIAMServices(IServiceCollection services)
         {
-            services.AddLogging(AddLogging);
-            AddMapper(services);
-            AddValidator(services);
-            AddSecurityProcessors(services);
-            AddDataServices(services);
-            AddDomainServicesAndProcessors(services);
-            services.AddScoped(serviceProvider => GetSecurityConfigurationProvider());
-            services.AddScoped(serviceProvider => GetPasswordValidation());
-            services.Configure<SecurityOptions>(serviceProvider => GetSecurityOptions());
-        }
-
-        private static void AddMapper(IServiceCollection services)
-        {
             services.AddAutoMapper(typeof(IMapProvider).Assembly);
             services.AddScoped<IMapProvider, AutoMapperMapProvider>();
-        }
 
-        private static void AddValidator(IServiceCollection services)
-        {
+
             services.AddValidatorsFromAssemblyContaining<FluentValidationProvider>(includeInternalTypes: true);
             services.AddScoped<IFluentValidatorFactory, FluentValidatorFactory>();
             services.AddScoped<IValidationProvider, FluentValidationProvider>();
-        }
 
-        private static void AddSecurityProcessors(IServiceCollection services)
-        {
+
             services.AddSingleton<ISymmetricEncryptionProviderFactory, SymmetricEncryptionProviderFactory>(serviceProvider =>
                 new SymmetricEncryptionProviderFactory(SymmetricEncryptionConstants.AES_CODE));
 
@@ -65,31 +48,31 @@ namespace Corely.IAM
                 new HashProviderFactory(HashConstants.SALTED_SHA256_CODE));
 
             services.AddSingleton<ISecurityProcessor, SecurityProcessor>();
-        }
 
-        private static void AddDomainServicesAndProcessors(IServiceCollection services)
-        {
+
             services.AddScoped<IAccountProcessor, AccountProcessor>();
             services.AddScoped<IUserProcessor, UserProcessor>();
             services.AddScoped<IBasicAuthProcessor, BasicAuthProcessor>();
             services.AddScoped<IGroupProcessor, GroupProcessor>();
+
             services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<IDeregistrationService, DeregistrationService>();
             services.AddScoped<ISignInService, SignInService>();
+
+
+            services.AddLogging(AddLogging);
+            AddDataServices(services);
+            services.AddScoped(serviceProvider => GetSecurityConfigurationProvider());
+            services.AddScoped(serviceProvider => GetPasswordValidation());
+            services.Configure<SecurityOptions>(serviceProvider => GetSecurityOptions());
         }
 
-        protected abstract ISecurityConfigurationProvider GetSecurityConfigurationProvider();
         protected abstract void AddLogging(ILoggingBuilder builder);
         protected abstract void AddDataServices(IServiceCollection services);
+        protected abstract ISecurityConfigurationProvider GetSecurityConfigurationProvider();
 
-        protected virtual IPasswordValidationProvider GetPasswordValidation()
-        {
-            return new PasswordValidationProvider();
-        }
+        protected virtual IPasswordValidationProvider GetPasswordValidation() => new PasswordValidationProvider();
 
-        protected virtual SecurityOptions GetSecurityOptions()
-        {
-            return new SecurityOptions();
-        }
+        protected virtual SecurityOptions GetSecurityOptions() => new SecurityOptions();
     }
 }
