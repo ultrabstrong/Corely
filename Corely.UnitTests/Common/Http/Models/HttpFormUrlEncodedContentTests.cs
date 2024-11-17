@@ -19,7 +19,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Fact]
-        public void HttpFormUrlEncodedContent_ThrowsArgumentNullException_WhenContentIsNull()
+        public void HttpFormUrlEncodedContent_Throws_WhenContentIsNull()
         {
             var ex = Record.Exception(() => new HttpFormUrlEncodedContent(null));
             Assert.NotNull(ex);

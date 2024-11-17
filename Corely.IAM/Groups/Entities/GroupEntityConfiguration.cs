@@ -13,7 +13,7 @@ namespace Corely.IAM.Groups.Entities
 
         protected override void ConfigureInternal(EntityTypeBuilder<GroupEntity> builder)
         {
-            builder.Property(e => e.Name)
+            builder.Property(e => e.GroupName)
                 .IsRequired()
                 .HasMaxLength(GroupConstants.GROUP_NAME_MAX_LENGTH);
         }

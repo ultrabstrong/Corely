@@ -80,7 +80,7 @@ namespace Corely.IAM.Services
             {
                 await _uowProvider.BeginAsync();
 
-                var createAccountResult = await _accountService.CreateAccountAsync(new(request.AccountName, request.UserIdOfOwner));
+                var createAccountResult = await _accountService.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
                 if (!createAccountResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating account failed for account {Account}", request.AccountName);

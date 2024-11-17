@@ -32,7 +32,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task CreateUserAsync_ThrowsUserExistsException_WhenUserExists()
+        public async Task CreateUserAsync_Throws_WhenUserExists()
         {
             var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
             await _userService.CreateUserAsync(createUserRequest);
@@ -53,7 +53,7 @@ namespace Corely.UnitTests.IAM.Users.Services
         }
 
         [Fact]
-        public async Task CreateUser_ThrowsArgumentNullException_WithNullRequest()
+        public async Task CreateUser_Throws_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _userService.CreateUserAsync(null!));
 

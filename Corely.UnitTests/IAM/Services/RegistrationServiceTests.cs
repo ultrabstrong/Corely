@@ -116,7 +116,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public async Task RegisterUserAsync_ThrowsArgumentNullException_WithNullRequest()
+        public async Task RegisterUserAsync_Throws_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _registrationService.RegisterUserAsync(null!));
 
@@ -147,7 +147,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public async Task RegisterAccountAsync_ThrowsArgumentNullException_WithNullRequest()
+        public async Task RegisterAccountAsync_Throws_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _registrationService.RegisterAccountAsync(null!));
 

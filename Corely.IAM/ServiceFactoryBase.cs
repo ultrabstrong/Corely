@@ -1,5 +1,6 @@
 ﻿using Corely.IAM.Accounts.Services;
 using Corely.IAM.BasicAuths.Services;
+using Corely.IAM.Groups.Services;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
 using Corely.IAM.Security.Models;
@@ -71,6 +72,7 @@ namespace Corely.IAM
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBasicAuthService, BasicAuthService>();
+            services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<IDeregistrationService, DeregistrationService>();
             services.AddScoped<ISignInService, SignInService>();

@@ -53,7 +53,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         private readonly MockEncryptionProvider _mockEncryptionProvider = new();
 
         [Fact]
-        public void NullEncryptionTypeCode_ThrowsArgumentNullException_OnBuild()
+        public void NullEncryptionTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new NullMockEncryptionProvider());
             Assert.NotNull(ex);
@@ -61,7 +61,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         }
 
         [Fact]
-        public void EmptyEncryptionTypeCode_ThrowsArgumentException_OnBuild()
+        public void EmptyEncryptionTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new EmptyMockEncryptionProvider());
             Assert.NotNull(ex);
@@ -69,7 +69,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         }
 
         [Fact]
-        public void WhitespaceEncryptionTypeCode_ThrowsArgumentException_OnBuild()
+        public void WhitespaceEncryptionTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new WhitespaceMockEncryptionProvider());
             Assert.NotNull(ex);
@@ -77,7 +77,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         }
 
         [Fact]
-        public void ColonEncryptionTypeCode_ThrowsArgumentException_OnBuild()
+        public void ColonEncryptionTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new ColonMockEncryptionProvider());
             Assert.NotNull(ex);

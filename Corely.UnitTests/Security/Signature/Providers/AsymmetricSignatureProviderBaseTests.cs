@@ -79,7 +79,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         private readonly MockSignatureProvider _mockSignatureProvider = new();
 
         [Fact]
-        public void NullEncryptionTypeCode_ThrowsArgumentNullException_OnBuild()
+        public void NullEncryptionTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new NullMockSignatureProvider());
             Assert.NotNull(ex);
@@ -87,7 +87,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         }
 
         [Fact]
-        public void EmptyEncryptionTypeCode_ThrowsArgumentException_OnBuild()
+        public void EmptyEncryptionTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new EmptyMockSignatureProvider());
             Assert.NotNull(ex);
@@ -95,7 +95,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         }
 
         [Fact]
-        public void WhitespaceEncryptionTypeCode_ThrowsArgumentException_OnBuild()
+        public void WhitespaceEncryptionTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new WhitespaceMockSignatureProvider());
             Assert.NotNull(ex);
@@ -103,7 +103,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         }
 
         [Fact]
-        public void ColonEncryptionTypeCode_ThrowsArgumentException_OnBuild()
+        public void ColonEncryptionTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new ColonMockSignatureProvider());
             Assert.NotNull(ex);

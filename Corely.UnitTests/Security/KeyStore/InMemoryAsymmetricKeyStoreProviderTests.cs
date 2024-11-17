@@ -69,7 +69,7 @@ namespace Corely.UnitTests.Security.KeyStore
         }
 
         [Fact]
-        public void Get_ThrowsException_WhenVersionIsInvalid()
+        public void Get_Throws_WhenVersionIsInvalid()
         {
             var keyStoreProvider = new InMemoryAsymmetricKeyStoreProvider(
                 _fixture.Create<string>(),

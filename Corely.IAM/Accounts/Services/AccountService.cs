@@ -42,11 +42,11 @@ namespace Corely.IAM.Accounts.Services
 
             await ThrowIfAccountExists(account.AccountName);
 
-            var userEntity = await _userRepo.GetAsync(request.UserIdOfOwner);
+            var userEntity = await _userRepo.GetAsync(request.OwnerUserId);
             if (userEntity == null)
             {
-                Logger.LogWarning("User with Id {UserId} not found", request.UserIdOfOwner);
-                throw new UserDoesNotExistException($"User with Id {request.UserIdOfOwner} not found");
+                Logger.LogWarning("User with Id {UserId} not found", request.OwnerUserId);
+                throw new UserDoesNotExistException($"User with Id {request.OwnerUserId} not found");
             }
 
             account.SymmetricKeys = [_securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];

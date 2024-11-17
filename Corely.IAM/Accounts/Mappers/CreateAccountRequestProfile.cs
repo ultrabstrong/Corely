@@ -8,7 +8,7 @@ namespace Corely.IAM.Accounts.Mappers
         public CreateAccountRequestProfile()
         {
             CreateMap<CreateAccountRequest, Account>(MemberList.Source)
-                .ForSourceMember(m => m.UserIdOfOwner, opt => opt.DoNotValidate());
+                .ForSourceMember(m => m.OwnerUserId, opt => opt.DoNotValidate());
         }
     }
 }

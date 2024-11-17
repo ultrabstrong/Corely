@@ -25,7 +25,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void AddProvider_ThrowsHashProviderException_WithExistingProviderCode()
+        public void AddProvider_Throws_WithExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<IHashProvider>().Object;
@@ -53,7 +53,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void AddProvider_ThrowsNullException_WithNullProvider()
+        public void AddProvider_Throws_WithNullProvider()
         {
             var providerCode = _fixture.Create<string>();
 
@@ -78,7 +78,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ThrowsHashProviderException_WithNonExistingProviderCode()
+        public void UpdateProvider_Throws_WithNonExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<IHashProvider>().Object;
@@ -105,7 +105,7 @@ namespace Corely.UnitTests.Security.Hashing.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ThrowsNullException_WithNullProvider()
+        public void UpdateProvider_Throws_WithNullProvider()
         {
             var providerCode = _fixture.Create<string>();
 

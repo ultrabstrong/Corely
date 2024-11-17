@@ -5,7 +5,7 @@ namespace Corely.UnitTests.Common.Extensions
     public class StringUrlEncodeExtensionsTests
     {
         [Fact]
-        public void UrlEncode_Null_ThrowsArgumentNullException()
+        public void UrlEncode_Null_Throws()
         {
             var ex = Record.Exception(() => StringUrlEncodeExtensions.UrlEncode(null));
             Assert.NotNull(ex);
@@ -19,7 +19,7 @@ namespace Corely.UnitTests.Common.Extensions
         }
 
         [Fact]
-        public void UrlDecode_ThrowsArgumentNullException_WithNullInput()
+        public void UrlDecode_Throws_WithNullInput()
         {
             var ex = Record.Exception(() => StringUrlEncodeExtensions.UrlDecode(null));
             Assert.NotNull(ex);

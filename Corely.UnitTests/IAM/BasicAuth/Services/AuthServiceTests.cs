@@ -52,7 +52,7 @@ namespace Corely.UnitTests.IAM.BasicAuth.Services
         }
 
         [Fact]
-        public async Task UpsertBasicAuthAsync_ThrowsPasswordValidaitonException_WhenPasswordValidationFails()
+        public async Task UpsertBasicAuthAsync_Throws_WhenPasswordValidationFails()
         {
             var request = new UpsertBasicAuthRequest(1, "password");
 
@@ -67,7 +67,7 @@ namespace Corely.UnitTests.IAM.BasicAuth.Services
 
 
         [Fact]
-        public async Task UpsertBasicAuthAsync_ThrowsArgumentNullException_WithNullRequest()
+        public async Task UpsertBasicAuthAsync_Throws_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _authService.UpsertBasicAuthAsync(null!));
 
@@ -110,7 +110,7 @@ namespace Corely.UnitTests.IAM.BasicAuth.Services
         }
 
         [Fact]
-        public async Task VerifyBasicAuthAsync_ThrowsArgumentNullException_WithNullRequest()
+        public async Task VerifyBasicAuthAsync_Throws_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _authService.VerifyBasicAuthAsync(null!));
 

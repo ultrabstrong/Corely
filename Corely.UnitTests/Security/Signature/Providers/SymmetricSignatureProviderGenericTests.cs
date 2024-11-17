@@ -29,7 +29,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         }
 
         [Fact]
-        public void Sign_ThrowsArgumentNullException_WithNullInput()
+        public void Sign_Throws_WithNullInput()
         {
             var ex = Record.Exception(() => _signatureProvider.Sign(null!, _keyStoreProvider));
             Assert.NotNull(ex);
@@ -84,7 +84,7 @@ namespace Corely.UnitTests.Security.Signature.Providers
         }
 
         [Fact]
-        public void Verify_ThrowsArgumentNullException_WithNullData()
+        public void Verify_Throws_WithNullData()
         {
             var ex = Record.Exception(() => _signatureProvider.Verify(null!, _fixture.Create<string>(), _keyStoreProvider));
             Assert.NotNull(ex);

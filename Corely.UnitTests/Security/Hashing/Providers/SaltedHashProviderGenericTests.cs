@@ -45,7 +45,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void Hash_ThrowsArgumentNullException_WithNullInput()
+        public void Hash_Throws_WithNullInput()
         {
             var ex = Record.Exception(() => HashProvider.Hash(null));
             Assert.NotNull(ex);
@@ -83,7 +83,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         [InlineData(null, null)]
         [InlineData(null, "")]
         [InlineData("", null)]
-        public void Verify_ThrowsArgumentNullException_WithNull(string? value, string? hash)
+        public void Verify_Throws_WithNull(string? value, string? hash)
         {
             var ex = Record.Exception(() => HashProvider.Verify(value!, hash!));
             Assert.NotNull(ex);

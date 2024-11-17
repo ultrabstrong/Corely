@@ -25,7 +25,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
         }
 
         [Fact]
-        public void AddProvider_ThrowsSignatureProviderException_WithExistingProviderCode()
+        public void AddProvider_Throws_WithExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<ISymmetricSignatureProvider>().Object;
@@ -52,7 +52,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
         }
 
         [Fact]
-        public void AddProvider_ThrowsArgumentNullException_WithNullProvider()
+        public void AddProvider_Throws_WithNullProvider()
         {
             var providerCode = _fixture.Create<string>();
 
@@ -77,7 +77,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ThrowsSignatureProviderException_WithNonExistingProviderCode()
+        public void UpdateProvider_Throws_WithNonExistingProviderCode()
         {
             var providerCode = _fixture.Create<string>();
             var provider = new Mock<ISymmetricSignatureProvider>().Object;
@@ -103,7 +103,7 @@ namespace Corely.UnitTests.Security.Signature.Factories
         }
 
         [Fact]
-        public void UpdateProvider_ThrowsArgumentNullException_WithNullProvider()
+        public void UpdateProvider_Throws_WithNullProvider()
         {
             var providerCode = _fixture.Create<string>();
             var ex = Record.Exception(() => _signatureProviderFactory.UpdateProvider(providerCode, null));

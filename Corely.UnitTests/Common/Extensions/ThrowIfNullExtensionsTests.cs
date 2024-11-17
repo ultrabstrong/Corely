@@ -11,7 +11,7 @@ namespace Corely.UnitTests.Common.Extensions
         private class TestClass { }
 
         [Fact]
-        public void ThrowIfNull_ThrowsException_WithNullString()
+        public void ThrowIfNull_Throws_WithNullString()
         {
             string? value = null;
 
@@ -22,7 +22,7 @@ namespace Corely.UnitTests.Common.Extensions
         }
 
         [Fact]
-        public void ThrowIfAnyNull_ThrowsException_WithNullString()
+        public void ThrowIfAnyNull_Throws_WithNullString()
         {
             string[] values = [_fixture.Create<string>(), null];
 
@@ -33,7 +33,7 @@ namespace Corely.UnitTests.Common.Extensions
         }
 
         [Fact]
-        public void ThrowIfNull_ThrowsException_WithNullObject()
+        public void ThrowIfNull_Throws_WithNullObject()
         {
             TestClass? value = null;
 
@@ -44,7 +44,7 @@ namespace Corely.UnitTests.Common.Extensions
         }
 
         [Fact]
-        public void ThrowIfAnyNull_ThrowsException_WithNullObject()
+        public void ThrowIfAnyNull_Throws_WithNullObject()
         {
             TestClass?[] values = [_fixture.Create<TestClass>(), null];
 
@@ -56,7 +56,7 @@ namespace Corely.UnitTests.Common.Extensions
 
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
-        public void ThrowIfNullOrWhitespace_ThrowsException_WithInvalidValue(string value)
+        public void ThrowIfNullOrWhitespace_Throws_WithInvalidValue(string value)
         {
             var ex = Record.Exception(() => value.ThrowIfNullOrWhiteSpace(nameof(value)));
 
@@ -73,7 +73,7 @@ namespace Corely.UnitTests.Common.Extensions
 
         [Theory]
         [ClassData(typeof(NullEmptyAndWhitespace))]
-        public void ThrowIfAnyNullOrWhitespace_ThrowsException_WithInvalidValue(string value)
+        public void ThrowIfAnyNullOrWhitespace_Throws_WithInvalidValue(string value)
         {
             string[] values = [_fixture.Create<string>(), value];
 
@@ -92,7 +92,7 @@ namespace Corely.UnitTests.Common.Extensions
 
         [Theory]
         [ClassData(typeof(NullAndEmpty))]
-        public void ThrowIfNullOrEmpty_ThrowsException_WithInvalidValue(string value)
+        public void ThrowIfNullOrEmpty_Throws_WithInvalidValue(string value)
         {
             var ex = Record.Exception(() => value.ThrowIfNullOrEmpty(nameof(value)));
 
@@ -109,7 +109,7 @@ namespace Corely.UnitTests.Common.Extensions
 
         [Theory]
         [ClassData(typeof(NullAndEmpty))]
-        public void ThrowIfAnyNullOrEmpty_ThrowsException_WithInvalidValue(string value)
+        public void ThrowIfAnyNullOrEmpty_Throws_WithInvalidValue(string value)
         {
             string[] values = [_fixture.Create<string>(), value];
 

@@ -166,7 +166,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public async Task SignInAsync_ThrowsArgumentNullException_WithNullRequest()
+        public async Task SignInAsync_Throws_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _signInService.SignInAsync(null!));
 

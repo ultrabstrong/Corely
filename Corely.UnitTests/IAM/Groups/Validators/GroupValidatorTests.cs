@@ -16,11 +16,11 @@ namespace Corely.UnitTests.IAM.Groups.Validators
         {
             var group = new Group
             {
-                Name = groupName
+                GroupName = groupName
             };
 
             var result = _validator.TestValidate(group);
-            result.ShouldHaveValidationErrorFor(x => x.Name);
+            result.ShouldHaveValidationErrorFor(x => x.GroupName);
         }
 
 
@@ -29,11 +29,11 @@ namespace Corely.UnitTests.IAM.Groups.Validators
         {
             var group = new Group
             {
-                Name = groupName
+                GroupName = groupName
             };
 
             var result = _validator.TestValidate(group);
-            result.ShouldHaveValidationErrorFor(x => x.Name);
+            result.ShouldHaveValidationErrorFor(x => x.GroupName);
         }
 
         public static IEnumerable<object[]> InvalidGroupTestData =>

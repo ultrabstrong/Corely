@@ -50,7 +50,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         }
 
         [Fact]
-        public void Encrypt_ThrowsArgumentNullException_WithNullInput()
+        public void Encrypt_Throws_WithNullInput()
         {
             var ex = Record.Exception(() => _encryptionProvider.Encrypt(null!, _keyStoreProvider));
             Assert.NotNull(ex);
@@ -92,7 +92,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         }
 
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void Decrypt_ThrowsArgumentException_WithNullOrWhiteSpace(string value)
+        public void Decrypt_Throws_WithNullOrWhiteSpace(string value)
         {
             var ex = Record.Exception(() => _encryptionProvider.Decrypt(value, _keyStoreProvider));
             Assert.NotNull(ex);
@@ -110,7 +110,7 @@ namespace Corely.UnitTests.Security.Encryption.Providers
         [InlineData("::", true)]
         [InlineData(":1", true)]
         [InlineData(":2:", true)]
-        public void Decrypt_ThrowsEncryptionProviderException_WithInvalidFormat(string value, bool prependTypeCode)
+        public void Decrypt_Throws_WithInvalidFormat(string value, bool prependTypeCode)
         {
             var testValue = prependTypeCode
                 ? $"{_encryptionProvider.EncryptionTypeCode}{value}"

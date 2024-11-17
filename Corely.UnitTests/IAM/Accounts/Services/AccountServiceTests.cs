@@ -32,7 +32,8 @@ namespace Corely.UnitTests.IAM.Accounts.Services
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<AccountService>>());
         }
-        private async Task<int> CreateUser()
+
+        private async Task<int> CreateUserAsync()
         {
             var userId = _fixture.Create<int>();
             var user = new UserEntity { Id = userId };
@@ -41,9 +42,9 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         }
 
         [Fact]
-        public async Task CreateAccountAsync_ThrowsAccountExistsException_WhenAccountExists()
+        public async Task CreateAccountAsync_Throws_WhenAccountExists()
         {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUser());
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
             await _accountService.CreateAccountAsync(createAccountRequest);
 
             var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(createAccountRequest));
@@ -55,8 +56,9 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         [Fact]
         public async Task CreateAccount_ReturnsCreateAccountResult()
         {
-            var userIdOfOwner = await CreateUser();
+            var userIdOfOwner = await CreateUserAsync();
             var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, userIdOfOwner);
+
             var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
 
             Assert.True(createAccountResult.IsSuccess);
@@ -73,7 +75,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         }
 
         [Fact]
-        public async Task CreateAccount_ThrowsArgumentNullException_WithNullRequest()
+        public async Task CreateAccount_Throws_WithNullRequest()
         {
             var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(null!));
 
@@ -82,7 +84,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         }
 
         [Fact]
-        public async Task CreateAccount_ThrowsUserDoesNotExistException_WithInvalidUserId()
+        public async Task CreateAccount_Throws_WithInvalidUserId()
         {
             var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, -1);
             var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(createAccountRequest));
@@ -92,7 +94,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         }
 
         [Fact]
-        public async Task CreateAccount_ThrowsArgumentNullException_WithNullAccountName()
+        public async Task CreateAccount_Throws_WithNullAccountName()
         {
             var createAccountRequest = new CreateAccountRequest(null!, -1);
             var ex = await Record.ExceptionAsync(() => _accountService.CreateAccountAsync(createAccountRequest));
@@ -112,7 +114,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         [Fact]
         public async Task GetAccountByAccountIdAsync_ReturnsAccount_WhenAccountExists()
         {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUser());
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
             var createAccountResult = await _accountService.CreateAccountAsync(createAccountRequest);
 
             var account = await _accountService.GetAccountAsync(createAccountResult.CreatedId);
@@ -132,7 +134,7 @@ namespace Corely.UnitTests.IAM.Accounts.Services
         [Fact]
         public async Task GetAccountByAccountNameAsync_ReturnsAccount_WhenAccountExists()
         {
-            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUser());
+            var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
             await _accountService.CreateAccountAsync(createAccountRequest);
 
             var account = await _accountService.GetAccountAsync(VALID_ACCOUNT_NAME);

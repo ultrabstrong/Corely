@@ -27,7 +27,7 @@ namespace Corely.UnitTests.IAM.Validators
         }
 
         [Fact]
-        public void ThrowIfInvalid_ThrowsValidationException_WhenErrorsIsNotNull()
+        public void ThrowIfInvalid_Throws_WhenErrorsIsNotNull()
         {
             var result = new ValidationResult
             {

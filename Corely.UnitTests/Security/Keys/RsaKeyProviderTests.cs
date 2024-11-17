@@ -23,7 +23,7 @@ namespace Corely.UnitTests.Security.Keys
         [Theory]
         [InlineData(123)]
         [InlineData(-2048)]
-        public void Constructor_ThrowsArgumentException_WithInvalidKeySize(int keySize)
+        public void Constructor_Throws_WithInvalidKeySize(int keySize)
         {
             var ex = Record.Exception(() => new RsaKeyProvider(keySize));
             Assert.NotNull(ex);

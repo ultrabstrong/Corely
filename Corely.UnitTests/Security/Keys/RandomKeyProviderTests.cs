@@ -19,7 +19,7 @@ namespace Corely.UnitTests.Security.Keys
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Constructor_ThrowsException_WithInvalidKeySize(int keySize)
+        public void Constructor_Throws_WithInvalidKeySize(int keySize)
         {
             var ex = Record.Exception(() => new RandomKeyProvider(keySize));
             Assert.NotNull(ex);

@@ -37,7 +37,7 @@ namespace Corely.UnitTests.Common.Extensions
         }
 
         [Fact]
-        public void ReplaceGroup_ThrowsArgumentNullException_WhenInputIsNull()
+        public void ReplaceGroup_Throws_WhenInputIsNull()
         {
             Assert.Throws<ArgumentNullException>(() => _passwordRegex.ReplaceGroup(null!, 1, REDACTED));
         }

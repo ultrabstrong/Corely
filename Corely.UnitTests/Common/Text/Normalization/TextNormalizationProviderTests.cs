@@ -21,7 +21,7 @@ namespace Corely.UnitTests.Common.Text.Normalization
         ];
 
         [Fact]
-        public void BasicNormalize_ThrowsArgumentNullException()
+        public void BasicNormalize_Throws()
         {
             var ex = Record.Exception(() => _textNormalizationProvider.BasicNormalize(null!));
             Assert.NotNull(ex);
@@ -43,7 +43,7 @@ namespace Corely.UnitTests.Common.Text.Normalization
         ];
 
         [Fact]
-        public void NormalizeAddress_ThrowsArgumentNullException()
+        public void NormalizeAddress_Throws()
         {
             string[] additional = ["Apt. 1"];
 
@@ -68,7 +68,7 @@ namespace Corely.UnitTests.Common.Text.Normalization
         ];
 
         [Fact]
-        public void NormalizeAddressAndState_ThrowsArgumentNullException()
+        public void NormalizeAddressAndState_Throws()
         {
             string[] additional = ["Apt. 1"];
 

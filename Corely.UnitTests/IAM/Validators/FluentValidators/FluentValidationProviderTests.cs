@@ -56,7 +56,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators
         }
 
         [Fact]
-        public void Validate_ThrowsInvalidOperationException_WhenValidatorIsNotRegistered()
+        public void Validate_Throws_WhenValidatorIsNotRegistered()
         {
             var toValidate = _fixture.Create<object>();
 
@@ -68,7 +68,7 @@ namespace Corely.UnitTests.IAM.Validators.FluentValidators
         [Theory]
         [InlineData(INVALID_STRING)]
         [InlineData(null)]
-        public void ThrowIfInvalid_ThrowsValidationException_WhenValidationFails(string? value)
+        public void ThrowIfInvalid_Throws_WhenValidationFails(string? value)
         {
             var ex = Record.Exception(() => _provider.ThrowIfInvalid(value));
             Assert.NotNull(ex);

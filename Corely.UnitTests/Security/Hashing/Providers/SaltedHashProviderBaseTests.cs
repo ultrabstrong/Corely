@@ -43,7 +43,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         private readonly MockHashProvider _mockHashProvider = new();
 
         [Fact]
-        public void NullHashTypeCode_ThrowsArgumentNullException_OnBuild()
+        public void NullHashTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new NullTypeCodeMockHashProvider());
             Assert.NotNull(ex);
@@ -51,7 +51,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void EmptyHashTypeCode_ThrowsArgumentException_OnBuild()
+        public void EmptyHashTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new EmptyTypeCodeMockHashProvider());
             Assert.NotNull(ex);
@@ -59,7 +59,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void WhitespaceHashTypeCode_ThrowsArgumentException_OnBuild()
+        public void WhitespaceHashTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new WhitespaceTypeCodeMockHashProvider());
             Assert.NotNull(ex);
@@ -67,7 +67,7 @@ namespace Corely.UnitTests.Security.Hashing.Providers
         }
 
         [Fact]
-        public void ColonHashTypeCode_ThrowsArgumentException_OnBuild()
+        public void ColonHashTypeCode_Throws_OnBuild()
         {
             var ex = Record.Exception(() => new ColonTypeCodeMockHashProvider());
             Assert.NotNull(ex);

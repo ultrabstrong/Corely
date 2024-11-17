@@ -14,7 +14,7 @@ namespace Corely.UnitTests.Common.Http.Builders
         }
 
         [Fact]
-        public void Build_ThrowsArgumentNullException()
+        public void Build_Throws_WithNullArg()
         {
             var ex = Record.Exception(() => _builder.Build((null as IHttpContent<string>)!));
             Assert.NotNull(ex);
@@ -27,7 +27,7 @@ namespace Corely.UnitTests.Common.Http.Builders
         }
 
         [Fact]
-        public void Build_ThrowsNotImplementedException()
+        public void Build_Throws_WithUnimplementedContentType()
         {
             var ex = Record.Exception(() => _builder.Build(new TestHttpContent()));
             Assert.NotNull(ex);

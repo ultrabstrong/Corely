@@ -37,7 +37,7 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
         }
 
         [Fact]
-        public void Convert_ThrowsArgumentNullException_WhenValueIsNull()
+        public void Convert_Throws_WhenValueIsNull()
         {
             var ex = Record.Exception(() => _valueConverter.Convert(null, default));
             Assert.NotNull(ex);

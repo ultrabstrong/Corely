@@ -2,5 +2,5 @@
 {
     public record RegisterAccountRequest(
         string AccountName,
-        int UserIdOfOwner);
+        int OwnerUserId);
 }

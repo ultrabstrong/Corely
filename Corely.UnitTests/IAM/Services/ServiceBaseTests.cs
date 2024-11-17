@@ -50,7 +50,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapThenValidateTo_ThrowsArgumentNullException_WhenSourceIsNull()
+        public void MapThenValidateTo_Throws_WhenSourceIsNull()
         {
             var ex = Record.Exception(() => _mockServiceBase.MapThenValidateTo<object>(null!));
             Assert.NotNull(ex);
@@ -58,7 +58,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapThenValidateTo_ThrowsAutoMapperMappingException_IfDestinationIsInvalid()
+        public void MapThenValidateTo_Throws_IfDestinationIsUnmapped()
         {
             var createUserRequest = _fixture.Create<CreateUserRequest>();
 
@@ -69,7 +69,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapThenValidateTo_ThrowsValidationException_IfDestinationIsInvalid()
+        public void MapThenValidateTo_Throws_IfDestinationIsInvalid()
         {
             var createUserRequest = _fixture.Create<CreateUserRequest>();
 
@@ -91,7 +91,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapTo_ThrowsArgumentNullException_WhenSourceIsNull()
+        public void MapTo_Throws_WhenSourceIsNull()
         {
             var ex = Record.Exception(() => _mockServiceBase.MapTo<object>(null!));
             Assert.NotNull(ex);
@@ -99,7 +99,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void MapTo_ThrowsAutoMapperMappingException_IfDestinationIsInvalid()
+        public void MapTo_Throws_IfDestinationIsInvalid()
         {
             var createUserRequest = _fixture.Create<CreateUserRequest>();
 
@@ -121,7 +121,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public void Validate_ThrowsArgumentNullException_WhenModelIsNull()
+        public void Validate_Throws_WhenModelIsNull()
         {
             var ex = Record.Exception(() => _mockServiceBase.Validate<object>(null!));
             Assert.NotNull(ex);
