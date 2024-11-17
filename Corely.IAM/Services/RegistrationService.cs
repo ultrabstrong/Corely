@@ -1,9 +1,9 @@
 ﻿using Corely.Common.Extensions;
 using Corely.DataAccess.Interfaces.UnitOfWork;
-using Corely.IAM.Accounts.Services;
-using Corely.IAM.BasicAuths.Services;
+using Corely.IAM.Accounts.Processors;
+using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Models;
-using Corely.IAM.Users.Services;
+using Corely.IAM.Users.Processors;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM.Services
@@ -11,22 +11,22 @@ namespace Corely.IAM.Services
     internal class RegistrationService : IRegistrationService
     {
         private readonly ILogger<RegistrationService> _logger;
-        private readonly IAccountService _accountService;
-        private readonly IUserService _userService;
-        private readonly IBasicAuthService _authService;
+        private readonly IAccountProcessor _accountProcessor;
+        private readonly IUserProcessor _userProcessor;
+        private readonly IBasicAuthProcessor _basicAuthProcessor;
         private readonly IUnitOfWorkProvider _uowProvider;
 
         public RegistrationService(
             ILogger<RegistrationService> logger,
-            IAccountService accountService,
-            IUserService userService,
-            IBasicAuthService authService,
+            IAccountProcessor accountProcessor,
+            IUserProcessor userProcessor,
+            IBasicAuthProcessor basicAuthProcessor,
             IUnitOfWorkProvider uowProvider)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
-            _accountService = accountService.ThrowIfNull(nameof(accountService));
-            _userService = userService.ThrowIfNull(nameof(userService));
-            _authService = authService.ThrowIfNull(nameof(authService));
+            _accountProcessor = accountProcessor.ThrowIfNull(nameof(accountProcessor));
+            _userProcessor = userProcessor.ThrowIfNull(nameof(userProcessor));
+            _basicAuthProcessor = basicAuthProcessor.ThrowIfNull(nameof(basicAuthProcessor));
             _uowProvider = uowProvider.ThrowIfNull(nameof(uowProvider));
         }
 
@@ -40,7 +40,7 @@ namespace Corely.IAM.Services
             {
                 await _uowProvider.BeginAsync();
 
-                var createUserResult = await _userService.CreateUserAsync(new(request.Username, request.Email));
+                var createUserResult = await _userProcessor.CreateUserAsync(new(request.Username, request.Email));
                 if (!createUserResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating user failed for user {User}", request.Username);
@@ -48,7 +48,7 @@ namespace Corely.IAM.Services
                     return new RegisterUserResult(false, "Operation failed", -1, -1);
                 }
 
-                var createAuthResult = await _authService.UpsertBasicAuthAsync(new(createUserResult.CreatedId, request.Password));
+                var createAuthResult = await _basicAuthProcessor.UpsertBasicAuthAsync(new(createUserResult.CreatedId, request.Password));
                 if (!createAuthResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating auth failed for user {Username}", request.Username);
@@ -80,7 +80,7 @@ namespace Corely.IAM.Services
             {
                 await _uowProvider.BeginAsync();
 
-                var createAccountResult = await _accountService.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
+                var createAccountResult = await _accountProcessor.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
                 if (!createAccountResult.IsSuccess)
                 {
                     _logger.LogInformation("Creating account failed for account {Account}", request.AccountName);

@@ -5,30 +5,30 @@ using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Groups.Entities;
 using Corely.IAM.Groups.Exceptions;
 using Corely.IAM.Groups.Models;
-using Corely.IAM.Groups.Services;
+using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
 using Corely.IAM.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.IAM.Groups.Services
+namespace Corely.UnitTests.IAM.Groups.Processors
 {
-    public class GroupServiceTests
+    public class GroupProcessorTests
     {
         private const string VALID_GROUP_NAME = "groupname";
 
         private readonly Fixture _fixture = new();
         private readonly ServiceFactory _serviceFactory = new();
-        private readonly GroupService _groupService;
+        private readonly GroupProcessor _groupProcessor;
 
-        public GroupServiceTests()
+        public GroupProcessorTests()
         {
-            _groupService = new GroupService(
+            _groupProcessor = new GroupProcessor(
                 _serviceFactory.GetRequiredService<IRepo<GroupEntity>>(),
                 _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _serviceFactory.GetRequiredService<ILogger<GroupService>>());
+                _serviceFactory.GetRequiredService<ILogger<GroupProcessor>>());
         }
 
         private async Task<int> CreateAccountAsync()
@@ -44,7 +44,7 @@ namespace Corely.UnitTests.IAM.Groups.Services
         {
             var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, _fixture.Create<int>());
 
-            var ex = await Record.ExceptionAsync(() => _groupService.CreateGroupAsync(createGroupRequest));
+            var ex = await Record.ExceptionAsync(() => _groupProcessor.CreateGroupAsync(createGroupRequest));
 
             Assert.NotNull(ex);
             Assert.IsType<AccountDoesNotExistException>(ex);
@@ -54,9 +54,9 @@ namespace Corely.UnitTests.IAM.Groups.Services
         public async Task CreateGroupAsync_Throws_WhenGroupExists()
         {
             var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, await CreateAccountAsync());
-            await _groupService.CreateGroupAsync(createGroupRequest);
+            await _groupProcessor.CreateGroupAsync(createGroupRequest);
 
-            var ex = await Record.ExceptionAsync(() => _groupService.CreateGroupAsync(createGroupRequest));
+            var ex = await Record.ExceptionAsync(() => _groupProcessor.CreateGroupAsync(createGroupRequest));
 
             Assert.NotNull(ex);
             Assert.IsType<GroupExistsException>(ex);
@@ -68,7 +68,7 @@ namespace Corely.UnitTests.IAM.Groups.Services
             var accountId = await CreateAccountAsync();
             var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, accountId);
 
-            var createGroupResult = await _groupService.CreateGroupAsync(createGroupRequest);
+            var createGroupResult = await _groupProcessor.CreateGroupAsync(createGroupRequest);
 
             Assert.True(createGroupResult.IsSuccess);
 
@@ -85,7 +85,7 @@ namespace Corely.UnitTests.IAM.Groups.Services
         [Fact]
         public async Task CreateGroupAsync_Throws_WithNullRequest()
         {
-            var ex = await Record.ExceptionAsync(() => _groupService.CreateGroupAsync(null!));
+            var ex = await Record.ExceptionAsync(() => _groupProcessor.CreateGroupAsync(null!));
 
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
@@ -96,7 +96,7 @@ namespace Corely.UnitTests.IAM.Groups.Services
         {
             var createGroupRequest = new CreateGroupRequest(null!, await CreateAccountAsync());
 
-            var ex = await Record.ExceptionAsync(() => _groupService.CreateGroupAsync(createGroupRequest));
+            var ex = await Record.ExceptionAsync(() => _groupProcessor.CreateGroupAsync(createGroupRequest));
 
             Assert.NotNull(ex);
             Assert.IsType<ValidationException>(ex);

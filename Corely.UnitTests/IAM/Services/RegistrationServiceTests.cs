@@ -1,14 +1,14 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.IAM.Accounts.Models;
-using Corely.IAM.Accounts.Services;
+using Corely.IAM.Accounts.Processors;
 using Corely.IAM.BasicAuths.Models;
-using Corely.IAM.BasicAuths.Services;
+using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Enums;
 using Corely.IAM.Models;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Models;
-using Corely.IAM.Users.Services;
+using Corely.IAM.Users.Processors;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.IAM.Services
@@ -17,67 +17,67 @@ namespace Corely.UnitTests.IAM.Services
     {
         private readonly Fixture _fixture = new();
         private readonly Mock<IUnitOfWorkProvider> _unitOfWorkProviderMock = new();
-        private readonly Mock<IAccountService> _accountServiceMock;
-        private readonly Mock<IUserService> _userServiceMock;
-        private readonly Mock<IBasicAuthService> _authServiceMock;
+        private readonly Mock<IAccountProcessor> _accountProcessorMock;
+        private readonly Mock<IUserProcessor> _userProcessorMock;
+        private readonly Mock<IBasicAuthProcessor> _basicAuthProcessorMock;
         private readonly RegistrationService _registrationService;
 
         private bool _createAccountSuccess = true;
         private bool _createUserSuccess = true;
-        private bool _createAuthSuccess = true;
+        private bool _createBasicAuthSuccess = true;
 
         public RegistrationServiceTests() : base()
         {
-            _accountServiceMock = GetMockAccountService();
-            _userServiceMock = GetMockUserService();
-            _authServiceMock = GetMockAuthService();
+            _accountProcessorMock = GetMockAccountProcessor();
+            _userProcessorMock = GetMockUserProcessor();
+            _basicAuthProcessorMock = GetMockBasicAuthProcessor();
 
             _registrationService = new RegistrationService(
                 _serviceFactory.GetRequiredService<ILogger<RegistrationService>>(),
-                _accountServiceMock.Object,
-                _userServiceMock.Object,
-                _authServiceMock.Object,
+                _accountProcessorMock.Object,
+                _userProcessorMock.Object,
+                _basicAuthProcessorMock.Object,
                 _unitOfWorkProviderMock.Object);
         }
 
-        private Mock<IAccountService> GetMockAccountService()
+        private Mock<IAccountProcessor> GetMockAccountProcessor()
         {
-            var accountServiceMock = new Mock<IAccountService>();
+            var accountProcessorMock = new Mock<IAccountProcessor>();
 
-            accountServiceMock
+            accountProcessorMock
                 .Setup(m => m.CreateAccountAsync(
                     It.IsAny<CreateAccountRequest>()))
                 .ReturnsAsync(() =>
                     new CreateResult(_createAccountSuccess, string.Empty, _fixture.Create<int>()));
 
-            return accountServiceMock;
+            return accountProcessorMock;
         }
 
-        private Mock<IUserService> GetMockUserService()
+        private Mock<IUserProcessor> GetMockUserProcessor()
         {
-            var userServiceMock = new Mock<IUserService>();
+            var userProcessorMock = new Mock<IUserProcessor>();
 
-            userServiceMock
+            userProcessorMock
                 .Setup(m => m.CreateUserAsync(
                     It.IsAny<CreateUserRequest>()))
                 .ReturnsAsync(() =>
                     new CreateResult(_createUserSuccess, string.Empty, _fixture.Create<int>()));
 
-            return userServiceMock;
+            return userProcessorMock;
         }
 
-        private Mock<IBasicAuthService> GetMockAuthService()
+        private Mock<IBasicAuthProcessor> GetMockBasicAuthProcessor()
         {
-            var authServiceMock = new Mock<IBasicAuthService>();
+            var basicAuthProcessorMock = new Mock<IBasicAuthProcessor>();
 
-            authServiceMock
+            basicAuthProcessorMock
                 .Setup(m => m.UpsertBasicAuthAsync(
                     It.IsAny<UpsertBasicAuthRequest>()))
                 .ReturnsAsync(() =>
-                    new UpsertBasicAuthResult(_createAuthSuccess, string.Empty,
+                    new UpsertBasicAuthResult(_createBasicAuthSuccess, string.Empty,
                         _fixture.Create<int>(), _fixture.Create<UpsertType>()));
 
-            return authServiceMock;
+            return basicAuthProcessorMock;
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public async Task RegisterUserAsync_ReturnsFailureResult_WhenUserServiceFails()
+        public async Task RegisterUserAsync_ReturnsFailureResult_WhenUserProcessorFails()
         {
             _createUserSuccess = false;
             var request = _fixture.Create<RegisterUserRequest>();
@@ -99,14 +99,14 @@ namespace Corely.UnitTests.IAM.Services
             var result = await _registrationService.RegisterUserAsync(request);
 
             Assert.False(result.IsSuccess);
-            _authServiceMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
+            _basicAuthProcessorMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
             _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
         }
 
         [Fact]
-        public async Task RegisterUserAsync_ReturnsFailureResult_WhenAuthServiceFails()
+        public async Task RegisterUserAsync_ReturnsFailureResult_WhenBasicAuthProcessorFails()
         {
-            _createAuthSuccess = false;
+            _createBasicAuthSuccess = false;
             var request = _fixture.Create<RegisterUserRequest>();
 
             var result = await _registrationService.RegisterUserAsync(request);
@@ -135,7 +135,7 @@ namespace Corely.UnitTests.IAM.Services
         }
 
         [Fact]
-        public async Task RegisterAccountAsync_ReturnsFailureResult_WhenAccountServiceFails()
+        public async Task RegisterAccountAsync_ReturnsFailureResult_WhenAccountProcessorFails()
         {
             _createAccountSuccess = false;
             var request = _fixture.Create<RegisterAccountRequest>();

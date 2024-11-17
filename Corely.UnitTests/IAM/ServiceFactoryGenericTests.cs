@@ -2,14 +2,14 @@
 using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.IAM;
 using Corely.IAM.Accounts.Entities;
-using Corely.IAM.Accounts.Services;
-using Corely.IAM.BasicAuths.Services;
-using Corely.IAM.Groups.Services;
+using Corely.IAM.Accounts.Processors;
+using Corely.IAM.BasicAuths.Processors;
+using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Security.Services;
 using Corely.IAM.Services;
-using Corely.IAM.Users.Services;
+using Corely.IAM.Users.Processors;
 using Corely.IAM.Validators;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Hashing.Factories;
@@ -49,10 +49,10 @@ namespace Corely.UnitTests.IAM
             [typeof(IAsymmetricEncryptionProviderFactory)],
             [typeof(IHashProviderFactory)],
 
-            [typeof(IAccountService)],
-            [typeof(IUserService)],
-            [typeof(IBasicAuthService)],
-            [typeof(IGroupService)],
+            [typeof(IAccountProcessor)],
+            [typeof(IUserProcessor)],
+            [typeof(IBasicAuthProcessor)],
+            [typeof(IGroupProcessor)],
             [typeof(IRegistrationService)],
             [typeof(IDeregistrationService)],
             [typeof(ISecurityService)],

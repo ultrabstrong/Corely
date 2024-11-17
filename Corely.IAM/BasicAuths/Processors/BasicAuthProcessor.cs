@@ -10,19 +10,19 @@ using Corely.Security.Password;
 using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.BasicAuths.Services
+namespace Corely.IAM.BasicAuths.Processors
 {
-    internal class BasicAuthService : ServiceBase, IBasicAuthService
+    internal class BasicAuthProcessor : ServiceBase, IBasicAuthProcessor
     {
         private readonly IRepo<BasicAuthEntity> _basicAuthRepo;
         private readonly IPasswordValidationProvider _passwordValidationProvider;
 
-        public BasicAuthService(
+        public BasicAuthProcessor(
             IRepo<BasicAuthEntity> basicAuthRepo,
             IPasswordValidationProvider passwordValidationProvider,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
-            ILogger<BasicAuthService> logger)
+            ILogger<BasicAuthProcessor> logger)
             : base(mapProvider, validationProvider, logger)
         {
             _basicAuthRepo = basicAuthRepo.ThrowIfNull(nameof(basicAuthRepo));

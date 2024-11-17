@@ -12,21 +12,21 @@ using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.Accounts.Services
+namespace Corely.IAM.Accounts.Processors
 {
-    internal class AccountService : ServiceBase, IAccountService
+    internal class AccountProcessor : ServiceBase, IAccountProcessor
     {
         private readonly IRepo<AccountEntity> _accountRepo;
         private readonly IReadonlyRepo<UserEntity> _userRepo;
         private readonly ISecurityService _securityService;
 
-        public AccountService(
+        public AccountProcessor(
             IRepo<AccountEntity> accountRepo,
             IReadonlyRepo<UserEntity> userRepo,
             ISecurityService securityService,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
-            ILogger<AccountService> logger)
+            ILogger<AccountProcessor> logger)
             : base(mapProvider, validationProvider, logger)
         {
             _accountRepo = accountRepo.ThrowIfNull(nameof(accountRepo));

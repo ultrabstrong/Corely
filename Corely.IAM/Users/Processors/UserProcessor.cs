@@ -15,19 +15,19 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Corely.IAM.Users.Services
+namespace Corely.IAM.Users.Processors
 {
-    internal class UserService : ServiceBase, IUserService
+    internal class UserProcessor : ServiceBase, IUserProcessor
     {
         private readonly IRepo<UserEntity> _userRepo;
         private readonly ISecurityService _securityService;
 
-        public UserService(
+        public UserProcessor(
             IRepo<UserEntity> userRepo,
             ISecurityService securityService,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
-            ILogger<UserService> logger)
+            ILogger<UserProcessor> logger)
             : base(mapProvider, validationProvider, logger)
         {
             _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
@@ -127,7 +127,7 @@ namespace Corely.IAM.Users.Services
             // Todo - include permission-based scopes & roles
 
             var token = new JwtSecurityToken(
-                issuer: typeof(UserService).FullName,
+                issuer: typeof(UserProcessor).FullName,
                 claims: [
                     new Claim(JwtRegisteredClaimNames.Sub, "user_id"),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -163,7 +163,7 @@ namespace Corely.IAM.Users.Services
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = credentials.Key,
                 ValidateIssuer = true,
-                ValidIssuer = typeof(UserService).FullName,
+                ValidIssuer = typeof(UserProcessor).FullName,
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero

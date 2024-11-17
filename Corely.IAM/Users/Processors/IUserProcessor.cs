@@ -1,9 +1,9 @@
 ﻿using Corely.IAM.Models;
 using Corely.IAM.Users.Models;
 
-namespace Corely.IAM.Users.Services
+namespace Corely.IAM.Users.Processors
 {
-    internal interface IUserService
+    internal interface IUserProcessor
     {
         Task<CreateResult> CreateUserAsync(CreateUserRequest createUserRequest);
         Task<User?> GetUserAsync(int userId);

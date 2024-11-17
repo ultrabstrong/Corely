@@ -1,11 +1,11 @@
 ﻿using AutoFixture;
 using Corely.IAM.BasicAuths.Models;
-using Corely.IAM.BasicAuths.Services;
+using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Models;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Models;
-using Corely.IAM.Users.Services;
+using Corely.IAM.Users.Processors;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -16,8 +16,8 @@ namespace Corely.UnitTests.IAM.Services
         private const int MAX_LOGIN_ATTEMPTS = 5;
 
         private readonly Fixture _fixture = new();
-        private readonly Mock<IUserService> _userServiceMock;
-        private readonly Mock<IBasicAuthService> _authServiceMock;
+        private readonly Mock<IUserProcessor> _userProcessorMock;
+        private readonly Mock<IBasicAuthProcessor> _basicAuthProcessorMock;
         private readonly SignInService _signInService;
 
         private readonly User _user;
@@ -29,41 +29,41 @@ namespace Corely.UnitTests.IAM.Services
                 .Without(u => u.AsymmetricKeys)
                 .Create();
 
-            _userServiceMock = GetMockUserService();
-            _authServiceMock = GetMockAuthService();
+            _userProcessorMock = GetMockUserProcessor();
+            _basicAuthProcessorMock = GetMockBasicAuthProcessor();
 
             _signInService = new SignInService(
                 _serviceFactory.GetRequiredService<ILogger<SignInService>>(),
-                _userServiceMock.Object,
-                _authServiceMock.Object,
+                _userProcessorMock.Object,
+                _basicAuthProcessorMock.Object,
                 Options.Create(new SecurityOptions()
                 {
                     MaxLoginAttempts = MAX_LOGIN_ATTEMPTS
                 }));
         }
 
-        private Mock<IUserService> GetMockUserService()
+        private Mock<IUserProcessor> GetMockUserProcessor()
         {
-            var userServiceMock = new Mock<IUserService>();
+            var userProcessorMock = new Mock<IUserProcessor>();
 
-            userServiceMock
+            userProcessorMock
                 .Setup(m => m.GetUserAsync(
                     It.IsAny<string>()))
                 .ReturnsAsync(() => _user);
 
-            return userServiceMock;
+            return userProcessorMock;
         }
 
-        private static Mock<IBasicAuthService> GetMockAuthService()
+        private static Mock<IBasicAuthProcessor> GetMockBasicAuthProcessor()
         {
-            var authServiceMock = new Mock<IBasicAuthService>();
+            var basicAuthProcessorMock = new Mock<IBasicAuthProcessor>();
 
-            authServiceMock
+            basicAuthProcessorMock
                 .Setup(m => m.VerifyBasicAuthAsync(
                     It.IsAny<VerifyBasicAuthRequest>()))
                 .ReturnsAsync(true);
 
-            return authServiceMock;
+            return basicAuthProcessorMock;
         }
 
 
@@ -81,7 +81,7 @@ namespace Corely.UnitTests.IAM.Services
 
             Assert.True(result.IsSuccess);
 
-            _userServiceMock
+            _userProcessorMock
                 .Verify(m => m.UpdateUserAsync(It.Is<User>(u =>
                     HasUpdatedSuccessLogins(u))),
                 Times.Once);
@@ -103,7 +103,7 @@ namespace Corely.UnitTests.IAM.Services
         {
             var request = _fixture.Create<SignInRequest>();
 
-            _userServiceMock
+            _userProcessorMock
                 .Setup(m => m.GetUserAsync(request.Username))
                 .ReturnsAsync((User)null!);
 
@@ -137,7 +137,7 @@ namespace Corely.UnitTests.IAM.Services
             _user.FailedLoginsSinceLastSuccess = 0;
             _user.LastFailedLoginUtc = null;
 
-            _authServiceMock
+            _basicAuthProcessorMock
                 .Setup(m => m.VerifyBasicAuthAsync(
                     It.IsAny<VerifyBasicAuthRequest>()))
                 .ReturnsAsync(false);
@@ -148,7 +148,7 @@ namespace Corely.UnitTests.IAM.Services
             Assert.Equal("Invalid password", result.Message);
             Assert.Equal(string.Empty, result.AuthToken);
 
-            _userServiceMock
+            _userProcessorMock
                 .Verify(m => m.UpdateUserAsync(It.Is<User>(u =>
                     HasUpdatedFailedLogins(u))),
                 Times.Once);

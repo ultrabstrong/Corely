@@ -1,12 +1,12 @@
-﻿using Corely.IAM.Accounts.Services;
-using Corely.IAM.BasicAuths.Services;
-using Corely.IAM.Groups.Services;
+﻿using Corely.IAM.Accounts.Processors;
+using Corely.IAM.BasicAuths.Processors;
+using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Security.Services;
 using Corely.IAM.Services;
-using Corely.IAM.Users.Services;
+using Corely.IAM.Users.Processors;
 using Corely.IAM.Validators;
 using Corely.IAM.Validators.FluentValidators;
 using Corely.Security.Encryption;
@@ -69,10 +69,10 @@ namespace Corely.IAM
 
         private static void AddDomainServices(IServiceCollection services)
         {
-            services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IBasicAuthService, BasicAuthService>();
-            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IAccountProcessor, AccountProcessor>();
+            services.AddScoped<IUserProcessor, UserProcessor>();
+            services.AddScoped<IBasicAuthProcessor, BasicAuthProcessor>();
+            services.AddScoped<IGroupProcessor, GroupProcessor>();
             services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<IDeregistrationService, DeregistrationService>();
             services.AddScoped<ISignInService, SignInService>();

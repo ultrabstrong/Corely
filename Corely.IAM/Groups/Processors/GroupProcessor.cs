@@ -11,19 +11,19 @@ using Corely.IAM.Services;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.Groups.Services
+namespace Corely.IAM.Groups.Processors
 {
-    internal class GroupService : ServiceBase, IGroupService
+    internal class GroupProcessor : ServiceBase, IGroupProcessor
     {
         private readonly IRepo<GroupEntity> _groupRepo;
         private readonly IReadonlyRepo<AccountEntity> _accountRepo;
 
-        public GroupService(
+        public GroupProcessor(
             IRepo<GroupEntity> groupRepo,
             IReadonlyRepo<AccountEntity> accountRepo,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
-            ILogger<GroupService> logger)
+            ILogger<GroupProcessor> logger)
             : base(mapProvider, validationProvider, logger)
         {
             _groupRepo = groupRepo.ThrowIfNull(nameof(groupRepo));
