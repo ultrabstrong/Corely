@@ -6,16 +6,16 @@ using Corely.Security.Encryption.Models;
 using Corely.Security.Signature.Factories;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Corely.IAM.Security.Services
+namespace Corely.IAM.Security.Processors
 {
-    internal class SecurityService : ISecurityService
+    internal class SecurityProcessor : ISecurityProcessor
     {
         private readonly ISecurityConfigurationProvider _securityConfigurationProvider;
         private readonly ISymmetricEncryptionProviderFactory _symmetricEncryptionProviderFactory;
         private readonly IAsymmetricEncryptionProviderFactory _asymmetricEncryptionProviderFactory;
         private readonly IAsymmetricSignatureProviderFactory _asymmetricSignatureProviderFactory;
 
-        public SecurityService(
+        public SecurityProcessor(
             ISecurityConfigurationProvider securityConfigurationProvider,
             ISymmetricEncryptionProviderFactory symmetricEncryptionProviderFactory,
             IAsymmetricEncryptionProviderFactory asymmetricEncryptionProviderFactory,

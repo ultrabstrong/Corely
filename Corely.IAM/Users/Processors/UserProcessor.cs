@@ -3,7 +3,7 @@ using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
 using Corely.IAM.Security.Enums;
-using Corely.IAM.Security.Services;
+using Corely.IAM.Security.Processors;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Exceptions;
@@ -20,18 +20,18 @@ namespace Corely.IAM.Users.Processors
     internal class UserProcessor : ServiceBase, IUserProcessor
     {
         private readonly IRepo<UserEntity> _userRepo;
-        private readonly ISecurityService _securityService;
+        private readonly ISecurityProcessor _securityProcessor;
 
         public UserProcessor(
             IRepo<UserEntity> userRepo,
-            ISecurityService securityService,
+            ISecurityProcessor securityProcessor,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
             ILogger<UserProcessor> logger)
             : base(mapProvider, validationProvider, logger)
         {
             _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
-            _securityService = securityService.ThrowIfNull(nameof(securityService));
+            _securityProcessor = securityProcessor.ThrowIfNull(nameof(securityProcessor));
         }
 
         public async Task<CreateResult> CreateUserAsync(CreateUserRequest request)
@@ -42,10 +42,10 @@ namespace Corely.IAM.Users.Processors
 
             await ThrowIfUserExists(user.Username, user.Email);
 
-            user.SymmetricKeys = [_securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
+            user.SymmetricKeys = [_securityProcessor.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
             user.AsymmetricKeys = [
-                _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
-                _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey()];
+                _securityProcessor.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
+                _securityProcessor.GetAsymmetricSignatureKeyEncryptedWithSystemKey()];
 
             var userEntity = MapTo<UserEntity>(user);
             var createdId = await _userRepo.CreateAsync(userEntity);
@@ -121,8 +121,8 @@ namespace Corely.IAM.Users.Processors
                 return null;
             }
 
-            var privateKey = _securityService.DecryptWithSystemKey(signatureKey.EncryptedPrivateKey);
-            var credentials = _securityService.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, privateKey, true);
+            var privateKey = _securityProcessor.DecryptWithSystemKey(signatureKey.EncryptedPrivateKey);
+            var credentials = _securityProcessor.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, privateKey, true);
 
             // Todo - include permission-based scopes & roles
 
@@ -156,7 +156,7 @@ namespace Corely.IAM.Users.Processors
                 return false;
             }
 
-            var credentials = _securityService.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, signatureKey.PublicKey, false);
+            var credentials = _securityProcessor.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, signatureKey.PublicKey, false);
 
             var validationParameters = new TokenValidationParameters
             {

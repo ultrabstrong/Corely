@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Mappers;
-using Corely.IAM.Security.Services;
+using Corely.IAM.Security.Processors;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Users.Models;
@@ -25,7 +25,7 @@ namespace Corely.UnitTests.IAM.Users.Processors
         {
             _userProcessor = new UserProcessor(
                 _serviceFactory.GetRequiredService<IRepo<UserEntity>>(),
-                _serviceFactory.GetRequiredService<ISecurityService>(),
+                _serviceFactory.GetRequiredService<ISecurityProcessor>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<UserProcessor>>());

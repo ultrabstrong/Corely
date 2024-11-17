@@ -5,7 +5,7 @@ using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Processors;
 using Corely.IAM.Mappers;
-using Corely.IAM.Security.Services;
+using Corely.IAM.Security.Processors;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Validators;
@@ -27,7 +27,7 @@ namespace Corely.UnitTests.IAM.Accounts.Processors
             _accountProcessor = new AccountProcessor(
                 _serviceFactory.GetRequiredService<IRepo<AccountEntity>>(),
                 _serviceFactory.GetRequiredService<IReadonlyRepo<UserEntity>>(),
-                _serviceFactory.GetRequiredService<ISecurityService>(),
+                _serviceFactory.GetRequiredService<ISecurityProcessor>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<AccountProcessor>>());

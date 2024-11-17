@@ -5,7 +5,7 @@ using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
-using Corely.IAM.Security.Services;
+using Corely.IAM.Security.Processors;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Exceptions;
@@ -18,12 +18,12 @@ namespace Corely.IAM.Accounts.Processors
     {
         private readonly IRepo<AccountEntity> _accountRepo;
         private readonly IReadonlyRepo<UserEntity> _userRepo;
-        private readonly ISecurityService _securityService;
+        private readonly ISecurityProcessor _securityProcessor;
 
         public AccountProcessor(
             IRepo<AccountEntity> accountRepo,
             IReadonlyRepo<UserEntity> userRepo,
-            ISecurityService securityService,
+            ISecurityProcessor securityProcessor,
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
             ILogger<AccountProcessor> logger)
@@ -31,7 +31,7 @@ namespace Corely.IAM.Accounts.Processors
         {
             _accountRepo = accountRepo.ThrowIfNull(nameof(accountRepo));
             _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
-            _securityService = securityService.ThrowIfNull(nameof(securityService));
+            _securityProcessor = securityProcessor.ThrowIfNull(nameof(securityProcessor));
         }
 
         public async Task<CreateResult> CreateAccountAsync(CreateAccountRequest request)
@@ -49,10 +49,10 @@ namespace Corely.IAM.Accounts.Processors
                 throw new UserDoesNotExistException($"User with Id {request.OwnerUserId} not found");
             }
 
-            account.SymmetricKeys = [_securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
+            account.SymmetricKeys = [_securityProcessor.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
             account.AsymmetricKeys = [
-                _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
-                _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey()];
+                _securityProcessor.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
+                _securityProcessor.GetAsymmetricSignatureKeyEncryptedWithSystemKey()];
 
             var accountEntity = MapTo<AccountEntity>(account);
             accountEntity.Users = [userEntity];

@@ -4,7 +4,7 @@ using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
 using Corely.IAM.Security.Models;
-using Corely.IAM.Security.Services;
+using Corely.IAM.Security.Processors;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Processors;
 using Corely.IAM.Validators;
@@ -29,9 +29,9 @@ namespace Corely.IAM
             services.AddLogging(AddLogging);
             AddMapper(services);
             AddValidator(services);
-            AddSecurityServices(services);
+            AddSecurityProcessors(services);
             AddDataServices(services);
-            AddDomainServices(services);
+            AddDomainServicesAndProcessors(services);
             services.AddScoped(serviceProvider => GetSecurityConfigurationProvider());
             services.AddScoped(serviceProvider => GetPasswordValidation());
             services.Configure<SecurityOptions>(serviceProvider => GetSecurityOptions());
@@ -50,7 +50,7 @@ namespace Corely.IAM
             services.AddScoped<IValidationProvider, FluentValidationProvider>();
         }
 
-        private static void AddSecurityServices(IServiceCollection services)
+        private static void AddSecurityProcessors(IServiceCollection services)
         {
             services.AddSingleton<ISymmetricEncryptionProviderFactory, SymmetricEncryptionProviderFactory>(serviceProvider =>
                 new SymmetricEncryptionProviderFactory(SymmetricEncryptionConstants.AES_CODE));
@@ -64,10 +64,10 @@ namespace Corely.IAM
             services.AddSingleton<IHashProviderFactory, HashProviderFactory>(_ =>
                 new HashProviderFactory(HashConstants.SALTED_SHA256_CODE));
 
-            services.AddSingleton<ISecurityService, SecurityService>();
+            services.AddSingleton<ISecurityProcessor, SecurityProcessor>();
         }
 
-        private static void AddDomainServices(IServiceCollection services)
+        private static void AddDomainServicesAndProcessors(IServiceCollection services)
         {
             services.AddScoped<IAccountProcessor, AccountProcessor>();
             services.AddScoped<IUserProcessor, UserProcessor>();

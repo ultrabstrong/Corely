@@ -1,22 +1,22 @@
 ﻿using Corely.IAM;
 using Corely.IAM.Security.Enums;
-using Corely.IAM.Security.Services;
+using Corely.IAM.Security.Processors;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Providers;
 using Corely.Security.Signature.Factories;
 using Corely.Security.Signature.Providers;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.UnitTests.IAM.Security.Services
+namespace Corely.UnitTests.IAM.Security.Processors
 {
-    public class SecurityServiceTests
+    public class SecurityProcessorTests
     {
         private readonly ISecurityConfigurationProvider _securityConfigurationProvider;
         private readonly ISymmetricEncryptionProvider _symmetricEncryptionProvider;
         private readonly IAsymmetricEncryptionProvider _asymmetricEncryptionProvider;
         private readonly IAsymmetricSignatureProvider _asymmetricSignatureProvider;
-        private readonly SecurityService _securityService;
-        public SecurityServiceTests()
+        private readonly SecurityProcessor _securityProcessor;
+        public SecurityProcessorTests()
         {
             var serviceFactory = new ServiceFactory();
 
@@ -31,7 +31,7 @@ namespace Corely.UnitTests.IAM.Security.Services
             var asymmetricSignatureProviderFactory = serviceFactory.GetRequiredService<IAsymmetricSignatureProviderFactory>();
             _asymmetricSignatureProvider = asymmetricSignatureProviderFactory.GetDefaultProvider();
 
-            _securityService = new(
+            _securityProcessor = new(
                 _securityConfigurationProvider,
                 symmetricEncryptionProviderFactory,
                 asymmetricEncryptionProviderFactory,
@@ -41,7 +41,7 @@ namespace Corely.UnitTests.IAM.Security.Services
         [Fact]
         public void GetSymmetricEncryptionKeyEncryptedWithSystemKey_ReturnsSymmetricKey()
         {
-            var result = _securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey();
+            var result = _securityProcessor.GetSymmetricEncryptionKeyEncryptedWithSystemKey();
 
             Assert.NotNull(result);
             Assert.NotNull(result.Key);
@@ -49,7 +49,7 @@ namespace Corely.UnitTests.IAM.Security.Services
             Assert.Equal(KeyUsedFor.Encryption, result.KeyUsedFor);
             Assert.Equal(_symmetricEncryptionProvider.EncryptionTypeCode, result.ProviderTypeCode);
 
-            var decryptedKey = _securityService.DecryptWithSystemKey(result.Key.Secret);
+            var decryptedKey = _securityProcessor.DecryptWithSystemKey(result.Key.Secret);
 
             Assert.True(_symmetricEncryptionProvider
                 .GetSymmetricKeyProvider()
@@ -59,7 +59,7 @@ namespace Corely.UnitTests.IAM.Security.Services
         [Fact]
         public void GetAsymmetricEncryptionKeyEncryptedWithSystemKey_ReturnsAsymmetricKey()
         {
-            var result = _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey();
+            var result = _securityProcessor.GetAsymmetricEncryptionKeyEncryptedWithSystemKey();
 
             Assert.NotNull(result);
             Assert.NotNull(result.PublicKey);
@@ -68,7 +68,7 @@ namespace Corely.UnitTests.IAM.Security.Services
             Assert.Equal(KeyUsedFor.Encryption, result.KeyUsedFor);
             Assert.Equal(_asymmetricEncryptionProvider.EncryptionTypeCode, result.ProviderTypeCode);
 
-            var decryptedPrivateKey = _securityService.DecryptWithSystemKey(result.PrivateKey.Secret);
+            var decryptedPrivateKey = _securityProcessor.DecryptWithSystemKey(result.PrivateKey.Secret);
 
             Assert.True(_asymmetricEncryptionProvider
                 .GetAsymmetricKeyProvider()
@@ -78,7 +78,7 @@ namespace Corely.UnitTests.IAM.Security.Services
         [Fact]
         public void GetAsymmetricSignatureKeyEncryptedWithSystemKey_ReturnsAsymmetricKey()
         {
-            var result = _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
+            var result = _securityProcessor.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
 
             Assert.NotNull(result);
             Assert.NotNull(result.PublicKey);
@@ -87,7 +87,7 @@ namespace Corely.UnitTests.IAM.Security.Services
             Assert.Equal(KeyUsedFor.Signature, result.KeyUsedFor);
             Assert.Equal(_asymmetricSignatureProvider.SignatureTypeCode, result.ProviderTypeCode);
 
-            var decryptedPrivateKey = _securityService.DecryptWithSystemKey(result.PrivateKey.Secret);
+            var decryptedPrivateKey = _securityProcessor.DecryptWithSystemKey(result.PrivateKey.Secret);
 
             Assert.True(_asymmetricSignatureProvider
                 .GetAsymmetricKeyProvider()
@@ -97,10 +97,10 @@ namespace Corely.UnitTests.IAM.Security.Services
         [Fact]
         public void DecryptWithSystemKey_ReturnsDecryptedValue()
         {
-            var symmetricKey = _securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey();
+            var symmetricKey = _securityProcessor.GetSymmetricEncryptionKeyEncryptedWithSystemKey();
             var expectedDecryptedValue = symmetricKey.Key.GetDecrypted(_securityConfigurationProvider.GetSystemSymmetricKey());
 
-            var decryptedValue = _securityService.DecryptWithSystemKey(symmetricKey.Key.Secret);
+            var decryptedValue = _securityProcessor.DecryptWithSystemKey(symmetricKey.Key.Secret);
 
             Assert.Equal(expectedDecryptedValue, decryptedValue);
         }
@@ -109,7 +109,7 @@ namespace Corely.UnitTests.IAM.Security.Services
         [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
         public void DecryptWithSystemKey_ReturnsEmptyString_WithEmptyInput(string encryptedValue)
         {
-            var decryptedValue = _securityService.DecryptWithSystemKey(encryptedValue);
+            var decryptedValue = _securityProcessor.DecryptWithSystemKey(encryptedValue);
 
             Assert.Equal(string.Empty, decryptedValue);
         }
@@ -117,10 +117,10 @@ namespace Corely.UnitTests.IAM.Security.Services
         [Fact]
         public void GetAsymmetricSigningCredentials_ReturnsSigningCredentials_WithPrivateKey()
         {
-            var asymmetricKey = _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
-            var privateKey = _securityService.DecryptWithSystemKey(asymmetricKey.PrivateKey.Secret);
+            var asymmetricKey = _securityProcessor.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
+            var privateKey = _securityProcessor.DecryptWithSystemKey(asymmetricKey.PrivateKey.Secret);
 
-            var credentials = _securityService.GetAsymmetricSigningCredentials(asymmetricKey.ProviderTypeCode, privateKey, true);
+            var credentials = _securityProcessor.GetAsymmetricSigningCredentials(asymmetricKey.ProviderTypeCode, privateKey, true);
 
             Assert.NotNull(credentials);
         }
@@ -128,10 +128,10 @@ namespace Corely.UnitTests.IAM.Security.Services
         [Fact]
         public void GetAsymmetricSigningCredentials_ReturnsSigningCredentials_WithPublicKey()
         {
-            var asymmetricKey = _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
+            var asymmetricKey = _securityProcessor.GetAsymmetricSignatureKeyEncryptedWithSystemKey();
             var publicKey = asymmetricKey.PublicKey;
 
-            var credentials = _securityService.GetAsymmetricSigningCredentials(asymmetricKey.ProviderTypeCode, publicKey, false);
+            var credentials = _securityProcessor.GetAsymmetricSigningCredentials(asymmetricKey.ProviderTypeCode, publicKey, false);
 
             Assert.NotNull(credentials);
         }

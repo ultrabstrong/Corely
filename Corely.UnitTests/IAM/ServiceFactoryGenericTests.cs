@@ -7,7 +7,7 @@ using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
 using Corely.IAM.Security.Models;
-using Corely.IAM.Security.Services;
+using Corely.IAM.Security.Processors;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Processors;
 using Corely.IAM.Validators;
@@ -55,7 +55,7 @@ namespace Corely.UnitTests.IAM
             [typeof(IGroupProcessor)],
             [typeof(IRegistrationService)],
             [typeof(IDeregistrationService)],
-            [typeof(ISecurityService)],
+            [typeof(ISecurityProcessor)],
 
             // Repos are registered as generics. Only need to test each one once.
             [typeof(IReadonlyRepo<AccountEntity>)],
