@@ -14,5 +14,10 @@ namespace Corely.DataAccess.Interfaces.Repos
             Func<IQueryable<T>, IQueryable<T>>? include = null);
 
         Task<bool> AnyAsync(Expression<Func<T, bool>> query);
+
+        Task<List<T>> ListAsync(
+            Expression<Func<T, bool>>? query = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            Func<IQueryable<T>, IQueryable<T>>? include = null);
     }
 }

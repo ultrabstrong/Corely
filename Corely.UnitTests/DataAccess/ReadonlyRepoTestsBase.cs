@@ -12,12 +12,29 @@ namespace Corely.UnitTests.DataAccess
 
         protected abstract IReadonlyRepo<EntityFixture> ReadonlyRepo { get; }
 
-        protected abstract int GetId { get; }
+        protected abstract int FillRepoAndReturnId();
+
+        [Fact]
+        public void AllRepoMethodsAreVirtual()
+        {
+            var readonlyRepoType = ReadonlyRepo.GetType();
+
+            var methods = readonlyRepoType.GetMethods(
+                BindingFlags.Public |
+                BindingFlags.NonPublic |
+                BindingFlags.Instance |
+                BindingFlags.DeclaredOnly);
+
+            foreach (var method in methods)
+            {
+                Assert.True(method.IsVirtual, $"Method {method.Name} is not marked virtual");
+            }
+        }
 
         [Fact]
         public async Task GetAsync_ReturnsEntity_WIthIdLookup()
         {
-            var id = GetId;
+            var id = FillRepoAndReturnId();
             var result = await ReadonlyRepo.GetAsync(id);
 
             Assert.NotNull(result);
@@ -27,7 +44,7 @@ namespace Corely.UnitTests.DataAccess
         [Fact]
         public async Task GetAsync_ReturnsEntity_WithVerboseIdLookup()
         {
-            var id = GetId;
+            var id = FillRepoAndReturnId();
             var result = await ReadonlyRepo.GetAsync(u => u.Id == id);
 
             Assert.NotNull(result);
@@ -84,7 +101,7 @@ namespace Corely.UnitTests.DataAccess
         [Fact]
         public async Task AnyAsync_ReturnsTrue_WhenEntityExists()
         {
-            var id = GetId;
+            var id = FillRepoAndReturnId();
             var result = await ReadonlyRepo.AnyAsync(u => u.Id == id);
             Assert.True(result);
         }
@@ -98,20 +115,54 @@ namespace Corely.UnitTests.DataAccess
         }
 
         [Fact]
-        public void AllRepoMethodsAreVirtual()
+        public async Task ListAsync_ReturnsAllEntities_WhenQueryIsNull()
         {
-            var readonlyRepoType = ReadonlyRepo.GetType();
+            FillRepoAndReturnId();
+            var result = await ReadonlyRepo.ListAsync();
+            Assert.NotEmpty(result);
+        }
 
-            var methods = readonlyRepoType.GetMethods(
-                BindingFlags.Public |
-                BindingFlags.NonPublic |
-                BindingFlags.Instance |
-                BindingFlags.DeclaredOnly);
+        [Fact]
+        public async Task ListAsync_ReturnsMatchingEntities_WhenQueryIsNotNull()
+        {
+            var id = FillRepoAndReturnId();
+            var result = await ReadonlyRepo.ListAsync(u => u.Id == id);
+            Assert.NotEmpty(result);
+            Assert.All(result, u => Assert.Equal(id, u.Id));
+        }
 
-            foreach (var method in methods)
-            {
-                Assert.True(method.IsVirtual, $"Method {method.Name} is not marked virtual");
-            }
+        [Fact]
+        public async Task ListAsync_Uses_OrderBy()
+        {
+            var orderByMock = new Mock<Func<IQueryable<EntityFixture>, IOrderedQueryable<EntityFixture>>>();
+            orderByMock
+                .Setup(m => m(
+                    It.IsAny<IQueryable<EntityFixture>>()))
+                .Returns((IQueryable<EntityFixture> q) =>
+                    q.OrderBy(u => u.Id));
+
+            await ReadonlyRepo.ListAsync(orderBy: orderByMock.Object);
+
+            orderByMock.Verify(
+                m => m(It.IsAny<IQueryable<EntityFixture>>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task ListAsync_Uses_Include()
+        {
+            var includeMock = new Mock<Func<IQueryable<EntityFixture>, IQueryable<EntityFixture>>>();
+            includeMock
+                .Setup(m => m(
+                    It.IsAny<IQueryable<EntityFixture>>()))
+                .Returns((IQueryable<EntityFixture> q) =>
+                    q.Include(u => u.NavigationProperty));
+
+            await ReadonlyRepo.ListAsync(include: includeMock.Object);
+
+            includeMock.Verify(
+                m => m(It.IsAny<IQueryable<EntityFixture>>()),
+                Times.Once);
         }
     }
 }

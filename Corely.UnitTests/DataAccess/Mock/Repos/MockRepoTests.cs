@@ -9,9 +9,7 @@ namespace Corely.UnitTests.DataAccess.Mock.Repos
     {
         private readonly MockRepo<EntityFixture> _mockRepo = new();
         protected override IRepo<EntityFixture> Repo => _mockRepo;
-        protected override int GetId => PrepIdForReadonlyRepo();
-
-        private int PrepIdForReadonlyRepo()
+        protected override int FillRepoAndReturnId()
         {
             var entityList = Fixture.CreateMany<EntityFixture>(5).ToList();
             foreach (var entity in entityList)

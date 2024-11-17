@@ -54,5 +54,30 @@ namespace Corely.DataAccess.EntityFramework.Repos
             ArgumentNullException.ThrowIfNull(query);
             return await DbSet.AnyAsync(query);
         }
+
+        public virtual async Task<List<T>> ListAsync(
+            Expression<Func<T, bool>>? query = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            Func<IQueryable<T>, IQueryable<T>>? include = null)
+        {
+            var queryable = DbSet.AsQueryable();
+
+            if (include != null)
+            {
+                queryable = include(queryable);
+            }
+
+            if (orderBy != null)
+            {
+                queryable = orderBy(queryable);
+            }
+
+            if (query != null)
+            {
+                queryable = queryable.Where(query);
+            }
+
+            return await queryable.ToListAsync();
+        }
     }
 }

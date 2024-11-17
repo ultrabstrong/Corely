@@ -9,12 +9,8 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
 {
     public class EFRepoTests : RepoTestsBase
     {
-        protected override IRepo<EntityFixture> Repo => _efRepo;
-        protected override int GetId => PrepIdForReadonlyRepo();
-
         private readonly EFRepo<EntityFixture> _efRepo;
         private readonly DbContext _dbContext;
-        private readonly DbSet<EntityFixture> _dbSet;
 
         private readonly EntityFixture _testEntity = new() { Id = 1 };
 
@@ -27,8 +23,6 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
                     .UseInMemoryDatabase(databaseName: new Fixture().Create<string>())
                     .Options);
 
-            _dbSet = _dbContext.Set<EntityFixture>();
-
             var logger = serviceFactory.GetRequiredService<ILogger<EFRepo<EntityFixture>>>();
 
             _efRepo = new EFRepo<EntityFixture>(
@@ -36,19 +30,14 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
                 _dbContext);
         }
 
-        private int PrepIdForReadonlyRepo()
-        {
-            _dbSet.AddRange(Fixture.CreateMany<EntityFixture>(5));
-            _dbContext.SaveChanges();
-            return _dbSet.Skip(1).First().Id;
-        }
+        protected override IRepo<EntityFixture> Repo => _efRepo;
 
         [Fact]
         public async Task CreateAsync_AddsEntity()
         {
             await _efRepo.CreateAsync(_testEntity);
 
-            var entity = _dbSet.Find(_testEntity.Id);
+            var entity = _dbContext.Set<EntityFixture>().Find(_testEntity.Id);
 
             Assert.Equal(_testEntity, entity);
         }
@@ -66,12 +55,12 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
         public async Task UpdateAsync_AttachesUntrackedEntity()
         {
             await _efRepo.CreateAsync(_testEntity);
-            _dbSet.Entry(_testEntity).State = EntityState.Detached;
+            _dbContext.Set<EntityFixture>().Entry(_testEntity).State = EntityState.Detached;
 
             var entity = new EntityFixture { Id = _testEntity.Id };
             await _efRepo.UpdateAsync(entity);
 
-            var updatedEntity = _dbSet.Find(entity.Id);
+            var updatedEntity = _dbContext.Set<EntityFixture>().Find(entity.Id);
             Assert.NotNull(updatedEntity);
 
             Assert.NotEqual(_testEntity, updatedEntity);
@@ -114,6 +103,13 @@ namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
             var ex = await Record.ExceptionAsync(() => _efRepo.DeleteAsync(_testEntity.Id));
 
             Assert.Null(ex);
+        }
+
+        protected override int FillRepoAndReturnId()
+        {
+            _dbContext.Set<EntityFixture>().AddRange(Fixture.CreateMany<EntityFixture>(5));
+            _dbContext.SaveChanges();
+            return _dbContext.Set<EntityFixture>().Skip(1).First().Id;
         }
     }
 }

@@ -52,6 +52,28 @@ namespace Corely.DataAccess.Mock.Repos
             return Task.FromResult(Entities.Any(predicate));
         }
 
+        public virtual Task<List<T>> ListAsync(
+            Expression<Func<T, bool>>? query = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            Func<IQueryable<T>, IQueryable<T>>? include = null)
+        {
+            var queryable = Entities.AsQueryable();
+            if (query != null)
+            {
+                var predicate = query.Compile();
+                queryable = queryable.Where(predicate).AsQueryable();
+            }
+            if (include != null)
+            {
+                queryable = include(queryable);
+            }
+            if (orderBy != null)
+            {
+                queryable = orderBy(queryable);
+            }
+            return Task.FromResult(queryable.ToList());
+        }
+
         public virtual Task UpdateAsync(T entity)
         {
             if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
