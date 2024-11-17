@@ -1,6 +1,6 @@
 ﻿namespace Corely.IAM.BasicAuths.Models
 {
-    public record UpsertBasicAuthRequest(
+    internal record UpsertBasicAuthRequest(
         int UserId,
         string Password);
 }

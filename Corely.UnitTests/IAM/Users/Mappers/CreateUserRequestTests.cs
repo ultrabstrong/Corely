@@ -4,6 +4,10 @@ using Corely.UnitTests.IAM.Mappers.AutoMapper;
 namespace Corely.UnitTests.IAM.Users.Mappers
 {
     public class CreateUserRequestTests
-        : ProfileTestsBase<CreateUserRequest, User>
-    { }
+        : ProfileDelegateTestsBase
+    {
+        private class Delegate : ProfileTestsBase<CreateUserRequest, User>;
+
+        protected override ProfileTestsBase GetDelegate() => new Delegate();
+    }
 }

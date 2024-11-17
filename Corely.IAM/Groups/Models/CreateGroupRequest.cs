@@ -1,6 +1,6 @@
 ﻿namespace Corely.IAM.Groups.Models
 {
-    public record CreateGroupRequest(
+    internal record CreateGroupRequest(
         string GroupName,
         int OwnerAccountId);
 }

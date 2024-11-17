@@ -3,7 +3,7 @@ using Corely.IAM.Models;
 
 namespace Corely.IAM.BasicAuths.Models
 {
-    public record UpsertBasicAuthResult(
+    internal record UpsertBasicAuthResult(
         bool IsSuccess,
         string? Message,
         int CreatedId,

@@ -2,7 +2,7 @@
 using Corely.Security.Hashing;
 using Corely.UnitTests.IAM.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.IAM.BasicAuth.Mappers
+namespace Corely.UnitTests.IAM.BasicAuths.Mappers
 {
     public class BasicAuthProfileTests
         : BidirectionalProfileDelegateTestsBase

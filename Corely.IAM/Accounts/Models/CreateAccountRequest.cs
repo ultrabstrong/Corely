@@ -1,6 +1,6 @@
 ﻿namespace Corely.IAM.Accounts.Models
 {
-    public record CreateAccountRequest(
+    internal record CreateAccountRequest(
         string AccountName,
         int OwnerUserId);
 }

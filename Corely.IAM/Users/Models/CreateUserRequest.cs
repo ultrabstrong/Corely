@@ -1,6 +1,6 @@
 ﻿namespace Corely.IAM.Users.Models
 {
-    public record CreateUserRequest(
+    internal record CreateUserRequest(
         string Username,
         string Email);
 }
