@@ -43,22 +43,22 @@ namespace Corely.IAM.Services
                 var createUserResult = await _userProcessor.CreateUserAsync(new(request.Username, request.Email));
                 if (!createUserResult.IsSuccess)
                 {
-                    _logger.LogInformation("Creating user failed for user {User}", request.Username);
+                    _logger.LogInformation("Creating user failed for username {Username}", request.Username);
                     _logger.LogInformation("Account registration failed.");
-                    return new RegisterUserResult(false, "Operation failed", -1, -1);
+                    return new RegisterUserResult(false, createUserResult.Message, -1, -1);
                 }
 
                 var createAuthResult = await _basicAuthProcessor.UpsertBasicAuthAsync(new(createUserResult.CreatedId, request.Password));
                 if (!createAuthResult.IsSuccess)
                 {
-                    _logger.LogInformation("Creating auth failed for user {Username}", request.Username);
+                    _logger.LogInformation("Creating auth failed for username {Username}", request.Username);
                     _logger.LogInformation("Account registration failed.");
-                    return new RegisterUserResult(false, "Operation failed", -1, -1);
+                    return new RegisterUserResult(false, createAuthResult.Message, -1, -1);
                 }
 
                 await _uowProvider.CommitAsync();
                 operationSucceeded = true;
-                _logger.LogInformation("User {User} registered with Id {Id}", request.Username, createUserResult.CreatedId);
+                _logger.LogInformation("User {Username} registered with Id {UserId}", request.Username, createUserResult.CreatedId);
                 return new RegisterUserResult(true, string.Empty, createUserResult.CreatedId, createAuthResult.CreatedId);
             }
             finally
@@ -73,7 +73,7 @@ namespace Corely.IAM.Services
         public async Task<RegisterAccountResult> RegisterAccountAsync(RegisterAccountRequest request)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
-            _logger.LogInformation("Registering account {Account}", request.AccountName);
+            _logger.LogInformation("Registering account {AccountName}", request.AccountName);
 
             bool operationSucceeded = false;
             try
@@ -83,14 +83,14 @@ namespace Corely.IAM.Services
                 var createAccountResult = await _accountProcessor.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
                 if (!createAccountResult.IsSuccess)
                 {
-                    _logger.LogInformation("Creating account failed for account {Account}", request.AccountName);
+                    _logger.LogInformation("Creating account failed for account name {AccountName}", request.AccountName);
                     _logger.LogInformation("Account registration failed.");
-                    return new RegisterAccountResult(false, "Operation failed", -1);
+                    return new RegisterAccountResult(false, createAccountResult.Message, -1);
                 }
 
                 await _uowProvider.CommitAsync();
                 operationSucceeded = true;
-                _logger.LogInformation("Account {Account} registered with Id {Id}", request.AccountName, createAccountResult.CreatedId);
+                _logger.LogInformation("Account {AccountName} registered with Id {AccountId}", request.AccountName, createAccountResult.CreatedId);
                 return new RegisterAccountResult(true, string.Empty, createAccountResult.CreatedId);
             }
             finally

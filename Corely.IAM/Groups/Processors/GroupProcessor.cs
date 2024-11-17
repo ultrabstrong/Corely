@@ -36,14 +36,7 @@ namespace Corely.IAM.Groups.Processors
 
             Logger.LogInformation("Creating group {GroupName}", createGroupRequest.GroupName);
 
-            await ThrowIfGroupExists(group.AccountId, group.GroupName);
-
-            var accountEntity = await _accountRepo.GetAsync(group.AccountId);
-            if (accountEntity == null)
-            {
-                Logger.LogWarning("Account with Id {AccountId} not found", group.AccountId);
-                throw new AccountDoesNotExistException($"Account with Id {group.AccountId} not found");
-            }
+            await ThrowIfGroupCannotBeAdded(group.AccountId, group.GroupName);
 
             var groupEntity = MapTo<GroupEntity>(group);
             var createdId = await _groupRepo.CreateAsync(groupEntity);
@@ -52,13 +45,20 @@ namespace Corely.IAM.Groups.Processors
             return new CreateResult(true, string.Empty, createdId);
         }
 
-        private async Task ThrowIfGroupExists(int accountId, string groupName)
+        private async Task ThrowIfGroupCannotBeAdded(int accountId, string groupName)
         {
             if (await _groupRepo.AnyAsync(g =>
                 g.AccountId == accountId && g.GroupName == groupName))
             {
                 Logger.LogWarning("Group with name {GroupName} already exists", groupName);
                 throw new GroupExistsException($"Group with name {groupName} already exists");
+            }
+
+            var accountEntity = await _accountRepo.GetAsync(accountId);
+            if (accountEntity == null)
+            {
+                Logger.LogWarning("Account with Id {AccountId} not found", accountId);
+                throw new AccountDoesNotExistException($"Account with Id {accountId} not found");
             }
         }
     }
