@@ -57,7 +57,7 @@ namespace Corely.IAM.BasicAuths.Processors
                 result = new UpsertBasicAuthResult(true, string.Empty, existingAuth.Id, UpsertType.Update);
             }
 
-            Logger.LogInformation("Upserted basic auth for UserId {UserId}", request.UserId);
+            Logger.LogDebug("Upserted basic auth for UserId {UserId}", request.UserId);
             return result;
         }
 

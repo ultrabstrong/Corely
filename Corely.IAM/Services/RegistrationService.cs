@@ -2,6 +2,7 @@
 using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.IAM.Accounts.Processors;
 using Corely.IAM.BasicAuths.Processors;
+using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
 using Corely.IAM.Users.Processors;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,7 @@ namespace Corely.IAM.Services
         private readonly IAccountProcessor _accountProcessor;
         private readonly IUserProcessor _userProcessor;
         private readonly IBasicAuthProcessor _basicAuthProcessor;
+        private readonly IGroupProcessor _groupProcessor;
         private readonly IUnitOfWorkProvider _uowProvider;
 
         public RegistrationService(
@@ -21,12 +23,14 @@ namespace Corely.IAM.Services
             IAccountProcessor accountProcessor,
             IUserProcessor userProcessor,
             IBasicAuthProcessor basicAuthProcessor,
+            IGroupProcessor groupProcessor,
             IUnitOfWorkProvider uowProvider)
         {
             _logger = logger.ThrowIfNull(nameof(logger));
             _accountProcessor = accountProcessor.ThrowIfNull(nameof(accountProcessor));
             _userProcessor = userProcessor.ThrowIfNull(nameof(userProcessor));
             _basicAuthProcessor = basicAuthProcessor.ThrowIfNull(nameof(basicAuthProcessor));
+            _groupProcessor = groupProcessor.ThrowIfNull(nameof(groupProcessor));
             _uowProvider = uowProvider.ThrowIfNull(nameof(uowProvider));
         }
 
@@ -100,6 +104,24 @@ namespace Corely.IAM.Services
                     await _uowProvider.RollbackAsync();
                 }
             }
+        }
+
+        public async Task<RegisterGroupResult> RegisterGroupAsync(RegisterGroupRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            _logger.LogInformation("Registering group {GroupName}", request.GroupName);
+
+            var createGroupResult = await _groupProcessor.CreateGroupAsync(new(request.GroupName, request.OwnerAccountId));
+            if (!createGroupResult.IsSuccess)
+            {
+                _logger.LogInformation("Creating group failed for group name {GroupName}", request.GroupName);
+                _logger.LogInformation("Group registration failed.");
+                return new RegisterGroupResult(false, createGroupResult.Message, -1);
+            }
+
+            _logger.LogInformation("Group {GroupName} registered with Id {GroupId}", request.GroupName, createGroupResult.CreatedId);
+
+            return new RegisterGroupResult(true, string.Empty, createGroupResult.CreatedId);
         }
     }
 }

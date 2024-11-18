@@ -38,7 +38,7 @@ namespace Corely.IAM.Accounts.Processors
         {
             var account = MapThenValidateTo<Account>(request);
 
-            Logger.LogInformation("Creating account {Account}", request.AccountName);
+            Logger.LogDebug("Creating account {Account}", request.AccountName);
 
             await ThrowIfAccountExists(account.AccountName);
             var userEntity = await GetUserOrThrowIfNotFound(request.OwnerUserId);
@@ -52,7 +52,7 @@ namespace Corely.IAM.Accounts.Processors
             accountEntity.Users = [userEntity];
             var createdId = await _accountRepo.CreateAsync(accountEntity);
 
-            Logger.LogInformation("Account {Account} created with Id {Id}", account.AccountName, createdId);
+            Logger.LogDebug("Account {Account} created with Id {Id}", account.AccountName, createdId);
             return new CreateResult(true, string.Empty, createdId);
         }
 
@@ -83,7 +83,7 @@ namespace Corely.IAM.Accounts.Processors
 
             if (accountEntity == null)
             {
-                Logger.LogWarning("Account with Id {AccountId} not found", accountId);
+                Logger.LogInformation("Account with Id {AccountId} not found", accountId);
                 return null;
             }
 
@@ -96,7 +96,7 @@ namespace Corely.IAM.Accounts.Processors
 
             if (accountEntity == null)
             {
-                Logger.LogWarning("Account with Name {AccountName} not found", accountName);
+                Logger.LogInformation("Account with Name {AccountName} not found", accountName);
                 return null;
             }
 

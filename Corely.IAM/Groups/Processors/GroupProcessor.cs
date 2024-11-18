@@ -34,14 +34,14 @@ namespace Corely.IAM.Groups.Processors
         {
             var group = MapThenValidateTo<Group>(createGroupRequest);
 
-            Logger.LogInformation("Creating group {GroupName}", createGroupRequest.GroupName);
+            Logger.LogDebug("Creating group {GroupName}", createGroupRequest.GroupName);
 
             await ThrowIfGroupCannotBeAdded(group.AccountId, group.GroupName);
 
             var groupEntity = MapTo<GroupEntity>(group);
             var createdId = await _groupRepo.CreateAsync(groupEntity);
 
-            Logger.LogInformation("Group {GroupName} created with Id {GroupId}", group.GroupName, createdId);
+            Logger.LogDebug("Group {GroupName} created with Id {GroupId}", group.GroupName, createdId);
             return new CreateResult(true, string.Empty, createdId);
         }
 

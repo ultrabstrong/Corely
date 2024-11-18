@@ -5,6 +5,8 @@ using Corely.IAM.Accounts.Processors;
 using Corely.IAM.BasicAuths.Models;
 using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Enums;
+using Corely.IAM.Groups.Models;
+using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Models;
@@ -20,23 +22,27 @@ namespace Corely.UnitTests.IAM.Services
         private readonly Mock<IAccountProcessor> _accountProcessorMock;
         private readonly Mock<IUserProcessor> _userProcessorMock;
         private readonly Mock<IBasicAuthProcessor> _basicAuthProcessorMock;
+        private readonly Mock<IGroupProcessor> _groupProcessorMock;
         private readonly RegistrationService _registrationService;
 
         private bool _createAccountSuccess = true;
         private bool _createUserSuccess = true;
         private bool _createBasicAuthSuccess = true;
+        private bool _createGroupSuccess = true;
 
         public RegistrationServiceTests() : base()
         {
             _accountProcessorMock = GetMockAccountProcessor();
             _userProcessorMock = GetMockUserProcessor();
             _basicAuthProcessorMock = GetMockBasicAuthProcessor();
+            _groupProcessorMock = GetMockGroupProcessor();
 
             _registrationService = new RegistrationService(
                 _serviceFactory.GetRequiredService<ILogger<RegistrationService>>(),
                 _accountProcessorMock.Object,
                 _userProcessorMock.Object,
                 _basicAuthProcessorMock.Object,
+                _groupProcessorMock.Object,
                 _unitOfWorkProviderMock.Object);
         }
 
@@ -78,6 +84,19 @@ namespace Corely.UnitTests.IAM.Services
                         _fixture.Create<int>(), _fixture.Create<UpsertType>()));
 
             return basicAuthProcessorMock;
+        }
+
+        private Mock<IGroupProcessor> GetMockGroupProcessor()
+        {
+            var groupProcessorMock = new Mock<IGroupProcessor>();
+
+            groupProcessorMock
+                .Setup(m => m.CreateGroupAsync(
+                    It.IsAny<CreateGroupRequest>()))
+                .ReturnsAsync(() =>
+                    new CreateResult(_createGroupSuccess, string.Empty, _fixture.Create<int>()));
+
+            return groupProcessorMock;
         }
 
         [Fact]
@@ -151,6 +170,33 @@ namespace Corely.UnitTests.IAM.Services
         {
             var ex = await Record.ExceptionAsync(() => _registrationService.RegisterAccountAsync(null!));
 
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public async Task RegisterGroupAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+        {
+            var request = _fixture.Create<RegisterGroupRequest>();
+            var result = await _registrationService.RegisterGroupAsync(request);
+            Assert.True(result.IsSuccess);
+        }
+
+        [Fact]
+        public async Task RegisterGroupAsync_ReturnsFailureResult_WhenGroupProcessorFails()
+        {
+            _createGroupSuccess = false;
+            var request = _fixture.Create<RegisterGroupRequest>();
+
+            var result = await _registrationService.RegisterGroupAsync(request);
+
+            Assert.False(result.IsSuccess);
+        }
+
+        [Fact]
+        public async Task RegisterGroupAsync_Throws_WithNullRequest()
+        {
+            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterGroupAsync(null!));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }

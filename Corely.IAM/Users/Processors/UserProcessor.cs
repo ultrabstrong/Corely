@@ -38,7 +38,7 @@ namespace Corely.IAM.Users.Processors
         {
             var user = MapThenValidateTo<User>(request);
 
-            Logger.LogInformation("Creating user {Username}", request.Username);
+            Logger.LogDebug("Creating user {Username}", request.Username);
 
             await ThrowIfUserExists(user.Username, user.Email);
 
@@ -50,7 +50,7 @@ namespace Corely.IAM.Users.Processors
             var userEntity = MapTo<UserEntity>(user);
             var createdId = await _userRepo.CreateAsync(userEntity);
 
-            Logger.LogInformation("User {Username} created with Id {Id}", user.Username, createdId);
+            Logger.LogDebug("User {Username} created with Id {Id}", user.Username, createdId);
             return new CreateResult(true, string.Empty, createdId);
         }
 

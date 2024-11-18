@@ -38,15 +38,20 @@ namespace ConsoleTest
                     .Build();
 
                 var registrationService = host.Services.GetRequiredService<IRegistrationService>();
+
                 var registerUserRequest = new RegisterUserRequest("un1", "email@x.y", "admin");
                 var registerUserResult = await registrationService.RegisterUserAsync(registerUserRequest);
 
                 var registerAccountRequest = new RegisterAccountRequest("acct1", registerUserResult.CreatedUserId);
                 var registerAccountResult = await registrationService.RegisterAccountAsync(registerAccountRequest);
 
+                var registerGroupRequest = new RegisterGroupRequest("grp1", registerAccountResult.CreatedAccountId);
+                var registerGroupResult = await registrationService.RegisterGroupAsync(registerGroupRequest);
+
                 var signInService = host.Services.GetRequiredService<ISignInService>();
                 var signInRequest = new SignInRequest("un1", "admin");
                 var signInResult = await signInService.SignInAsync(signInRequest);
+
             }
             catch (Exception ex)
             {
