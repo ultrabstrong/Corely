@@ -36,8 +36,8 @@ namespace Corely.DevTools.SerilogCustomization
             return logLevel switch
             {
                 LogLevel.Trace => LogEventLevel.Verbose,
-                LogLevel.Debug => LogEventLevel.Debug,
-                LogLevel.Information => LogEventLevel.Information,
+                LogLevel.Debug => LogEventLevel.Verbose,
+                LogLevel.Information => LogEventLevel.Verbose,
                 LogLevel.Warning => LogEventLevel.Warning,
                 LogLevel.Error => LogEventLevel.Error,
                 LogLevel.Critical => LogEventLevel.Fatal,

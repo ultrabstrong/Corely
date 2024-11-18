@@ -19,7 +19,7 @@ namespace Corely.DevTools
                 .Enrich.WithProperty("CorrelationId", Guid.NewGuid())
                 .Enrich.With(new SerilogRedactionEnricher([
                     new PasswordRedactionProvider()]))
-                .MinimumLevel.Debug()
+                .MinimumLevel.Verbose()
                 .WriteTo.Seq("http://localhost:5341")
                 .CreateLogger();
 
