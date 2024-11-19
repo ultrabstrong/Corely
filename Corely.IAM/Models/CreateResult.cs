@@ -1,6 +1,6 @@
 ﻿namespace Corely.IAM.Models
 {
-    public record CreateResult(
+    internal record CreateResult(
         bool IsSuccess,
         string? Message,
         int CreatedId)

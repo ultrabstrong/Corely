@@ -2,11 +2,10 @@
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.BasicAuths.Entities;
 using Corely.IAM.Users.Constants;
-using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Users
+namespace Corely.IAM.Users.Entities
 {
     internal sealed class UserEntityConfiguration : EntityConfigurationBase<UserEntity>
     {

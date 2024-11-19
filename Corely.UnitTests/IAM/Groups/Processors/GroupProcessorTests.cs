@@ -7,6 +7,7 @@ using Corely.IAM.Groups.Exceptions;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
+using Corely.IAM.Users.Entities;
 using Corely.IAM.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -26,6 +27,7 @@ namespace Corely.UnitTests.IAM.Groups.Processors
             _groupProcessor = new GroupProcessor(
                 _serviceFactory.GetRequiredService<IRepo<GroupEntity>>(),
                 _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
+                _serviceFactory.GetRequiredService<IReadonlyRepo<UserEntity>>(),
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
                 _serviceFactory.GetRequiredService<ILogger<GroupProcessor>>());

@@ -9,5 +9,7 @@ namespace Corely.IAM.Services
         Task<RegisterAccountResult> RegisterAccountAsync(RegisterAccountRequest request);
 
         Task<RegisterGroupResult> RegisterGroupAsync(RegisterGroupRequest request);
+
+        Task<RegisterUsersWithGroupResult> RegisterUsersWithGroupAsync(RegisterUsersWithGroupRequest request);
     }
 }

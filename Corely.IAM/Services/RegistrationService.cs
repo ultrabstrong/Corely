@@ -123,5 +123,29 @@ namespace Corely.IAM.Services
 
             return new RegisterGroupResult(true, string.Empty, createGroupResult.CreatedId);
         }
+
+        public async Task<RegisterUsersWithGroupResult> RegisterUsersWithGroupAsync(RegisterUsersWithGroupRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            _logger.LogInformation("Registering user ids {@UserIds} with group id {GroupId}", request.UserIds, request.GroupId);
+
+            var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(new(request.UserIds, request.GroupId));
+            if (!addUsersToGroupResult.IsSuccess)
+            {
+                _logger.LogInformation("Registering users with group failed for group id {GroupId}", request.GroupId);
+                _logger.LogInformation("Registering users with group failed.");
+                return new RegisterUsersWithGroupResult(
+                    false,
+                    addUsersToGroupResult.Message ?? string.Empty,
+                    addUsersToGroupResult.RegisteredUserCount,
+                    addUsersToGroupResult.InvalidUserIds);
+            }
+
+            _logger
+                .ForContext(("@InvalidUserIds", addUsersToGroupResult.InvalidUserIds))
+                .LogInformation("Registered {RegisteredUserCount} users with group id {GroupId}", addUsersToGroupResult.RegisteredUserCount, request.GroupId);
+
+            return new RegisterUsersWithGroupResult(true, string.Empty, request.UserIds.Count);
+        }
     }
 }
