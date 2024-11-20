@@ -5,8 +5,8 @@ using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
+using Corely.IAM.Processors;
 using Corely.IAM.Security.Processors;
-using Corely.IAM.Services;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Validators;
@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM.Accounts.Processors
 {
-    internal class AccountProcessor : ServiceBase, IAccountProcessor
+    internal class AccountProcessor : ProcessorBase, IAccountProcessor
     {
         private readonly IRepo<AccountEntity> _accountRepo;
         private readonly IReadonlyRepo<UserEntity> _userRepo;
@@ -36,9 +36,9 @@ namespace Corely.IAM.Accounts.Processors
 
         public async Task<CreateResult> CreateAccountAsync(CreateAccountRequest request)
         {
-            var account = MapThenValidateTo<Account>(request);
+            LogRequest(nameof(AccountProcessor), nameof(CreateAccountAsync), request);
 
-            Logger.LogDebug("Creating account {Account}", request.AccountName);
+            var account = MapThenValidateTo<Account>(request);
 
             await ThrowIfAccountExists(account.AccountName);
             var userEntity = await GetUserOrThrowIfNotFound(request.OwnerUserId);
@@ -52,8 +52,8 @@ namespace Corely.IAM.Accounts.Processors
             accountEntity.Users = [userEntity];
             var createdId = await _accountRepo.CreateAsync(accountEntity);
 
-            Logger.LogDebug("Account {Account} created with Id {Id}", account.AccountName, createdId);
-            return new CreateResult(true, string.Empty, createdId);
+            return LogResult(nameof(AccountProcessor), nameof(CreateAccountAsync),
+                new CreateResult(true, string.Empty, createdId));
         }
 
         private async Task ThrowIfAccountExists(string accountName)
@@ -79,6 +79,8 @@ namespace Corely.IAM.Accounts.Processors
 
         public async Task<Account?> GetAccountAsync(int accountId)
         {
+            LogRequest(nameof(AccountProcessor), nameof(GetAccountAsync), accountId);
+
             var accountEntity = await _accountRepo.GetAsync(accountId);
 
             if (accountEntity == null)
@@ -87,11 +89,13 @@ namespace Corely.IAM.Accounts.Processors
                 return null;
             }
 
-            return MapTo<Account>(accountEntity);
+            return LogResult(nameof(AccountProcessor), nameof(GetAccountAsync), MapTo<Account>(accountEntity));
         }
 
         public async Task<Account?> GetAccountAsync(string accountName)
         {
+            LogRequest(nameof(AccountProcessor), nameof(GetAccountAsync), accountName);
+
             var accountEntity = await _accountRepo.GetAsync(a => a.AccountName == accountName);
 
             if (accountEntity == null)
@@ -100,7 +104,7 @@ namespace Corely.IAM.Accounts.Processors
                 return null;
             }
 
-            return MapTo<Account>(accountEntity);
+            return LogResult(nameof(AccountProcessor), nameof(GetAccountAsync), MapTo<Account>(accountEntity));
         }
     }
 }

@@ -3,16 +3,16 @@ using Corely.IAM.Mappers;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.IAM.Services
+namespace Corely.IAM.Processors
 {
-    internal abstract class ServiceBase
+    internal abstract class ProcessorBase
     {
         private readonly IValidationProvider _validationProvider;
         private readonly IMapProvider _mapProvider;
 
         protected readonly ILogger Logger;
 
-        public ServiceBase(
+        public ProcessorBase(
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
             ILogger logger)
@@ -20,6 +20,22 @@ namespace Corely.IAM.Services
             _validationProvider = validationProvider.ThrowIfNull(nameof(validationProvider));
             _mapProvider = mapProvider.ThrowIfNull(nameof(mapProvider));
             Logger = logger.ThrowIfNull(nameof(logger));
+        }
+
+        protected void LogRequest<T>(string className, string methodName, T request)
+        {
+            Logger.LogDebug("[{Class}] {Method} starting with request {@Request}", className, methodName, request);
+        }
+
+        protected T LogResult<T>(string className, string methodName, T result)
+        {
+            Logger.LogDebug("[{Class}] {Method} completed with result {@Result}", className, methodName, result);
+            return result;
+        }
+
+        protected void LogResult(string className, string methodName)
+        {
+            Logger.LogDebug("[{Class}] {Method} completed", className, methodName);
         }
 
         public T MapThenValidateTo<T>(object source)

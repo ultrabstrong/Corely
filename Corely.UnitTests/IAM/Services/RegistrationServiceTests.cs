@@ -11,11 +11,12 @@ using Corely.IAM.Models;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Processors;
+using Corely.UnitTests.IAM.Processors;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.UnitTests.IAM.Services
 {
-    public class RegistrationServiceTests : ServiceBaseTests
+    public class RegistrationServiceTests : ProcessorBaseTests
     {
         private readonly Fixture _fixture = new();
         private readonly Mock<IUnitOfWorkProvider> _unitOfWorkProviderMock = new();

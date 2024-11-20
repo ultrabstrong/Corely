@@ -4,7 +4,7 @@ using Corely.IAM.BasicAuths.Entities;
 using Corely.IAM.BasicAuths.Models;
 using Corely.IAM.Enums;
 using Corely.IAM.Mappers;
-using Corely.IAM.Services;
+using Corely.IAM.Processors;
 using Corely.IAM.Validators;
 using Corely.Security.Password;
 using Corely.Security.PasswordValidation.Providers;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM.BasicAuths.Processors
 {
-    internal class BasicAuthProcessor : ServiceBase, IBasicAuthProcessor
+    internal class BasicAuthProcessor : ProcessorBase, IBasicAuthProcessor
     {
         private readonly IRepo<BasicAuthEntity> _basicAuthRepo;
         private readonly IPasswordValidationProvider _passwordValidationProvider;
@@ -31,6 +31,8 @@ namespace Corely.IAM.BasicAuths.Processors
 
         public async Task<UpsertBasicAuthResult> UpsertBasicAuthAsync(UpsertBasicAuthRequest request)
         {
+            LogRequest(nameof(BasicAuthProcessor), nameof(UpsertBasicAuthAsync), request);
+
             var basicAuth = MapThenValidateTo<BasicAuth>(request);
 
             var passwordValidationResults = _passwordValidationProvider.ValidatePassword(request.Password);
@@ -57,12 +59,13 @@ namespace Corely.IAM.BasicAuths.Processors
                 result = new UpsertBasicAuthResult(true, string.Empty, existingAuth.Id, UpsertType.Update);
             }
 
-            Logger.LogDebug("Upserted basic auth for UserId {UserId}", request.UserId);
-            return result;
+            return LogResult(nameof(BasicAuthProcessor), nameof(UpsertBasicAuthAsync), result);
         }
 
         public async Task<bool> VerifyBasicAuthAsync(VerifyBasicAuthRequest request)
         {
+            LogRequest(nameof(BasicAuthProcessor), nameof(VerifyBasicAuthAsync), request);
+
             ArgumentNullException.ThrowIfNull(request, nameof(request));
 
             var basicAuthEntity = await _basicAuthRepo.GetAsync(e => e.UserId == request.UserId);
@@ -75,7 +78,9 @@ namespace Corely.IAM.BasicAuths.Processors
 
             var basicAuth = MapTo<BasicAuth>(basicAuthEntity);
 
-            return basicAuth.Password.Verify(request.Password);
+            var result = basicAuth.Password.Verify(request.Password);
+
+            return LogResult(nameof(BasicAuthProcessor), nameof(VerifyBasicAuthAsync), result);
         }
     }
 }

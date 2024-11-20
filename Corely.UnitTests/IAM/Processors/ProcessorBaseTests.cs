@@ -2,18 +2,18 @@
 using AutoMapper;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
-using Corely.IAM.Services;
+using Corely.IAM.Processors;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.IAM.Services
+namespace Corely.UnitTests.IAM.Processors
 {
-    public class ServiceBaseTests
+    public class ProcessorBaseTests
     {
-        private class MockServiceBase : ServiceBase
+        private class MockProcessorBase : ProcessorBase
         {
-            public MockServiceBase(
+            public MockProcessorBase(
                 IMapProvider mapProvider,
                 IValidationProvider validationProvider,
                 ILogger logger)
@@ -28,21 +28,21 @@ namespace Corely.UnitTests.IAM.Services
         protected readonly ServiceFactory _serviceFactory = new();
 
         private readonly Fixture _fixture = new();
-        private readonly MockServiceBase _mockServiceBase;
+        private readonly MockProcessorBase _mockProcessorBase;
 
-        public ServiceBaseTests()
+        public ProcessorBaseTests()
         {
-            _mockServiceBase = new MockServiceBase(
+            _mockProcessorBase = new MockProcessorBase(
                 _serviceFactory.GetRequiredService<IMapProvider>(),
                 _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _serviceFactory.GetRequiredService<ILogger<ServiceBaseTests>>());
+                _serviceFactory.GetRequiredService<ILogger<ProcessorBaseTests>>());
         }
 
         [Fact]
         public void MapThenValidateTo_ReturnsValidDestination_IfSourceIsValid()
         {
             var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var user = _mockServiceBase.MapThenValidateTo<User>(createUserRequest);
+            var user = _mockProcessorBase.MapThenValidateTo<User>(createUserRequest);
 
             Assert.NotNull(user);
             Assert.Equal(createUserRequest.Username, user.Username);
@@ -52,7 +52,7 @@ namespace Corely.UnitTests.IAM.Services
         [Fact]
         public void MapThenValidateTo_Throws_WhenSourceIsNull()
         {
-            var ex = Record.Exception(() => _mockServiceBase.MapThenValidateTo<object>(null!));
+            var ex = Record.Exception(() => _mockProcessorBase.MapThenValidateTo<object>(null!));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
@@ -62,7 +62,7 @@ namespace Corely.UnitTests.IAM.Services
         {
             var createUserRequest = _fixture.Create<CreateUserRequest>();
 
-            var ex = Record.Exception(() => _mockServiceBase.MapThenValidateTo<CreateResult>(createUserRequest));
+            var ex = Record.Exception(() => _mockProcessorBase.MapThenValidateTo<CreateResult>(createUserRequest));
 
             Assert.NotNull(ex);
             Assert.IsType<AutoMapperMappingException>(ex);
@@ -73,7 +73,7 @@ namespace Corely.UnitTests.IAM.Services
         {
             var createUserRequest = _fixture.Create<CreateUserRequest>();
 
-            var ex = Record.Exception(() => _mockServiceBase.MapThenValidateTo<User>(createUserRequest));
+            var ex = Record.Exception(() => _mockProcessorBase.MapThenValidateTo<User>(createUserRequest));
 
             Assert.NotNull(ex);
             Assert.IsType<ValidationException>(ex);
@@ -83,7 +83,7 @@ namespace Corely.UnitTests.IAM.Services
         public void MapTo_ReturnsValidDestination_IfSourceIsValid()
         {
             var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var user = _mockServiceBase.MapTo<User>(createUserRequest);
+            var user = _mockProcessorBase.MapTo<User>(createUserRequest);
 
             Assert.NotNull(user);
             Assert.Equal(createUserRequest.Username, user.Username);
@@ -93,7 +93,7 @@ namespace Corely.UnitTests.IAM.Services
         [Fact]
         public void MapTo_Throws_WhenSourceIsNull()
         {
-            var ex = Record.Exception(() => _mockServiceBase.MapTo<object>(null!));
+            var ex = Record.Exception(() => _mockProcessorBase.MapTo<object>(null!));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
@@ -103,7 +103,7 @@ namespace Corely.UnitTests.IAM.Services
         {
             var createUserRequest = _fixture.Create<CreateUserRequest>();
 
-            var ex = Record.Exception(() => _mockServiceBase.MapTo<CreateResult>(createUserRequest));
+            var ex = Record.Exception(() => _mockProcessorBase.MapTo<CreateResult>(createUserRequest));
 
             Assert.NotNull(ex);
             Assert.IsType<AutoMapperMappingException>(ex);
@@ -113,9 +113,9 @@ namespace Corely.UnitTests.IAM.Services
         public void Validate_DoesNotThrowException_IfModelIsValid()
         {
             var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var user = _mockServiceBase.MapTo<User>(createUserRequest);
+            var user = _mockProcessorBase.MapTo<User>(createUserRequest);
 
-            var ex = Record.Exception(() => _mockServiceBase.Validate(user));
+            var ex = Record.Exception(() => _mockProcessorBase.Validate(user));
 
             Assert.Null(ex);
         }
@@ -123,7 +123,7 @@ namespace Corely.UnitTests.IAM.Services
         [Fact]
         public void Validate_Throws_WhenModelIsNull()
         {
-            var ex = Record.Exception(() => _mockServiceBase.Validate<object>(null!));
+            var ex = Record.Exception(() => _mockProcessorBase.Validate<object>(null!));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }

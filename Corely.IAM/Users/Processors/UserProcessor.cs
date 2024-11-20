@@ -2,9 +2,9 @@
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Mappers;
 using Corely.IAM.Models;
+using Corely.IAM.Processors;
 using Corely.IAM.Security.Enums;
 using Corely.IAM.Security.Processors;
-using Corely.IAM.Services;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Users.Models;
@@ -17,7 +17,7 @@ using System.Security.Claims;
 
 namespace Corely.IAM.Users.Processors
 {
-    internal class UserProcessor : ServiceBase, IUserProcessor
+    internal class UserProcessor : ProcessorBase, IUserProcessor
     {
         private readonly IRepo<UserEntity> _userRepo;
         private readonly ISecurityProcessor _securityProcessor;
@@ -36,9 +36,9 @@ namespace Corely.IAM.Users.Processors
 
         public async Task<CreateResult> CreateUserAsync(CreateUserRequest request)
         {
-            var user = MapThenValidateTo<User>(request);
+            LogRequest(nameof(UserProcessor), nameof(CreateUserAsync), request);
 
-            Logger.LogDebug("Creating user {Username}", request.Username);
+            var user = MapThenValidateTo<User>(request);
 
             await ThrowIfUserExists(user.Username, user.Email);
 
@@ -50,8 +50,8 @@ namespace Corely.IAM.Users.Processors
             var userEntity = MapTo<UserEntity>(user);
             var createdId = await _userRepo.CreateAsync(userEntity);
 
-            Logger.LogDebug("User {Username} created with Id {Id}", user.Username, createdId);
-            return new CreateResult(true, string.Empty, createdId);
+            return LogResult(nameof(UserProcessor), nameof(CreateUserAsync),
+                new CreateResult(true, string.Empty, createdId));
         }
 
         private async Task ThrowIfUserExists(string username, string email)
@@ -81,6 +81,8 @@ namespace Corely.IAM.Users.Processors
 
         public async Task<User?> GetUserAsync(int userId)
         {
+            LogRequest(nameof(UserProcessor), nameof(GetUserAsync), userId);
+
             var userEntity = await _userRepo.GetAsync(userId);
 
             if (userEntity == null)
@@ -89,11 +91,13 @@ namespace Corely.IAM.Users.Processors
                 return null;
             }
 
-            return MapTo<User>(userEntity);
+            return LogResult(nameof(UserProcessor), nameof(GetUserAsync), MapTo<User>(userEntity));
         }
 
         public async Task<User?> GetUserAsync(string userName)
         {
+            LogRequest(nameof(UserProcessor), nameof(GetUserAsync), userName);
+
             var userEntity = await _userRepo.GetAsync(u => u.Username == userName);
 
             if (userEntity == null)
@@ -102,19 +106,25 @@ namespace Corely.IAM.Users.Processors
                 return null;
             }
 
-            return MapTo<User>(userEntity);
+            return LogResult(nameof(UserProcessor), nameof(GetUserAsync), MapTo<User>(userEntity));
         }
 
-        public Task UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(User user)
         {
+            LogRequest(nameof(UserProcessor), nameof(UpdateUserAsync), user);
+
             Validate(user);
             var userEntity = MapTo<UserEntity>(user);
 
-            return _userRepo.UpdateAsync(userEntity);
+            await _userRepo.UpdateAsync(userEntity);
+
+            LogResult(nameof(UserProcessor), nameof(UpdateUserAsync), user);
         }
 
         public async Task<string?> GetUserAuthTokenAsync(int userId)
         {
+            LogRequest(nameof(UserProcessor), nameof(GetUserAuthTokenAsync), userId);
+
             var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
             if (signatureKey == null)
             {
@@ -137,11 +147,13 @@ namespace Corely.IAM.Users.Processors
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return jwt;
+            return LogResult(nameof(UserProcessor), nameof(GetUserAuthTokenAsync), jwt);
         }
 
         public async Task<bool> IsUserAuthTokenValidAsync(int userId, string authToken)
         {
+            LogRequest(nameof(UserProcessor), nameof(IsUserAuthTokenValidAsync), new { userId, authToken });
+
             var tokenHandler = new JwtSecurityTokenHandler();
 
             if (!tokenHandler.CanReadToken(authToken))
@@ -169,27 +181,31 @@ namespace Corely.IAM.Users.Processors
                 ClockSkew = TimeSpan.Zero
             };
 
+            var result = false;
             try
             {
                 tokenHandler.ValidateToken(authToken, validationParameters, out _);
-                return true;
+                result = true;
             }
             catch (Exception ex)
             {
                 Logger.LogInformation("Token validation failed: {Error}", ex.Message);
-                return false;
             }
+
+            return LogResult(nameof(UserProcessor), nameof(IsUserAuthTokenValidAsync), result);
         }
 
         public async Task<string?> GetAsymmetricSignatureVerificationKeyAsync(int userId)
         {
+            LogRequest(nameof(UserProcessor), nameof(GetAsymmetricSignatureVerificationKeyAsync), userId);
+
             var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
             if (signatureKey == null)
             {
                 return null;
             }
 
-            return signatureKey.PublicKey;
+            return LogResult(nameof(UserProcessor), nameof(GetAsymmetricSignatureVerificationKeyAsync), signatureKey.PublicKey);
         }
 
         private async Task<UserAsymmetricKeyEntity?> GetUserAsymmetricKeyAsync(int userId, KeyUsedFor keyUse)

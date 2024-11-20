@@ -6,12 +6,13 @@ using Corely.IAM.Security.Models;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Processors;
+using Corely.UnitTests.IAM.Processors;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Corely.UnitTests.IAM.Services
 {
-    public class SignInServiceTests : ServiceBaseTests
+    public class SignInServiceTests : ProcessorBaseTests
     {
         private const int MAX_LOGIN_ATTEMPTS = 5;
 

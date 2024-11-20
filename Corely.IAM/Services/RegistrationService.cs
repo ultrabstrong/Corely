@@ -141,9 +141,13 @@ namespace Corely.IAM.Services
                     addUsersToGroupResult.InvalidUserIds);
             }
 
-            _logger
-                .ForContext(("@InvalidUserIds", addUsersToGroupResult.InvalidUserIds))
-                .LogInformation("Registered {RegisteredUserCount} users with group id {GroupId}", addUsersToGroupResult.RegisteredUserCount, request.GroupId);
+            using (_logger.BeginScope(new Dictionary<string, object>
+            {
+                ["@InvalidUserIds"] = addUsersToGroupResult.InvalidUserIds
+            }))
+            {
+                _logger.LogInformation("Registered {RegisteredUserCount} users with group id {GroupId}", addUsersToGroupResult.RegisteredUserCount, request.GroupId);
+            }
 
             return new RegisterUsersWithGroupResult(true, string.Empty, request.UserIds.Count);
         }
