@@ -36,22 +36,22 @@ namespace Corely.IAM.Users.Processors
 
         public async Task<CreateResult> CreateUserAsync(CreateUserRequest request)
         {
-            LogRequest(nameof(UserProcessor), nameof(CreateUserAsync), request);
+            return await LogRequestResultAspect(nameof(UserProcessor), nameof(CreateUserAsync), request, async () =>
+            {
+                var user = MapThenValidateTo<User>(request);
 
-            var user = MapThenValidateTo<User>(request);
+                await ThrowIfUserExists(user.Username, user.Email);
 
-            await ThrowIfUserExists(user.Username, user.Email);
-
-            user.SymmetricKeys = [_securityProcessor.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
-            user.AsymmetricKeys = [
-                _securityProcessor.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
+                user.SymmetricKeys = [_securityProcessor.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
+                user.AsymmetricKeys = [
+                    _securityProcessor.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
                 _securityProcessor.GetAsymmetricSignatureKeyEncryptedWithSystemKey()];
 
-            var userEntity = MapTo<UserEntity>(user);
-            var createdId = await _userRepo.CreateAsync(userEntity);
+                var userEntity = MapTo<UserEntity>(user)!; // user is validated
+                var createdId = await _userRepo.CreateAsync(userEntity);
 
-            return LogResult(nameof(UserProcessor), nameof(CreateUserAsync),
-                new CreateResult(true, string.Empty, createdId));
+                return new CreateResult(true, string.Empty, createdId);
+            });
         }
 
         private async Task ThrowIfUserExists(string username, string email)
@@ -81,131 +81,133 @@ namespace Corely.IAM.Users.Processors
 
         public async Task<User?> GetUserAsync(int userId)
         {
-            LogRequest(nameof(UserProcessor), nameof(GetUserAsync), userId);
-
-            var userEntity = await _userRepo.GetAsync(userId);
-
-            if (userEntity == null)
+            return await LogRequestAspect(nameof(UserProcessor), nameof(GetUserAsync), userId, async () =>
             {
-                Logger.LogInformation("User with Id {UserId} not found", userId);
-                return null;
-            }
+                var userEntity = await _userRepo.GetAsync(userId);
 
-            return LogResult(nameof(UserProcessor), nameof(GetUserAsync), MapTo<User>(userEntity));
+                if (userEntity == null)
+                {
+                    Logger.LogInformation("User with Id {UserId} not found", userId);
+                    return null;
+                }
+
+                var user = MapTo<User>(userEntity);
+                return user;
+            });
         }
 
         public async Task<User?> GetUserAsync(string userName)
         {
-            LogRequest(nameof(UserProcessor), nameof(GetUserAsync), userName);
-
-            var userEntity = await _userRepo.GetAsync(u => u.Username == userName);
-
-            if (userEntity == null)
+            return await LogRequestAspect(nameof(UserProcessor), nameof(GetUserAsync), userName, async () =>
             {
-                Logger.LogInformation("User with Username {Username} not found", userName);
-                return null;
-            }
+                var userEntity = await _userRepo.GetAsync(u => u.Username == userName);
 
-            return LogResult(nameof(UserProcessor), nameof(GetUserAsync), MapTo<User>(userEntity));
+                if (userEntity == null)
+                {
+                    Logger.LogInformation("User with Username {Username} not found", userName);
+                    return null;
+                }
+
+                var user = MapTo<User>(userEntity);
+                return user;
+            });
         }
 
         public async Task UpdateUserAsync(User user)
         {
-            LogRequest(nameof(UserProcessor), nameof(UpdateUserAsync), user);
-
-            Validate(user);
-            var userEntity = MapTo<UserEntity>(user);
-
-            await _userRepo.UpdateAsync(userEntity);
-
-            LogResult(nameof(UserProcessor), nameof(UpdateUserAsync), user);
+            await LogAspect(nameof(UserProcessor), nameof(UpdateUserAsync), async () =>
+            {
+                Validate(user);
+                var userEntity = MapTo<UserEntity>(user)!; // user is validated
+                await _userRepo.UpdateAsync(userEntity);
+            });
         }
 
         public async Task<string?> GetUserAuthTokenAsync(int userId)
         {
-            LogRequest(nameof(UserProcessor), nameof(GetUserAuthTokenAsync), userId);
-
-            var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
-            if (signatureKey == null)
+            return await LogRequestAspect(nameof(UserProcessor), nameof(GetUserAuthTokenAsync), userId, async () =>
             {
-                return null;
-            }
+                var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
+                if (signatureKey == null)
+                {
+                    return null;
+                }
 
-            var privateKey = _securityProcessor.DecryptWithSystemKey(signatureKey.EncryptedPrivateKey);
-            var credentials = _securityProcessor.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, privateKey, true);
+                var privateKey = _securityProcessor.DecryptWithSystemKey(signatureKey.EncryptedPrivateKey);
+                var credentials = _securityProcessor.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, privateKey, true);
 
-            // Todo - include permission-based scopes & roles
+                // Todo - include permission-based scopes & roles
 
-            var token = new JwtSecurityToken(
-                issuer: typeof(UserProcessor).FullName,
-                claims: [
-                    new Claim(JwtRegisteredClaimNames.Sub, "user_id"),
+                var token = new JwtSecurityToken(
+                    issuer: typeof(UserProcessor).FullName,
+                    claims: [
+                        new Claim(JwtRegisteredClaimNames.Sub, "user_id"),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                ],
-                expires: DateTime.Now.Add(TimeSpan.FromSeconds(3600)),
-                signingCredentials: credentials);
+                    ],
+                    expires: DateTime.Now.Add(TimeSpan.FromSeconds(3600)),
+                    signingCredentials: credentials);
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return LogResult(nameof(UserProcessor), nameof(GetUserAuthTokenAsync), jwt);
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            });
         }
 
         public async Task<bool> IsUserAuthTokenValidAsync(int userId, string authToken)
         {
-            LogRequest(nameof(UserProcessor), nameof(IsUserAuthTokenValidAsync), new { userId, authToken });
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            if (!tokenHandler.CanReadToken(authToken))
+            return await LogRequestResultAspect(nameof(UserProcessor), nameof(IsUserAuthTokenValidAsync), new { userId, authToken }, async () =>
             {
-                Logger.LogInformation("Auth token is in invalid format");
-                return false;
-            }
+                var tokenHandler = new JwtSecurityTokenHandler();
 
-            var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
-            if (signatureKey == null)
-            {
-                return false;
-            }
+                if (!tokenHandler.CanReadToken(authToken))
+                {
+                    Logger.LogInformation("Auth token is in invalid format");
+                    return false;
+                }
 
-            var credentials = _securityProcessor.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, signatureKey.PublicKey, false);
+                var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
+                if (signatureKey == null)
+                {
+                    return false;
+                }
 
-            var validationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = credentials.Key,
-                ValidateIssuer = true,
-                ValidIssuer = typeof(UserProcessor).FullName,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            };
+                var credentials = _securityProcessor.GetAsymmetricSigningCredentials(signatureKey.ProviderTypeCode, signatureKey.PublicKey, false);
 
-            var result = false;
-            try
-            {
-                tokenHandler.ValidateToken(authToken, validationParameters, out _);
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogInformation("Token validation failed: {Error}", ex.Message);
-            }
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = credentials.Key,
+                    ValidateIssuer = true,
+                    ValidIssuer = typeof(UserProcessor).FullName,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
 
-            return LogResult(nameof(UserProcessor), nameof(IsUserAuthTokenValidAsync), result);
+                var result = false;
+                try
+                {
+                    tokenHandler.ValidateToken(authToken, validationParameters, out _);
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogInformation("Token validation failed: {Error}", ex.Message);
+                }
+
+                return result;
+            });
         }
 
         public async Task<string?> GetAsymmetricSignatureVerificationKeyAsync(int userId)
         {
-            LogRequest(nameof(UserProcessor), nameof(GetAsymmetricSignatureVerificationKeyAsync), userId);
-
-            var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
-            if (signatureKey == null)
+            return await LogRequestResultAspect(nameof(UserProcessor), nameof(GetAsymmetricSignatureVerificationKeyAsync), userId, async () =>
             {
-                return null;
-            }
-
-            return LogResult(nameof(UserProcessor), nameof(GetAsymmetricSignatureVerificationKeyAsync), signatureKey.PublicKey);
+                var signatureKey = await GetUserAsymmetricKeyAsync(userId, KeyUsedFor.Signature);
+                if (signatureKey == null)
+                {
+                    return null;
+                }
+                return signatureKey.PublicKey;
+            });
         }
 
         private async Task<UserAsymmetricKeyEntity?> GetUserAsymmetricKeyAsync(int userId, KeyUsedFor keyUse)

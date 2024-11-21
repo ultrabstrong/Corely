@@ -31,56 +31,54 @@ namespace Corely.IAM.BasicAuths.Processors
 
         public async Task<UpsertBasicAuthResult> UpsertBasicAuthAsync(UpsertBasicAuthRequest request)
         {
-            LogRequest(nameof(BasicAuthProcessor), nameof(UpsertBasicAuthAsync), request);
-
-            var basicAuth = MapThenValidateTo<BasicAuth>(request);
-
-            var passwordValidationResults = _passwordValidationProvider.ValidatePassword(request.Password);
-            if (!passwordValidationResults.IsSuccess)
+            return await LogRequestResultAspect(nameof(BasicAuthProcessor), nameof(UpsertBasicAuthAsync), request, async () =>
             {
-                throw new PasswordValidationException(passwordValidationResults, "Password validation failed");
-            }
+                var basicAuth = MapThenValidateTo<BasicAuth>(request);
 
-            var basicAuthEntity = MapTo<BasicAuthEntity>(basicAuth);
+                var passwordValidationResults = _passwordValidationProvider.ValidatePassword(request.Password);
+                if (!passwordValidationResults.IsSuccess)
+                {
+                    throw new PasswordValidationException(passwordValidationResults, "Password validation failed");
+                }
 
-            var existingAuth = await _basicAuthRepo.GetAsync(e => e.UserId == basicAuthEntity.UserId);
+                var basicAuthEntity = MapTo<BasicAuthEntity>(basicAuth)!; // basicAuth is validated
 
-            UpsertBasicAuthResult result = null!;
-            if (existingAuth?.Id == null)
-            {
-                Logger.LogDebug("No existing basic auth for UserId {UserId}. Creating new", request.UserId);
-                var newId = await _basicAuthRepo.CreateAsync(basicAuthEntity);
-                result = new UpsertBasicAuthResult(true, string.Empty, newId, UpsertType.Create);
-            }
-            else
-            {
-                Logger.LogDebug("Found existing basic auth for UserId {UserId}. Updating", request.UserId);
-                await _basicAuthRepo.UpdateAsync(basicAuthEntity);
-                result = new UpsertBasicAuthResult(true, string.Empty, existingAuth.Id, UpsertType.Update);
-            }
+                var existingAuth = await _basicAuthRepo.GetAsync(e => e.UserId == basicAuthEntity.UserId);
 
-            return LogResult(nameof(BasicAuthProcessor), nameof(UpsertBasicAuthAsync), result);
+                UpsertBasicAuthResult result = null!;
+                if (existingAuth?.Id == null)
+                {
+                    Logger.LogDebug("No existing basic auth for UserId {UserId}. Creating new", request.UserId);
+                    var newId = await _basicAuthRepo.CreateAsync(basicAuthEntity);
+                    result = new UpsertBasicAuthResult(true, string.Empty, newId, UpsertType.Create);
+                }
+                else
+                {
+                    Logger.LogDebug("Found existing basic auth for UserId {UserId}. Updating", request.UserId);
+                    await _basicAuthRepo.UpdateAsync(basicAuthEntity);
+                    result = new UpsertBasicAuthResult(true, string.Empty, existingAuth.Id, UpsertType.Update);
+                }
+
+                return result;
+            });
         }
 
         public async Task<bool> VerifyBasicAuthAsync(VerifyBasicAuthRequest request)
         {
-            LogRequest(nameof(BasicAuthProcessor), nameof(VerifyBasicAuthAsync), request);
-
-            ArgumentNullException.ThrowIfNull(request, nameof(request));
-
-            var basicAuthEntity = await _basicAuthRepo.GetAsync(e => e.UserId == request.UserId);
-
-            if (basicAuthEntity == null)
+            return await LogRequestResultAspect(nameof(BasicAuthProcessor), nameof(VerifyBasicAuthAsync), request, async () =>
             {
-                Logger.LogInformation("No basic auth found for UserId {UserId}", request.UserId);
-                return false;
-            }
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-            var basicAuth = MapTo<BasicAuth>(basicAuthEntity);
+                var basicAuthEntity = await _basicAuthRepo.GetAsync(e => e.UserId == request.UserId);
+                var basicAuth = MapTo<BasicAuth>(basicAuthEntity);
 
-            var result = basicAuth.Password.Verify(request.Password);
+                if (basicAuth == null)
+                {
+                    Logger.LogInformation("No basic auth found for UserId {UserId}", request.UserId);
+                }
 
-            return LogResult(nameof(BasicAuthProcessor), nameof(VerifyBasicAuthAsync), result);
+                return basicAuth?.Password.Verify(request.Password) ?? false;
+            });
         }
     }
 }

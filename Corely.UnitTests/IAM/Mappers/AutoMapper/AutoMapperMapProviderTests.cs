@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
+using Corely.IAM.Users.Models;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper
 {
@@ -14,6 +16,14 @@ namespace Corely.UnitTests.IAM.Mappers.AutoMapper
             var response = provider.MapTo<object>(new object());
 
             autoMapperMock.Verify(m => m.Map<object>(It.IsAny<object>()), Times.Once);
+        }
+
+        [Fact]
+        public void MapTo_ReturnsNull_WithNullArg()
+        {
+            var mapper = new ServiceFactory().GetRequiredService<IMapProvider>();
+            var response = mapper.MapTo<User>(null!);
+            Assert.Null(response);
         }
     }
 }

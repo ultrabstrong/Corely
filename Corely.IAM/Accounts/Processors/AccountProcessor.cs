@@ -36,24 +36,24 @@ namespace Corely.IAM.Accounts.Processors
 
         public async Task<CreateResult> CreateAccountAsync(CreateAccountRequest request)
         {
-            LogRequest(nameof(AccountProcessor), nameof(CreateAccountAsync), request);
+            return await LogRequestResultAspect(nameof(AccountProcessor), nameof(CreateAccountAsync), request, async () =>
+            {
+                var account = MapThenValidateTo<Account>(request);
 
-            var account = MapThenValidateTo<Account>(request);
+                await ThrowIfAccountExists(account.AccountName);
+                var userEntity = await GetUserOrThrowIfNotFound(request.OwnerUserId);
 
-            await ThrowIfAccountExists(account.AccountName);
-            var userEntity = await GetUserOrThrowIfNotFound(request.OwnerUserId);
-
-            account.SymmetricKeys = [_securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
-            account.AsymmetricKeys = [
-                _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
+                account.SymmetricKeys = [_securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
+                account.AsymmetricKeys = [
+                    _securityService.GetAsymmetricEncryptionKeyEncryptedWithSystemKey(),
                 _securityService.GetAsymmetricSignatureKeyEncryptedWithSystemKey()];
 
-            var accountEntity = MapTo<AccountEntity>(account);
-            accountEntity.Users = [userEntity];
-            var createdId = await _accountRepo.CreateAsync(accountEntity);
+                var accountEntity = MapTo<AccountEntity>(account)!; // account is validated
+                accountEntity.Users = [userEntity];
+                var createdId = await _accountRepo.CreateAsync(accountEntity);
 
-            return LogResult(nameof(AccountProcessor), nameof(CreateAccountAsync),
-                new CreateResult(true, string.Empty, createdId));
+                return new CreateResult(true, string.Empty, createdId);
+            });
         }
 
         private async Task ThrowIfAccountExists(string accountName)
@@ -79,32 +79,33 @@ namespace Corely.IAM.Accounts.Processors
 
         public async Task<Account?> GetAccountAsync(int accountId)
         {
-            LogRequest(nameof(AccountProcessor), nameof(GetAccountAsync), accountId);
-
-            var accountEntity = await _accountRepo.GetAsync(accountId);
-
-            if (accountEntity == null)
+            return await LogRequestAspect(nameof(AccountProcessor), nameof(GetAccountAsync), accountId, async () =>
             {
-                Logger.LogInformation("Account with Id {AccountId} not found", accountId);
-                return null;
-            }
+                var accountEntity = await _accountRepo.GetAsync(accountId);
+                var account = MapTo<Account>(accountEntity);
 
-            return LogResult(nameof(AccountProcessor), nameof(GetAccountAsync), MapTo<Account>(accountEntity));
+                if (account == null)
+                {
+                    Logger.LogInformation("Account with Id {AccountId} not found", accountId);
+                }
+                return account;
+            });
         }
 
         public async Task<Account?> GetAccountAsync(string accountName)
         {
-            LogRequest(nameof(AccountProcessor), nameof(GetAccountAsync), accountName);
-
-            var accountEntity = await _accountRepo.GetAsync(a => a.AccountName == accountName);
-
-            if (accountEntity == null)
+            return await LogRequestResultAspect(nameof(AccountProcessor), nameof(GetAccountAsync), accountName, async () =>
             {
-                Logger.LogInformation("Account with Name {AccountName} not found", accountName);
-                return null;
-            }
+                var accountEntity = await _accountRepo.GetAsync(a => a.AccountName == accountName);
+                var account = MapTo<Account>(accountEntity);
 
-            return LogResult(nameof(AccountProcessor), nameof(GetAccountAsync), MapTo<Account>(accountEntity));
+                if (account == null)
+                {
+                    Logger.LogInformation("Account with name {AccountName} not found", accountName);
+                }
+
+                return account;
+            });
         }
     }
 }

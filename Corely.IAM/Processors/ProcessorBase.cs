@@ -22,34 +22,16 @@ namespace Corely.IAM.Processors
             Logger = logger.ThrowIfNull(nameof(logger));
         }
 
-        protected void LogRequest<T>(string className, string methodName, T request)
-        {
-            Logger.LogDebug("[{Class}] {Method} starting with request {@Request}", className, methodName, request);
-        }
-
-        protected T LogResult<T>(string className, string methodName, T result)
-        {
-            Logger.LogDebug("[{Class}] {Method} completed with result {@Result}", className, methodName, result);
-            return result;
-        }
-
-        protected void LogResult(string className, string methodName)
-        {
-            Logger.LogDebug("[{Class}] {Method} completed", className, methodName);
-        }
-
-        public T MapThenValidateTo<T>(object source)
+        public T MapThenValidateTo<T>(object? source)
         {
             var mapped = MapTo<T>(source);
-            Validate(mapped);
-            return mapped;
+            return Validate(mapped);
         }
 
-        public T MapTo<T>(object source)
+        public T? MapTo<T>(object? source)
         {
             try
             {
-                ArgumentNullException.ThrowIfNull(source, nameof(source));
                 return _mapProvider.MapTo<T>(source); ;
             }
             catch (Exception ex)
@@ -64,12 +46,13 @@ namespace Corely.IAM.Processors
             }
         }
 
-        public void Validate<T>(T model)
+        public T Validate<T>(T? model)
         {
             try
             {
                 ArgumentNullException.ThrowIfNull(model, nameof(model));
                 _validationProvider.ThrowIfInvalid(model);
+                return model;
             }
             catch (Exception ex)
             {
@@ -83,6 +66,84 @@ namespace Corely.IAM.Processors
 
                 using var scope = Logger.BeginScope(state);
                 Logger.LogWarning(ex, "Validation failed for {ModelType}", model?.GetType()?.Name);
+                throw;
+            }
+        }
+
+        protected async Task<TResult> LogRequestResultAspect<TRequest, TResult>(string className, string methodName, TRequest request, Func<Task<TResult>> next)
+        {
+            try
+            {
+                Logger.LogDebug("[{Class}] {Method} starting with request {@Request}", className, methodName, request);
+                var result = await next();
+                Logger.LogDebug("[{Class}] {Method} completed with result {@Result}", className, methodName, result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "[{Class}] {Method} failed", className, methodName);
+                throw;
+            }
+        }
+
+        protected async Task<TResult> LogRequestAspect<TRequest, TResult>(string className, string methodName, TRequest request, Func<Task<TResult>> next)
+        {
+            try
+            {
+                Logger.LogDebug("[{Class}] {Method} starting with request {@Request}", className, methodName, request);
+                var result = await next();
+                Logger.LogDebug("[{Class}] {Method} completed with result", className, methodName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "[{Class}] {Method} failed", className, methodName);
+                throw;
+            }
+        }
+
+        protected async Task LogRequestAspect<TRequest>(string className, string methodName, TRequest request, Func<Task> next)
+        {
+            try
+            {
+                Logger.LogDebug("[{Class}] {Method} starting with request {@Request}", className, methodName, request);
+                await next();
+                Logger.LogDebug("[{Class}] {Method} completed with result", className, methodName);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "[{Class}] {Method} failed", className, methodName);
+                throw;
+            }
+        }
+
+        protected async Task<TResult> LogAspect<TResult>(string className, string methodName, Func<Task<TResult>> next)
+        {
+            try
+            {
+                Logger.LogDebug("[{Class}] {Method} starting", className, methodName);
+                var result = await next();
+                Logger.LogDebug("[{Class}] {Method} completed", className, methodName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "[{Class}] {Method} failed", className, methodName);
+                throw;
+            }
+        }
+
+        protected async Task LogAspect(string className, string methodName, Func<Task> next)
+        {
+            try
+            {
+                Logger.LogDebug("[{Class}] {Method} starting", className, methodName);
+                await next();
+                Logger.LogDebug("[{Class}] {Method} completed", className, methodName);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "[{Class}] {Method} failed", className, methodName);
                 throw;
             }
         }

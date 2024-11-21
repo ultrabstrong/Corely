@@ -91,11 +91,10 @@ namespace Corely.UnitTests.IAM.Processors
         }
 
         [Fact]
-        public void MapTo_Throws_WhenSourceIsNull()
+        public void MapTo_ReturnsNull_WhenSourceIsNull()
         {
-            var ex = Record.Exception(() => _mockProcessorBase.MapTo<object>(null!));
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
+            var destination = _mockProcessorBase.MapTo<object>(null);
+            Assert.Null(destination);
         }
 
         [Fact]

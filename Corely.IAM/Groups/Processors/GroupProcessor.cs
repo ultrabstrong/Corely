@@ -37,17 +37,17 @@ namespace Corely.IAM.Groups.Processors
 
         public async Task<CreateResult> CreateGroupAsync(CreateGroupRequest createGroupRequest)
         {
-            LogRequest(nameof(GroupProcessor), nameof(CreateGroupAsync), createGroupRequest);
+            return await LogRequestResultAspect(nameof(GroupProcessor), nameof(CreateGroupAsync), createGroupRequest, async () =>
+            {
+                var group = MapThenValidateTo<Group>(createGroupRequest);
 
-            var group = MapThenValidateTo<Group>(createGroupRequest);
+                await ThrowIfGroupCannotBeAdded(group.AccountId, group.GroupName);
 
-            await ThrowIfGroupCannotBeAdded(group.AccountId, group.GroupName);
+                var groupEntity = MapTo<GroupEntity>(group);
+                var createdId = await _groupRepo.CreateAsync(groupEntity);
 
-            var groupEntity = MapTo<GroupEntity>(group);
-            var createdId = await _groupRepo.CreateAsync(groupEntity);
-
-            return LogResult(nameof(GroupProcessor), nameof(CreateGroupAsync),
-                new CreateResult(true, string.Empty, createdId));
+                return new CreateResult(true, string.Empty, createdId);
+            });
         }
 
         private async Task ThrowIfGroupCannotBeAdded(int accountId, string groupName)
@@ -69,34 +69,33 @@ namespace Corely.IAM.Groups.Processors
 
         public async Task<AddUsersToGroupResult> AddUsersToGroupAsync(AddUsersToGroupRequest addUsersToGroupRequest)
         {
-            LogRequest(nameof(GroupProcessor), nameof(AddUsersToGroupAsync), addUsersToGroupRequest);
-
-            var groupEntity = await GetGroupOrThrowIfNotFound(addUsersToGroupRequest.GroupId);
-            var userEntities = await _userRepo.ListAsync(u => addUsersToGroupRequest.UserIds.Contains(u.Id));
-
-            if (userEntities.Count == 0)
+            return await LogRequestResultAspect(nameof(GroupProcessor), nameof(AddUsersToGroupAsync), addUsersToGroupRequest, async () =>
             {
-                Logger.LogInformation("No users found for user ids {@UserIds}", addUsersToGroupRequest.UserIds);
-                return LogResult(nameof(GroupProcessor), nameof(AddUsersToGroupAsync),
-                    new AddUsersToGroupResult(false, "No users found for provided user ids", 0));
-            }
+                var groupEntity = await GetGroupOrThrowIfNotFound(addUsersToGroupRequest.GroupId);
+                var userEntities = await _userRepo.ListAsync(u => addUsersToGroupRequest.UserIds.Contains(u.Id));
 
-            groupEntity.Users ??= [];
-            foreach (var user in userEntities)
-            {
-                groupEntity.Users.Add(user);
-            }
+                if (userEntities.Count == 0)
+                {
+                    Logger.LogInformation("No users found for user ids {@UserIds}", addUsersToGroupRequest.UserIds);
+                    return new AddUsersToGroupResult(false, "No users found for provided user ids", 0);
+                }
 
-            await _groupRepo.UpdateAsync(groupEntity);
+                groupEntity.Users ??= [];
+                foreach (var user in userEntities)
+                {
+                    groupEntity.Users.Add(user);
+                }
 
-            var invalidUserIds = addUsersToGroupRequest.UserIds.Except(userEntities.Select(u => u.Id)).ToList();
-            if (invalidUserIds.Count > 0)
-            {
-                Logger.LogInformation("Some users were not found. Invalid user ids : {@InvalidUserIds}", invalidUserIds);
-            }
+                await _groupRepo.UpdateAsync(groupEntity);
 
-            return LogResult(nameof(GroupProcessor), nameof(AddUsersToGroupAsync),
-                new AddUsersToGroupResult(true, string.Empty, userEntities.Count, invalidUserIds));
+                var invalidUserIds = addUsersToGroupRequest.UserIds.Except(userEntities.Select(u => u.Id)).ToList();
+                if (invalidUserIds.Count > 0)
+                {
+                    Logger.LogInformation("Some users were not found. Invalid user ids : {@InvalidUserIds}", invalidUserIds);
+                }
+
+                return new AddUsersToGroupResult(true, string.Empty, userEntities.Count, invalidUserIds);
+            });
         }
 
         private async Task<GroupEntity> GetGroupOrThrowIfNotFound(int groupId)
