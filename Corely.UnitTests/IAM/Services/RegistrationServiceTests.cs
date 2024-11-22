@@ -31,6 +31,8 @@ namespace Corely.UnitTests.IAM.Services
         private bool _createBasicAuthSuccess = true;
         private bool _createGroupSuccess = true;
 
+        private AddUsersToGroupResult _addUsersToGroupResult = new(true, string.Empty, 0);
+
         public RegistrationServiceTests() : base()
         {
             _accountProcessorMock = GetMockAccountProcessor();
@@ -96,6 +98,11 @@ namespace Corely.UnitTests.IAM.Services
                     It.IsAny<CreateGroupRequest>()))
                 .ReturnsAsync(() =>
                     new CreateResult(_createGroupSuccess, string.Empty, _fixture.Create<int>()));
+
+            groupProcessorMock
+                .Setup(m => m.AddUsersToGroupAsync(
+                    It.IsAny<AddUsersToGroupRequest>()))
+                .ReturnsAsync(() => _addUsersToGroupResult);
 
             return groupProcessorMock;
         }
@@ -200,6 +207,39 @@ namespace Corely.UnitTests.IAM.Services
             var ex = await Record.ExceptionAsync(() => _registrationService.RegisterGroupAsync(null!));
             Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public async Task RegisterUsersWithGroupAsync_Throws_WithNullRequest()
+        {
+            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterUsersWithGroupAsync(null!));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+        }
+
+        [Fact]
+        public async Task RegisterUsersWithGroupAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+        {
+            var request = _fixture.Create<RegisterUsersWithGroupRequest>();
+            _addUsersToGroupResult = new(true, string.Empty, request.GroupId);
+
+            var result = await _registrationService.RegisterUsersWithGroupAsync(request);
+
+            Assert.True(result.IsSuccess);
+        }
+
+        [Fact]
+        public async Task RegisterUsersWithGroupAsync_ReturnsFailureResult_WhenGroupProcessorFails()
+        {
+            var request = _fixture.Create<RegisterUsersWithGroupRequest>();
+            _addUsersToGroupResult = new(false, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
+
+            var result = await _registrationService.RegisterUsersWithGroupAsync(request);
+
+            Assert.False(result.IsSuccess);
+            Assert.Equal(_addUsersToGroupResult.Message, result.Message);
+            Assert.Equal(_addUsersToGroupResult.AddedUserCount, result.RegisteredUserCount);
+            Assert.Equal(_addUsersToGroupResult.InvalidUserIds.Count, result.InvalidUserIds.Count);
         }
     }
 }

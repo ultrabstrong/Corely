@@ -42,7 +42,7 @@ namespace Corely.UnitTests.IAM.Validators
         }
 
         [Fact]
-        public void ThrowIfInvalid_DoesNotThrowValidationException_WhenErrorsIsNull()
+        public void ThrowIfInvalid_DoesNotThrow_WhenErrorsIsNull()
         {
             var result = new ValidationResult();
             Assert.True(result.IsValid);

@@ -9,6 +9,7 @@ using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Validators;
+using Corely.UnitTests.ClassData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -41,8 +42,16 @@ namespace Corely.UnitTests.IAM.Groups.Processors
             return await accountRepo.CreateAsync(account);
         }
 
+        private async Task<int> CreateUserAsync()
+        {
+            var userId = _fixture.Create<int>();
+            var user = new UserEntity { Id = userId };
+            var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
+            return await userRepo.CreateAsync(user);
+        }
+
         [Fact]
-        public async Task CreateGroupAsync_AccountDoesNotExistException_WhenAccountDoesNotExist()
+        public async Task CreateGroupAsync_Throws_WhenAccountDoesNotExist()
         {
             var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, _fixture.Create<int>());
 
@@ -93,15 +102,81 @@ namespace Corely.UnitTests.IAM.Groups.Processors
             Assert.IsType<ArgumentNullException>(ex);
         }
 
-        [Fact]
-        public async Task CreateGroupAsync_Throws_WithNullGroupName()
+        [Theory, ClassData(typeof(EmptyAndWhitespace))]
+        public async Task CreateGroupAsync_Throws_WithInvalidGroupName(string groupName)
         {
-            var createGroupRequest = new CreateGroupRequest(null!, await CreateAccountAsync());
+            var createGroupRequest = new CreateGroupRequest(groupName, await CreateAccountAsync());
 
             var ex = await Record.ExceptionAsync(() => _groupProcessor.CreateGroupAsync(createGroupRequest));
 
             Assert.NotNull(ex);
             Assert.IsType<ValidationException>(ex);
+        }
+
+        [Fact]
+        public async Task AddUsersToGroupAsync_Throws_WhenGroupDoesNotExist()
+        {
+            var addUsersToGroupRequest = new AddUsersToGroupRequest([], _fixture.Create<int>());
+
+            var ex = await Record.ExceptionAsync(() => _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest));
+
+            Assert.NotNull(ex);
+            Assert.IsType<GroupDoesNotExistException>(ex);
+        }
+
+        [Fact]
+        public async Task AddUsersToGroupAsync_ReturnsFailure_WhenUsersNotProvided()
+        {
+            var accountId = await CreateAccountAsync();
+            var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, accountId);
+            var createGroupResult = await _groupProcessor.CreateGroupAsync(createGroupRequest);
+
+            var addUsersToGroupRequest = new AddUsersToGroupRequest([], createGroupResult.CreatedId);
+
+            var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
+
+            Assert.False(addUsersToGroupResult.IsSuccess);
+            Assert.Equal("No users found for provided user ids", addUsersToGroupResult.Message);
+        }
+
+        [Fact]
+        public async Task AddUsersToGroupAsync_ReturnsSuccess_WhenUsersAdded()
+        {
+            var userId = await CreateUserAsync();
+            var accountId = await CreateAccountAsync();
+            var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, accountId);
+            var createGroupResult = await _groupProcessor.CreateGroupAsync(createGroupRequest);
+            var addUsersToGroupRequest = new AddUsersToGroupRequest([userId], createGroupResult.CreatedId);
+
+            var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
+
+            Assert.True(addUsersToGroupResult.IsSuccess);
+
+            var groupRepo = _serviceFactory.GetRequiredService<IRepo<GroupEntity>>();
+
+            var groupEntity = await groupRepo.GetAsync(
+                g => g.Id == createGroupResult.CreatedId,
+                include: q => q.Include(g => g.Users));
+
+            Assert.NotNull(groupEntity);
+            Assert.NotNull(groupEntity.Users);
+            Assert.Contains(groupEntity.Users, u => u.Id == userId);
+        }
+
+        [Fact]
+        public async Task AddUsersToGroupAsync_ReportsInvalidUserIds()
+        {
+            var userId = await CreateUserAsync();
+            var accountId = await CreateAccountAsync();
+            var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, accountId);
+            var createGroupResult = await _groupProcessor.CreateGroupAsync(createGroupRequest);
+            var addUsersToGroupRequest = new AddUsersToGroupRequest([userId, -1], createGroupResult.CreatedId);
+
+            var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
+
+            Assert.True(addUsersToGroupResult.IsSuccess);
+            Assert.NotEmpty(addUsersToGroupResult.InvalidUserIds);
+            Assert.Contains(-1, addUsersToGroupResult.InvalidUserIds);
         }
     }
 }

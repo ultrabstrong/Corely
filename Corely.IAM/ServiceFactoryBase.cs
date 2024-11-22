@@ -73,6 +73,6 @@ namespace Corely.IAM
 
         protected virtual IPasswordValidationProvider GetPasswordValidation() => new PasswordValidationProvider();
 
-        protected virtual SecurityOptions GetSecurityOptions() => new SecurityOptions();
+        protected virtual SecurityOptions GetSecurityOptions() => new();
     }
 }

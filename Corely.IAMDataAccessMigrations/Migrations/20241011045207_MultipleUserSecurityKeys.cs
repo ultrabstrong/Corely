@@ -73,13 +73,13 @@ namespace Corely.IAMDataAccessMigrations.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_UserSymmetricKeys_UserId_KeyUsedFor",
                 table: "UserSymmetricKeys",
-                columns: new[] { "UserId", "KeyUsedFor" },
+                columns: ["UserId", "KeyUsedFor"],
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserAsymmetricKeys_UserId_KeyUsedFor",
                 table: "UserAsymmetricKeys",
-                columns: new[] { "UserId", "KeyUsedFor" },
+                columns: ["UserId", "KeyUsedFor"],
                 unique: true);
 
             // CUSTOM: Modify Id column to be auto-increment and restore FK references

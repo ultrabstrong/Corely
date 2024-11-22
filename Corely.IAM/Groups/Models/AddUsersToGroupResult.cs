@@ -5,7 +5,7 @@ namespace Corely.IAM.Groups.Models
     internal record AddUsersToGroupResult(
         bool IsSuccess,
         string? Message,
-        int RegisteredUserCount,
+        int AddedUserCount,
         List<int> InvalidUserIds = null)
         : ResultBase(IsSuccess, Message);
 }

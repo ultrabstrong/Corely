@@ -137,7 +137,7 @@ namespace Corely.IAM.Services
                 return new RegisterUsersWithGroupResult(
                     false,
                     addUsersToGroupResult.Message ?? string.Empty,
-                    addUsersToGroupResult.RegisteredUserCount,
+                    addUsersToGroupResult.AddedUserCount,
                     addUsersToGroupResult.InvalidUserIds);
             }
 
@@ -146,7 +146,7 @@ namespace Corely.IAM.Services
                 ["@InvalidUserIds"] = addUsersToGroupResult.InvalidUserIds
             }))
             {
-                _logger.LogInformation("Registered {RegisteredUserCount} users with group id {GroupId}", addUsersToGroupResult.RegisteredUserCount, request.GroupId);
+                _logger.LogInformation("Registered {RegisteredUserCount} users with group id {GroupId}", addUsersToGroupResult.AddedUserCount, request.GroupId);
             }
 
             return new RegisterUsersWithGroupResult(true, string.Empty, request.UserIds.Count);

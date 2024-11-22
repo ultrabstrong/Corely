@@ -77,7 +77,7 @@ namespace Corely.UnitTests.Common.Http.Models
         }
 
         [Theory, MemberData(nameof(CreateParametersInvalidTestData))]
-        public void AddParameters_ThrowArgumentNullException_WhenKeyOrValueIsNull(string key, string value)
+        public void AddParameters_Throws_WhenKeyOrValueIsNull(string key, string value)
         {
             var ex = Record.Exception(() => _httpParameters.AddParameters((key, value)));
             Assert.NotNull(ex);

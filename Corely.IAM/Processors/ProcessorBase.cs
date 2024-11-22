@@ -12,7 +12,7 @@ namespace Corely.IAM.Processors
 
         protected readonly ILogger Logger;
 
-        public ProcessorBase(
+        protected ProcessorBase(
             IMapProvider mapProvider,
             IValidationProvider validationProvider,
             ILogger logger)
@@ -22,13 +22,13 @@ namespace Corely.IAM.Processors
             Logger = logger.ThrowIfNull(nameof(logger));
         }
 
-        public T MapThenValidateTo<T>(object? source)
+        protected T MapThenValidateTo<T>(object? source)
         {
             var mapped = MapTo<T>(source);
             return Validate(mapped);
         }
 
-        public T? MapTo<T>(object? source)
+        protected T? MapTo<T>(object? source)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace Corely.IAM.Processors
             }
         }
 
-        public T Validate<T>(T? model)
+        protected T Validate<T>(T? model)
         {
             try
             {

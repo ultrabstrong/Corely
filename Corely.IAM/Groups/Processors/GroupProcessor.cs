@@ -10,7 +10,6 @@ using Corely.IAM.Models;
 using Corely.IAM.Processors;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Validators;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Corely.IAM.Groups.Processors
@@ -43,7 +42,7 @@ namespace Corely.IAM.Groups.Processors
 
                 await ThrowIfGroupCannotBeAdded(group.AccountId, group.GroupName);
 
-                var groupEntity = MapTo<GroupEntity>(group);
+                var groupEntity = MapTo<GroupEntity>(group)!; // group is validated
                 var createdId = await _groupRepo.CreateAsync(groupEntity);
 
                 return new CreateResult(true, string.Empty, createdId);
@@ -100,9 +99,7 @@ namespace Corely.IAM.Groups.Processors
 
         private async Task<GroupEntity> GetGroupOrThrowIfNotFound(int groupId)
         {
-            var groupEntity = await _groupRepo.GetAsync(
-                g => g.Id == groupId,
-                include: q => q.Include(g => g.Users));
+            var groupEntity = await _groupRepo.GetAsync(g => g.Id == groupId);
 
             if (groupEntity == null)
             {

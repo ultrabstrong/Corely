@@ -101,7 +101,7 @@ namespace Corely.Common.Text.Delimited
                 // Get next character
                 char c = (char)streamReader.Read();
                 // Increase length for positioning
-                result.Length += streamReader.CurrentEncoding.GetByteCount(new[] { c });
+                result.Length += streamReader.CurrentEncoding.GetByteCount([c]);
                 // Check if current char is a literal
                 if (c == _tokenLiteral)
                 {

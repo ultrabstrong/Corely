@@ -1,9 +1,8 @@
 ﻿using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.EntityFramework.Configurations;
-using Corely.IAM.Users.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.IAM.DataAccess.EntityFramework.EntityConfigurations.Users
+namespace Corely.IAM.Users.Entities
 {
     internal class UserAsymmetricKeyEntityConfiguration : EntityConfigurationBase<UserAsymmetricKeyEntity>
     {
