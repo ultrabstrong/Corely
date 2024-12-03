@@ -42,10 +42,18 @@ public class GroupProcessorTests
         return await accountRepo.CreateAsync(account);
     }
 
-    private async Task<int> CreateUserAsync()
+    private async Task<int> CreateUserAsync(params int[] groupIds)
     {
         var userId = _fixture.Create<int>();
-        var user = new UserEntity { Id = userId };
+        var user = new UserEntity
+        {
+            Id = userId,
+            Groups =
+                groupIds
+                    ?.Select(g => new GroupEntity { Id = g })
+                    ?.ToList()
+                ?? []
+        };
         var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
         return await userRepo.CreateAsync(user);
     }
@@ -89,7 +97,7 @@ public class GroupProcessorTests
             g => g.Id == createGroupResult.CreatedId,
             include: q => q.Include(g => g.Account));
         Assert.NotNull(groupEntity);
-        //Assert.NotNull(groupEntity.Account);
+        //Assert.NotNull(groupEntity.Account); // Account not available for memory mock repo
         Assert.Equal(accountId, groupEntity.AccountId);
     }
 
@@ -136,7 +144,7 @@ public class GroupProcessorTests
         var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
 
         Assert.False(addUsersToGroupResult.IsSuccess);
-        Assert.Equal("No users found for provided user ids", addUsersToGroupResult.Message);
+        Assert.Equal("All user ids not found or already exist in group", addUsersToGroupResult.Message);
     }
 
     [Fact]
@@ -164,7 +172,7 @@ public class GroupProcessorTests
     }
 
     [Fact]
-    public async Task AddUsersToGroupAsync_ReportsInvalidUserIds()
+    public async Task AddUsersToGroupAsync_ReportsInvalidUserIds_WhenUsersDoNotExist()
     {
         var userId = await CreateUserAsync();
         var accountId = await CreateAccountAsync();
@@ -177,5 +185,22 @@ public class GroupProcessorTests
         Assert.True(addUsersToGroupResult.IsSuccess);
         Assert.NotEmpty(addUsersToGroupResult.InvalidUserIds);
         Assert.Contains(-1, addUsersToGroupResult.InvalidUserIds);
+    }
+
+    [Fact]
+    public async Task AddUsersToGroupAsync_ReturnsFailure_WhenAllUsersAlreadyExistInGroup()
+    {
+        var accountId = await CreateAccountAsync();
+        var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, accountId);
+        var createGroupResult = await _groupProcessor.CreateGroupAsync(createGroupRequest);
+        var userId = await CreateUserAsync(createGroupResult.CreatedId);
+        var addUsersToGroupRequest = new AddUsersToGroupRequest([userId], createGroupResult.CreatedId);
+
+        var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
+
+        Assert.False(addUsersToGroupResult.IsSuccess);
+        Assert.Equal("All user ids not found or already exist in group", addUsersToGroupResult.Message);
+        Assert.NotEmpty(addUsersToGroupResult.InvalidUserIds);
+        Assert.Contains(userId, addUsersToGroupResult.InvalidUserIds);
     }
 }

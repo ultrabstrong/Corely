@@ -71,12 +71,14 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
         return await LogRequestResultAspect(nameof(GroupProcessor), nameof(AddUsersToGroupAsync), addUsersToGroupRequest, async () =>
         {
             var groupEntity = await GetGroupOrThrowIfNotFound(addUsersToGroupRequest.GroupId);
-            var userEntities = await _userRepo.ListAsync(u => addUsersToGroupRequest.UserIds.Contains(u.Id));
+            var userEntities = await _userRepo.ListAsync(
+                u => addUsersToGroupRequest.UserIds.Contains(u.Id)
+                && !u.Groups!.Any(g => g.Id == groupEntity.Id));
 
             if (userEntities.Count == 0)
             {
-                Logger.LogInformation("No users found for user ids {@UserIds}", addUsersToGroupRequest.UserIds);
-                return new AddUsersToGroupResult(false, "No users found for provided user ids", 0);
+                Logger.LogInformation("All user ids not found or already exist in group : {@InvalidUserIds}", addUsersToGroupRequest.UserIds);
+                return new AddUsersToGroupResult(false, "All user ids not found or already exist in group", 0, addUsersToGroupRequest.UserIds);
             }
 
             groupEntity.Users ??= [];
@@ -90,7 +92,7 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
             var invalidUserIds = addUsersToGroupRequest.UserIds.Except(userEntities.Select(u => u.Id)).ToList();
             if (invalidUserIds.Count > 0)
             {
-                Logger.LogInformation("Some users were not found. Invalid user ids : {@InvalidUserIds}", invalidUserIds);
+                Logger.LogInformation("Some user ids not found or already exist in group : {@InvalidUserIds}", invalidUserIds);
             }
 
             return new AddUsersToGroupResult(true, string.Empty, userEntities.Count, invalidUserIds);
