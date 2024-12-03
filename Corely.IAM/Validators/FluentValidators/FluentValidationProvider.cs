@@ -1,49 +1,48 @@
 ﻿using AutoMapper;
 
-namespace Corely.IAM.Validators.FluentValidators
+namespace Corely.IAM.Validators.FluentValidators;
+
+internal sealed class FluentValidationProvider : IValidationProvider
 {
-    internal sealed class FluentValidationProvider : IValidationProvider
+    private readonly IFluentValidatorFactory _fluentValidatorFactory;
+    private readonly IMapper _mapper;
+
+    public FluentValidationProvider(
+        IFluentValidatorFactory fluentValidatorFactory,
+        IMapper mapper)
     {
-        private readonly IFluentValidatorFactory _fluentValidatorFactory;
-        private readonly IMapper _mapper;
+        _fluentValidatorFactory = fluentValidatorFactory;
+        _mapper = mapper;
+    }
 
-        public FluentValidationProvider(
-            IFluentValidatorFactory fluentValidatorFactory,
-            IMapper mapper)
+    public ValidationResult Validate<T>(T model)
+    {
+        ValidationResult corelyResult;
+        if (model == null)
         {
-            _fluentValidatorFactory = fluentValidatorFactory;
-            _mapper = mapper;
-        }
-
-        public ValidationResult Validate<T>(T model)
-        {
-            ValidationResult corelyResult;
-            if (model == null)
+            corelyResult = new()
             {
-                corelyResult = new()
-                {
-                    Errors = [new()
+                Errors = [new()
                     {
                         Message = "Model is null",
                         PropertyName = typeof(T).Name
                     }]
-                };
-            }
-            else
-            {
-                var validator = _fluentValidatorFactory.GetValidator<T>();
-                var fluentResult = validator.Validate(model);
-                corelyResult = _mapper.Map<ValidationResult>(fluentResult);
-            }
-
-            corelyResult.Message = $"Validation for {typeof(T).Name} {(corelyResult.IsValid ? "succeeded" : "failed")}";
-
-            return corelyResult;
+            };
         }
-
-        public void ThrowIfInvalid<T>(T model)
+        else
         {
-            Validate(model).ThrowIfInvalid();
+            var validator = _fluentValidatorFactory.GetValidator<T>();
+            var fluentResult = validator.Validate(model);
+            corelyResult = _mapper.Map<ValidationResult>(fluentResult);
         }
+
+        corelyResult.Message = $"Validation for {typeof(T).Name} {(corelyResult.IsValid ? "succeeded" : "failed")}";
+
+        return corelyResult;
+    }
+
+    public void ThrowIfInvalid<T>(T model)
+    {
+        Validate(model).ThrowIfInvalid();
     }
 }

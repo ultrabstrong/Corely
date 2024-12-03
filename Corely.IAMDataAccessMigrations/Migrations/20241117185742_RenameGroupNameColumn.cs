@@ -2,27 +2,26 @@
 
 #nullable disable
 
-namespace Corely.IAMDataAccessMigrations.Migrations
+namespace Corely.IAMDataAccessMigrations.Migrations;
+
+/// <inheritdoc />
+public partial class RenameGroupNameColumn : Migration
 {
     /// <inheritdoc />
-    public partial class RenameGroupNameColumn : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.RenameColumn(
-                name: "Name",
-                table: "Groups",
-                newName: "GroupName");
-        }
+        migrationBuilder.RenameColumn(
+            name: "Name",
+            table: "Groups",
+            newName: "GroupName");
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.RenameColumn(
-                name: "GroupName",
-                table: "Groups",
-                newName: "Name");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.RenameColumn(
+            name: "GroupName",
+            table: "Groups",
+            newName: "Name");
     }
 }

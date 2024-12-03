@@ -1,11 +1,10 @@
 ﻿using Corely.Common.Http.Models;
 
-namespace Corely.Common.Http
+namespace Corely.Common.Http;
+
+public interface IHttpProxyProvider
 {
-    public interface IHttpProxyProvider
-    {
-        Task<HttpResponseMessage> SendRequestForHttpResponse<T>(
-            HttpSendRequest request,
-            IHttpContent<T>? httpContent = null);
-    }
+    Task<HttpResponseMessage> SendRequestForHttpResponse<T>(
+        HttpSendRequest request,
+        IHttpContent<T>? httpContent = null);
 }

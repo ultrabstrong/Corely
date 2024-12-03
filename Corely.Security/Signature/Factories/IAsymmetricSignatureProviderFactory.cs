@@ -1,9 +1,8 @@
 ﻿using Corely.Security.Signature.Providers;
 
-namespace Corely.Security.Signature.Factories
+namespace Corely.Security.Signature.Factories;
+
+public interface IAsymmetricSignatureProviderFactory : IProviderFactory<IAsymmetricSignatureProvider>
 {
-    public interface IAsymmetricSignatureProviderFactory : IProviderFactory<IAsymmetricSignatureProvider>
-    {
-        IAsymmetricSignatureProvider GetProviderForVerifying(string value);
-    }
+    IAsymmetricSignatureProvider GetProviderForVerifying(string value);
 }

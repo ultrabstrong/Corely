@@ -1,20 +1,19 @@
-﻿namespace Corely.Common.Extensions
+﻿namespace Corely.Common.Extensions;
+
+public static class StringUrlEncodeExtensions
 {
-    public static class StringUrlEncodeExtensions
+    public static string UrlEncode(this string source)
     {
-        public static string UrlEncode(this string source)
-        {
-            ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(source);
 
-            return Uri.EscapeDataString(source);
-        }
-
-        public static string UrlDecode(this string source)
-        {
-            ArgumentNullException.ThrowIfNull(source);
-
-            return Uri.UnescapeDataString(source);
-        }
-
+        return Uri.EscapeDataString(source);
     }
+
+    public static string UrlDecode(this string source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        return Uri.UnescapeDataString(source);
+    }
+
 }

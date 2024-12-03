@@ -1,102 +1,101 @@
 ﻿using Corely.Common.Text.Delimited;
-using Corely.UnitTests.AB.TestBase;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace Corely.UnitTests.Common.Text.Delimited
+namespace Corely.UnitTests.Common.Text.Delimited;
+
+public class DelimitedTextProviderTests
 {
-    public class DelimitedTextProviderTests
+    private readonly ILogger<DelimitedTextProvider> _logger;
+    private readonly DelimitedTextProvider _delimitedTextDataProvider;
+
+    public DelimitedTextProviderTests()
     {
-        private readonly ILogger<DelimitedTextProvider> _logger;
-        private readonly DelimitedTextProvider _delimitedTextDataProvider;
+        var serviceFactory = new ServiceFactory();
+        _logger = serviceFactory.GetRequiredService<ILogger<DelimitedTextProvider>>();
+        _delimitedTextDataProvider = new DelimitedTextProvider(_logger);
+    }
 
-        public DelimitedTextProviderTests()
+    [Theory]
+    [InlineData(TokenDelimiter.Semicolon, ';', '"', "\r\n")]
+    [InlineData(TokenDelimiter.Pipe, '|', '"', "\r\n")]
+    [InlineData(TokenDelimiter.Tab, '\t', '"', "\r\n")]
+    [InlineData(TokenDelimiter.Comma, ',', '"', "\r\n")]
+    public void Constructor_CreatesCorrectDelimiters_ForEnum(
+        TokenDelimiter tokenDelimiter,
+        char expectedTokenDelim,
+        char expectedTokenLiteral,
+        string expectedRecordDelim)
+    {
+        DelimitedTextProvider delimitedTextDataProvider = new(_logger, tokenDelimiter);
+
+        var tokenDelim = NonPublicHelpers.GetNonPublicField<char>(
+            delimitedTextDataProvider, "_tokenDelimiter");
+
+        var tokenLiteral = NonPublicHelpers.GetNonPublicField<char>(
+            delimitedTextDataProvider, "_tokenLiteral");
+
+        var recordDelim = NonPublicHelpers.GetNonPublicField<string>(
+            delimitedTextDataProvider, "_recordDelimiter");
+
+        Assert.Equal(expectedTokenDelim, tokenDelim);
+        Assert.Equal(expectedTokenLiteral, tokenLiteral);
+        Assert.Equal(expectedRecordDelim, recordDelim);
+    }
+
+    [Fact]
+    public void WriteRecord_WritesCorrectRecord()
+    {
+        string expected = "test1,te\"\"st2,\"te,st3\"";
+        string actual;
+        using (MemoryStream stream = new())
         {
-            var serviceFactory = new ServiceFactory();
-            _logger = serviceFactory.GetRequiredService<ILogger<DelimitedTextProvider>>();
-            _delimitedTextDataProvider = new DelimitedTextProvider(_logger);
-        }
-
-        [Theory]
-        [InlineData(TokenDelimiter.Semicolon, ';', '"', "\r\n")]
-        [InlineData(TokenDelimiter.Pipe, '|', '"', "\r\n")]
-        [InlineData(TokenDelimiter.Tab, '\t', '"', "\r\n")]
-        [InlineData(TokenDelimiter.Comma, ',', '"', "\r\n")]
-        public void Constructor_CreatesCorrectDelimiters_ForEnum(
-            TokenDelimiter tokenDelimiter,
-            char expectedTokenDelim,
-            char expectedTokenLiteral,
-            string expectedRecordDelim)
-        {
-            DelimitedTextProvider delimitedTextDataProvider = new(_logger, tokenDelimiter);
-
-            var tokenDelim = NonPublicHelpers.GetNonPublicField<char>(
-                delimitedTextDataProvider, "_tokenDelimiter");
-
-            var tokenLiteral = NonPublicHelpers.GetNonPublicField<char>(
-                delimitedTextDataProvider, "_tokenLiteral");
-
-            var recordDelim = NonPublicHelpers.GetNonPublicField<string>(
-                delimitedTextDataProvider, "_recordDelimiter");
-
-            Assert.Equal(expectedTokenDelim, tokenDelim);
-            Assert.Equal(expectedTokenLiteral, tokenLiteral);
-            Assert.Equal(expectedRecordDelim, recordDelim);
-        }
-
-        [Fact]
-        public void WriteRecord_WritesCorrectRecord()
-        {
-            string expected = "test1,te\"\"st2,\"te,st3\"";
-            string actual;
-            using (MemoryStream stream = new())
+            _delimitedTextDataProvider.WriteRecord(["test1", "te\"st2", "te,st3"], stream);
+            stream.Position = 0;
+            using (StreamReader reader = new(stream))
             {
-                _delimitedTextDataProvider.WriteRecord(["test1", "te\"st2", "te,st3"], stream);
-                stream.Position = 0;
-                using (StreamReader reader = new(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-            }
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Theory, MemberData(nameof(WriteAllRecordsTestData))]
-        public void WriteAllRecordsThenReadAllRecords_ProducesOriginalInput(List<List<string>> records)
-        {
-            string delimitedData;
-            using (MemoryStream stream = new())
-            {
-                _delimitedTextDataProvider.WriteAllRecords(records, stream);
-                stream.Position = 0;
-                using (StreamReader reader = new(stream))
-                {
-                    delimitedData = reader.ReadToEnd();
-                }
-            }
-
-            List<ReadRecordResult> results = [];
-            using (MemoryStream stream = new(Encoding.UTF8.GetBytes(delimitedData)))
-            {
-                results = _delimitedTextDataProvider.ReadAllRecords(stream);
-            }
-
-            Assert.Equal(records.Count, results.Count);
-            for (int i = 0; i < records.Count; i++)
-            {
-                Assert.Equal(records[i].Count, results[i].Tokens.Count);
-                for (int j = 0; j < records[i].Count; j++)
-                {
-                    Assert.Equal(records[i][j], results[i].Tokens[j]);
-                }
+                actual = reader.ReadToEnd();
             }
         }
 
-        public static IEnumerable<object[]> WriteAllRecordsTestData() =>
-        [
-            // No delimiters in tokens
-            [new List<List<string>> {
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory, MemberData(nameof(WriteAllRecordsTestData))]
+    public void WriteAllRecordsThenReadAllRecords_ProducesOriginalInput(List<List<string>> records)
+    {
+        string delimitedData;
+        using (MemoryStream stream = new())
+        {
+            _delimitedTextDataProvider.WriteAllRecords(records, stream);
+            stream.Position = 0;
+            using (StreamReader reader = new(stream))
+            {
+                delimitedData = reader.ReadToEnd();
+            }
+        }
+
+        List<ReadRecordResult> results = [];
+        using (MemoryStream stream = new(Encoding.UTF8.GetBytes(delimitedData)))
+        {
+            results = _delimitedTextDataProvider.ReadAllRecords(stream);
+        }
+
+        Assert.Equal(records.Count, results.Count);
+        for (int i = 0; i < records.Count; i++)
+        {
+            Assert.Equal(records[i].Count, results[i].Tokens.Count);
+            for (int j = 0; j < records[i].Count; j++)
+            {
+                Assert.Equal(records[i][j], results[i].Tokens[j]);
+            }
+        }
+    }
+
+    public static IEnumerable<object[]> WriteAllRecordsTestData() =>
+    [
+        // No delimiters in tokens
+        [new List<List<string>> {
                 new() { "test1", "test2", "test3" }
             }],
 
@@ -214,6 +213,5 @@ namespace Corely.UnitTests.Common.Text.Delimited
                 new() { "test1", "test2", "\",test3\r\ntest3.1,\"" }
             }],
         ];
-    }
-
 }
+

@@ -1,9 +1,8 @@
-﻿namespace Corely.Security.Hashing.Models
+﻿namespace Corely.Security.Hashing.Models;
+
+public interface IHashedValue
 {
-    public interface IHashedValue
-    {
-        string Hash { get; init; }
-        IHashedValue Set(string value);
-        bool Verify(string value);
-    }
+    string Hash { get; init; }
+    IHashedValue Set(string value);
+    bool Verify(string value);
 }

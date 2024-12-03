@@ -6,73 +6,72 @@ using CorelyValidationException = Corely.IAM.Validators.ValidationException;
 using FluentValidationFailure = FluentValidation.Results.ValidationFailure;
 using FluentValidationResult = FluentValidation.Results.ValidationResult;
 
-namespace Corely.UnitTests.IAM.Validators.FluentValidators
+namespace Corely.UnitTests.IAM.Validators.FluentValidators;
+
+public class FluentValidationProviderTests
 {
-    public class FluentValidationProviderTests
+    private const string INVALID_STRING = "invalid string";
+
+    private readonly FluentValidationProvider _provider;
+    private readonly Fixture _fixture = new();
+    private readonly ServiceFactory _serviceFactory = new();
+
+    public FluentValidationProviderTests()
     {
-        private const string INVALID_STRING = "invalid string";
+        var serviceProviderMock = GetMockServiceProvider();
+        var fluentValidatorFactory = new FluentValidatorFactory(serviceProviderMock);
 
-        private readonly FluentValidationProvider _provider;
-        private readonly Fixture _fixture = new();
-        private readonly ServiceFactory _serviceFactory = new();
+        var mapper = _serviceFactory.GetRequiredService<IMapper>();
 
-        public FluentValidationProviderTests()
-        {
-            var serviceProviderMock = GetMockServiceProvider();
-            var fluentValidatorFactory = new FluentValidatorFactory(serviceProviderMock);
+        _provider = new FluentValidationProvider(fluentValidatorFactory, mapper);
+    }
 
-            var mapper = _serviceFactory.GetRequiredService<IMapper>();
+    private static IServiceProvider GetMockServiceProvider()
+    {
+        var validatorMock = new Mock<IValidator<string>>();
 
-            _provider = new FluentValidationProvider(fluentValidatorFactory, mapper);
-        }
+        validatorMock.Setup(v => v.Validate(It.Is<string>(s => s == INVALID_STRING)))
+            .Returns(new FluentValidationResult(
+                [new FluentValidationFailure("property", "error message")]
+            ));
 
-        private static IServiceProvider GetMockServiceProvider()
-        {
-            var validatorMock = new Mock<IValidator<string>>();
+        validatorMock
+            .Setup(v => v.Validate(It.Is<string>(s => s != INVALID_STRING)))
+            .Returns(new FluentValidationResult());
 
-            validatorMock.Setup(v => v.Validate(It.Is<string>(s => s == INVALID_STRING)))
-                .Returns(new FluentValidationResult(
-                    [new FluentValidationFailure("property", "error message")]
-                ));
+        var serviceProviderMock = new Mock<IServiceProvider>();
+        serviceProviderMock
+            .Setup(p => p.GetService(typeof(IValidator<string>)))
+            .Returns(validatorMock.Object);
 
-            validatorMock
-                .Setup(v => v.Validate(It.Is<string>(s => s != INVALID_STRING)))
-                .Returns(new FluentValidationResult());
+        return serviceProviderMock.Object;
+    }
 
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            serviceProviderMock
-                .Setup(p => p.GetService(typeof(IValidator<string>)))
-                .Returns(validatorMock.Object);
+    [Fact]
+    public void Validate_ReturnsValidationResult()
+    {
+        var toValidate = _fixture.Create<string>();
+        var result = _provider.Validate(toValidate);
+        Assert.NotNull(result);
+    }
 
-            return serviceProviderMock.Object;
-        }
+    [Fact]
+    public void Validate_Throws_WhenValidatorIsNotRegistered()
+    {
+        var toValidate = _fixture.Create<object>();
 
-        [Fact]
-        public void Validate_ReturnsValidationResult()
-        {
-            var toValidate = _fixture.Create<string>();
-            var result = _provider.Validate(toValidate);
-            Assert.NotNull(result);
-        }
+        var ex = Record.Exception(() => _provider.Validate(toValidate));
+        Assert.NotNull(ex);
+        Assert.IsType<InvalidOperationException>(ex);
+    }
 
-        [Fact]
-        public void Validate_Throws_WhenValidatorIsNotRegistered()
-        {
-            var toValidate = _fixture.Create<object>();
-
-            var ex = Record.Exception(() => _provider.Validate(toValidate));
-            Assert.NotNull(ex);
-            Assert.IsType<InvalidOperationException>(ex);
-        }
-
-        [Theory]
-        [InlineData(INVALID_STRING)]
-        [InlineData(null)]
-        public void ThrowIfInvalid_Throws_WhenValidationFails(string? value)
-        {
-            var ex = Record.Exception(() => _provider.ThrowIfInvalid(value));
-            Assert.NotNull(ex);
-            Assert.IsType<CorelyValidationException>(ex);
-        }
+    [Theory]
+    [InlineData(INVALID_STRING)]
+    [InlineData(null)]
+    public void ThrowIfInvalid_Throws_WhenValidationFails(string? value)
+    {
+        var ex = Record.Exception(() => _provider.ThrowIfInvalid(value));
+        Assert.NotNull(ex);
+        Assert.IsType<CorelyValidationException>(ex);
     }
 }

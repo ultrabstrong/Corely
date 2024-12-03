@@ -1,7 +1,6 @@
-﻿namespace Corely.IAM.Security.Constants
+﻿namespace Corely.IAM.Security.Constants;
+
+internal class AsymmetricKeyConstants
 {
-    internal class AsymmetricKeyConstants
-    {
-        public const int VERSION_MIN_VALUE = 0;
-    }
+    public const int VERSION_MIN_VALUE = 0;
 }

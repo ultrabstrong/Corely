@@ -2,16 +2,15 @@
 using Corely.IAM.Groups.Models;
 using FluentValidation;
 
-namespace Corely.IAM.Groups.Validators
+namespace Corely.IAM.Groups.Validators;
+
+internal class GroupValidator : AbstractValidator<Group>
 {
-    internal class GroupValidator : AbstractValidator<Group>
+    public GroupValidator()
     {
-        public GroupValidator()
-        {
-            RuleFor(x => x.GroupName)
-                .NotEmpty()
-                .MinimumLength(GroupConstants.GROUP_NAME_MIN_LENGTH)
-                .MaximumLength(GroupConstants.GROUP_NAME_MAX_LENGTH);
-        }
+        RuleFor(x => x.GroupName)
+            .NotEmpty()
+            .MinimumLength(GroupConstants.GROUP_NAME_MIN_LENGTH)
+            .MaximumLength(GroupConstants.GROUP_NAME_MAX_LENGTH);
     }
 }

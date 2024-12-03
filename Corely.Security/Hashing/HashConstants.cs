@@ -1,8 +1,7 @@
-﻿namespace Corely.Security.Hashing
+﻿namespace Corely.Security.Hashing;
+
+public static class HashConstants
 {
-    public static class HashConstants
-    {
-        public const string SALTED_SHA256_CODE = "00";
-        public const string SALTED_SHA512_CODE = "01";
-    }
+    public const string SALTED_SHA256_CODE = "00";
+    public const string SALTED_SHA512_CODE = "01";
 }

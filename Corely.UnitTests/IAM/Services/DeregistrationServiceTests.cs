@@ -1,7 +1,6 @@
-﻿namespace Corely.UnitTests.IAM.Services
-{
-    public class DeregistrationServiceTests
-    {
+﻿namespace Corely.UnitTests.IAM.Services;
 
-    }
+public class DeregistrationServiceTests
+{
+
 }

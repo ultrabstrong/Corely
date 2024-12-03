@@ -1,34 +1,33 @@
 ﻿using Corely.Common.Extensions;
 using Corely.DevTools.Attributes;
 
-namespace Corely.DevTools.Commands
+namespace Corely.DevTools.Commands;
+
+internal class Url : CommandBase
 {
-    internal class Url : CommandBase
+    [Option("-e", "--encode", Description = "Value to encode")]
+    private string Encode { get; init; } = null!;
+
+    [Option("-d", "--decode", Description = "Value to decode")]
+    private string Decode { get; init; } = null!;
+
+    public Url() : base("url", "Url encode/decode operations")
     {
-        [Option("-e", "--encode", Description = "Value to encode")]
-        private string Encode { get; init; } = null!;
+    }
 
-        [Option("-d", "--decode", Description = "Value to decode")]
-        private string Decode { get; init; } = null!;
-
-        public Url() : base("url", "Url encode/decode operations")
+    protected override void Execute()
+    {
+        if (!string.IsNullOrEmpty(Encode))
         {
+            Console.WriteLine(Encode.UrlEncode());
         }
-
-        protected override void Execute()
+        if (!string.IsNullOrEmpty(Decode))
         {
-            if (!string.IsNullOrEmpty(Encode))
-            {
-                Console.WriteLine(Encode.UrlEncode());
-            }
-            if (!string.IsNullOrEmpty(Decode))
-            {
-                Console.WriteLine(Decode.UrlDecode());
-            }
-            if (string.IsNullOrEmpty(Encode) && string.IsNullOrEmpty(Decode))
-            {
-                Console.WriteLine("No value to encode or decode");
-            }
+            Console.WriteLine(Decode.UrlDecode());
+        }
+        if (string.IsNullOrEmpty(Encode) && string.IsNullOrEmpty(Decode))
+        {
+            Console.WriteLine("No value to encode or decode");
         }
     }
 }

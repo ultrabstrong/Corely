@@ -1,12 +1,11 @@
 ﻿using Corely.IAM.Accounts.Models;
 using Corely.IAM.Models;
 
-namespace Corely.IAM.Accounts.Processors
+namespace Corely.IAM.Accounts.Processors;
+
+internal interface IAccountProcessor
 {
-    internal interface IAccountProcessor
-    {
-        Task<CreateResult> CreateAccountAsync(CreateAccountRequest createAccountRequest);
-        Task<Account?> GetAccountAsync(int accountId);
-        Task<Account?> GetAccountAsync(string accountName);
-    }
+    Task<CreateResult> CreateAccountAsync(CreateAccountRequest createAccountRequest);
+    Task<Account?> GetAccountAsync(int accountId);
+    Task<Account?> GetAccountAsync(string accountName);
 }

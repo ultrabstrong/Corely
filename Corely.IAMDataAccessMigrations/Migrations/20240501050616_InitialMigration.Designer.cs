@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Corely.IAMDataAccessMigrations.Migrations
-{
+namespace Corely.IAMDataAccessMigrations.Migrations;
+
     [DbContext(typeof(IamDbContext))]
     [Migration("20240501050616_InitialMigration")]
     partial class InitialMigration
@@ -289,5 +289,4 @@ namespace Corely.IAMDataAccessMigrations.Migrations
                 });
 #pragma warning restore 612, 618
         }
-    }
-}
+    }

@@ -1,7 +1,6 @@
-﻿namespace Corely.Common.Http.Models
+﻿namespace Corely.Common.Http.Models;
+
+public interface IHttpContent<T>
 {
-    public interface IHttpContent<T>
-    {
-        T Content { get; }
-    }
+    T Content { get; }
 }

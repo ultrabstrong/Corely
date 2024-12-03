@@ -3,84 +3,83 @@ using Corely.DataAccess.Interfaces.Repos;
 using Corely.UnitTests.Fixtures;
 using FluentAssertions;
 
-namespace Corely.UnitTests.DataAccess
+namespace Corely.UnitTests.DataAccess;
+
+public abstract class RepoTestsBase : ReadonlyRepoTestsBase
 {
-    public abstract class RepoTestsBase : ReadonlyRepoTestsBase
+    protected override IReadonlyRepo<EntityFixture> ReadonlyRepo => Repo;
+
+    protected abstract IRepo<EntityFixture> Repo { get; }
+
+    [Fact]
+    public async Task Create_ThenGet_ReturnsAdded()
     {
-        protected override IReadonlyRepo<EntityFixture> ReadonlyRepo => Repo;
+        var entity = Fixture.Create<EntityFixture>();
 
-        protected abstract IRepo<EntityFixture> Repo { get; }
+        await Repo.CreateAsync(entity);
+        var result = await Repo.GetAsync(entity.Id);
 
-        [Fact]
-        public async Task Create_ThenGet_ReturnsAdded()
-        {
-            var entity = Fixture.Create<EntityFixture>();
+        Assert.Equal(entity, result);
+    }
 
-            await Repo.CreateAsync(entity);
-            var result = await Repo.GetAsync(entity.Id);
+    [Fact]
+    public async Task Create_ThenUpdate_Updates()
+    {
+        var entity = Fixture.Create<EntityFixture>();
+        await Repo.CreateAsync(entity);
 
-            Assert.Equal(entity, result);
-        }
+        var updateEntity = Fixture.Create<EntityFixture>();
+        updateEntity.Id = entity.Id;
+        updateEntity.CreatedUtc = entity.CreatedUtc;
+        await Repo.UpdateAsync(updateEntity);
 
-        [Fact]
-        public async Task Create_ThenUpdate_Updates()
-        {
-            var entity = Fixture.Create<EntityFixture>();
-            await Repo.CreateAsync(entity);
+        var result = await Repo.GetAsync(entity.Id);
 
-            var updateEntity = Fixture.Create<EntityFixture>();
-            updateEntity.Id = entity.Id;
-            updateEntity.CreatedUtc = entity.CreatedUtc;
-            await Repo.UpdateAsync(updateEntity);
+        result.Should()
+            .BeEquivalentTo(entity, options => options
+            .Excluding(m => m.ModifiedUtc)
+            .Excluding(m => m.NavigationProperty));
+    }
 
-            var result = await Repo.GetAsync(entity.Id);
+    [Fact]
+    public async Task Create_ThenUpdate_UpdatesModifiedUtc()
+    {
+        var entity = Fixture.Create<EntityFixture>();
+        entity.ModifiedUtc = DateTime.UtcNow;
+        var originalModifiedUtc = entity.ModifiedUtc;
 
-            result.Should()
-                .BeEquivalentTo(entity, options => options
-                .Excluding(m => m.ModifiedUtc)
-                .Excluding(m => m.NavigationProperty));
-        }
+        var updateEntity = Fixture.Create<EntityFixture>();
+        updateEntity.Id = entity.Id;
 
-        [Fact]
-        public async Task Create_ThenUpdate_UpdatesModifiedUtc()
-        {
-            var entity = Fixture.Create<EntityFixture>();
-            entity.ModifiedUtc = DateTime.UtcNow;
-            var originalModifiedUtc = entity.ModifiedUtc;
+        await Repo.CreateAsync(entity);
+        await Repo.UpdateAsync(updateEntity);
+        var result = await Repo.GetAsync(entity.Id);
 
-            var updateEntity = Fixture.Create<EntityFixture>();
-            updateEntity.Id = entity.Id;
+        Assert.NotNull(result);
+        Assert.True(originalModifiedUtc < updateEntity.ModifiedUtc);
+    }
 
-            await Repo.CreateAsync(entity);
-            await Repo.UpdateAsync(updateEntity);
-            var result = await Repo.GetAsync(entity.Id);
+    [Fact]
+    public async Task Create_ThenDelete_Deletes()
+    {
+        var entity = Fixture.Create<EntityFixture>();
 
-            Assert.NotNull(result);
-            Assert.True(originalModifiedUtc < updateEntity.ModifiedUtc);
-        }
+        await Repo.CreateAsync(entity);
+        await Repo.DeleteAsync(entity);
+        var result = await Repo.GetAsync(entity.Id);
 
-        [Fact]
-        public async Task Create_ThenDelete_Deletes()
-        {
-            var entity = Fixture.Create<EntityFixture>();
+        Assert.Null(result);
+    }
 
-            await Repo.CreateAsync(entity);
-            await Repo.DeleteAsync(entity);
-            var result = await Repo.GetAsync(entity.Id);
+    [Fact]
+    public async Task Create_ThenDeleteById_Deletes()
+    {
+        var entity = Fixture.Create<EntityFixture>();
 
-            Assert.Null(result);
-        }
+        await Repo.CreateAsync(entity);
+        await Repo.DeleteAsync(entity.Id);
+        var result = await Repo.GetAsync(entity.Id);
 
-        [Fact]
-        public async Task Create_ThenDeleteById_Deletes()
-        {
-            var entity = Fixture.Create<EntityFixture>();
-
-            await Repo.CreateAsync(entity);
-            await Repo.DeleteAsync(entity.Id);
-            var result = await Repo.GetAsync(entity.Id);
-
-            Assert.Null(result);
-        }
+        Assert.Null(result);
     }
 }

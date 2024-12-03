@@ -2,38 +2,37 @@
 using Corely.IAM.Mappers.AutoMapper.ValueConverters;
 using System.Text.Json;
 
-namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters
+namespace Corely.UnitTests.IAM.Mappers.AutoMapper.ValueConverters;
+
+public class JsonifyValueConverterTests
 {
-    public class JsonifyValueConverterTests
+    private class TestClass
     {
-        private class TestClass
-        {
-            public string? Name { get; set; }
-        }
+        public string? Name { get; set; }
+    }
 
-        private readonly JsonifyValueConverter<TestClass> _converter = new();
-        private readonly Fixture _fixture = new();
+    private readonly JsonifyValueConverter<TestClass> _converter = new();
+    private readonly Fixture _fixture = new();
 
-        [Fact]
-        public void Convert_ReturnsJson()
-        {
-            var value = _fixture.Create<TestClass>();
+    [Fact]
+    public void Convert_ReturnsJson()
+    {
+        var value = _fixture.Create<TestClass>();
 
-            var result = _converter.Convert(value, default);
+        var result = _converter.Convert(value, default);
 
-            Assert.NotNull(result);
-            Assert.Equal(JsonSerializer.Serialize(value), result);
-        }
+        Assert.NotNull(result);
+        Assert.Equal(JsonSerializer.Serialize(value), result);
+    }
 
-        [Fact]
-        public void Convert_ReturnsJson_WithNullSource()
-        {
-            TestClass? value = null;
+    [Fact]
+    public void Convert_ReturnsJson_WithNullSource()
+    {
+        TestClass? value = null;
 
-            var result = _converter.Convert(null, default);
+        var result = _converter.Convert(null, default);
 
-            Assert.NotNull(result);
-            Assert.Equal(JsonSerializer.Serialize(value), result);
-        }
+        Assert.NotNull(result);
+        Assert.Equal(JsonSerializer.Serialize(value), result);
     }
 }

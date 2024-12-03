@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Corely.IAMDataAccessMigrations.Migrations
-{
+namespace Corely.IAMDataAccessMigrations.Migrations;
+
     [DbContext(typeof(IamDbContext))]
     [Migration("20241011045207_MultipleUserSecurityKeys")]
     partial class MultipleUserSecurityKeys
@@ -453,5 +453,4 @@ namespace Corely.IAMDataAccessMigrations.Migrations
                 });
 #pragma warning restore 612, 618
         }
-    }
-}
+    }

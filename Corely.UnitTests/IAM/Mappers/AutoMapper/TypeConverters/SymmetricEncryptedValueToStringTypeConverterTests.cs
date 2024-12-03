@@ -4,42 +4,41 @@ using Corely.Security.Encryption.Models;
 using Corely.Security.Encryption.Providers;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
+namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters;
+
+public class SymmetricEncryptedValueToStringTypeConverterTests
 {
-    public class SymmetricEncryptedValueToStringTypeConverterTests
+    private readonly SymmetricEncryptedValueToStringTypeConverter _converter = new();
+    private readonly Fixture _fixture = new();
+
+    [Fact]
+    public void Convert_ReturnsString()
     {
-        private readonly SymmetricEncryptedValueToStringTypeConverter _converter = new();
-        private readonly Fixture _fixture = new();
+        var value = _fixture.Create<string>();
+        var encryptedValue = new SymmetricEncryptedValue(Mock.Of<ISymmetricEncryptionProvider>())
+        { Secret = value };
 
-        [Fact]
-        public void Convert_ReturnsString()
-        {
-            var value = _fixture.Create<string>();
-            var encryptedValue = new SymmetricEncryptedValue(Mock.Of<ISymmetricEncryptionProvider>())
-            { Secret = value };
+        var result = _converter.Convert(encryptedValue, default, default);
 
-            var result = _converter.Convert(encryptedValue, default, default);
+        Assert.Equal(value, result);
+    }
 
-            Assert.Equal(value, result);
-        }
+    [Fact]
+    public void Convert_ReturnsNull_WithNullSecretValue()
+    {
+        var result = _converter.Convert(null, default, default);
 
-        [Fact]
-        public void Convert_ReturnsNull_WithNullSecretValue()
-        {
-            var result = _converter.Convert(null, default, default);
+        Assert.Null(result);
+    }
 
-            Assert.Null(result);
-        }
+    [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
+    public void Convert_ReturnsNullEmptyOrWhitespace(string value)
+    {
+        var encryptedValue = new SymmetricEncryptedValue(Mock.Of<ISymmetricEncryptionProvider>())
+        { Secret = value };
 
-        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void Convert_ReturnsNullEmptyOrWhitespace(string value)
-        {
-            var encryptedValue = new SymmetricEncryptedValue(Mock.Of<ISymmetricEncryptionProvider>())
-            { Secret = value };
+        var result = _converter.Convert(encryptedValue, default, default);
 
-            var result = _converter.Convert(encryptedValue, default, default);
-
-            Assert.Equal(value, result);
-        }
+        Assert.Equal(value, result);
     }
 }

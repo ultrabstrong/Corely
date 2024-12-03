@@ -2,15 +2,14 @@
 using Corely.IAM.BasicAuths.Models;
 using Corely.IAM.Mappers.AutoMapper.ValueConverters;
 
-namespace Corely.IAM.BasicAuths.Mappers
+namespace Corely.IAM.BasicAuths.Mappers;
+
+internal class UpsertBasicAuthRequestProfile : Profile
 {
-    internal class UpsertBasicAuthRequestProfile : Profile
+    public UpsertBasicAuthRequestProfile()
     {
-        public UpsertBasicAuthRequestProfile()
-        {
-            CreateMap<UpsertBasicAuthRequest, BasicAuth>(MemberList.Source)
-                .ForMember(dest => dest.Password,
-                    opt => opt.ConvertUsing<PlainStringToHashedStringValueConverter, string>());
-        }
+        CreateMap<UpsertBasicAuthRequest, BasicAuth>(MemberList.Source)
+            .ForMember(dest => dest.Password,
+                opt => opt.ConvertUsing<PlainStringToHashedStringValueConverter, string>());
     }
 }

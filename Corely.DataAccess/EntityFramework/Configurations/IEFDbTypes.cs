@@ -1,9 +1,8 @@
-﻿namespace Corely.DataAccess.EntityFramework.Configurations
-{
-    public interface IEFDbTypes
-    {
-        string UTCDateColumnType { get; }
+﻿namespace Corely.DataAccess.EntityFramework.Configurations;
 
-        string UTCDateColumnDefaultValue { get; }
-    }
+public interface IEFDbTypes
+{
+    string UTCDateColumnType { get; }
+
+    string UTCDateColumnDefaultValue { get; }
 }

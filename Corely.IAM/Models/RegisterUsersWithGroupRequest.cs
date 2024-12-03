@@ -1,7 +1,6 @@
-﻿namespace Corely.IAM.Models
-{
-    public record RegisterUsersWithGroupRequest(
-        List<int> UserIds,
-        int GroupId);
+﻿namespace Corely.IAM.Models;
 
-}
+public record RegisterUsersWithGroupRequest(
+    List<int> UserIds,
+    int GroupId);
+

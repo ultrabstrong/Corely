@@ -1,17 +1,16 @@
 ﻿using Corely.DataAccess.Interfaces.Entities;
 
-namespace Corely.DataAccess.Interfaces.Repos
+namespace Corely.DataAccess.Interfaces.Repos;
+
+public interface IRepo<T>
+    : IReadonlyRepo<T>
+    where T : class, IHasIdPk
 {
-    public interface IRepo<T>
-        : IReadonlyRepo<T>
-        where T : class, IHasIdPk
-    {
-        Task<int> CreateAsync(T entity);
+    Task<int> CreateAsync(T entity);
 
-        Task UpdateAsync(T entity);
+    Task UpdateAsync(T entity);
 
-        Task DeleteAsync(T entity);
+    Task DeleteAsync(T entity);
 
-        Task DeleteAsync(int id);
-    }
+    Task DeleteAsync(int id);
 }

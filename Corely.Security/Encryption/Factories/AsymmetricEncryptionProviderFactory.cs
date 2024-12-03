@@ -1,98 +1,97 @@
 ﻿using Corely.Security.Encryption.Providers;
 using System.Security.Cryptography;
 
-namespace Corely.Security.Encryption.Factories
+namespace Corely.Security.Encryption.Factories;
+
+public class AsymmetricEncryptionProviderFactory : IAsymmetricEncryptionProviderFactory
 {
-    public class AsymmetricEncryptionProviderFactory : IAsymmetricEncryptionProviderFactory
+    private readonly string _defaultProviderCode;
+    private readonly Dictionary<string, IAsymmetricEncryptionProvider> _providers = [];
+
+    public AsymmetricEncryptionProviderFactory(string defaultProviderCode)
     {
-        private readonly string _defaultProviderCode;
-        private readonly Dictionary<string, IAsymmetricEncryptionProvider> _providers = [];
+        ArgumentNullException.ThrowIfNull(defaultProviderCode, nameof(defaultProviderCode));
 
-        public AsymmetricEncryptionProviderFactory(string defaultProviderCode)
+        _defaultProviderCode = defaultProviderCode;
+        _providers.Add(AsymmetricEncryptionConstants.RSA_CODE, new RsaEncryptionProvider(RSAEncryptionPadding.OaepSHA256));
+    }
+
+    public void AddProvider(string providerCode, IAsymmetricEncryptionProvider provider)
+    {
+        ArgumentNullException.ThrowIfNull(provider, nameof(provider));
+
+        Validate(providerCode);
+
+        if (_providers.ContainsKey(providerCode))
         {
-            ArgumentNullException.ThrowIfNull(defaultProviderCode, nameof(defaultProviderCode));
-
-            _defaultProviderCode = defaultProviderCode;
-            _providers.Add(AsymmetricEncryptionConstants.RSA_CODE, new RsaEncryptionProvider(RSAEncryptionPadding.OaepSHA256));
-        }
-
-        public void AddProvider(string providerCode, IAsymmetricEncryptionProvider provider)
-        {
-            ArgumentNullException.ThrowIfNull(provider, nameof(provider));
-
-            Validate(providerCode);
-
-            if (_providers.ContainsKey(providerCode))
+            throw new EncryptionException($"Asymmetric encryption provider code already exists: {providerCode}")
             {
-                throw new EncryptionException($"Asymmetric encryption provider code already exists: {providerCode}")
-                {
-                    Reason = EncryptionException.ErrorReason.InvalidTypeCode
-                };
-            }
-
-            _providers.Add(providerCode, provider);
+                Reason = EncryptionException.ErrorReason.InvalidTypeCode
+            };
         }
 
-        public void UpdateProvider(string providerCode, IAsymmetricEncryptionProvider provider)
+        _providers.Add(providerCode, provider);
+    }
+
+    public void UpdateProvider(string providerCode, IAsymmetricEncryptionProvider provider)
+    {
+        ArgumentNullException.ThrowIfNull(provider, nameof(provider));
+
+        Validate(providerCode);
+
+        if (!_providers.ContainsKey(providerCode))
         {
-            ArgumentNullException.ThrowIfNull(provider, nameof(provider));
-
-            Validate(providerCode);
-
-            if (!_providers.ContainsKey(providerCode))
+            throw new EncryptionException($"Asymmetric encryption provider code not found: {providerCode}")
             {
-                throw new EncryptionException($"Asymmetric encryption provider code not found: {providerCode}")
-                {
-                    Reason = EncryptionException.ErrorReason.InvalidTypeCode
-                };
-            }
-
-            _providers[providerCode] = provider;
+                Reason = EncryptionException.ErrorReason.InvalidTypeCode
+            };
         }
 
-        private static void Validate(string providerCode)
+        _providers[providerCode] = provider;
+    }
+
+    private static void Validate(string providerCode)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
+        if (providerCode.Contains(':'))
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
-            if (providerCode.Contains(':'))
+            throw new EncryptionException($"Asymmetric encryption type code cannot contain ':'")
             {
-                throw new EncryptionException($"Asymmetric encryption type code cannot contain ':'")
-                {
-                    Reason = EncryptionException.ErrorReason.InvalidTypeCode
-                };
-            }
+                Reason = EncryptionException.ErrorReason.InvalidTypeCode
+            };
         }
+    }
 
-        public IAsymmetricEncryptionProvider GetDefaultProvider() => GetProvider(_defaultProviderCode);
+    public IAsymmetricEncryptionProvider GetDefaultProvider() => GetProvider(_defaultProviderCode);
 
-        public IAsymmetricEncryptionProvider GetProvider(string providerCode)
+    public IAsymmetricEncryptionProvider GetProvider(string providerCode)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
+        if (!_providers.TryGetValue(providerCode, out IAsymmetricEncryptionProvider? value))
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(providerCode, nameof(providerCode));
-            if (!_providers.TryGetValue(providerCode, out IAsymmetricEncryptionProvider? value))
+            throw new EncryptionException($"Asymmetric encryption provider code not found: {providerCode}")
             {
-                throw new EncryptionException($"Asymmetric encryption provider code not found: {providerCode}")
-                {
-                    Reason = EncryptionException.ErrorReason.InvalidTypeCode
-                };
-            }
-
-            return value;
+                Reason = EncryptionException.ErrorReason.InvalidTypeCode
+            };
         }
 
-        public IAsymmetricEncryptionProvider GetProviderForDecrypting(string value)
-        {
-            ArgumentNullException.ThrowIfNull(value, nameof(value));
+        return value;
+    }
 
-            var providerCode = value.Split(':')[0];
-            return GetProvider(providerCode);
-        }
+    public IAsymmetricEncryptionProvider GetProviderForDecrypting(string value)
+    {
+        ArgumentNullException.ThrowIfNull(value, nameof(value));
 
-        public List<(string ProviderCode, Type ProviderType)> ListProviders()
-        {
-            return _providers
-                .Select(kvp => (
-                    ProviderCode: kvp.Key,
-                    ProviderType: kvp.Value.GetType()))
-                .ToList();
-        }
+        var providerCode = value.Split(':')[0];
+        return GetProvider(providerCode);
+    }
+
+    public List<(string ProviderCode, Type ProviderType)> ListProviders()
+    {
+        return _providers
+            .Select(kvp => (
+                ProviderCode: kvp.Key,
+                ProviderType: kvp.Value.GetType()))
+            .ToList();
     }
 }

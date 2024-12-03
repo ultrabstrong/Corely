@@ -2,14 +2,13 @@
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Users.Models;
 
-namespace Corely.IAM.Users.Mappers
+namespace Corely.IAM.Users.Mappers;
+
+internal sealed class UserProfile : Profile
 {
-    internal sealed class UserProfile : Profile
+    public UserProfile()
     {
-        public UserProfile()
-        {
-            CreateMap<User, UserEntity>(MemberList.Source)
-                .ReverseMap();
-        }
+        CreateMap<User, UserEntity>(MemberList.Source)
+            .ReverseMap();
     }
 }

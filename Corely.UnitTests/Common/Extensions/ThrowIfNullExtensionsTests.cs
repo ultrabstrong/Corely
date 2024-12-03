@@ -2,188 +2,187 @@
 using Corely.Common.Extensions;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.UnitTests.Common.Extensions
+namespace Corely.UnitTests.Common.Extensions;
+
+public class ThrowIfNullExtensionsTests
 {
-    public class ThrowIfNullExtensionsTests
+    private readonly Fixture _fixture = new();
+
+    private class TestClass { }
+
+    [Fact]
+    public void ThrowIfNull_Throws_WithNullString()
     {
-        private readonly Fixture _fixture = new();
+        string? value = null;
 
-        private class TestClass { }
+        var ex = Record.Exception(() => value.ThrowIfNull(nameof(value)));
 
-        [Fact]
-        public void ThrowIfNull_Throws_WithNullString()
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Fact]
+    public void ThrowIfAnyNull_Throws_WithNullString()
+    {
+        string[] values = [_fixture.Create<string>(), null];
+
+        var ex = Record.Exception(() => values.ThrowIfAnyNull(nameof(values)));
+
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Fact]
+    public void ThrowIfNull_Throws_WithNullObject()
+    {
+        TestClass? value = null;
+
+        var ex = Record.Exception(() => value.ThrowIfNull(nameof(value)));
+
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Fact]
+    public void ThrowIfAnyNull_Throws_WithNullObject()
+    {
+        TestClass?[] values = [_fixture.Create<TestClass>(), null];
+
+        var ex = Record.Exception(() => values.ThrowIfAnyNull(nameof(values)));
+
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Theory]
+    [ClassData(typeof(NullEmptyAndWhitespace))]
+    public void ThrowIfNullOrWhitespace_Throws_WithInvalidValue(string value)
+    {
+        var ex = Record.Exception(() => value.ThrowIfNullOrWhiteSpace(nameof(value)));
+
+        Assert.NotNull(ex);
+        if (value == null)
         {
-            string? value = null;
-
-            var ex = Record.Exception(() => value.ThrowIfNull(nameof(value)));
-
-            Assert.NotNull(ex);
             Assert.IsType<ArgumentNullException>(ex);
         }
-
-        [Fact]
-        public void ThrowIfAnyNull_Throws_WithNullString()
+        else
         {
-            string[] values = [_fixture.Create<string>(), null];
+            Assert.IsType<ArgumentException>(ex);
+        }
+    }
 
-            var ex = Record.Exception(() => values.ThrowIfAnyNull(nameof(values)));
+    [Theory]
+    [ClassData(typeof(NullEmptyAndWhitespace))]
+    public void ThrowIfAnyNullOrWhitespace_Throws_WithInvalidValue(string value)
+    {
+        string[] values = [_fixture.Create<string>(), value];
 
-            Assert.NotNull(ex);
+        var ex = Record.Exception(() => values.ThrowIfAnyNullOrWhiteSpace(nameof(values)));
+
+        Assert.NotNull(ex);
+        if (value == null)
+        {
             Assert.IsType<ArgumentNullException>(ex);
         }
-
-        [Fact]
-        public void ThrowIfNull_Throws_WithNullObject()
+        else
         {
-            TestClass? value = null;
+            Assert.IsType<ArgumentException>(ex);
+        }
+    }
 
-            var ex = Record.Exception(() => value.ThrowIfNull(nameof(value)));
+    [Theory]
+    [ClassData(typeof(NullAndEmpty))]
+    public void ThrowIfNullOrEmpty_Throws_WithInvalidValue(string value)
+    {
+        var ex = Record.Exception(() => value.ThrowIfNullOrEmpty(nameof(value)));
 
-            Assert.NotNull(ex);
+        Assert.NotNull(ex);
+        if (value == null)
+        {
             Assert.IsType<ArgumentNullException>(ex);
         }
-
-        [Fact]
-        public void ThrowIfAnyNull_Throws_WithNullObject()
+        else
         {
-            TestClass?[] values = [_fixture.Create<TestClass>(), null];
+            Assert.IsType<ArgumentException>(ex);
+        }
+    }
 
-            var ex = Record.Exception(() => values.ThrowIfAnyNull(nameof(values)));
+    [Theory]
+    [ClassData(typeof(NullAndEmpty))]
+    public void ThrowIfAnyNullOrEmpty_Throws_WithInvalidValue(string value)
+    {
+        string[] values = [_fixture.Create<string>(), value];
 
-            Assert.NotNull(ex);
+        var ex = Record.Exception(() => values.ThrowIfAnyNullOrEmpty(nameof(values)));
+
+        Assert.NotNull(ex);
+        if (value == null)
+        {
             Assert.IsType<ArgumentNullException>(ex);
         }
-
-        [Theory]
-        [ClassData(typeof(NullEmptyAndWhitespace))]
-        public void ThrowIfNullOrWhitespace_Throws_WithInvalidValue(string value)
+        else
         {
-            var ex = Record.Exception(() => value.ThrowIfNullOrWhiteSpace(nameof(value)));
-
-            Assert.NotNull(ex);
-            if (value == null)
-            {
-                Assert.IsType<ArgumentNullException>(ex);
-            }
-            else
-            {
-                Assert.IsType<ArgumentException>(ex);
-            }
+            Assert.IsType<ArgumentException>(ex);
         }
+    }
 
-        [Theory]
-        [ClassData(typeof(NullEmptyAndWhitespace))]
-        public void ThrowIfAnyNullOrWhitespace_Throws_WithInvalidValue(string value)
-        {
-            string[] values = [_fixture.Create<string>(), value];
+    [Fact]
+    public void ThrowIfNull_ReturnsObject_WithValidObject()
+    {
+        var value = _fixture.Create<TestClass>();
 
-            var ex = Record.Exception(() => values.ThrowIfAnyNullOrWhiteSpace(nameof(values)));
+        var result = value.ThrowIfNull(nameof(value));
 
-            Assert.NotNull(ex);
-            if (value == null)
-            {
-                Assert.IsType<ArgumentNullException>(ex);
-            }
-            else
-            {
-                Assert.IsType<ArgumentException>(ex);
-            }
-        }
+        Assert.Equal(value, result);
+    }
 
-        [Theory]
-        [ClassData(typeof(NullAndEmpty))]
-        public void ThrowIfNullOrEmpty_Throws_WithInvalidValue(string value)
-        {
-            var ex = Record.Exception(() => value.ThrowIfNullOrEmpty(nameof(value)));
+    [Fact]
+    public void ThrowIfAnyNull_ReturnsObject_WithValidObject()
+    {
+        var values = new[] { _fixture.Create<TestClass>(), _fixture.Create<TestClass>() };
 
-            Assert.NotNull(ex);
-            if (value == null)
-            {
-                Assert.IsType<ArgumentNullException>(ex);
-            }
-            else
-            {
-                Assert.IsType<ArgumentException>(ex);
-            }
-        }
+        var result = values.ThrowIfAnyNull(nameof(values));
 
-        [Theory]
-        [ClassData(typeof(NullAndEmpty))]
-        public void ThrowIfAnyNullOrEmpty_Throws_WithInvalidValue(string value)
-        {
-            string[] values = [_fixture.Create<string>(), value];
+        Assert.Equal(values, result);
+    }
 
-            var ex = Record.Exception(() => values.ThrowIfAnyNullOrEmpty(nameof(values)));
+    [Fact]
+    public void ThrowIfNullOrWhitespace_ReturnsString_WithValidString()
+    {
+        var value = _fixture.Create<string>();
 
-            Assert.NotNull(ex);
-            if (value == null)
-            {
-                Assert.IsType<ArgumentNullException>(ex);
-            }
-            else
-            {
-                Assert.IsType<ArgumentException>(ex);
-            }
-        }
+        var result = value.ThrowIfNullOrWhiteSpace(nameof(value));
 
-        [Fact]
-        public void ThrowIfNull_ReturnsObject_WithValidObject()
-        {
-            var value = _fixture.Create<TestClass>();
+        Assert.Equal(value, result);
+    }
 
-            var result = value.ThrowIfNull(nameof(value));
+    [Fact]
+    public void ThrowIfAnyNullOrWhitespace_ReturnsString_WithValidString()
+    {
+        var values = new[] { _fixture.Create<string>(), _fixture.Create<string>() };
 
-            Assert.Equal(value, result);
-        }
+        var result = values.ThrowIfAnyNullOrWhiteSpace(nameof(values));
 
-        [Fact]
-        public void ThrowIfAnyNull_ReturnsObject_WithValidObject()
-        {
-            var values = new[] { _fixture.Create<TestClass>(), _fixture.Create<TestClass>() };
+        Assert.Equal(values, result);
+    }
 
-            var result = values.ThrowIfAnyNull(nameof(values));
+    [Fact]
+    public void ThrowIfNullOrEmpty_ReturnsString_WithValidString()
+    {
+        var value = _fixture.Create<string>();
 
-            Assert.Equal(values, result);
-        }
+        var result = value.ThrowIfNullOrEmpty(nameof(value));
 
-        [Fact]
-        public void ThrowIfNullOrWhitespace_ReturnsString_WithValidString()
-        {
-            var value = _fixture.Create<string>();
+        Assert.Equal(value, result);
+    }
 
-            var result = value.ThrowIfNullOrWhiteSpace(nameof(value));
+    [Fact]
+    public void ThrowIfAnyNullOrEmpty_ReturnsString_WithValidString()
+    {
+        var values = new[] { _fixture.Create<string>(), _fixture.Create<string>() };
 
-            Assert.Equal(value, result);
-        }
+        var result = values.ThrowIfAnyNullOrEmpty(nameof(values));
 
-        [Fact]
-        public void ThrowIfAnyNullOrWhitespace_ReturnsString_WithValidString()
-        {
-            var values = new[] { _fixture.Create<string>(), _fixture.Create<string>() };
-
-            var result = values.ThrowIfAnyNullOrWhiteSpace(nameof(values));
-
-            Assert.Equal(values, result);
-        }
-
-        [Fact]
-        public void ThrowIfNullOrEmpty_ReturnsString_WithValidString()
-        {
-            var value = _fixture.Create<string>();
-
-            var result = value.ThrowIfNullOrEmpty(nameof(value));
-
-            Assert.Equal(value, result);
-        }
-
-        [Fact]
-        public void ThrowIfAnyNullOrEmpty_ReturnsString_WithValidString()
-        {
-            var values = new[] { _fixture.Create<string>(), _fixture.Create<string>() };
-
-            var result = values.ThrowIfAnyNullOrEmpty(nameof(values));
-
-            Assert.Equal(values, result);
-        }
+        Assert.Equal(values, result);
     }
 }

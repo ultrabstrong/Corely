@@ -4,42 +4,41 @@ using Corely.Security.Hashing.Models;
 using Corely.Security.Hashing.Providers;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
+namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters;
+
+public class HashedValueToStringTypeConverterTests
 {
-    public class HashedValueToStringTypeConverterTests
+    private readonly HashedValueToStringTypeConverter _converter = new();
+    private readonly Fixture _fixture = new();
+
+    [Fact]
+    public void Convert_ReturnsString()
     {
-        private readonly HashedValueToStringTypeConverter _converter = new();
-        private readonly Fixture _fixture = new();
+        var value = _fixture.Create<string>();
+        var hashedValue = new HashedValue(Mock.Of<IHashProvider>())
+        { Hash = value };
 
-        [Fact]
-        public void Convert_ReturnsString()
-        {
-            var value = _fixture.Create<string>();
-            var hashedValue = new HashedValue(Mock.Of<IHashProvider>())
-            { Hash = value };
+        var result = _converter.Convert(hashedValue, default, default);
 
-            var result = _converter.Convert(hashedValue, default, default);
+        Assert.Equal(value, result);
+    }
 
-            Assert.Equal(value, result);
-        }
+    [Fact]
+    public void Convert_ReturnsNull_WithNullHashValue()
+    {
+        var result = _converter.Convert(null, default, default);
 
-        [Fact]
-        public void Convert_ReturnsNull_WithNullHashValue()
-        {
-            var result = _converter.Convert(null, default, default);
+        Assert.Null(result);
+    }
 
-            Assert.Null(result);
-        }
+    [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
+    public void Convert_ReturnsNullEmptyOrWhitespace(string value)
+    {
+        var hashedValue = new HashedValue(Mock.Of<IHashProvider>())
+        { Hash = value };
 
-        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void Convert_ReturnsNullEmptyOrWhitespace(string value)
-        {
-            var hashedValue = new HashedValue(Mock.Of<IHashProvider>())
-            { Hash = value };
+        var result = _converter.Convert(hashedValue, default, default);
 
-            var result = _converter.Convert(hashedValue, default, default);
-
-            Assert.Equal(value, result);
-        }
+        Assert.Equal(value, result);
     }
 }

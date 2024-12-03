@@ -14,232 +14,231 @@ using Corely.IAM.Users.Processors;
 using Corely.UnitTests.IAM.Processors;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.IAM.Services
+namespace Corely.UnitTests.IAM.Services;
+
+public class RegistrationServiceTests : ProcessorBaseTests
 {
-    public class RegistrationServiceTests : ProcessorBaseTests
+    private readonly Fixture _fixture = new();
+    private readonly Mock<IUnitOfWorkProvider> _unitOfWorkProviderMock = new();
+    private readonly Mock<IAccountProcessor> _accountProcessorMock;
+    private readonly Mock<IUserProcessor> _userProcessorMock;
+    private readonly Mock<IBasicAuthProcessor> _basicAuthProcessorMock;
+    private readonly Mock<IGroupProcessor> _groupProcessorMock;
+    private readonly RegistrationService _registrationService;
+
+    private bool _createAccountSuccess = true;
+    private bool _createUserSuccess = true;
+    private bool _createBasicAuthSuccess = true;
+    private bool _createGroupSuccess = true;
+
+    private AddUsersToGroupResult _addUsersToGroupResult = new(true, string.Empty, 0);
+
+    public RegistrationServiceTests() : base()
     {
-        private readonly Fixture _fixture = new();
-        private readonly Mock<IUnitOfWorkProvider> _unitOfWorkProviderMock = new();
-        private readonly Mock<IAccountProcessor> _accountProcessorMock;
-        private readonly Mock<IUserProcessor> _userProcessorMock;
-        private readonly Mock<IBasicAuthProcessor> _basicAuthProcessorMock;
-        private readonly Mock<IGroupProcessor> _groupProcessorMock;
-        private readonly RegistrationService _registrationService;
+        _accountProcessorMock = GetMockAccountProcessor();
+        _userProcessorMock = GetMockUserProcessor();
+        _basicAuthProcessorMock = GetMockBasicAuthProcessor();
+        _groupProcessorMock = GetMockGroupProcessor();
 
-        private bool _createAccountSuccess = true;
-        private bool _createUserSuccess = true;
-        private bool _createBasicAuthSuccess = true;
-        private bool _createGroupSuccess = true;
+        _registrationService = new RegistrationService(
+            _serviceFactory.GetRequiredService<ILogger<RegistrationService>>(),
+            _accountProcessorMock.Object,
+            _userProcessorMock.Object,
+            _basicAuthProcessorMock.Object,
+            _groupProcessorMock.Object,
+            _unitOfWorkProviderMock.Object);
+    }
 
-        private AddUsersToGroupResult _addUsersToGroupResult = new(true, string.Empty, 0);
+    private Mock<IAccountProcessor> GetMockAccountProcessor()
+    {
+        var accountProcessorMock = new Mock<IAccountProcessor>();
 
-        public RegistrationServiceTests() : base()
-        {
-            _accountProcessorMock = GetMockAccountProcessor();
-            _userProcessorMock = GetMockUserProcessor();
-            _basicAuthProcessorMock = GetMockBasicAuthProcessor();
-            _groupProcessorMock = GetMockGroupProcessor();
+        accountProcessorMock
+            .Setup(m => m.CreateAccountAsync(
+                It.IsAny<CreateAccountRequest>()))
+            .ReturnsAsync(() =>
+                new CreateResult(_createAccountSuccess, string.Empty, _fixture.Create<int>()));
 
-            _registrationService = new RegistrationService(
-                _serviceFactory.GetRequiredService<ILogger<RegistrationService>>(),
-                _accountProcessorMock.Object,
-                _userProcessorMock.Object,
-                _basicAuthProcessorMock.Object,
-                _groupProcessorMock.Object,
-                _unitOfWorkProviderMock.Object);
-        }
+        return accountProcessorMock;
+    }
 
-        private Mock<IAccountProcessor> GetMockAccountProcessor()
-        {
-            var accountProcessorMock = new Mock<IAccountProcessor>();
+    private Mock<IUserProcessor> GetMockUserProcessor()
+    {
+        var userProcessorMock = new Mock<IUserProcessor>();
 
-            accountProcessorMock
-                .Setup(m => m.CreateAccountAsync(
-                    It.IsAny<CreateAccountRequest>()))
-                .ReturnsAsync(() =>
-                    new CreateResult(_createAccountSuccess, string.Empty, _fixture.Create<int>()));
+        userProcessorMock
+            .Setup(m => m.CreateUserAsync(
+                It.IsAny<CreateUserRequest>()))
+            .ReturnsAsync(() =>
+                new CreateResult(_createUserSuccess, string.Empty, _fixture.Create<int>()));
 
-            return accountProcessorMock;
-        }
+        return userProcessorMock;
+    }
 
-        private Mock<IUserProcessor> GetMockUserProcessor()
-        {
-            var userProcessorMock = new Mock<IUserProcessor>();
+    private Mock<IBasicAuthProcessor> GetMockBasicAuthProcessor()
+    {
+        var basicAuthProcessorMock = new Mock<IBasicAuthProcessor>();
 
-            userProcessorMock
-                .Setup(m => m.CreateUserAsync(
-                    It.IsAny<CreateUserRequest>()))
-                .ReturnsAsync(() =>
-                    new CreateResult(_createUserSuccess, string.Empty, _fixture.Create<int>()));
+        basicAuthProcessorMock
+            .Setup(m => m.UpsertBasicAuthAsync(
+                It.IsAny<UpsertBasicAuthRequest>()))
+            .ReturnsAsync(() =>
+                new UpsertBasicAuthResult(_createBasicAuthSuccess, string.Empty,
+                    _fixture.Create<int>(), _fixture.Create<UpsertType>()));
 
-            return userProcessorMock;
-        }
+        return basicAuthProcessorMock;
+    }
 
-        private Mock<IBasicAuthProcessor> GetMockBasicAuthProcessor()
-        {
-            var basicAuthProcessorMock = new Mock<IBasicAuthProcessor>();
+    private Mock<IGroupProcessor> GetMockGroupProcessor()
+    {
+        var groupProcessorMock = new Mock<IGroupProcessor>();
 
-            basicAuthProcessorMock
-                .Setup(m => m.UpsertBasicAuthAsync(
-                    It.IsAny<UpsertBasicAuthRequest>()))
-                .ReturnsAsync(() =>
-                    new UpsertBasicAuthResult(_createBasicAuthSuccess, string.Empty,
-                        _fixture.Create<int>(), _fixture.Create<UpsertType>()));
+        groupProcessorMock
+            .Setup(m => m.CreateGroupAsync(
+                It.IsAny<CreateGroupRequest>()))
+            .ReturnsAsync(() =>
+                new CreateResult(_createGroupSuccess, string.Empty, _fixture.Create<int>()));
 
-            return basicAuthProcessorMock;
-        }
+        groupProcessorMock
+            .Setup(m => m.AddUsersToGroupAsync(
+                It.IsAny<AddUsersToGroupRequest>()))
+            .ReturnsAsync(() => _addUsersToGroupResult);
 
-        private Mock<IGroupProcessor> GetMockGroupProcessor()
-        {
-            var groupProcessorMock = new Mock<IGroupProcessor>();
+        return groupProcessorMock;
+    }
 
-            groupProcessorMock
-                .Setup(m => m.CreateGroupAsync(
-                    It.IsAny<CreateGroupRequest>()))
-                .ReturnsAsync(() =>
-                    new CreateResult(_createGroupSuccess, string.Empty, _fixture.Create<int>()));
+    [Fact]
+    public async Task RegisterUserAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+    {
+        var request = _fixture.Create<RegisterUserRequest>();
 
-            groupProcessorMock
-                .Setup(m => m.AddUsersToGroupAsync(
-                    It.IsAny<AddUsersToGroupRequest>()))
-                .ReturnsAsync(() => _addUsersToGroupResult);
+        var result = await _registrationService.RegisterUserAsync(request);
 
-            return groupProcessorMock;
-        }
+        Assert.True(result.IsSuccess);
+    }
 
-        [Fact]
-        public async Task RegisterUserAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
-        {
-            var request = _fixture.Create<RegisterUserRequest>();
+    [Fact]
+    public async Task RegisterUserAsync_ReturnsFailureResult_WhenUserProcessorFails()
+    {
+        _createUserSuccess = false;
+        var request = _fixture.Create<RegisterUserRequest>();
 
-            var result = await _registrationService.RegisterUserAsync(request);
+        var result = await _registrationService.RegisterUserAsync(request);
 
-            Assert.True(result.IsSuccess);
-        }
+        Assert.False(result.IsSuccess);
+        _basicAuthProcessorMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
+        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+    }
 
-        [Fact]
-        public async Task RegisterUserAsync_ReturnsFailureResult_WhenUserProcessorFails()
-        {
-            _createUserSuccess = false;
-            var request = _fixture.Create<RegisterUserRequest>();
+    [Fact]
+    public async Task RegisterUserAsync_ReturnsFailureResult_WhenBasicAuthProcessorFails()
+    {
+        _createBasicAuthSuccess = false;
+        var request = _fixture.Create<RegisterUserRequest>();
 
-            var result = await _registrationService.RegisterUserAsync(request);
+        var result = await _registrationService.RegisterUserAsync(request);
 
-            Assert.False(result.IsSuccess);
-            _basicAuthProcessorMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
-            _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
-        }
+        Assert.False(result.IsSuccess);
+        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+    }
 
-        [Fact]
-        public async Task RegisterUserAsync_ReturnsFailureResult_WhenBasicAuthProcessorFails()
-        {
-            _createBasicAuthSuccess = false;
-            var request = _fixture.Create<RegisterUserRequest>();
+    [Fact]
+    public async Task RegisterUserAsync_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _registrationService.RegisterUserAsync(null!));
 
-            var result = await _registrationService.RegisterUserAsync(request);
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
 
-            Assert.False(result.IsSuccess);
-            _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
-        }
+    [Fact]
+    public async Task RegisterAccountAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+    {
+        var request = _fixture.Create<RegisterAccountRequest>();
 
-        [Fact]
-        public async Task RegisterUserAsync_Throws_WithNullRequest()
-        {
-            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterUserAsync(null!));
+        var result = await _registrationService.RegisterAccountAsync(request);
 
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
+        Assert.True(result.IsSuccess);
+    }
 
-        [Fact]
-        public async Task RegisterAccountAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
-        {
-            var request = _fixture.Create<RegisterAccountRequest>();
+    [Fact]
+    public async Task RegisterAccountAsync_ReturnsFailureResult_WhenAccountProcessorFails()
+    {
+        _createAccountSuccess = false;
+        var request = _fixture.Create<RegisterAccountRequest>();
 
-            var result = await _registrationService.RegisterAccountAsync(request);
+        var result = await _registrationService.RegisterAccountAsync(request);
 
-            Assert.True(result.IsSuccess);
-        }
+        Assert.False(result.IsSuccess);
+        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+    }
 
-        [Fact]
-        public async Task RegisterAccountAsync_ReturnsFailureResult_WhenAccountProcessorFails()
-        {
-            _createAccountSuccess = false;
-            var request = _fixture.Create<RegisterAccountRequest>();
+    [Fact]
+    public async Task RegisterAccountAsync_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _registrationService.RegisterAccountAsync(null!));
 
-            var result = await _registrationService.RegisterAccountAsync(request);
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
 
-            Assert.False(result.IsSuccess);
-            _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
-        }
+    [Fact]
+    public async Task RegisterGroupAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+    {
+        var request = _fixture.Create<RegisterGroupRequest>();
+        var result = await _registrationService.RegisterGroupAsync(request);
+        Assert.True(result.IsSuccess);
+    }
 
-        [Fact]
-        public async Task RegisterAccountAsync_Throws_WithNullRequest()
-        {
-            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterAccountAsync(null!));
+    [Fact]
+    public async Task RegisterGroupAsync_ReturnsFailureResult_WhenGroupProcessorFails()
+    {
+        _createGroupSuccess = false;
+        var request = _fixture.Create<RegisterGroupRequest>();
 
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
+        var result = await _registrationService.RegisterGroupAsync(request);
 
-        [Fact]
-        public async Task RegisterGroupAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
-        {
-            var request = _fixture.Create<RegisterGroupRequest>();
-            var result = await _registrationService.RegisterGroupAsync(request);
-            Assert.True(result.IsSuccess);
-        }
+        Assert.False(result.IsSuccess);
+    }
 
-        [Fact]
-        public async Task RegisterGroupAsync_ReturnsFailureResult_WhenGroupProcessorFails()
-        {
-            _createGroupSuccess = false;
-            var request = _fixture.Create<RegisterGroupRequest>();
+    [Fact]
+    public async Task RegisterGroupAsync_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _registrationService.RegisterGroupAsync(null!));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
 
-            var result = await _registrationService.RegisterGroupAsync(request);
+    [Fact]
+    public async Task RegisterUsersWithGroupAsync_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _registrationService.RegisterUsersWithGroupAsync(null!));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
 
-            Assert.False(result.IsSuccess);
-        }
+    [Fact]
+    public async Task RegisterUsersWithGroupAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+    {
+        var request = _fixture.Create<RegisterUsersWithGroupRequest>();
+        _addUsersToGroupResult = new(true, string.Empty, request.GroupId);
 
-        [Fact]
-        public async Task RegisterGroupAsync_Throws_WithNullRequest()
-        {
-            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterGroupAsync(null!));
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
+        var result = await _registrationService.RegisterUsersWithGroupAsync(request);
 
-        [Fact]
-        public async Task RegisterUsersWithGroupAsync_Throws_WithNullRequest()
-        {
-            var ex = await Record.ExceptionAsync(() => _registrationService.RegisterUsersWithGroupAsync(null!));
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
+        Assert.True(result.IsSuccess);
+    }
 
-        [Fact]
-        public async Task RegisterUsersWithGroupAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
-        {
-            var request = _fixture.Create<RegisterUsersWithGroupRequest>();
-            _addUsersToGroupResult = new(true, string.Empty, request.GroupId);
+    [Fact]
+    public async Task RegisterUsersWithGroupAsync_ReturnsFailureResult_WhenGroupProcessorFails()
+    {
+        var request = _fixture.Create<RegisterUsersWithGroupRequest>();
+        _addUsersToGroupResult = new(false, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
 
-            var result = await _registrationService.RegisterUsersWithGroupAsync(request);
+        var result = await _registrationService.RegisterUsersWithGroupAsync(request);
 
-            Assert.True(result.IsSuccess);
-        }
-
-        [Fact]
-        public async Task RegisterUsersWithGroupAsync_ReturnsFailureResult_WhenGroupProcessorFails()
-        {
-            var request = _fixture.Create<RegisterUsersWithGroupRequest>();
-            _addUsersToGroupResult = new(false, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
-
-            var result = await _registrationService.RegisterUsersWithGroupAsync(request);
-
-            Assert.False(result.IsSuccess);
-            Assert.Equal(_addUsersToGroupResult.Message, result.Message);
-            Assert.Equal(_addUsersToGroupResult.AddedUserCount, result.RegisteredUserCount);
-            Assert.Equal(_addUsersToGroupResult.InvalidUserIds.Count, result.InvalidUserIds.Count);
-        }
+        Assert.False(result.IsSuccess);
+        Assert.Equal(_addUsersToGroupResult.Message, result.Message);
+        Assert.Equal(_addUsersToGroupResult.AddedUserCount, result.RegisteredUserCount);
+        Assert.Equal(_addUsersToGroupResult.InvalidUserIds.Count, result.InvalidUserIds.Count);
     }
 }

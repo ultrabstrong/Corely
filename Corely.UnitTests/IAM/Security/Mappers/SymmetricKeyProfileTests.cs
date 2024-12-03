@@ -6,53 +6,52 @@ using Corely.IAM.Users.Entities;
 using Corely.Security.Encryption;
 using Corely.UnitTests.IAM.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.IAM.Security.Mappers
+namespace Corely.UnitTests.IAM.Security.Mappers;
+
+public class SymmetricKeyProfileTests
 {
-    public class SymmetricKeyProfileTests
-    {
-        public class ToSymmetricKeyEntity
-            : BidirectionalProfileDelegateTestsBase
-        {
-            private class Delegate : BidirectionalProfileTestsBase<SymmetricKey, SymmetricKeyEntity>
-            {
-                protected override SymmetricKeyEntity ApplyDestinatonModifications(SymmetricKeyEntity destination)
-                {
-                    destination.EncryptedKey = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
-                    return destination;
-                }
-            }
-
-            protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
-        }
-
-        public class ToAccountSymmetricKeyEntity
+    public class ToSymmetricKeyEntity
         : BidirectionalProfileDelegateTestsBase
+    {
+        private class Delegate : BidirectionalProfileTestsBase<SymmetricKey, SymmetricKeyEntity>
         {
-            private class Delegate : BidirectionalProfileTestsBase<SymmetricKey, AccountSymmetricKeyEntity>
+            protected override SymmetricKeyEntity ApplyDestinatonModifications(SymmetricKeyEntity destination)
             {
-                protected override AccountSymmetricKeyEntity ApplyDestinatonModifications(AccountSymmetricKeyEntity destination)
-                {
-                    destination.EncryptedKey = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
-                    return destination;
-                }
+                destination.EncryptedKey = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
+                return destination;
             }
-
-            protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
         }
 
-        public class ToUserSymmetricKeyEntity
-            : BidirectionalProfileDelegateTestsBase
-        {
-            private class Delegate : BidirectionalProfileTestsBase<SymmetricKey, UserSymmetricKeyEntity>
-            {
-                protected override UserSymmetricKeyEntity ApplyDestinatonModifications(UserSymmetricKeyEntity destination)
-                {
-                    destination.EncryptedKey = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
-                    return destination;
-                }
-            }
+        protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
+    }
 
-            protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
+    public class ToAccountSymmetricKeyEntity
+    : BidirectionalProfileDelegateTestsBase
+    {
+        private class Delegate : BidirectionalProfileTestsBase<SymmetricKey, AccountSymmetricKeyEntity>
+        {
+            protected override AccountSymmetricKeyEntity ApplyDestinatonModifications(AccountSymmetricKeyEntity destination)
+            {
+                destination.EncryptedKey = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
+                return destination;
+            }
         }
+
+        protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
+    }
+
+    public class ToUserSymmetricKeyEntity
+        : BidirectionalProfileDelegateTestsBase
+    {
+        private class Delegate : BidirectionalProfileTestsBase<SymmetricKey, UserSymmetricKeyEntity>
+        {
+            protected override UserSymmetricKeyEntity ApplyDestinatonModifications(UserSymmetricKeyEntity destination)
+            {
+                destination.EncryptedKey = $"{SymmetricEncryptionConstants.AES_CODE}:{new Fixture().Create<string>()}";
+                return destination;
+            }
+        }
+
+        protected override BidirectionalProfileTestsBase GetDelegate() => new Delegate();
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace Corely.IAM.Models
-{
-    public record DeregisterUserResult(
-        bool IsSuccess,
-        string? Message)
-        : ResultBase(IsSuccess, Message);
-}
+﻿namespace Corely.IAM.Models;
+
+public record DeregisterUserResult(
+    bool IsSuccess,
+    string? Message)
+    : ResultBase(IsSuccess, Message);

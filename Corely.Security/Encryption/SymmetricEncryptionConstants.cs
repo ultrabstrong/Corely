@@ -1,7 +1,6 @@
-﻿namespace Corely.Security.Encryption
+﻿namespace Corely.Security.Encryption;
+
+public static class SymmetricEncryptionConstants
 {
-    public static class SymmetricEncryptionConstants
-    {
-        public const string AES_CODE = "00";
-    }
+    public const string AES_CODE = "00";
 }

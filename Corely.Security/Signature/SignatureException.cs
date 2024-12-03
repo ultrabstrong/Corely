@@ -1,26 +1,25 @@
-﻿namespace Corely.Security.Signature
+﻿namespace Corely.Security.Signature;
+
+public sealed class SignatureException : Exception
 {
-    public sealed class SignatureException : Exception
+    public enum ErrorReason
     {
-        public enum ErrorReason
-        {
-            Unknown,
-            InvalidFormat,
-            InvalidTypeCode
-        }
+        Unknown,
+        InvalidFormat,
+        InvalidTypeCode
+    }
 
-        public ErrorReason Reason { get; set; } = ErrorReason.Unknown;
+    public ErrorReason Reason { get; set; } = ErrorReason.Unknown;
 
-        public SignatureException() : base()
-        {
-        }
+    public SignatureException() : base()
+    {
+    }
 
-        public SignatureException(string message) : base(message)
-        {
-        }
+    public SignatureException(string message) : base(message)
+    {
+    }
 
-        public SignatureException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+    public SignatureException(string message, Exception innerException) : base(message, innerException)
+    {
     }
 }

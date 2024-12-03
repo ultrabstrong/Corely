@@ -2,100 +2,99 @@
 using Corely.DataAccess.Interfaces.Repos;
 using System.Linq.Expressions;
 
-namespace Corely.DataAccess.Mock.Repos
+namespace Corely.DataAccess.Mock.Repos;
+
+public class MockRepo<T>
+    : IRepo<T>
+    where T : class, IHasIdPk
 {
-    public class MockRepo<T>
-        : IRepo<T>
-        where T : class, IHasIdPk
+    public readonly List<T> Entities = [];
+
+    public MockRepo() : base() { }
+
+    public virtual Task<int> CreateAsync(T entity)
     {
-        public readonly List<T> Entities = [];
+        Entities.Add(entity);
+        return Task.FromResult(entity.Id);
+    }
 
-        public MockRepo() : base() { }
+    public virtual Task<T?> GetAsync(int id)
+    {
+        return Task.FromResult(Entities.FirstOrDefault(u => u.Id == id));
+    }
 
-        public virtual Task<int> CreateAsync(T entity)
+    public virtual async Task<T?> GetAsync(
+        Expression<Func<T, bool>> query,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        var predicate = query.Compile();
+        var queryable = Entities.AsQueryable();
+
+        if (include != null)
         {
-            Entities.Add(entity);
-            return Task.FromResult(entity.Id);
+            queryable = include(queryable);
         }
 
-        public virtual Task<T?> GetAsync(int id)
+        if (orderBy != null)
         {
-            return Task.FromResult(Entities.FirstOrDefault(u => u.Id == id));
+            queryable = orderBy(queryable);
         }
 
-        public virtual async Task<T?> GetAsync(
-            Expression<Func<T, bool>> query,
-            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-            Func<IQueryable<T>, IQueryable<T>>? include = null)
+        return await Task.FromResult(queryable.FirstOrDefault(predicate));
+    }
+
+    public virtual Task<bool> AnyAsync(Expression<Func<T, bool>> query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        var predicate = query.Compile();
+        return Task.FromResult(Entities.Any(predicate));
+    }
+
+    public virtual Task<List<T>> ListAsync(
+        Expression<Func<T, bool>>? query = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null)
+    {
+        var queryable = Entities.AsQueryable();
+        if (query != null)
         {
-            ArgumentNullException.ThrowIfNull(query);
             var predicate = query.Compile();
-            var queryable = Entities.AsQueryable();
-
-            if (include != null)
-            {
-                queryable = include(queryable);
-            }
-
-            if (orderBy != null)
-            {
-                queryable = orderBy(queryable);
-            }
-
-            return await Task.FromResult(queryable.FirstOrDefault(predicate));
+            queryable = queryable.Where(predicate).AsQueryable();
         }
-
-        public virtual Task<bool> AnyAsync(Expression<Func<T, bool>> query)
+        if (include != null)
         {
-            ArgumentNullException.ThrowIfNull(query);
-            var predicate = query.Compile();
-            return Task.FromResult(Entities.Any(predicate));
+            queryable = include(queryable);
         }
-
-        public virtual Task<List<T>> ListAsync(
-            Expression<Func<T, bool>>? query = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-            Func<IQueryable<T>, IQueryable<T>>? include = null)
+        if (orderBy != null)
         {
-            var queryable = Entities.AsQueryable();
-            if (query != null)
-            {
-                var predicate = query.Compile();
-                queryable = queryable.Where(predicate).AsQueryable();
-            }
-            if (include != null)
-            {
-                queryable = include(queryable);
-            }
-            if (orderBy != null)
-            {
-                queryable = orderBy(queryable);
-            }
-            return Task.FromResult(queryable.ToList());
+            queryable = orderBy(queryable);
         }
+        return Task.FromResult(queryable.ToList());
+    }
 
-        public virtual Task UpdateAsync(T entity)
+    public virtual Task UpdateAsync(T entity)
+    {
+        if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
         {
-            if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
-            {
-                ((IHasModifiedUtc)entity).ModifiedUtc = DateTime.UtcNow;
-            }
-
-            var index = Entities.FindIndex(u => u.Id == entity.Id);
-            if (index > -1) { Entities[index] = entity; }
-            return Task.CompletedTask;
+            ((IHasModifiedUtc)entity).ModifiedUtc = DateTime.UtcNow;
         }
 
-        public virtual Task DeleteAsync(T entity)
-        {
-            Entities.Remove(entity);
-            return Task.CompletedTask;
-        }
+        var index = Entities.FindIndex(u => u.Id == entity.Id);
+        if (index > -1) { Entities[index] = entity; }
+        return Task.CompletedTask;
+    }
 
-        public virtual Task DeleteAsync(int id)
-        {
-            Entities.RemoveAll(u => u.Id == id);
-            return Task.CompletedTask;
-        }
+    public virtual Task DeleteAsync(T entity)
+    {
+        Entities.Remove(entity);
+        return Task.CompletedTask;
+    }
+
+    public virtual Task DeleteAsync(int id)
+    {
+        Entities.RemoveAll(u => u.Id == id);
+        return Task.CompletedTask;
     }
 }

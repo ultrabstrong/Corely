@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Corely.IAMDataAccessMigrations.Migrations
-{
+namespace Corely.IAMDataAccessMigrations.Migrations;
+
     [DbContext(typeof(IamDbContext))]
     [Migration("20241026052711_RenameKeyToEncryptedKey")]
     partial class RenameKeyToEncryptedKey
@@ -473,5 +473,4 @@ namespace Corely.IAMDataAccessMigrations.Migrations
                 });
 #pragma warning restore 612, 618
         }
-    }
-}
+    }

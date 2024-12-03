@@ -17,27 +17,27 @@ using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Corely.UnitTests.IAM
+namespace Corely.UnitTests.IAM;
+
+public abstract class ServiceFactoryGenericTests
 {
-    public abstract class ServiceFactoryGenericTests
+    protected abstract ServiceFactoryBase ServiceFactory { get; }
+
+    [Theory, MemberData(nameof(GetRequiredServiceData))]
+    public void ServiceFactoryBase_ProvidesService(Type serviceType)
     {
-        protected abstract ServiceFactoryBase ServiceFactory { get; }
+        var serviceCollection = new ServiceCollection();
+        ServiceFactory.AddIAMServices(serviceCollection);
+        var serviceProvider = serviceCollection.BuildServiceProvider();
 
-        [Theory, MemberData(nameof(GetRequiredServiceData))]
-        public void ServiceFactoryBase_ProvidesService(Type serviceType)
-        {
-            var serviceCollection = new ServiceCollection();
-            ServiceFactory.AddIAMServices(serviceCollection);
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+        var service = serviceProvider.GetRequiredService(serviceType);
 
-            var service = serviceProvider.GetRequiredService(serviceType);
+        Assert.NotNull(service);
+    }
 
-            Assert.NotNull(service);
-        }
-
-        public static IEnumerable<object[]> GetRequiredServiceData =>
-        [
-            [typeof(ISecurityConfigurationProvider)],
+    public static IEnumerable<object[]> GetRequiredServiceData =>
+    [
+        [typeof(ISecurityConfigurationProvider)],
             [typeof(IPasswordValidationProvider)],
             [typeof(IOptions<SecurityOptions>)],
 
@@ -62,6 +62,5 @@ namespace Corely.UnitTests.IAM
             [typeof(IRepo<AccountEntity>)],
 
             [typeof(IUnitOfWorkProvider)]
-        ];
-    }
+    ];
 }

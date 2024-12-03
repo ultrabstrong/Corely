@@ -2,14 +2,13 @@
 using Corely.IAM.Groups.Entities;
 using Corely.IAM.Groups.Models;
 
-namespace Corely.IAM.Groups.Mappers
+namespace Corely.IAM.Groups.Mappers;
+
+internal class GroupProfile : Profile
 {
-    internal class GroupProfile : Profile
+    public GroupProfile()
     {
-        public GroupProfile()
-        {
-            CreateMap<Group, GroupEntity>(MemberList.Source)
-                .ReverseMap();
-        }
+        CreateMap<Group, GroupEntity>(MemberList.Source)
+            .ReverseMap();
     }
 }

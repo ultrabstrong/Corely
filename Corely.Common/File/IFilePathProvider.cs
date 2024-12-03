@@ -1,10 +1,9 @@
-﻿namespace Corely.Common.File
+﻿namespace Corely.Common.File;
+
+public interface IFilePathProvider
 {
-    public interface IFilePathProvider
-    {
-        bool DoesFileExist(string filepath);
-        string GetOverwriteProtectedPath(string filepath);
-        string GetFileNameWithExtension(string filepath);
-        string GetFileNameWithoutExtension(string filepath);
-    }
+    bool DoesFileExist(string filepath);
+    string GetOverwriteProtectedPath(string filepath);
+    string GetFileNameWithExtension(string filepath);
+    string GetFileNameWithoutExtension(string filepath);
 }

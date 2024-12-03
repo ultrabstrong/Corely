@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Corely.IAMDataAccessMigrations.Migrations
-{
+namespace Corely.IAMDataAccessMigrations.Migrations;
+
     [DbContext(typeof(IamDbContext))]
     [Migration("20241004032808_UserDisabledInsteadOfEnabled")]
     partial class UserDisabledInsteadOfEnabled
@@ -405,5 +405,4 @@ namespace Corely.IAMDataAccessMigrations.Migrations
                 });
 #pragma warning restore 612, 618
         }
-    }
-}
+    }

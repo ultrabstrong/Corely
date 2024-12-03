@@ -1,39 +1,38 @@
 ﻿using Corely.Common.Http.Models;
 
-namespace Corely.UnitTests.Common.Http.Models
-{
-    public class HttpSendRequestTests
-    {
-        private readonly HttpSendRequest _httpSendRequest = new("/v1/entity", HttpMethod.Get);
+namespace Corely.UnitTests.Common.Http.Models;
 
-        [Fact]
-        public void CreateHttpRequestMessage_ReturnsHttpRequestMessage()
-        {
-            _httpSendRequest.Parameters = new HttpParameters(
-                new Dictionary<string, string>()
-                {
+public class HttpSendRequestTests
+{
+    private readonly HttpSendRequest _httpSendRequest = new("/v1/entity", HttpMethod.Get);
+
+    [Fact]
+    public void CreateHttpRequestMessage_ReturnsHttpRequestMessage()
+    {
+        _httpSendRequest.Parameters = new HttpParameters(
+            new Dictionary<string, string>()
+            {
                     { "param1", "value1" },
                     { "param2", "value2" }
-                },
-                new()
-                {
+            },
+            new()
+            {
                     { "param3", "value3" },
                     { "param4", "value4" }
-                }
-            );
+            }
+        );
 
-            _httpSendRequest.Headers = new()
+        _httpSendRequest.Headers = new()
             {
                 { "header1", "value1" },
                 { "header2", "value2" }
             };
 
-            HttpRequestMessage httpRequestMessage = _httpSendRequest.CreateHttpRequestMessage();
+        HttpRequestMessage httpRequestMessage = _httpSendRequest.CreateHttpRequestMessage();
 
-            Assert.Equal("/v1/entity?param1=value1&param2=value2&param3=value3&param4=value4", httpRequestMessage.RequestUri?.ToString());
-            Assert.Equal(HttpMethod.Get, httpRequestMessage.Method);
-            Assert.Equal("value1", httpRequestMessage.Headers.GetValues("header1").First());
-            Assert.Equal("value2", httpRequestMessage.Headers.GetValues("header2").First());
-        }
+        Assert.Equal("/v1/entity?param1=value1&param2=value2&param3=value3&param4=value4", httpRequestMessage.RequestUri?.ToString());
+        Assert.Equal(HttpMethod.Get, httpRequestMessage.Method);
+        Assert.Equal("value1", httpRequestMessage.Headers.GetValues("header1").First());
+        Assert.Equal("value2", httpRequestMessage.Headers.GetValues("header2").First());
     }
 }

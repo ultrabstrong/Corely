@@ -2,33 +2,32 @@
 using Corely.DataAccess.EntityFramework.Configurations;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Corely.IAM.Accounts.Entities
+namespace Corely.IAM.Accounts.Entities;
+
+internal class AccountAsymmetricKeyEntityConfiguration : EntityConfigurationBase<AccountAsymmetricKeyEntity>
 {
-    internal class AccountAsymmetricKeyEntityConfiguration : EntityConfigurationBase<AccountAsymmetricKeyEntity>
+    public AccountAsymmetricKeyEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
     {
-        public AccountAsymmetricKeyEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
-        {
-        }
+    }
 
-        protected override void ConfigureInternal(EntityTypeBuilder<AccountAsymmetricKeyEntity> builder)
-        {
-            builder.HasIndex(e => new { e.AccountId, e.KeyUsedFor })
-                .IsUnique();
+    protected override void ConfigureInternal(EntityTypeBuilder<AccountAsymmetricKeyEntity> builder)
+    {
+        builder.HasIndex(e => new { e.AccountId, e.KeyUsedFor })
+            .IsUnique();
 
-            builder.Property(m => m.KeyUsedFor)
-                .HasConversion<string>();
+        builder.Property(m => m.KeyUsedFor)
+            .HasConversion<string>();
 
-            builder.Property(m => m.ProviderTypeCode)
-                .IsRequired();
+        builder.Property(m => m.ProviderTypeCode)
+            .IsRequired();
 
-            builder.Property(m => m.Version)
-                .IsRequired();
+        builder.Property(m => m.Version)
+            .IsRequired();
 
-            builder.Property(m => m.PublicKey)
-                .IsRequired();
+        builder.Property(m => m.PublicKey)
+            .IsRequired();
 
-            builder.Property(m => m.EncryptedPrivateKey)
-                .IsRequired();
-        }
+        builder.Property(m => m.EncryptedPrivateKey)
+            .IsRequired();
     }
 }

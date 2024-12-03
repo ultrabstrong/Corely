@@ -1,19 +1,18 @@
-﻿namespace Corely.DevTools.Attributes
+﻿namespace Corely.DevTools.Attributes;
+
+[AttributeUsage(AttributeTargets.Property)]
+internal class ArgumentAttribute : AttributeBase
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    internal class ArgumentAttribute : AttributeBase
+    public bool IsRequired { get; init; } = true;
+
+    public ArgumentAttribute(string description)
     {
-        public bool IsRequired { get; init; } = true;
+        Description = description;
+    }
 
-        public ArgumentAttribute(string description)
-        {
-            Description = description;
-        }
-
-        public ArgumentAttribute(string description, bool isRequired)
-            : this(description)
-        {
-            IsRequired = isRequired;
-        }
+    public ArgumentAttribute(string description, bool isRequired)
+        : this(description)
+    {
+        IsRequired = isRequired;
     }
 }

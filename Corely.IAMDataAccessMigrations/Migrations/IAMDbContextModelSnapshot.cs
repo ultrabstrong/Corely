@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Corely.IAMDataAccessMigrations.Migrations
-{
+namespace Corely.IAMDataAccessMigrations.Migrations;
+
     [DbContext(typeof(IamDbContext))]
     partial class IAMDbContextModelSnapshot : ModelSnapshot
     {
@@ -500,5 +500,4 @@ namespace Corely.IAMDataAccessMigrations.Migrations
                 });
 #pragma warning restore 612, 618
         }
-    }
-}
+    }

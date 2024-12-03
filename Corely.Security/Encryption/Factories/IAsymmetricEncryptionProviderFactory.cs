@@ -1,9 +1,8 @@
 ﻿using Corely.Security.Encryption.Providers;
 
-namespace Corely.Security.Encryption.Factories
+namespace Corely.Security.Encryption.Factories;
+
+public interface IAsymmetricEncryptionProviderFactory : IProviderFactory<IAsymmetricEncryptionProvider>
 {
-    public interface IAsymmetricEncryptionProviderFactory : IProviderFactory<IAsymmetricEncryptionProvider>
-    {
-        IAsymmetricEncryptionProvider GetProviderForDecrypting(string value);
-    }
+    IAsymmetricEncryptionProvider GetProviderForDecrypting(string value);
 }

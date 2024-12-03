@@ -1,8 +1,7 @@
-﻿namespace Corely.Security.PasswordValidation.Providers
+﻿namespace Corely.Security.PasswordValidation.Providers;
+
+public record PasswordValidationResult(
+    bool IsSuccess,
+    string[] ValidationFailures)
 {
-    public record PasswordValidationResult(
-        bool IsSuccess,
-        string[] ValidationFailures)
-    {
-    }
 }

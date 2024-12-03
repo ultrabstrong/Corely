@@ -2,16 +2,15 @@
 using Corely.IAM.Accounts.Models;
 using FluentValidation;
 
-namespace Corely.IAM.Accounts.Validators
+namespace Corely.IAM.Accounts.Validators;
+
+internal class AccountValidator : AbstractValidator<Account>
 {
-    internal class AccountValidator : AbstractValidator<Account>
+    public AccountValidator()
     {
-        public AccountValidator()
-        {
-            RuleFor(x => x.AccountName)
-                .NotEmpty()
-                .MinimumLength(AccountConstants.ACCOUNT_NAME_MIN_LENGTH)
-                .MaximumLength(AccountConstants.ACCOUNT_NAME_MAX_LENGTH);
-        }
+        RuleFor(x => x.AccountName)
+            .NotEmpty()
+            .MinimumLength(AccountConstants.ACCOUNT_NAME_MIN_LENGTH)
+            .MaximumLength(AccountConstants.ACCOUNT_NAME_MAX_LENGTH);
     }
 }

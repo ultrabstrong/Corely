@@ -1,22 +1,22 @@
 ﻿using Corely.Common.Providers.Redaction;
 
-namespace Corely.UnitTests.Common.Redaction
+namespace Corely.UnitTests.Common.Redaction;
+
+public class PasswordRedactionProviderTests
 {
-    public class PasswordRedactionProviderTests
+    private readonly PasswordRedactionProvider _passwordRedactionProvider = new();
+
+    [Theory]
+    [MemberData(nameof(RedactTestData))]
+    public void Redact_RedactsPassword(string input, string expected)
     {
-        private readonly PasswordRedactionProvider _passwordRedactionProvider = new();
+        var actual = _passwordRedactionProvider.Redact(input);
+        Assert.Equal(expected, actual);
+    }
 
-        [Theory]
-        [MemberData(nameof(RedactTestData))]
-        public void Redact_RedactsPassword(string input, string expected)
-        {
-            var actual = _passwordRedactionProvider.Redact(input);
-            Assert.Equal(expected, actual);
-        }
-
-        public static IEnumerable<object[]> RedactTestData() =>
+    public static IEnumerable<object[]> RedactTestData() =>
+    [
         [
-            [
                 @"{""UserId"":1,""Username"":""username"",""Password"":""as@#$%#$^   09u09a8s09fj;qo34\""808+_)(*&^%$@!$#@^""",
                 @"{""UserId"":1,""Username"":""username"",""Password"":""REDACTED"""
             ],
@@ -32,6 +32,5 @@ namespace Corely.UnitTests.Common.Redaction
                 @"""UpsertBasicAuthRequest { UserId = 0, Username = bstrong, Password = as@#$%#$^09u09a8s09fj;qo34\u0022808\u002B_)(*\u0026^%$@!$#@^ }""",
                 @"""UpsertBasicAuthRequest { UserId = 0, Username = bstrong, Password = REDACTED }"""
             ]
-        ];
-    }
+    ];
 }

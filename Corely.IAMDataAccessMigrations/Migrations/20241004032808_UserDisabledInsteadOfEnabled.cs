@@ -2,39 +2,38 @@
 
 #nullable disable
 
-namespace Corely.IAMDataAccessMigrations.Migrations
+namespace Corely.IAMDataAccessMigrations.Migrations;
+
+/// <inheritdoc />
+public partial class UserDisabledInsteadOfEnabled : Migration
 {
     /// <inheritdoc />
-    public partial class UserDisabledInsteadOfEnabled : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "Enabled",
-                table: "Users");
+        migrationBuilder.DropColumn(
+            name: "Enabled",
+            table: "Users");
 
-            migrationBuilder.AddColumn<bool>(
-                name: "Disabled",
-                table: "Users",
-                type: "tinyint(1)",
-                nullable: false,
-                defaultValue: false);
-        }
+        migrationBuilder.AddColumn<bool>(
+            name: "Disabled",
+            table: "Users",
+            type: "tinyint(1)",
+            nullable: false,
+            defaultValue: false);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "Disabled",
-                table: "Users");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "Disabled",
+            table: "Users");
 
-            migrationBuilder.AddColumn<bool>(
-                name: "Enabled",
-                table: "Users",
-                type: "tinyint(1)",
-                nullable: false,
-                defaultValue: true);
-        }
+        migrationBuilder.AddColumn<bool>(
+            name: "Enabled",
+            table: "Users",
+            type: "tinyint(1)",
+            nullable: false,
+            defaultValue: true);
     }
 }

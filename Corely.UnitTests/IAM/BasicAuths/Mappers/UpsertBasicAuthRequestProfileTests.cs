@@ -1,13 +1,12 @@
 ﻿using Corely.IAM.BasicAuths.Models;
 using Corely.UnitTests.IAM.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.IAM.BasicAuths.Mappers
-{
-    public class UpsertBasicAuthRequestProfileTests
-        : ProfileDelegateTestsBase
-    {
-        private class Delegate : ProfileTestsBase<UpsertBasicAuthRequest, BasicAuth>;
+namespace Corely.UnitTests.IAM.BasicAuths.Mappers;
 
-        protected override ProfileTestsBase GetDelegate() => new Delegate();
-    }
+public class UpsertBasicAuthRequestProfileTests
+    : ProfileDelegateTestsBase
+{
+    private class Delegate : ProfileTestsBase<UpsertBasicAuthRequest, BasicAuth>;
+
+    protected override ProfileTestsBase GetDelegate() => new Delegate();
 }

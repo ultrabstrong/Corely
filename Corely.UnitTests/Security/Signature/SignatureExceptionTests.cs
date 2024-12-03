@@ -1,9 +1,8 @@
 ﻿using Corely.Security.Signature;
 
-namespace Corely.UnitTests.Security.Signature
+namespace Corely.UnitTests.Security.Signature;
+
+public class SignatureExceptionTests
+    : ExceptionTestsBase<SignatureException>
 {
-    public class SignatureExceptionTests
-        : ExceptionTestsBase<SignatureException>
-    {
-    }
 }

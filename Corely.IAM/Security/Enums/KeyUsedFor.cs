@@ -1,8 +1,7 @@
-﻿namespace Corely.IAM.Security.Enums
+﻿namespace Corely.IAM.Security.Enums;
+
+public enum KeyUsedFor
 {
-    public enum KeyUsedFor
-    {
-        Encryption,
-        Signature
-    }
+    Encryption,
+    Signature
 }

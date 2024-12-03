@@ -1,17 +1,16 @@
-﻿namespace Corely.IAM.Users.Exceptions
+﻿namespace Corely.IAM.Users.Exceptions;
+
+public class UserDoesNotExistException : Exception
 {
-    public class UserDoesNotExistException : Exception
+    public UserDoesNotExistException() : base()
     {
-        public UserDoesNotExistException() : base()
-        {
-        }
+    }
 
-        public UserDoesNotExistException(string message) : base(message)
-        {
-        }
+    public UserDoesNotExistException(string message) : base(message)
+    {
+    }
 
-        public UserDoesNotExistException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+    public UserDoesNotExistException(string message, Exception innerException) : base(message, innerException)
+    {
     }
 }

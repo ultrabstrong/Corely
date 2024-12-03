@@ -4,38 +4,37 @@ using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Providers;
 using Corely.UnitTests.ClassData;
 
-namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters
+namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters;
+
+public class SymmetricEncryptedStringToEncryptedValueTypeConverterTests
 {
-    public class SymmetricEncryptedStringToEncryptedValueTypeConverterTests
+    private readonly SymmetricEncryptedStringToEncryptedValueTypeConverter _converter;
+    private readonly Fixture _fixture = new();
+
+    public SymmetricEncryptedStringToEncryptedValueTypeConverterTests()
     {
-        private readonly SymmetricEncryptedStringToEncryptedValueTypeConverter _converter;
-        private readonly Fixture _fixture = new();
+        var encryptionProvider = Mock.Of<ISymmetricEncryptionProvider>();
+        var encryptionProviderFactory = Mock.Of<ISymmetricEncryptionProviderFactory>(
+            f => f.GetProviderForDecrypting(It.IsAny<string>()) == encryptionProvider);
 
-        public SymmetricEncryptedStringToEncryptedValueTypeConverterTests()
-        {
-            var encryptionProvider = Mock.Of<ISymmetricEncryptionProvider>();
-            var encryptionProviderFactory = Mock.Of<ISymmetricEncryptionProviderFactory>(
-                f => f.GetProviderForDecrypting(It.IsAny<string>()) == encryptionProvider);
+        _converter = new(encryptionProviderFactory);
+    }
 
-            _converter = new(encryptionProviderFactory);
-        }
+    [Fact]
+    public void Convert_ReturnsEncryptedValue()
+    {
+        var value = _fixture.Create<string>();
 
-        [Fact]
-        public void Convert_ReturnsEncryptedValue()
-        {
-            var value = _fixture.Create<string>();
+        var result = _converter.Convert(value, default, default);
 
-            var result = _converter.Convert(value, default, default);
+        Assert.Equal(value, result.Secret);
+    }
 
-            Assert.Equal(value, result.Secret);
-        }
+    [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
+    public void Convert_ReturnsNullEmptyOrWhitespace(string value)
+    {
+        var result = _converter.Convert(value, default, default);
 
-        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void Convert_ReturnsNullEmptyOrWhitespace(string value)
-        {
-            var result = _converter.Convert(value, default, default);
-
-            Assert.Equal(value, result.Secret);
-        }
+        Assert.Equal(value, result.Secret);
     }
 }

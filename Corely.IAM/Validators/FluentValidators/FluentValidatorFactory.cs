@@ -1,24 +1,23 @@
 ﻿using FluentValidation;
 
-namespace Corely.IAM.Validators.FluentValidators
+namespace Corely.IAM.Validators.FluentValidators;
+
+internal sealed class FluentValidatorFactory : IFluentValidatorFactory
 {
-    internal sealed class FluentValidatorFactory : IFluentValidatorFactory
+    private readonly IServiceProvider _serviceProvider;
+
+    public FluentValidatorFactory(IServiceProvider serviceProvider)
     {
-        private readonly IServiceProvider _serviceProvider;
+        _serviceProvider = serviceProvider;
+    }
 
-        public FluentValidatorFactory(IServiceProvider serviceProvider)
+    public IValidator<T> GetValidator<T>()
+    {
+        if (_serviceProvider.GetService(typeof(IValidator<T>)) is not IValidator<T> validator)
         {
-            _serviceProvider = serviceProvider;
+            throw new InvalidOperationException($"No validator found for type {typeof(T).Name}");
         }
 
-        public IValidator<T> GetValidator<T>()
-        {
-            if (_serviceProvider.GetService(typeof(IValidator<T>)) is not IValidator<T> validator)
-            {
-                throw new InvalidOperationException($"No validator found for type {typeof(T).Name}");
-            }
-
-            return validator;
-        }
+        return validator;
     }
 }

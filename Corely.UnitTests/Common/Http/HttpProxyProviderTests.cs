@@ -2,89 +2,87 @@
 using Corely.Common.Http;
 using Corely.Common.Http.Builders;
 using Corely.Common.Http.Models;
-using Corely.UnitTests.AB.TestBase;
 using Microsoft.Extensions.Logging;
 using System.Net;
 
-namespace Corely.UnitTests.Common.Http
+namespace Corely.UnitTests.Common.Http;
+
+public class HttpProxyProviderTests
 {
-    public class HttpProxyProviderTests
+    private readonly ILogger<HttpProxyProvider> _logger;
+    private readonly HttpProxyProvider _httpProxyProvider;
+    private readonly Fixture _fixture = new();
+
+    private HttpStatusCode _httpStatusCode = HttpStatusCode.OK;
+
+    public HttpProxyProviderTests()
     {
-        private readonly ILogger<HttpProxyProvider> _logger;
-        private readonly HttpProxyProvider _httpProxyProvider;
-        private readonly Fixture _fixture = new();
+        var serviceFactory = new ServiceFactory();
+        _logger = serviceFactory.GetRequiredService<ILogger<HttpProxyProvider>>();
 
-        private HttpStatusCode _httpStatusCode = HttpStatusCode.OK;
+        _httpProxyProvider = new(
+            _logger,
+            new Mock<IHttpContentBuilder>().Object,
+            "http://localhost/");
 
-        public HttpProxyProviderTests()
-        {
-            var serviceFactory = new ServiceFactory();
-            _logger = serviceFactory.GetRequiredService<ILogger<HttpProxyProvider>>();
+        var httpClientMock = new Mock<HttpClient>();
+        httpClientMock.Setup(c =>
+            c.SendAsync(
+                It.IsAny<HttpRequestMessage>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => new HttpResponseMessage(_httpStatusCode));
 
-            _httpProxyProvider = new(
-                _logger,
-                new Mock<IHttpContentBuilder>().Object,
-                "http://localhost/");
+        NonPublicHelpers.SetNonPublicField(_httpProxyProvider, "_httpClient",
+            httpClientMock.Object);
+    }
 
-            var httpClientMock = new Mock<HttpClient>();
-            httpClientMock.Setup(c =>
-                c.SendAsync(
-                    It.IsAny<HttpRequestMessage>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => new HttpResponseMessage(_httpStatusCode));
+    [Fact]
+    public void HttpProxyProvider_ImplementsIHttpProxyProvider()
+    {
+        Assert.IsAssignableFrom<IHttpProxyProvider>(_httpProxyProvider);
+    }
 
-            NonPublicHelpers.SetNonPublicField(_httpProxyProvider, "_httpClient",
-                httpClientMock.Object);
-        }
+    [Fact]
+    public void HttpProxyProvider_ImplementsIDisposable()
+    {
+        Assert.IsAssignableFrom<IDisposable>(_httpProxyProvider);
+    }
 
-        [Fact]
-        public void HttpProxyProvider_ImplementsIHttpProxyProvider()
-        {
-            Assert.IsAssignableFrom<IHttpProxyProvider>(_httpProxyProvider);
-        }
+    [Fact]
+    public void HttpProxyProvider_ImplementsHttpProxyProviderBase()
+    {
+        Assert.IsAssignableFrom<HttpProxyProviderBase>(_httpProxyProvider);
+    }
 
-        [Fact]
-        public void HttpProxyProvider_ImplementsIDisposable()
-        {
-            Assert.IsAssignableFrom<IDisposable>(_httpProxyProvider);
-        }
+    [Fact]
+    public void Dispose_Disposes()
+    {
+        _httpProxyProvider.Dispose();
+        var disposed = NonPublicHelpers.GetNonPublicField<bool>(_httpProxyProvider, "_disposed");
+        Assert.True(disposed);
+    }
 
-        [Fact]
-        public void HttpProxyProvider_ImplementsHttpProxyProviderBase()
-        {
-            Assert.IsAssignableFrom<HttpProxyProviderBase>(_httpProxyProvider);
-        }
+    [Fact]
+    public async Task SendRequestForHttpResponse_SendsRequestForHttpResponse()
+    {
+        var requestUri = _fixture.Create<string>();
+        var request = new HttpSendRequest(requestUri, HttpMethod.Get);
+        var httpContent = new HttpStringContentBase(_fixture.Create<string>());
+        var response = await _httpProxyProvider.SendRequestForHttpResponse(request, httpContent);
 
-        [Fact]
-        public void Dispose_Disposes()
-        {
-            _httpProxyProvider.Dispose();
-            var disposed = NonPublicHelpers.GetNonPublicField<bool>(_httpProxyProvider, "_disposed");
-            Assert.True(disposed);
-        }
+        Assert.Equal(_httpStatusCode, response.StatusCode);
+    }
 
-        [Fact]
-        public async Task SendRequestForHttpResponse_SendsRequestForHttpResponse()
-        {
-            var requestUri = _fixture.Create<string>();
-            var request = new HttpSendRequest(requestUri, HttpMethod.Get);
-            var httpContent = new HttpStringContentBase(_fixture.Create<string>());
-            var response = await _httpProxyProvider.SendRequestForHttpResponse(request, httpContent);
+    [Fact]
+    public async Task SendRequestForHttpResponse_ThrowsForBadRequest()
+    {
+        _httpStatusCode = HttpStatusCode.BadRequest;
+        var requestUri = _fixture.Create<string>();
+        var request = new HttpSendRequest(requestUri, HttpMethod.Get);
 
-            Assert.Equal(_httpStatusCode, response.StatusCode);
-        }
+        var ex = await Record.ExceptionAsync(async () => await _httpProxyProvider.SendRequestForHttpResponse<string>(request));
 
-        [Fact]
-        public async Task SendRequestForHttpResponse_ThrowsForBadRequest()
-        {
-            _httpStatusCode = HttpStatusCode.BadRequest;
-            var requestUri = _fixture.Create<string>();
-            var request = new HttpSendRequest(requestUri, HttpMethod.Get);
-
-            var ex = await Record.ExceptionAsync(async () => await _httpProxyProvider.SendRequestForHttpResponse<string>(request));
-
-            Assert.NotNull(ex);
-            Assert.IsType<HttpRequestException>(ex);
-        }
+        Assert.NotNull(ex);
+        Assert.IsType<HttpRequestException>(ex);
     }
 }

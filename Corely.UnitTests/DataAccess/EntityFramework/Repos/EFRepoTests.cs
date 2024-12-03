@@ -5,111 +5,110 @@ using Corely.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.DataAccess.EntityFramework.Repos
+namespace Corely.UnitTests.DataAccess.EntityFramework.Repos;
+
+public class EFRepoTests : RepoTestsBase
 {
-    public class EFRepoTests : RepoTestsBase
+    private readonly EFRepo<EntityFixture> _efRepo;
+    private readonly DbContext _dbContext;
+
+    private readonly EntityFixture _testEntity = new() { Id = 1 };
+
+    public EFRepoTests()
     {
-        private readonly EFRepo<EntityFixture> _efRepo;
-        private readonly DbContext _dbContext;
+        var serviceFactory = new ServiceFactory();
 
-        private readonly EntityFixture _testEntity = new() { Id = 1 };
+        _dbContext = new DbContextFixture(
+            new DbContextOptionsBuilder<DbContextFixture>()
+                .UseInMemoryDatabase(databaseName: new Fixture().Create<string>())
+                .Options);
 
-        public EFRepoTests()
-        {
-            var serviceFactory = new ServiceFactory();
+        var logger = serviceFactory.GetRequiredService<ILogger<EFRepo<EntityFixture>>>();
 
-            _dbContext = new DbContextFixture(
-                new DbContextOptionsBuilder<DbContextFixture>()
-                    .UseInMemoryDatabase(databaseName: new Fixture().Create<string>())
-                    .Options);
+        _efRepo = new EFRepo<EntityFixture>(
+            logger,
+            _dbContext);
+    }
 
-            var logger = serviceFactory.GetRequiredService<ILogger<EFRepo<EntityFixture>>>();
+    protected override IRepo<EntityFixture> Repo => _efRepo;
 
-            _efRepo = new EFRepo<EntityFixture>(
-                logger,
-                _dbContext);
-        }
+    [Fact]
+    public async Task CreateAsync_AddsEntity()
+    {
+        await _efRepo.CreateAsync(_testEntity);
 
-        protected override IRepo<EntityFixture> Repo => _efRepo;
+        var entity = _dbContext.Set<EntityFixture>().Find(_testEntity.Id);
 
-        [Fact]
-        public async Task CreateAsync_AddsEntity()
-        {
-            await _efRepo.CreateAsync(_testEntity);
+        Assert.Equal(_testEntity, entity);
+    }
 
-            var entity = _dbContext.Set<EntityFixture>().Find(_testEntity.Id);
+    [Fact]
+    public async Task GetAsync_ReturnsEntity()
+    {
+        await _efRepo.CreateAsync(_testEntity);
 
-            Assert.Equal(_testEntity, entity);
-        }
+        var entity = await _efRepo.GetAsync(_testEntity.Id);
+        Assert.Equal(_testEntity, entity);
+    }
 
-        [Fact]
-        public async Task GetAsync_ReturnsEntity()
-        {
-            await _efRepo.CreateAsync(_testEntity);
+    [Fact]
+    public async Task UpdateAsync_AttachesUntrackedEntity()
+    {
+        await _efRepo.CreateAsync(_testEntity);
+        _dbContext.Set<EntityFixture>().Entry(_testEntity).State = EntityState.Detached;
 
-            var entity = await _efRepo.GetAsync(_testEntity.Id);
-            Assert.Equal(_testEntity, entity);
-        }
+        var entity = new EntityFixture { Id = _testEntity.Id };
+        await _efRepo.UpdateAsync(entity);
 
-        [Fact]
-        public async Task UpdateAsync_AttachesUntrackedEntity()
-        {
-            await _efRepo.CreateAsync(_testEntity);
-            _dbContext.Set<EntityFixture>().Entry(_testEntity).State = EntityState.Detached;
+        var updatedEntity = _dbContext.Set<EntityFixture>().Find(entity.Id);
+        Assert.NotNull(updatedEntity);
 
-            var entity = new EntityFixture { Id = _testEntity.Id };
-            await _efRepo.UpdateAsync(entity);
+        Assert.NotEqual(_testEntity, updatedEntity);
+        Assert.Equal(entity, updatedEntity);
 
-            var updatedEntity = _dbContext.Set<EntityFixture>().Find(entity.Id);
-            Assert.NotNull(updatedEntity);
+        Assert.InRange(
+            updatedEntity.ModifiedUtc,
+            DateTime.UtcNow.AddSeconds(-2),
+            DateTime.UtcNow);
+    }
 
-            Assert.NotEqual(_testEntity, updatedEntity);
-            Assert.Equal(entity, updatedEntity);
+    [Fact]
+    public async Task UpdateAsync_UpdatesExistingEntity()
+    {
+        await _efRepo.CreateAsync(_testEntity);
+        var untrackedSetupEntity = new EntityFixture { Id = _testEntity.Id };
 
-            Assert.InRange(
-                updatedEntity.ModifiedUtc,
-                DateTime.UtcNow.AddSeconds(-2),
-                DateTime.UtcNow);
-        }
+        await _efRepo.UpdateAsync(untrackedSetupEntity);
 
-        [Fact]
-        public async Task UpdateAsync_UpdatesExistingEntity()
-        {
-            await _efRepo.CreateAsync(_testEntity);
-            var untrackedSetupEntity = new EntityFixture { Id = _testEntity.Id };
+        // UpdateAsync automatically updates the ModifiedUtc
+        // It should find and update ModifiedUtc of the original entity
+        // This has the added benefit of testing the ModifiedUtc update
+        Assert.InRange(
+            _testEntity.ModifiedUtc,
+            DateTime.UtcNow.AddSeconds(-2),
+            DateTime.UtcNow);
+    }
 
-            await _efRepo.UpdateAsync(untrackedSetupEntity);
+    [Fact]
+    public async Task DeleteAsync_HandlesNonexistantEntity()
+    {
+        var ex = await Record.ExceptionAsync(() => _efRepo.DeleteAsync(_testEntity));
 
-            // UpdateAsync automatically updates the ModifiedUtc
-            // It should find and update ModifiedUtc of the original entity
-            // This has the added benefit of testing the ModifiedUtc update
-            Assert.InRange(
-                _testEntity.ModifiedUtc,
-                DateTime.UtcNow.AddSeconds(-2),
-                DateTime.UtcNow);
-        }
+        Assert.Null(ex);
+    }
 
-        [Fact]
-        public async Task DeleteAsync_HandlesNonexistantEntity()
-        {
-            var ex = await Record.ExceptionAsync(() => _efRepo.DeleteAsync(_testEntity));
+    [Fact]
+    public async Task DeleteAsync_Id_HandlesNonexistantEntity()
+    {
+        var ex = await Record.ExceptionAsync(() => _efRepo.DeleteAsync(_testEntity.Id));
 
-            Assert.Null(ex);
-        }
+        Assert.Null(ex);
+    }
 
-        [Fact]
-        public async Task DeleteAsync_Id_HandlesNonexistantEntity()
-        {
-            var ex = await Record.ExceptionAsync(() => _efRepo.DeleteAsync(_testEntity.Id));
-
-            Assert.Null(ex);
-        }
-
-        protected override int FillRepoAndReturnId()
-        {
-            _dbContext.Set<EntityFixture>().AddRange(Fixture.CreateMany<EntityFixture>(5));
-            _dbContext.SaveChanges();
-            return _dbContext.Set<EntityFixture>().Skip(1).First().Id;
-        }
+    protected override int FillRepoAndReturnId()
+    {
+        _dbContext.Set<EntityFixture>().AddRange(Fixture.CreateMany<EntityFixture>(5));
+        _dbContext.SaveChanges();
+        return _dbContext.Set<EntityFixture>().Skip(1).First().Id;
     }
 }

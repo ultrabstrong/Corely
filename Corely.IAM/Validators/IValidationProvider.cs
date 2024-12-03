@@ -1,9 +1,8 @@
-﻿namespace Corely.IAM.Validators
-{
-    internal interface IValidationProvider
-    {
-        public ValidationResult Validate<T>(T model);
+﻿namespace Corely.IAM.Validators;
 
-        public void ThrowIfInvalid<T>(T model);
-    }
+internal interface IValidationProvider
+{
+    public ValidationResult Validate<T>(T model);
+
+    public void ThrowIfInvalid<T>(T model);
 }

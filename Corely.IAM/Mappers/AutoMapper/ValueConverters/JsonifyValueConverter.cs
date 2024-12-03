@@ -1,23 +1,22 @@
 ﻿using AutoMapper;
 using System.Text.Json;
 
-namespace Corely.IAM.Mappers.AutoMapper.ValueConverters
+namespace Corely.IAM.Mappers.AutoMapper.ValueConverters;
+
+internal sealed class JsonifyValueConverter<T> : IValueConverter<T, string>
 {
-    internal sealed class JsonifyValueConverter<T> : IValueConverter<T, string>
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    public JsonifyValueConverter()
     {
-        private readonly JsonSerializerOptions _jsonSerializerOptions;
-
-        public JsonifyValueConverter()
+        _jsonSerializerOptions = new JsonSerializerOptions
         {
-            _jsonSerializerOptions = new JsonSerializerOptions
-            {
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-        }
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+    }
 
-        public string Convert(T sourceMember, ResolutionContext context)
-        {
-            return JsonSerializer.Serialize(sourceMember, _jsonSerializerOptions);
-        }
+    public string Convert(T sourceMember, ResolutionContext context)
+    {
+        return JsonSerializer.Serialize(sourceMember, _jsonSerializerOptions);
     }
 }

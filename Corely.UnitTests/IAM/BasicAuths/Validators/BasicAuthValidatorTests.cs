@@ -5,45 +5,44 @@ using Corely.Security.Hashing.Providers;
 using Corely.UnitTests.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.IAM.BasicAuths.Validators
+namespace Corely.UnitTests.IAM.BasicAuths.Validators;
+
+public class BasicAuthValidatorTests
 {
-    public class BasicAuthValidatorTests
+    private readonly BasicAuthValidator _validator = new();
+
+    [Theory]
+    [ClassData(typeof(NullEmptyAndWhitespace))]
+    [MemberData(nameof(InvalidPasswordData))]
+    public void BasicAuthValidator_HasValidationError_WhenPasswordInvalid(string password)
     {
-        private readonly BasicAuthValidator _validator = new();
-
-        [Theory]
-        [ClassData(typeof(NullEmptyAndWhitespace))]
-        [MemberData(nameof(InvalidPasswordData))]
-        public void BasicAuthValidator_HasValidationError_WhenPasswordInvalid(string password)
+        var basicAuth = new Corely.IAM.BasicAuths.Models.BasicAuth
         {
-            var basicAuth = new Corely.IAM.BasicAuths.Models.BasicAuth
+            Password = new HashedValue(Mock.Of<IHashProvider>())
             {
-                Password = new HashedValue(Mock.Of<IHashProvider>())
-                {
-                    Hash = password
-                }
-            };
+                Hash = password
+            }
+        };
 
-            var result = _validator.TestValidate(basicAuth);
-            result.ShouldHaveValidationErrorFor(x => x.Password.Hash);
-            result.ShouldNotHaveValidationErrorFor(x => x.Password);
-        }
+        var result = _validator.TestValidate(basicAuth);
+        result.ShouldHaveValidationErrorFor(x => x.Password.Hash);
+        result.ShouldNotHaveValidationErrorFor(x => x.Password);
+    }
 
-        public static IEnumerable<object[]> InvalidPasswordData() =>
-        [
-            [new string('a', BasicAuthConstants.PASSWORD_MAX_LENGTH + 1)]
-        ];
+    public static IEnumerable<object[]> InvalidPasswordData() =>
+    [
+        [new string('a', BasicAuthConstants.PASSWORD_MAX_LENGTH + 1)]
+    ];
 
-        [Fact]
-        public void BasicAuthValidator_HasValidationError_WhenPasswordIsNull()
+    [Fact]
+    public void BasicAuthValidator_HasValidationError_WhenPasswordIsNull()
+    {
+        var basicAuth = new Corely.IAM.BasicAuths.Models.BasicAuth
         {
-            var basicAuth = new Corely.IAM.BasicAuths.Models.BasicAuth
-            {
-                Password = null
-            };
+            Password = null
+        };
 
-            var result = _validator.TestValidate(basicAuth);
-            result.ShouldHaveValidationErrorFor(x => x.Password);
-        }
+        var result = _validator.TestValidate(basicAuth);
+        result.ShouldHaveValidationErrorFor(x => x.Password);
     }
 }

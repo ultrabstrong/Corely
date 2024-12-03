@@ -1,9 +1,8 @@
-﻿namespace Corely.Security.Hashing.Providers
+﻿namespace Corely.Security.Hashing.Providers;
+
+public interface IHashProvider
 {
-    public interface IHashProvider
-    {
-        string HashTypeCode { get; }
-        string Hash(string value);
-        bool Verify(string value, string hash);
-    }
+    string HashTypeCode { get; }
+    string Hash(string value);
+    bool Verify(string value, string hash);
 }

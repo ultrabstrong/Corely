@@ -1,29 +1,28 @@
 ﻿using Corely.Common.Extensions;
 using System.Text.RegularExpressions;
 
-namespace Corely.Common.Redaction
+namespace Corely.Common.Redaction;
+
+public abstract class RedactionProviderBase : IRedactionProvider
 {
-    public abstract class RedactionProviderBase : IRedactionProvider
+    private const string REDACTED = "REDACTED";
+    private readonly List<Regex> _regexPatterns;
+
+    public RedactionProviderBase()
     {
-        private const string REDACTED = "REDACTED";
-        private readonly List<Regex> _regexPatterns;
+        _regexPatterns = GetReplacePatterns();
+    }
 
-        public RedactionProviderBase()
+    protected abstract List<Regex> GetReplacePatterns();
+
+    public string? Redact(string? input)
+    {
+        if (input == null) { return input; }
+        string output = input;
+        foreach (var regex in _regexPatterns)
         {
-            _regexPatterns = GetReplacePatterns();
+            output = regex.ReplaceGroup(output, 1, REDACTED);
         }
-
-        protected abstract List<Regex> GetReplacePatterns();
-
-        public string? Redact(string? input)
-        {
-            if (input == null) { return input; }
-            string output = input;
-            foreach (var regex in _regexPatterns)
-            {
-                output = regex.ReplaceGroup(output, 1, REDACTED);
-            }
-            return output;
-        }
+        return output;
     }
 }

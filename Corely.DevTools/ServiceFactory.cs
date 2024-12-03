@@ -7,43 +7,42 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Reflection;
 
-namespace Corely.DevTools
+namespace Corely.DevTools;
+
+internal class ServiceFactory : EFServiceFactory
 {
-    internal class ServiceFactory : EFServiceFactory
+    private static readonly Lazy<ServiceFactory> _instance = new(() => new ServiceFactory());
+    public static ServiceFactory Instance => _instance.Value;
+
+    private ServiceFactory() { }
+
+    private class EFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
     {
-        private static readonly Lazy<ServiceFactory> _instance = new(() => new ServiceFactory());
-        public static ServiceFactory Instance => _instance.Value;
-
-        private ServiceFactory() { }
-
-        private class EFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
+        public override void Configure(DbContextOptionsBuilder optionsBuilder)
         {
-            public override void Configure(DbContextOptionsBuilder optionsBuilder)
-            {
-                optionsBuilder
-                    .UseMySql(
-                        connectionString,
-                        ServerVersion.AutoDetect(connectionString),
-                        b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
-                    .LogTo(
-                        filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
-                        logger: SerilogEFEventDataWriter.Write);
-            }
+            optionsBuilder
+                .UseMySql(
+                    connectionString,
+                    ServerVersion.AutoDetect(connectionString),
+                    b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
+                .LogTo(
+                    filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
+                    logger: SerilogEFEventDataWriter.Write);
         }
+    }
 
-        protected override void AddLogging(ILoggingBuilder builder)
-        {
-            builder.AddSerilog(logger: Log.Logger, dispose: false);
-        }
+    protected override void AddLogging(ILoggingBuilder builder)
+    {
+        builder.AddSerilog(logger: Log.Logger, dispose: false);
+    }
 
-        protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
-        {
-            return new SecurityConfigurationProvider();
-        }
+    protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
+    {
+        return new SecurityConfigurationProvider();
+    }
 
-        protected override IEFConfiguration GetEFConfiguraiton()
-        {
-            return new EFConfiguration(ConfigurationProvider.GetConnectionString());
-        }
+    protected override IEFConfiguration GetEFConfiguraiton()
+    {
+        return new EFConfiguration(ConfigurationProvider.GetConnectionString());
     }
 }

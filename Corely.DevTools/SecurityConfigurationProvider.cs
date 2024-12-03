@@ -2,21 +2,20 @@
 using Corely.Security.Encryption.Providers;
 using Corely.Security.KeyStore;
 
-namespace Corely.DevTools
+namespace Corely.DevTools;
+
+internal class SecurityConfigurationProvider : ISecurityConfigurationProvider
 {
-    internal class SecurityConfigurationProvider : ISecurityConfigurationProvider
+    private readonly string _symmetricKey;
+
+    public SecurityConfigurationProvider()
     {
-        private readonly string _symmetricKey;
+        var encryptionProvider = new AesEncryptionProvider();
+        _symmetricKey = encryptionProvider.GetSymmetricKeyProvider().CreateKey();
+    }
 
-        public SecurityConfigurationProvider()
-        {
-            var encryptionProvider = new AesEncryptionProvider();
-            _symmetricKey = encryptionProvider.GetSymmetricKeyProvider().CreateKey();
-        }
-
-        public ISymmetricKeyStoreProvider GetSystemSymmetricKey()
-        {
-            return new InMemorySymmetricKeyStoreProvider(_symmetricKey);
-        }
+    public ISymmetricKeyStoreProvider GetSystemSymmetricKey()
+    {
+        return new InMemorySymmetricKeyStoreProvider(_symmetricKey);
     }
 }

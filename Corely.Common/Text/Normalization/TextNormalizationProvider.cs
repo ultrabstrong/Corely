@@ -1,60 +1,60 @@
 ﻿using System.Text.RegularExpressions;
 using Corely.Common.Text.Normalization;
 
-namespace Corely.Common.Providers.Data
+namespace Corely.Common.Providers.Data;
+
+public partial class TextNormalizationProvider : ITextNormalizationProvider
 {
-    public partial class TextNormalizationProvider : ITextNormalizationProvider
+    public string BasicNormalize(string s)
     {
-        public string BasicNormalize(string s)
-        {
-            ArgumentNullException.ThrowIfNull(s, nameof(s));
-            return WordRegex().Replace(s.ToUpper(), string.Empty);
-        }
+        ArgumentNullException.ThrowIfNull(s, nameof(s));
+        return WordRegex().Replace(s.ToUpper(), string.Empty);
+    }
 
-        public string NormalizeAddress(string street, params string[] additional)
-        {
-            ArgumentNullException.ThrowIfNull(street, nameof(street));
-            return NormalizeAddress(false, street, additional);
-        }
+    public string NormalizeAddress(string street, params string[] additional)
+    {
+        ArgumentNullException.ThrowIfNull(street, nameof(street));
+        return NormalizeAddress(false, street, additional);
+    }
 
-        public string NormalizeAddressAndState(string street, params string[] additional)
-        {
-            ArgumentNullException.ThrowIfNull(street, nameof(street));
-            return NormalizeAddress(true, street, additional);
-        }
+    public string NormalizeAddressAndState(string street, params string[] additional)
+    {
+        ArgumentNullException.ThrowIfNull(street, nameof(street));
+        return NormalizeAddress(true, street, additional);
+    }
 
-        private string NormalizeAddress(bool includestate, string street, params string[] additional)
-        {
-            string normalizedaddress = street.ToUpper() + " ";
-            normalizedaddress = WordAndSpaceRegex().Replace(normalizedaddress, string.Empty);
+    private string NormalizeAddress(bool includestate, string street, params string[] additional)
+    {
+        string normalizedaddress = street.ToUpper() + " ";
+        normalizedaddress = WordAndSpaceRegex().Replace(normalizedaddress, string.Empty);
 
-            foreach (Tuple<string, string, bool> abbreviation in _commonStreetAbbreviations)
+        foreach (Tuple<string, string, bool> abbreviation in _commonStreetAbbreviations)
+        {
+            normalizedaddress = normalizedaddress.Replace(abbreviation.Item1.ToUpper(), $" {abbreviation.Item2.ToUpper()} ");
+
+            if (abbreviation.Item3)
             {
-                normalizedaddress = normalizedaddress.Replace(abbreviation.Item1.ToUpper(), $" {abbreviation.Item2.ToUpper()} ");
-
-                if (abbreviation.Item3)
-                {
-                    normalizedaddress = normalizedaddress.Replace($" {abbreviation.Item2.ToUpper()} ", " ");
-                }
+                normalizedaddress = normalizedaddress.Replace($" {abbreviation.Item2.ToUpper()} ", " ");
             }
-
-            normalizedaddress = $"{normalizedaddress}{string.Join(" ", additional)}".ToUpper();
-
-            if (includestate)
-            {
-                foreach (Tuple<string, string> abbreviation in _commonStateAbbreviations)
-                {
-                    normalizedaddress = normalizedaddress.Replace(abbreviation.Item1.ToUpper(), abbreviation.Item2.ToUpper());
-                }
-            }
-            normalizedaddress = WordRegex().Replace(normalizedaddress, string.Empty);
-            return normalizedaddress;
         }
 
-        private readonly List<Tuple<string, string, bool>> _commonStreetAbbreviations =
-        [
-            // Ordinal 
-            new Tuple<string, string, bool>("Northeast", "NE", false),
+        normalizedaddress = $"{normalizedaddress}{string.Join(" ", additional)}".ToUpper();
+
+        if (includestate)
+        {
+            foreach (Tuple<string, string> abbreviation in _commonStateAbbreviations)
+            {
+                normalizedaddress = normalizedaddress.Replace(abbreviation.Item1.ToUpper(), abbreviation.Item2.ToUpper());
+            }
+        }
+        normalizedaddress = WordRegex().Replace(normalizedaddress, string.Empty);
+        return normalizedaddress;
+    }
+
+    private readonly List<Tuple<string, string, bool>> _commonStreetAbbreviations =
+    [
+        // Ordinal 
+        new Tuple<string, string, bool>("Northeast", "NE", false),
             new Tuple<string, string, bool>("Northwest", "NW", false),
             new Tuple<string, string, bool>("Southeast", "SE", false),
             new Tuple<string, string, bool>("Southwest", "SW", false),
@@ -95,12 +95,12 @@ namespace Corely.Common.Providers.Data
             new Tuple<string, string, bool>("Room", "RM", true),
             new Tuple<string, string, bool>("Suite", "STE", true),
             new Tuple<string, string, bool>("Unit", "UNIT", true)
-        ];
+    ];
 
-        private readonly List<Tuple<string, string>> _commonStateAbbreviations =
-        [
-            // States
-            new Tuple<string, string>("Alabama", "AL"),
+    private readonly List<Tuple<string, string>> _commonStateAbbreviations =
+    [
+        // States
+        new Tuple<string, string>("Alabama", "AL"),
             new Tuple<string, string>("Alaska", "AK"),
             new Tuple<string, string>("Arizona", "AZ"),
             new Tuple<string, string>("Arkansas", "AR"),
@@ -162,12 +162,11 @@ namespace Corely.Common.Providers.Data
             new Tuple<string, string>("Armed Forces the Americas", "AA"),
             new Tuple<string, string>("Armed Forces Europe", "AE"),
             new Tuple<string, string>("Armed Forces Pacific", "AP")
-        ];
+    ];
 
-        [GeneratedRegex(@"[^\w]")]
-        private static partial Regex WordRegex();
+    [GeneratedRegex(@"[^\w]")]
+    private static partial Regex WordRegex();
 
-        [GeneratedRegex(@"[^\w\s]")]
-        private static partial Regex WordAndSpaceRegex();
-    }
+    [GeneratedRegex(@"[^\w\s]")]
+    private static partial Regex WordAndSpaceRegex();
 }

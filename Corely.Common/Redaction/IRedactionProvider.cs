@@ -1,7 +1,6 @@
-﻿namespace Corely.Common.Redaction
+﻿namespace Corely.Common.Redaction;
+
+public interface IRedactionProvider
 {
-    public interface IRedactionProvider
-    {
-        string? Redact(string? value);
-    }
+    string? Redact(string? value);
 }

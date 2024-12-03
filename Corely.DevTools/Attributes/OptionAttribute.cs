@@ -1,13 +1,12 @@
-﻿namespace Corely.DevTools.Attributes
-{
-    [AttributeUsage(AttributeTargets.Property)]
-    internal class OptionAttribute : AttributeBase
-    {
-        public string[] Aliases { get; init; }
+﻿namespace Corely.DevTools.Attributes;
 
-        public OptionAttribute(params string[] aliases)
-        {
-            Aliases = aliases;
-        }
+[AttributeUsage(AttributeTargets.Property)]
+internal class OptionAttribute : AttributeBase
+{
+    public string[] Aliases { get; init; }
+
+    public OptionAttribute(params string[] aliases)
+    {
+        Aliases = aliases;
     }
 }

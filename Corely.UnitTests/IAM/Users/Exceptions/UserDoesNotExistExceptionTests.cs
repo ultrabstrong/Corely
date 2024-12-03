@@ -1,9 +1,8 @@
 ﻿using Corely.IAM.Users.Exceptions;
 
-namespace Corely.UnitTests.IAM.Users.Exceptions
+namespace Corely.UnitTests.IAM.Users.Exceptions;
+
+public class UserDoesNotExistExceptionTests
+    : ExceptionTestsBase<UserDoesNotExistException>
 {
-    public class UserDoesNotExistExceptionTests
-        : ExceptionTestsBase<UserDoesNotExistException>
-    {
-    }
 }

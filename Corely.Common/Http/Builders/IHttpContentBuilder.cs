@@ -1,9 +1,8 @@
 ﻿using Corely.Common.Http.Models;
 
-namespace Corely.Common.Http.Builders
+namespace Corely.Common.Http.Builders;
+
+public interface IHttpContentBuilder
 {
-    public interface IHttpContentBuilder
-    {
-        HttpContent Build<T>(IHttpContent<T> content);
-    }
+    HttpContent Build<T>(IHttpContent<T> content);
 }

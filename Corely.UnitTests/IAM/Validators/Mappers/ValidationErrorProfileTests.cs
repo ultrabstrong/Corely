@@ -2,10 +2,9 @@
 using Corely.UnitTests.IAM.Mappers.AutoMapper;
 using FluentValidation.Results;
 
-namespace Corely.UnitTests.IAM.Validators.Mappers
+namespace Corely.UnitTests.IAM.Validators.Mappers;
+
+public class ValidationErrorProfileTests
+    : ProfileTestsBase<ValidationFailure, ValidationError>
 {
-    public class ValidationErrorProfileTests
-        : ProfileTestsBase<ValidationFailure, ValidationError>
-    {
-    }
 }

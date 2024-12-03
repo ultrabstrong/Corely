@@ -1,10 +1,9 @@
-﻿namespace Corely.Common.Text.Delimited
+﻿namespace Corely.Common.Text.Delimited;
+
+public enum TokenDelimiter
 {
-    public enum TokenDelimiter
-    {
-        Comma,
-        Tab,
-        Pipe,
-        Semicolon
-    }
+    Comma,
+    Tab,
+    Pipe,
+    Semicolon
 }

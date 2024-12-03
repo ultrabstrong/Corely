@@ -1,21 +1,20 @@
 ﻿using AutoMapper;
 
-namespace Corely.UnitTests.IAM.Mappers.AutoMapper
+namespace Corely.UnitTests.IAM.Mappers.AutoMapper;
+
+public class AutoMapperAssertConfigurationIsValidTest
 {
-    public class AutoMapperAssertConfigurationIsValidTest
+    private readonly IMapper _mapper;
+    private readonly ServiceFactory _serviceFactory = new();
+
+    public AutoMapperAssertConfigurationIsValidTest()
     {
-        private readonly IMapper _mapper;
-        private readonly ServiceFactory _serviceFactory = new();
+        _mapper = _serviceFactory.GetRequiredService<IMapper>();
+    }
 
-        public AutoMapperAssertConfigurationIsValidTest()
-        {
-            _mapper = _serviceFactory.GetRequiredService<IMapper>();
-        }
-
-        [Fact]
-        public void AssertConfigurationIsValid_Succeeds()
-        {
-            _mapper.ConfigurationProvider.AssertConfigurationIsValid();
-        }
+    [Fact]
+    public void AssertConfigurationIsValid_Succeeds()
+    {
+        _mapper.ConfigurationProvider.AssertConfigurationIsValid();
     }
 }

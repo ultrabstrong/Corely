@@ -1,9 +1,8 @@
-﻿namespace Corely.DataAccess.Interfaces.UnitOfWork
+﻿namespace Corely.DataAccess.Interfaces.UnitOfWork;
+
+public interface IUnitOfWorkProvider
 {
-    public interface IUnitOfWorkProvider
-    {
-        Task BeginAsync();
-        Task CommitAsync();
-        Task RollbackAsync();
-    }
+    Task BeginAsync();
+    Task CommitAsync();
+    Task RollbackAsync();
 }

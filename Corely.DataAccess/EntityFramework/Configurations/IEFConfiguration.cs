@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Corely.DataAccess.EntityFramework.Configurations
-{
-    public interface IEFConfiguration
-    {
-        void Configure(DbContextOptionsBuilder optionsBuilder);
+namespace Corely.DataAccess.EntityFramework.Configurations;
 
-        IEFDbTypes GetDbTypes();
-    }
+public interface IEFConfiguration
+{
+    void Configure(DbContextOptionsBuilder optionsBuilder);
+
+    IEFDbTypes GetDbTypes();
 }

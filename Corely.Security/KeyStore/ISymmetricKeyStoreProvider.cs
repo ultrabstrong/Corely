@@ -1,9 +1,8 @@
-﻿namespace Corely.Security.KeyStore
+﻿namespace Corely.Security.KeyStore;
+
+public interface ISymmetricKeyStoreProvider
 {
-    public interface ISymmetricKeyStoreProvider
-    {
-        int GetCurrentVersion();
-        string Get(int version);
-        string GetCurrentKey();
-    }
+    int GetCurrentVersion();
+    string Get(int version);
+    string GetCurrentKey();
 }

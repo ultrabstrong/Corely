@@ -1,9 +1,8 @@
 ﻿using Corely.Security.KeyStore;
 
-namespace Corely.IAM
+namespace Corely.IAM;
+
+public interface ISecurityConfigurationProvider
 {
-    public interface ISecurityConfigurationProvider
-    {
-        public ISymmetricKeyStoreProvider GetSystemSymmetricKey();
-    }
+    public ISymmetricKeyStoreProvider GetSystemSymmetricKey();
 }

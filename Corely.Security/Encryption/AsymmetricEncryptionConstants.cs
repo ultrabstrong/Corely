@@ -1,7 +1,6 @@
-﻿namespace Corely.Security.Encryption
+﻿namespace Corely.Security.Encryption;
+
+public static class AsymmetricEncryptionConstants
 {
-    public static class AsymmetricEncryptionConstants
-    {
-        public const string RSA_CODE = "00";
-    }
+    public const string RSA_CODE = "00";
 }

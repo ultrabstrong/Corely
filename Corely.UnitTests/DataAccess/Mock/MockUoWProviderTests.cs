@@ -1,33 +1,32 @@
 ﻿using Corely.DataAccess.Mock;
 
-namespace Corely.UnitTests.DataAccess.Mock
+namespace Corely.UnitTests.DataAccess.Mock;
+
+public class MockUoWProviderTests
 {
-    public class MockUoWProviderTests
+    private readonly MockUoWProvider _mockUoWProvider = new();
+
+    [Fact]
+    public async Task BeginAsync_ReturnsCompletedTask()
     {
-        private readonly MockUoWProvider _mockUoWProvider = new();
+        await _mockUoWProvider.BeginAsync();
 
-        [Fact]
-        public async Task BeginAsync_ReturnsCompletedTask()
-        {
-            await _mockUoWProvider.BeginAsync();
+        Assert.True(true);
+    }
 
-            Assert.True(true);
-        }
+    [Fact]
+    public async Task CommitAsync_ReturnsCompletedTask()
+    {
+        await _mockUoWProvider.CommitAsync();
 
-        [Fact]
-        public async Task CommitAsync_ReturnsCompletedTask()
-        {
-            await _mockUoWProvider.CommitAsync();
+        Assert.True(true);
+    }
 
-            Assert.True(true);
-        }
+    [Fact]
+    public async Task RollbackAsync_ReturnsCompletedTask()
+    {
+        await _mockUoWProvider.RollbackAsync();
 
-        [Fact]
-        public async Task RollbackAsync_ReturnsCompletedTask()
-        {
-            await _mockUoWProvider.RollbackAsync();
-
-            Assert.True(true);
-        }
+        Assert.True(true);
     }
 }

@@ -1,52 +1,51 @@
 ﻿using Corely.IAM.Validators;
 
-namespace Corely.UnitTests.IAM.Validators
+namespace Corely.UnitTests.IAM.Validators;
+
+public class ValidationResultTests
 {
-    public class ValidationResultTests
+    [Fact]
+    public void IsValid_ReturnsFalse_WhenErrorsIsNotNull()
     {
-        [Fact]
-        public void IsValid_ReturnsFalse_WhenErrorsIsNotNull()
+        var result = new ValidationResult
         {
-            var result = new ValidationResult
-            {
-                Errors = [new()]
-            };
+            Errors = [new()]
+        };
 
-            Assert.False(result.IsValid);
-        }
+        Assert.False(result.IsValid);
+    }
 
-        [Fact]
-        public void IsValid_ReturnsTrue_WhenErrorsIsNull()
+    [Fact]
+    public void IsValid_ReturnsTrue_WhenErrorsIsNull()
+    {
+        var result = new ValidationResult
         {
-            var result = new ValidationResult
-            {
-                Errors = null
-            };
+            Errors = null
+        };
 
-            Assert.True(result.IsValid);
-        }
+        Assert.True(result.IsValid);
+    }
 
-        [Fact]
-        public void ThrowIfInvalid_Throws_WhenErrorsIsNotNull()
+    [Fact]
+    public void ThrowIfInvalid_Throws_WhenErrorsIsNotNull()
+    {
+        var result = new ValidationResult
         {
-            var result = new ValidationResult
-            {
-                Errors = [new()]
-            };
+            Errors = [new()]
+        };
 
-            var ex = Record.Exception(result.ThrowIfInvalid);
+        var ex = Record.Exception(result.ThrowIfInvalid);
 
-            Assert.False(result.IsValid);
-            Assert.NotNull(ex);
-            Assert.IsType<ValidationException>(ex);
-        }
+        Assert.False(result.IsValid);
+        Assert.NotNull(ex);
+        Assert.IsType<ValidationException>(ex);
+    }
 
-        [Fact]
-        public void ThrowIfInvalid_DoesNotThrow_WhenErrorsIsNull()
-        {
-            var result = new ValidationResult();
-            Assert.True(result.IsValid);
-            result.ThrowIfInvalid();
-        }
+    [Fact]
+    public void ThrowIfInvalid_DoesNotThrow_WhenErrorsIsNull()
+    {
+        var result = new ValidationResult();
+        Assert.True(result.IsValid);
+        result.ThrowIfInvalid();
     }
 }

@@ -1,9 +1,8 @@
 ﻿using Corely.IAM.Validators;
 
-namespace Corely.UnitTests.IAM.Validators
+namespace Corely.UnitTests.IAM.Validators;
+
+public class ValidationExceptionTests
+    : ExceptionTestsBase<ValidationException>
 {
-    public class ValidationExceptionTests
-        : ExceptionTestsBase<ValidationException>
-    {
-    }
 }

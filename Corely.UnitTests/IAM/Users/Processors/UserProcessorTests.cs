@@ -10,252 +10,251 @@ using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Corely.UnitTests.IAM.Users.Processors
+namespace Corely.UnitTests.IAM.Users.Processors;
+
+public class UserProcessorTests
 {
-    public class UserProcessorTests
+    private const string VALID_USERNAME = "username";
+    private const string VALID_EMAIL = "email@x.y";
+
+    private readonly Fixture _fixture = new();
+    private readonly ServiceFactory _serviceFactory = new();
+    private readonly UserProcessor _userProcessor;
+
+    public UserProcessorTests()
     {
-        private const string VALID_USERNAME = "username";
-        private const string VALID_EMAIL = "email@x.y";
+        _userProcessor = new UserProcessor(
+            _serviceFactory.GetRequiredService<IRepo<UserEntity>>(),
+            _serviceFactory.GetRequiredService<ISecurityProcessor>(),
+            _serviceFactory.GetRequiredService<IMapProvider>(),
+            _serviceFactory.GetRequiredService<IValidationProvider>(),
+            _serviceFactory.GetRequiredService<ILogger<UserProcessor>>());
+    }
 
-        private readonly Fixture _fixture = new();
-        private readonly ServiceFactory _serviceFactory = new();
-        private readonly UserProcessor _userProcessor;
+    [Fact]
+    public async Task CreateUserAsync_Throws_WhenUserExists()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        await _userProcessor.CreateUserAsync(createUserRequest);
 
-        public UserProcessorTests()
-        {
-            _userProcessor = new UserProcessor(
-                _serviceFactory.GetRequiredService<IRepo<UserEntity>>(),
-                _serviceFactory.GetRequiredService<ISecurityProcessor>(),
-                _serviceFactory.GetRequiredService<IMapProvider>(),
-                _serviceFactory.GetRequiredService<IValidationProvider>(),
-                _serviceFactory.GetRequiredService<ILogger<UserProcessor>>());
-        }
+        Exception ex = await Record.ExceptionAsync(() => _userProcessor.CreateUserAsync(createUserRequest));
 
-        [Fact]
-        public async Task CreateUserAsync_Throws_WhenUserExists()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            await _userProcessor.CreateUserAsync(createUserRequest);
+        Assert.NotNull(ex);
+        Assert.IsType<UserExistsException>(ex);
+    }
 
-            Exception ex = await Record.ExceptionAsync(() => _userProcessor.CreateUserAsync(createUserRequest));
+    [Fact]
+    public async Task CreateUser_ReturnsCreateUserResult()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var res = await _userProcessor.CreateUserAsync(createUserRequest);
 
-            Assert.NotNull(ex);
-            Assert.IsType<UserExistsException>(ex);
-        }
+        Assert.True(res.IsSuccess);
+    }
 
-        [Fact]
-        public async Task CreateUser_ReturnsCreateUserResult()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var res = await _userProcessor.CreateUserAsync(createUserRequest);
+    [Fact]
+    public async Task CreateUser_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _userProcessor.CreateUserAsync(null!));
 
-            Assert.True(res.IsSuccess);
-        }
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
 
-        [Fact]
-        public async Task CreateUser_Throws_WithNullRequest()
-        {
-            var ex = await Record.ExceptionAsync(() => _userProcessor.CreateUserAsync(null!));
+    [Fact]
+    public async Task GetUserByUseridAsync_ReturnsNull_WhenUserDNE()
+    {
+        var user = await _userProcessor.GetUserAsync(_fixture.Create<int>());
 
-            Assert.NotNull(ex);
-            Assert.IsType<ArgumentNullException>(ex);
-        }
+        Assert.Null(user);
+    }
 
-        [Fact]
-        public async Task GetUserByUseridAsync_ReturnsNull_WhenUserDNE()
-        {
-            var user = await _userProcessor.GetUserAsync(_fixture.Create<int>());
+    [Fact]
+    public async Task GetUserByUseridAsync_ReturnsUser_WhenUserExists()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
 
-            Assert.Null(user);
-        }
+        var user = await _userProcessor.GetUserAsync(createResult.CreatedId);
 
-        [Fact]
-        public async Task GetUserByUseridAsync_ReturnsUser_WhenUserExists()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
+        Assert.NotNull(user);
+        Assert.Equal(createUserRequest.Username, user.Username);
+        Assert.Equal(createUserRequest.Email, user.Email);
+    }
 
-            var user = await _userProcessor.GetUserAsync(createResult.CreatedId);
+    [Fact]
+    public async Task GetUserByUsernameAsync_ReturnsNull_WhenUserDNE()
+    {
+        var user = await _userProcessor.GetUserAsync(_fixture.Create<string>());
 
-            Assert.NotNull(user);
-            Assert.Equal(createUserRequest.Username, user.Username);
-            Assert.Equal(createUserRequest.Email, user.Email);
-        }
+        Assert.Null(user);
+    }
 
-        [Fact]
-        public async Task GetUserByUsernameAsync_ReturnsNull_WhenUserDNE()
-        {
-            var user = await _userProcessor.GetUserAsync(_fixture.Create<string>());
+    [Fact]
+    public async Task GetUserByUsernameAsync_ReturnsUser_WhenUserExists()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        await _userProcessor.CreateUserAsync(createUserRequest);
 
-            Assert.Null(user);
-        }
+        var user = await _userProcessor.GetUserAsync(createUserRequest.Username);
 
-        [Fact]
-        public async Task GetUserByUsernameAsync_ReturnsUser_WhenUserExists()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            await _userProcessor.CreateUserAsync(createUserRequest);
+        Assert.NotNull(user);
+        Assert.Equal(createUserRequest.Username, user.Username);
+        Assert.Equal(createUserRequest.Email, user.Email);
+    }
 
-            var user = await _userProcessor.GetUserAsync(createUserRequest.Username);
+    [Fact]
+    public async Task UpdateUserAsync_UpdatesUser()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        await _userProcessor.CreateUserAsync(createUserRequest);
+        var user = await _userProcessor.GetUserAsync(createUserRequest.Username);
+        user!.Disabled = false;
 
-            Assert.NotNull(user);
-            Assert.Equal(createUserRequest.Username, user.Username);
-            Assert.Equal(createUserRequest.Email, user.Email);
-        }
+        await _userProcessor.UpdateUserAsync(user);
+        var updatedUser = await _userProcessor.GetUserAsync(createUserRequest.Username);
 
-        [Fact]
-        public async Task UpdateUserAsync_UpdatesUser()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            await _userProcessor.CreateUserAsync(createUserRequest);
-            var user = await _userProcessor.GetUserAsync(createUserRequest.Username);
-            user!.Disabled = false;
+        Assert.False(updatedUser!.Disabled);
+    }
 
-            await _userProcessor.UpdateUserAsync(user);
-            var updatedUser = await _userProcessor.GetUserAsync(createUserRequest.Username);
+    [Fact]
+    public async Task GetUserAuthTokenAsync_ReturnsAuthToken()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
 
-            Assert.False(updatedUser!.Disabled);
-        }
+        var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
 
-        [Fact]
-        public async Task GetUserAuthTokenAsync_ReturnsAuthToken()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
+        Assert.NotNull(token);
 
-            var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var jwtToken = tokenHandler.ReadJwtToken(token);
 
-            Assert.NotNull(token);
+        Assert.Equal(typeof(UserProcessor).FullName, jwtToken.Issuer);
+        Assert.Contains(jwtToken.Claims, c => c.Type == JwtRegisteredClaimNames.Sub && c.Value == "user_id");
+        Assert.Contains(jwtToken.Claims, c => c.Type == JwtRegisteredClaimNames.Jti);
+    }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadJwtToken(token);
+    [Fact]
+    public async Task GetUserAuthTokenAsync_ReturnsNull_WhenUserDNE()
+    {
+        var token = await _userProcessor.GetUserAuthTokenAsync(_fixture.Create<int>());
 
-            Assert.Equal(typeof(UserProcessor).FullName, jwtToken.Issuer);
-            Assert.Contains(jwtToken.Claims, c => c.Type == JwtRegisteredClaimNames.Sub && c.Value == "user_id");
-            Assert.Contains(jwtToken.Claims, c => c.Type == JwtRegisteredClaimNames.Jti);
-        }
+        Assert.Null(token);
+    }
 
-        [Fact]
-        public async Task GetUserAuthTokenAsync_ReturnsNull_WhenUserDNE()
-        {
-            var token = await _userProcessor.GetUserAuthTokenAsync(_fixture.Create<int>());
+    [Fact]
+    public async Task GetUserAuthTokenAsync_ReturnsNull_WhenSignatureKeyDNE()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
 
-            Assert.Null(token);
-        }
+        var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
+        var user = await userRepo.GetAsync(createResult.CreatedId);
+        user?.SymmetricKeys?.Clear();
+        user?.AsymmetricKeys?.Clear();
+        await userRepo.UpdateAsync(user!);
 
-        [Fact]
-        public async Task GetUserAuthTokenAsync_ReturnsNull_WhenSignatureKeyDNE()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
+        var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
 
-            var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
-            var user = await userRepo.GetAsync(createResult.CreatedId);
-            user?.SymmetricKeys?.Clear();
-            user?.AsymmetricKeys?.Clear();
-            await userRepo.UpdateAsync(user!);
+        Assert.Null(token);
+    }
 
-            var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
+    [Fact]
+    public async Task IsUserAuthTokenValidAsync_ReturnsTrue_WithValidToken()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
+        var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
 
-            Assert.Null(token);
-        }
+        var isValid = await _userProcessor.IsUserAuthTokenValidAsync(createResult.CreatedId, token!);
 
-        [Fact]
-        public async Task IsUserAuthTokenValidAsync_ReturnsTrue_WithValidToken()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
-            var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
+        Assert.True(isValid);
+    }
 
-            var isValid = await _userProcessor.IsUserAuthTokenValidAsync(createResult.CreatedId, token!);
+    [Fact]
+    public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WithInvalidTokenFormat()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
+        var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
 
-            Assert.True(isValid);
-        }
+        var isValid = await _userProcessor.IsUserAuthTokenValidAsync(createResult.CreatedId, token! + "invalid");
 
-        [Fact]
-        public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WithInvalidTokenFormat()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
-            var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
+        Assert.False(isValid);
+    }
 
-            var isValid = await _userProcessor.IsUserAuthTokenValidAsync(createResult.CreatedId, token! + "invalid");
+    [Fact]
+    public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WhenUserDNE()
+    {
+        var isValid = await _userProcessor.IsUserAuthTokenValidAsync(_fixture.Create<int>(), _fixture.Create<string>());
 
-            Assert.False(isValid);
-        }
+        Assert.False(isValid);
+    }
 
-        [Fact]
-        public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WhenUserDNE()
-        {
-            var isValid = await _userProcessor.IsUserAuthTokenValidAsync(_fixture.Create<int>(), _fixture.Create<string>());
+    [Fact]
+    public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WhenSignatureKeyDNE()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
+        var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
 
-            Assert.False(isValid);
-        }
+        var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
+        var user = await userRepo.GetAsync(createResult.CreatedId);
+        user?.SymmetricKeys?.Clear();
+        user?.AsymmetricKeys?.Clear();
+        await userRepo.UpdateAsync(user!);
 
-        [Fact]
-        public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WhenSignatureKeyDNE()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
-            var token = await _userProcessor.GetUserAuthTokenAsync(createResult.CreatedId);
+        var isValid = await _userProcessor.IsUserAuthTokenValidAsync(createResult.CreatedId, token!);
 
-            var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
-            var user = await userRepo.GetAsync(createResult.CreatedId);
-            user?.SymmetricKeys?.Clear();
-            user?.AsymmetricKeys?.Clear();
-            await userRepo.UpdateAsync(user!);
+        Assert.False(isValid);
+    }
 
-            var isValid = await _userProcessor.IsUserAuthTokenValidAsync(createResult.CreatedId, token!);
+    [Fact]
+    public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WithInvalidToken()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
 
-            Assert.False(isValid);
-        }
+        var token = new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken());
 
-        [Fact]
-        public async Task IsUserAuthTokenValidAsync_ReturnsFalse_WithInvalidToken()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
+        var isValid = await _userProcessor.IsUserAuthTokenValidAsync(createResult.CreatedId, token! + "invalid");
 
-            var token = new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken());
+        Assert.False(isValid);
+    }
 
-            var isValid = await _userProcessor.IsUserAuthTokenValidAsync(createResult.CreatedId, token! + "invalid");
+    [Fact]
+    public async Task GetAsymmetricSignatureVerificationKeyAsync_ReturnsKey()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
 
-            Assert.False(isValid);
-        }
+        var key = await _userProcessor.GetAsymmetricSignatureVerificationKeyAsync(createResult.CreatedId);
 
-        [Fact]
-        public async Task GetAsymmetricSignatureVerificationKeyAsync_ReturnsKey()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
+        Assert.NotNull(key);
+    }
 
-            var key = await _userProcessor.GetAsymmetricSignatureVerificationKeyAsync(createResult.CreatedId);
+    [Fact]
+    public async Task GetAsymmetricSignatureVerificationKeyAsync_ReturnsNull_WhenUserDNE()
+    {
+        var key = await _userProcessor.GetAsymmetricSignatureVerificationKeyAsync(_fixture.Create<int>());
 
-            Assert.NotNull(key);
-        }
+        Assert.Null(key);
+    }
 
-        [Fact]
-        public async Task GetAsymmetricSignatureVerificationKeyAsync_ReturnsNull_WhenUserDNE()
-        {
-            var key = await _userProcessor.GetAsymmetricSignatureVerificationKeyAsync(_fixture.Create<int>());
+    [Fact]
+    public async Task GetAsymmetricSignatureVerificationKeyAsync_ReturnsNull_WhenSignatureKeyDNE()
+    {
+        var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
+        var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
 
-            Assert.Null(key);
-        }
+        var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
+        var user = await userRepo.GetAsync(createResult.CreatedId);
+        user?.AsymmetricKeys?.Clear();
+        await userRepo.UpdateAsync(user!);
 
-        [Fact]
-        public async Task GetAsymmetricSignatureVerificationKeyAsync_ReturnsNull_WhenSignatureKeyDNE()
-        {
-            var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
-            var createResult = await _userProcessor.CreateUserAsync(createUserRequest);
+        var key = await _userProcessor.GetAsymmetricSignatureVerificationKeyAsync(createResult.CreatedId);
 
-            var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
-            var user = await userRepo.GetAsync(createResult.CreatedId);
-            user?.AsymmetricKeys?.Clear();
-            await userRepo.UpdateAsync(user!);
-
-            var key = await _userProcessor.GetAsymmetricSignatureVerificationKeyAsync(createResult.CreatedId);
-
-            Assert.Null(key);
-        }
+        Assert.Null(key);
     }
 }

@@ -8,37 +8,36 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Corely.UnitTests.IAM
+namespace Corely.UnitTests.IAM;
+
+public class ServiceFactoryBaseTests : ServiceFactoryGenericTests
 {
-    public class ServiceFactoryBaseTests : ServiceFactoryGenericTests
+    private class MockServiceFactory : ServiceFactoryBase
     {
-        private class MockServiceFactory : ServiceFactoryBase
+        private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
         {
-            private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
-            {
-                public ISymmetricKeyStoreProvider GetSystemSymmetricKey() => null!;
-            }
-
-            protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
-            {
-                return new MockSecurityConfiguraitonProvider();
-            }
-
-            protected override void AddLogging(ILoggingBuilder builder)
-            {
-                builder.AddProvider(NullLoggerProvider.Instance);
-            }
-
-            protected override void AddDataServices(IServiceCollection services)
-            {
-                services.AddSingleton(typeof(IReadonlyRepo<>), typeof(MockReadonlyRepo<>));
-                services.AddSingleton(typeof(IRepo<>), typeof(MockRepo<>));
-                services.AddSingleton<IUnitOfWorkProvider, MockUoWProvider>();
-            }
+            public ISymmetricKeyStoreProvider GetSystemSymmetricKey() => null!;
         }
 
-        private readonly MockServiceFactory _mockServiceFactory = new();
+        protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
+        {
+            return new MockSecurityConfiguraitonProvider();
+        }
 
-        protected override ServiceFactoryBase ServiceFactory => _mockServiceFactory;
+        protected override void AddLogging(ILoggingBuilder builder)
+        {
+            builder.AddProvider(NullLoggerProvider.Instance);
+        }
+
+        protected override void AddDataServices(IServiceCollection services)
+        {
+            services.AddSingleton(typeof(IReadonlyRepo<>), typeof(MockReadonlyRepo<>));
+            services.AddSingleton(typeof(IRepo<>), typeof(MockRepo<>));
+            services.AddSingleton<IUnitOfWorkProvider, MockUoWProvider>();
+        }
     }
+
+    private readonly MockServiceFactory _mockServiceFactory = new();
+
+    protected override ServiceFactoryBase ServiceFactory => _mockServiceFactory;
 }

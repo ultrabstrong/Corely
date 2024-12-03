@@ -1,20 +1,19 @@
 ﻿using Corely.IAM;
 using Corely.Security.KeyStore;
 
-namespace ConsoleTest
+namespace ConsoleTest;
+
+internal class SecurityConfigurationProvider : ISecurityConfigurationProvider
 {
-    internal class SecurityConfigurationProvider : ISecurityConfigurationProvider
+    private readonly string _symmetricKey;
+
+    public SecurityConfigurationProvider()
     {
-        private readonly string _symmetricKey;
+        _symmetricKey = ConfigurationProvider.GetSystemSymmetricEncryptionKey();
+    }
 
-        public SecurityConfigurationProvider()
-        {
-            _symmetricKey = ConfigurationProvider.GetSystemSymmetricEncryptionKey();
-        }
-
-        public ISymmetricKeyStoreProvider GetSystemSymmetricKey()
-        {
-            return new InMemorySymmetricKeyStoreProvider(_symmetricKey);
-        }
+    public ISymmetricKeyStoreProvider GetSystemSymmetricKey()
+    {
+        return new InMemorySymmetricKeyStoreProvider(_symmetricKey);
     }
 }

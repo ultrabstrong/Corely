@@ -1,9 +1,8 @@
 ﻿using Corely.IAM.Models;
 
-namespace Corely.IAM.Services
+namespace Corely.IAM.Services;
+
+public interface ISignInService
 {
-    public interface ISignInService
-    {
-        Task<SignInResult> SignInAsync(SignInRequest request);
-    }
+    Task<SignInResult> SignInAsync(SignInRequest request);
 }

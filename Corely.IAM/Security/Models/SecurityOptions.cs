@@ -1,7 +1,6 @@
-﻿namespace Corely.IAM.Security.Models
+﻿namespace Corely.IAM.Security.Models;
+
+public class SecurityOptions
 {
-    public class SecurityOptions
-    {
-        public int MaxLoginAttempts { get; set; } = 5;
-    }
+    public int MaxLoginAttempts { get; set; } = 5;
 }

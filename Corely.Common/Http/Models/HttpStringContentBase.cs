@@ -1,7 +1,6 @@
-﻿namespace Corely.Common.Http.Models
+﻿namespace Corely.Common.Http.Models;
+
+public record HttpStringContentBase(string Content)
+    : IHttpContent<string>
 {
-    public record HttpStringContentBase(string Content)
-        : IHttpContent<string>
-    {
-    }
 }

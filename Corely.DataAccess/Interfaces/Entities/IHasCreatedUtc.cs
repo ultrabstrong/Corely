@@ -1,7 +1,6 @@
-﻿namespace Corely.DataAccess.Interfaces.Entities
+﻿namespace Corely.DataAccess.Interfaces.Entities;
+
+public interface IHasCreatedUtc
 {
-    public interface IHasCreatedUtc
-    {
-        public DateTime CreatedUtc { get; set; }
-    }
+    public DateTime CreatedUtc { get; set; }
 }

@@ -1,7 +1,6 @@
-﻿namespace Corely.DataAccess.Interfaces.Entities
+﻿namespace Corely.DataAccess.Interfaces.Entities;
+
+public interface IHasIdPk
 {
-    public interface IHasIdPk
-    {
-        int Id { get; set; }
-    }
+    int Id { get; set; }
 }

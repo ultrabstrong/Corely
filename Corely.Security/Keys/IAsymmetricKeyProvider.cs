@@ -1,8 +1,7 @@
-﻿namespace Corely.Security.Keys
+﻿namespace Corely.Security.Keys;
+
+public interface IAsymmetricKeyProvider
 {
-    public interface IAsymmetricKeyProvider
-    {
-        (string PublicKey, string PrivateKey) CreateKeys();
-        bool IsKeyValid(string publicKey, string privateKey);
-    }
+    (string PublicKey, string PrivateKey) CreateKeys();
+    bool IsKeyValid(string publicKey, string privateKey);
 }

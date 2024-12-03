@@ -1,11 +1,10 @@
 ﻿using Corely.DataAccess.Interfaces.Entities;
 using Corely.IAM.Security.Entities;
 
-namespace Corely.IAM.Accounts.Entities
+namespace Corely.IAM.Accounts.Entities;
+
+internal class AccountAsymmetricKeyEntity : AsymmetricKeyEntity, IHasIdPk
 {
-    internal class AccountAsymmetricKeyEntity : AsymmetricKeyEntity, IHasIdPk
-    {
-        public int Id { get; set; }
-        public int AccountId { get; set; }
-    }
+    public int Id { get; set; }
+    public int AccountId { get; set; }
 }

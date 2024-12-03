@@ -1,7 +1,6 @@
-﻿namespace Corely.Common.Http.Models
+﻿namespace Corely.Common.Http.Models;
+
+public interface IHttpParameters
 {
-    public interface IHttpParameters
-    {
-        string CreateParameters();
-    }
+    string CreateParameters();
 }

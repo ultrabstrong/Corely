@@ -6,71 +6,70 @@ using Corely.Security.Encryption.Providers;
 using Corely.UnitTests.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.IAM.Security.Validators
+namespace Corely.UnitTests.IAM.Security.Validators;
+
+public class SymmetricKeyValidatorTests
 {
-    public class SymmetricKeyValidatorTests
+    private readonly SymmetricKeyValidator _validator = new();
+
+    [Fact]
+    public void SymmetricKeyValidator_HasValidationError_WhenKeyIsNull()
     {
-        private readonly SymmetricKeyValidator _validator = new();
-
-        [Fact]
-        public void SymmetricKeyValidator_HasValidationError_WhenKeyIsNull()
+        var symmetricKey = new SymmetricKey
         {
-            var symmetricKey = new SymmetricKey
-            {
-                Key = null
-            };
+            Key = null
+        };
 
-            var result = _validator.TestValidate(symmetricKey);
-            result.ShouldHaveValidationErrorFor(x => x.Key);
-        }
+        var result = _validator.TestValidate(symmetricKey);
+        result.ShouldHaveValidationErrorFor(x => x.Key);
+    }
 
-        [Theory]
-        [ClassData(typeof(NullEmptyAndWhitespace))]
-        [MemberData(nameof(InvalidKeyData))]
-        public void SymmetricKeyValidator_HasValidationError_WhenKeyInvalid(string key)
+    [Theory]
+    [ClassData(typeof(NullEmptyAndWhitespace))]
+    [MemberData(nameof(InvalidKeyData))]
+    public void SymmetricKeyValidator_HasValidationError_WhenKeyInvalid(string key)
+    {
+        var symmetricKey = new SymmetricKey
         {
-            var symmetricKey = new SymmetricKey
+            Key = new SymmetricEncryptedValue(new AesEncryptionProvider())
             {
-                Key = new SymmetricEncryptedValue(new AesEncryptionProvider())
-                {
-                    Secret = key
-                }
-            };
+                Secret = key
+            }
+        };
 
-            var result = _validator.TestValidate(symmetricKey);
-            result.ShouldHaveValidationErrorFor(x => x.Key.Secret);
-        }
+        var result = _validator.TestValidate(symmetricKey);
+        result.ShouldHaveValidationErrorFor(x => x.Key.Secret);
+    }
 
-        public static IEnumerable<object[]> InvalidKeyData() =>
-        [
-            [new string('a', SymmetricKeyConstants.KEY_MAX_LENGTH + 1)]
-        ];
+    public static IEnumerable<object[]> InvalidKeyData() =>
+    [
+        [new string('a', SymmetricKeyConstants.KEY_MAX_LENGTH + 1)]
+    ];
 
-        [Fact]
-        public void SymmetricKeyValidator_HasValidationError_WhenVersionIsNegative()
+    [Fact]
+    public void SymmetricKeyValidator_HasValidationError_WhenVersionIsNegative()
+    {
+        var symmetricKey = new SymmetricKey
         {
-            var symmetricKey = new SymmetricKey
+            Version = SymmetricKeyConstants.VERSION_MIN_VALUE - 1,
+            Key = new SymmetricEncryptedValue(new AesEncryptionProvider())
             {
-                Version = SymmetricKeyConstants.VERSION_MIN_VALUE - 1,
-                Key = new SymmetricEncryptedValue(new AesEncryptionProvider())
-                {
-                    Secret = "key"
-                }
-            };
+                Secret = "key"
+            }
+        };
 
-            var result = _validator.TestValidate(symmetricKey);
-            result.ShouldHaveValidationErrorFor(x => x.Version);
-        }
+        var result = _validator.TestValidate(symmetricKey);
+        result.ShouldHaveValidationErrorFor(x => x.Version);
+    }
 
-        [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
-        public void SymmetricKeyValidator_HasValidationError_WhenProviderTypeCodeInvalid(string providerTypeCode)
+    [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
+    public void SymmetricKeyValidator_HasValidationError_WhenProviderTypeCodeInvalid(string providerTypeCode)
+    {
+        var symmetricKey = new SymmetricKey
         {
-            var symmetricKey = new SymmetricKey
-            {
-                ProviderTypeCode = providerTypeCode
-            };
-            var result = _validator.TestValidate(symmetricKey);
-            result.ShouldHaveValidationErrorFor(x => x.ProviderTypeCode);
-        }
+            ProviderTypeCode = providerTypeCode
+        };
+        var result = _validator.TestValidate(symmetricKey);
+        result.ShouldHaveValidationErrorFor(x => x.ProviderTypeCode);
     }
 }

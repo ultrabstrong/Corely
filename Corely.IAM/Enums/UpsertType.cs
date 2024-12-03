@@ -1,8 +1,7 @@
-﻿namespace Corely.IAM.Enums
+﻿namespace Corely.IAM.Enums;
+
+public enum UpsertType
 {
-    public enum UpsertType
-    {
-        Create,
-        Update
-    }
+    Create,
+    Update
 }

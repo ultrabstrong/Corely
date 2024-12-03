@@ -2,14 +2,13 @@
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Models;
 
-namespace Corely.IAM.Accounts.Mappers
+namespace Corely.IAM.Accounts.Mappers;
+
+internal class AccountProfile : Profile
 {
-    internal class AccountProfile : Profile
+    public AccountProfile()
     {
-        public AccountProfile()
-        {
-            CreateMap<Account, AccountEntity>(MemberList.Source)
-                .ReverseMap();
-        }
+        CreateMap<Account, AccountEntity>(MemberList.Source)
+            .ReverseMap();
     }
 }

@@ -2,22 +2,21 @@
 using Serilog.Core;
 using Serilog.Events;
 
-namespace Corely.DevTools.SerilogCustomization
-{
-    public class SerilogRedactionEnricher(List<IRedactionProvider> redactors)
-        : ILogEventEnricher
-    {
-        private readonly List<IRedactionProvider> _redactors = redactors;
+namespace Corely.DevTools.SerilogCustomization;
 
-        public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+public class SerilogRedactionEnricher(List<IRedactionProvider> redactors)
+    : ILogEventEnricher
+{
+    private readonly List<IRedactionProvider> _redactors = redactors;
+
+    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+    {
+        foreach (var property in logEvent.Properties.ToList())
         {
-            foreach (var property in logEvent.Properties.ToList())
+            foreach (var redactor in _redactors)
             {
-                foreach (var redactor in _redactors)
-                {
-                    var redactedValue = redactor.Redact(property.Value.ToString());
-                    logEvent.AddOrUpdateProperty(new LogEventProperty(property.Key, new ScalarValue(redactedValue)));
-                }
+                var redactedValue = redactor.Redact(property.Value.ToString());
+                logEvent.AddOrUpdateProperty(new LogEventProperty(property.Key, new ScalarValue(redactedValue)));
             }
         }
     }

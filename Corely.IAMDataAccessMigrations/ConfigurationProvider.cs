@@ -1,26 +1,25 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Corely.IAMDataAccessMigrations
+namespace Corely.IAMDataAccessMigrations;
+
+internal static class ConfigurationProvider
 {
-    internal static class ConfigurationProvider
+    private const string SETTINGS_FILE_NAME = "migrationsettings.json";
+
+    private static readonly IConfigurationRoot _configuration;
+
+    static ConfigurationProvider()
     {
-        private const string SETTINGS_FILE_NAME = "migrationsettings.json";
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile(SETTINGS_FILE_NAME, optional: true, reloadOnChange: true);
 
-        private static readonly IConfigurationRoot _configuration;
+        _configuration = builder.Build();
+    }
 
-        static ConfigurationProvider()
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(SETTINGS_FILE_NAME, optional: true, reloadOnChange: true);
-
-            _configuration = builder.Build();
-        }
-
-        public static string GetConnectionString()
-        {
-            return _configuration.GetConnectionString("DefaultConnection")
-                ?? throw new Exception($"DefaultConnection string not found in {SETTINGS_FILE_NAME}");
-        }
+    public static string GetConnectionString()
+    {
+        return _configuration.GetConnectionString("DefaultConnection")
+            ?? throw new Exception($"DefaultConnection string not found in {SETTINGS_FILE_NAME}");
     }
 }

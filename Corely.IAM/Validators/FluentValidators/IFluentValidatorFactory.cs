@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
 
-namespace Corely.IAM.Validators.FluentValidators
+namespace Corely.IAM.Validators.FluentValidators;
+
+internal interface IFluentValidatorFactory
 {
-    internal interface IFluentValidatorFactory
-    {
-        IValidator<T> GetValidator<T>();
-    }
+    IValidator<T> GetValidator<T>();
 }
