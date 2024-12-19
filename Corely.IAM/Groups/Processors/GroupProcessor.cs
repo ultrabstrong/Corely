@@ -3,6 +3,7 @@ using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Groups.Entities;
+using Corely.IAM.Groups.Enums;
 using Corely.IAM.Groups.Exceptions;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Mappers;
@@ -66,19 +67,28 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
         }
     }
 
-    public async Task<AddUsersToGroupResult> AddUsersToGroupAsync(AddUsersToGroupRequest addUsersToGroupRequest)
+    public async Task<AddUsersToGroupResult> AddUsersToGroupAsync(AddUsersToGroupRequest request)
     {
-        return await LogRequestResultAspect(nameof(GroupProcessor), nameof(AddUsersToGroupAsync), addUsersToGroupRequest, async () =>
+        return await LogRequestResultAspect(nameof(GroupProcessor), nameof(AddUsersToGroupAsync), request, async () =>
         {
-            var groupEntity = await GetGroupOrThrowIfNotFound(addUsersToGroupRequest.GroupId);
+            var groupEntity = await _groupRepo.GetAsync(g => g.Id == request.GroupId);
+
+            if (groupEntity == null)
+            {
+                Logger.LogWarning("Group with Id {GroupId} not found", request.GroupId);
+                return new AddUsersToGroupResult(AddUsersToGroupResultCode.GroupNotFoundError,
+                    $"Group with Id {request.GroupId} not found", 0, request.UserIds);
+            }
+
             var userEntities = await _userRepo.ListAsync(
-                u => addUsersToGroupRequest.UserIds.Contains(u.Id)
+                u => request.UserIds.Contains(u.Id)
                 && !u.Groups!.Any(g => g.Id == groupEntity.Id));
 
             if (userEntities.Count == 0)
             {
-                Logger.LogInformation("All user ids not found or already exist in group : {@InvalidUserIds}", addUsersToGroupRequest.UserIds);
-                return new AddUsersToGroupResult(false, "All user ids not found or already exist in group", 0, addUsersToGroupRequest.UserIds);
+                Logger.LogInformation("All user ids not found or already exist in group : {@InvalidUserIds}", request.UserIds);
+                return new AddUsersToGroupResult(AddUsersToGroupResultCode.InvalidUserIdsError,
+                    "All user ids not found or already exist in group", 0, request.UserIds);
             }
 
             groupEntity.Users ??= [];
@@ -89,26 +99,16 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
 
             await _groupRepo.UpdateAsync(groupEntity);
 
-            var invalidUserIds = addUsersToGroupRequest.UserIds.Except(userEntities.Select(u => u.Id)).ToList();
+            var invalidUserIds = request.UserIds.Except(userEntities.Select(u => u.Id)).ToList();
+
             if (invalidUserIds.Count > 0)
             {
                 Logger.LogInformation("Some user ids not found or already exist in group : {@InvalidUserIds}", invalidUserIds);
+                return new AddUsersToGroupResult(AddUsersToGroupResultCode.PartialSuccess,
+                    "Some user ids not found or already exist in group", userEntities.Count, invalidUserIds);
             }
 
-            return new AddUsersToGroupResult(true, string.Empty, userEntities.Count, invalidUserIds);
+            return new AddUsersToGroupResult(AddUsersToGroupResultCode.Success, string.Empty, userEntities.Count, invalidUserIds);
         });
-    }
-
-    private async Task<GroupEntity> GetGroupOrThrowIfNotFound(int groupId)
-    {
-        var groupEntity = await _groupRepo.GetAsync(g => g.Id == groupId);
-
-        if (groupEntity == null)
-        {
-            Logger.LogWarning("Group with Id {GroupId} not found", groupId);
-            throw new GroupDoesNotExistException($"Group with Id {groupId} not found");
-        }
-
-        return groupEntity;
     }
 }

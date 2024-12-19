@@ -5,6 +5,7 @@ using Corely.IAM.Accounts.Processors;
 using Corely.IAM.BasicAuths.Models;
 using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Enums;
+using Corely.IAM.Groups.Enums;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
@@ -31,7 +32,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
     private bool _createBasicAuthSuccess = true;
     private bool _createGroupSuccess = true;
 
-    private AddUsersToGroupResult _addUsersToGroupResult = new(true, string.Empty, 0);
+    private AddUsersToGroupResult _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, 0);
 
     public RegistrationServiceTests() : base()
     {
@@ -221,22 +222,22 @@ public class RegistrationServiceTests : ProcessorBaseTests
     public async Task RegisterUsersWithGroupAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
     {
         var request = _fixture.Create<RegisterUsersWithGroupRequest>();
-        _addUsersToGroupResult = new(true, string.Empty, request.GroupId);
+        _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, request.GroupId);
 
         var result = await _registrationService.RegisterUsersWithGroupAsync(request);
 
-        Assert.True(result.IsSuccess);
+        Assert.Equal(AddUsersToGroupResultCode.Success, result.ResultCode);
     }
 
     [Fact]
     public async Task RegisterUsersWithGroupAsync_ReturnsFailureResult_WhenGroupProcessorFails()
     {
         var request = _fixture.Create<RegisterUsersWithGroupRequest>();
-        _addUsersToGroupResult = new(false, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
+        _addUsersToGroupResult = new(AddUsersToGroupResultCode.GroupNotFoundError, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
 
         var result = await _registrationService.RegisterUsersWithGroupAsync(request);
 
-        Assert.False(result.IsSuccess);
+        Assert.Equal(AddUsersToGroupResultCode.GroupNotFoundError, result.ResultCode);
         Assert.Equal(_addUsersToGroupResult.Message, result.Message);
         Assert.Equal(_addUsersToGroupResult.AddedUserCount, result.RegisteredUserCount);
         Assert.Equal(_addUsersToGroupResult.InvalidUserIds.Count, result.InvalidUserIds.Count);

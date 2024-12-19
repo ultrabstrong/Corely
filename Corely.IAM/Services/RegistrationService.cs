@@ -2,6 +2,7 @@
 using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.IAM.Accounts.Processors;
 using Corely.IAM.BasicAuths.Processors;
+using Corely.IAM.Groups.Enums;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
 using Corely.IAM.Users.Processors;
@@ -130,12 +131,13 @@ internal class RegistrationService : IRegistrationService
         _logger.LogInformation("Registering user ids {@UserIds} with group id {GroupId}", request.UserIds, request.GroupId);
 
         var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(new(request.UserIds, request.GroupId));
-        if (!addUsersToGroupResult.IsSuccess)
+        if (addUsersToGroupResult.ResultCode != AddUsersToGroupResultCode.Success
+            && addUsersToGroupResult.ResultCode != AddUsersToGroupResultCode.PartialSuccess)
         {
             _logger.LogInformation("Registering users with group failed for group id {GroupId}", request.GroupId);
             _logger.LogInformation("Registering users with group failed.");
             return new RegisterUsersWithGroupResult(
-                false,
+                addUsersToGroupResult.ResultCode,
                 addUsersToGroupResult.Message ?? string.Empty,
                 addUsersToGroupResult.AddedUserCount,
                 addUsersToGroupResult.InvalidUserIds);
@@ -149,6 +151,10 @@ internal class RegistrationService : IRegistrationService
             _logger.LogInformation("Registered {RegisteredUserCount} users with group id {GroupId}", addUsersToGroupResult.AddedUserCount, request.GroupId);
         }
 
-        return new RegisterUsersWithGroupResult(true, string.Empty, request.UserIds.Count);
+        return new RegisterUsersWithGroupResult(
+            addUsersToGroupResult.ResultCode,
+            string.Empty,
+            request.UserIds.Count,
+            addUsersToGroupResult.InvalidUserIds);
     }
 }

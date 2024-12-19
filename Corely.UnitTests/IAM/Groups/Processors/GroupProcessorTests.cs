@@ -3,6 +3,7 @@ using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Groups.Entities;
+using Corely.IAM.Groups.Enums;
 using Corely.IAM.Groups.Exceptions;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
@@ -126,10 +127,9 @@ public class GroupProcessorTests
     {
         var addUsersToGroupRequest = new AddUsersToGroupRequest([], _fixture.Create<int>());
 
-        var ex = await Record.ExceptionAsync(() => _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest));
+        var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
 
-        Assert.NotNull(ex);
-        Assert.IsType<GroupDoesNotExistException>(ex);
+        var ex = await Record.ExceptionAsync(() => _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest));
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class GroupProcessorTests
 
         var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
 
-        Assert.False(addUsersToGroupResult.IsSuccess);
+        Assert.Equal(AddUsersToGroupResultCode.InvalidUserIdsError, addUsersToGroupResult.ResultCode);
         Assert.Equal("All user ids not found or already exist in group", addUsersToGroupResult.Message);
     }
 
@@ -158,7 +158,7 @@ public class GroupProcessorTests
 
         var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
 
-        Assert.True(addUsersToGroupResult.IsSuccess);
+        Assert.Equal(AddUsersToGroupResultCode.Success, addUsersToGroupResult.ResultCode);
 
         var groupRepo = _serviceFactory.GetRequiredService<IRepo<GroupEntity>>();
 
@@ -182,7 +182,7 @@ public class GroupProcessorTests
 
         var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
 
-        Assert.True(addUsersToGroupResult.IsSuccess);
+        Assert.Equal(AddUsersToGroupResultCode.PartialSuccess, addUsersToGroupResult.ResultCode);
         Assert.NotEmpty(addUsersToGroupResult.InvalidUserIds);
         Assert.Contains(-1, addUsersToGroupResult.InvalidUserIds);
     }
@@ -198,7 +198,7 @@ public class GroupProcessorTests
 
         var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
 
-        Assert.False(addUsersToGroupResult.IsSuccess);
+        Assert.Equal(AddUsersToGroupResultCode.InvalidUserIdsError, addUsersToGroupResult.ResultCode);
         Assert.Equal("All user ids not found or already exist in group", addUsersToGroupResult.Message);
         Assert.NotEmpty(addUsersToGroupResult.InvalidUserIds);
         Assert.Contains(userId, addUsersToGroupResult.InvalidUserIds);

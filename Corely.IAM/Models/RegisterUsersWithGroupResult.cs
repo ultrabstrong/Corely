@@ -1,8 +1,9 @@
-﻿namespace Corely.IAM.Models;
+﻿using Corely.IAM.Groups.Enums;
+
+namespace Corely.IAM.Models;
 
 public record RegisterUsersWithGroupResult(
-    bool IsSuccess,
+    AddUsersToGroupResultCode ResultCode,
     string Message,
     int RegisteredUserCount,
-    List<int> InvalidUserIds = null)
-    : ResultBase(IsSuccess, Message);
+    List<int> InvalidUserIds = null);

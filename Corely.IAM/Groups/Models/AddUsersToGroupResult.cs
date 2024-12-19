@@ -1,10 +1,10 @@
-﻿using Corely.IAM.Models;
+﻿using Corely.IAM.Groups.Enums;
 
 namespace Corely.IAM.Groups.Models;
 
 internal record AddUsersToGroupResult(
-    bool IsSuccess,
+    AddUsersToGroupResultCode ResultCode,
     string? Message,
     int AddedUserCount,
-    List<int> InvalidUserIds = null)
-    : ResultBase(IsSuccess, Message);
+    List<int> InvalidUserIds = null);
+
