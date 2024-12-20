@@ -37,13 +37,13 @@ internal class SignInService : ISignInService
         if (user == null)
         {
             _logger.LogDebug("User {Username} not found", request.Username);
-            return new SignInResult(false, "User not found", string.Empty);
+            return new SignInResult(SignInResultCode.UserNotFoundError, "User not found", string.Empty);
         }
 
         if (user.FailedLoginsSinceLastSuccess >= _securityOptions.MaxLoginAttempts)
         {
             _logger.LogDebug("User {Username} is locked out", request.Username);
-            return new SignInResult(false, "User is locked out", string.Empty);
+            return new SignInResult(SignInResultCode.UserLockedError, "User is locked out", string.Empty);
         }
 
         var isValidPassword = await _basicAuthProcessor.VerifyBasicAuthAsync(new(user.Id, request.Password));
@@ -57,7 +57,7 @@ internal class SignInService : ISignInService
 
             _logger.LogDebug("User {Username} failed to sign in (invalid password)", request.Username);
 
-            return new SignInResult(false, "Invalid password", string.Empty);
+            return new SignInResult(SignInResultCode.PasswordMismatchError, "Invalid password", string.Empty);
         }
         user.TotalSuccessfulLogins++;
         user.FailedLoginsSinceLastSuccess = 0;
@@ -68,6 +68,6 @@ internal class SignInService : ISignInService
 
         _logger.LogDebug("User {Username} signed in", request.Username);
 
-        return new SignInResult(true, string.Empty, authToken);
+        return new SignInResult(SignInResultCode.Success, string.Empty, authToken);
     }
 }

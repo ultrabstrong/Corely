@@ -1,6 +1,14 @@
 ﻿namespace Corely.IAM.Models;
 
+public enum SignInResultCode
+{
+    Success,
+    UserNotFoundError,
+    UserLockedError,
+    PasswordMismatchError
+}
+
 public record SignInResult(
-    bool IsSuccess,
+    SignInResultCode ResultCode,
     string? Message,
     string? AuthToken);

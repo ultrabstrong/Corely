@@ -80,7 +80,7 @@ public class SignInServiceTests : ProcessorBaseTests
 
         var result = await _signInService.SignInAsync(request);
 
-        Assert.True(result.IsSuccess);
+        Assert.Equal(SignInResultCode.Success, result.ResultCode);
 
         _userProcessorMock
             .Verify(m => m.UpdateUserAsync(It.Is<User>(u =>
@@ -110,7 +110,7 @@ public class SignInServiceTests : ProcessorBaseTests
 
         var result = await _signInService.SignInAsync(request);
 
-        Assert.False(result.IsSuccess);
+        Assert.Equal(SignInResultCode.UserNotFoundError, result.ResultCode);
         Assert.Equal("User not found", result.Message);
         Assert.Equal(string.Empty, result.AuthToken);
     }
@@ -123,7 +123,7 @@ public class SignInServiceTests : ProcessorBaseTests
 
         var result = await _signInService.SignInAsync(request);
 
-        Assert.False(result.IsSuccess);
+        Assert.Equal(SignInResultCode.UserLockedError, result.ResultCode);
         Assert.Equal("User is locked out", result.Message);
         Assert.Equal(string.Empty, result.AuthToken);
     }
@@ -145,7 +145,7 @@ public class SignInServiceTests : ProcessorBaseTests
 
         var result = await _signInService.SignInAsync(request);
 
-        Assert.False(result.IsSuccess);
+        Assert.Equal(SignInResultCode.PasswordMismatchError, result.ResultCode);
         Assert.Equal("Invalid password", result.Message);
         Assert.Equal(string.Empty, result.AuthToken);
 

@@ -134,7 +134,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
     [Fact]
     public async Task RegisterUserAsync_Fails_WhenBasicAuthProcessorFails()
     {
-        _upsertBasicAuthResultCode = UpsertBasicAuthResultCode.Fail;
+        _upsertBasicAuthResultCode = UpsertBasicAuthResultCode.Failure;
         var request = _fixture.Create<RegisterUserRequest>();
 
         var result = await _registrationService.RegisterUserAsync(request);
@@ -172,8 +172,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
 
         var result = await _registrationService.RegisterAccountAsync(request);
 
-        Assert.NotEqual(CreateAccountResultCode.Success, result.ResultCode);
-        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+        Assert.Equal(createAccountResultCode, result.ResultCode);
     }
 
     [Fact]
