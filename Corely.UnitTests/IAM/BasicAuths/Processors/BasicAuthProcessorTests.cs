@@ -35,7 +35,7 @@ public class BasicAuthProcessorTests
         var result = await _basicAuthProcessor.UpsertBasicAuthAsync(request);
 
         Assert.NotNull(result);
-        Assert.True(result.IsSuccess);
+        Assert.Equal(UpsertBasicAuthResultCode.Success, result.ResultCode);
         Assert.Equal(UpsertType.Create, result.UpsertType);
     }
 
@@ -47,7 +47,7 @@ public class BasicAuthProcessorTests
         var result = await _basicAuthProcessor.UpsertBasicAuthAsync(request);
 
         Assert.NotNull(result);
-        Assert.True(result.IsSuccess);
+        Assert.Equal(UpsertBasicAuthResultCode.Success, result.ResultCode);
         Assert.Equal(UpsertType.Update, result.UpsertType);
     }
 

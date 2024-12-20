@@ -1,7 +1,8 @@
-﻿namespace Corely.IAM.Models;
+﻿using Corely.IAM.Groups.Models;
+
+namespace Corely.IAM.Models;
 
 public record RegisterGroupResult(
-    bool IsSuccess,
+    CreateGroupResultCode ResultCode,
     string? Message,
-    int CreatedGroupId)
-    : ResultBase(IsSuccess, Message);
+    int CreatedGroupId);

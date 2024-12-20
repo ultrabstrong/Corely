@@ -1,10 +1,8 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Accounts.Entities;
-using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Groups.Entities;
 using Corely.IAM.Groups.Enums;
-using Corely.IAM.Groups.Exceptions;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
@@ -60,26 +58,24 @@ public class GroupProcessorTests
     }
 
     [Fact]
-    public async Task CreateGroupAsync_Throws_WhenAccountDoesNotExist()
+    public async Task CreateGroupAsync_Fails_WhenAccountDoesNotExist()
     {
         var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, _fixture.Create<int>());
 
-        var ex = await Record.ExceptionAsync(() => _groupProcessor.CreateGroupAsync(createGroupRequest));
+        var createGroupResult = await _groupProcessor.CreateGroupAsync(createGroupRequest);
 
-        Assert.NotNull(ex);
-        Assert.IsType<AccountDoesNotExistException>(ex);
+        Assert.Equal(CreateGroupResultCode.AccountNotFoundError, createGroupResult.ResultCode);
     }
 
     [Fact]
-    public async Task CreateGroupAsync_Throws_WhenGroupExists()
+    public async Task CreateGroupAsync_Fails_WhenGroupExists()
     {
         var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, await CreateAccountAsync());
         await _groupProcessor.CreateGroupAsync(createGroupRequest);
 
-        var ex = await Record.ExceptionAsync(() => _groupProcessor.CreateGroupAsync(createGroupRequest));
+        var createGroupResult = await _groupProcessor.CreateGroupAsync(createGroupRequest);
 
-        Assert.NotNull(ex);
-        Assert.IsType<GroupExistsException>(ex);
+        Assert.Equal(CreateGroupResultCode.GroupExistsError, createGroupResult.ResultCode);
     }
 
     [Fact]
@@ -90,7 +86,7 @@ public class GroupProcessorTests
 
         var createGroupResult = await _groupProcessor.CreateGroupAsync(createGroupRequest);
 
-        Assert.True(createGroupResult.IsSuccess);
+        Assert.Equal(CreateGroupResultCode.Success, createGroupResult.ResultCode);
 
         // Verify group is linked to account id
         var groupRepo = _serviceFactory.GetRequiredService<IRepo<GroupEntity>>();
@@ -123,22 +119,19 @@ public class GroupProcessorTests
     }
 
     [Fact]
-    public async Task AddUsersToGroupAsync_Throws_WhenGroupDoesNotExist()
+    public async Task AddUsersToGroupAsync_Fails_WhenGroupDoesNotExist()
     {
         var addUsersToGroupRequest = new AddUsersToGroupRequest([], _fixture.Create<int>());
-
         var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
-
-        var ex = await Record.ExceptionAsync(() => _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest));
+        Assert.Equal(AddUsersToGroupResultCode.GroupNotFoundError, addUsersToGroupResult.ResultCode);
     }
 
     [Fact]
-    public async Task AddUsersToGroupAsync_ReturnsFailure_WhenUsersNotProvided()
+    public async Task AddUsersToGroupAsync_Fails_WhenUsersNotProvided()
     {
         var accountId = await CreateAccountAsync();
         var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, accountId);
         var createGroupResult = await _groupProcessor.CreateGroupAsync(createGroupRequest);
-
         var addUsersToGroupRequest = new AddUsersToGroupRequest([], createGroupResult.CreatedId);
 
         var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(addUsersToGroupRequest);
@@ -148,7 +141,7 @@ public class GroupProcessorTests
     }
 
     [Fact]
-    public async Task AddUsersToGroupAsync_ReturnsSuccess_WhenUsersAdded()
+    public async Task AddUsersToGroupAsync_Succeeds_WhenUsersAdded()
     {
         var userId = await CreateUserAsync();
         var accountId = await CreateAccountAsync();
@@ -188,7 +181,7 @@ public class GroupProcessorTests
     }
 
     [Fact]
-    public async Task AddUsersToGroupAsync_ReturnsFailure_WhenAllUsersAlreadyExistInGroup()
+    public async Task AddUsersToGroupAsync_Fails_WhenAllUsersAlreadyExistInGroup()
     {
         var accountId = await CreateAccountAsync();
         var createGroupRequest = new CreateGroupRequest(VALID_GROUP_NAME, accountId);

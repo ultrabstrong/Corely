@@ -27,10 +27,10 @@ public class RegistrationServiceTests : ProcessorBaseTests
     private readonly Mock<IGroupProcessor> _groupProcessorMock;
     private readonly RegistrationService _registrationService;
 
-    private bool _createAccountSuccess = true;
-    private bool _createUserSuccess = true;
-    private bool _createBasicAuthSuccess = true;
-    private bool _createGroupSuccess = true;
+    private CreateAccountResultCode _createAccountResultCode = CreateAccountResultCode.Success;
+    private CreateUserResultCode _createUserResultCode = CreateUserResultCode.Success;
+    private UpsertBasicAuthResultCode _upsertBasicAuthResultCode = UpsertBasicAuthResultCode.Success;
+    private CreateGroupResultCode _createGroupResultCode = CreateGroupResultCode.Success;
 
     private AddUsersToGroupResult _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, 0);
 
@@ -58,7 +58,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
             .Setup(m => m.CreateAccountAsync(
                 It.IsAny<CreateAccountRequest>()))
             .ReturnsAsync(() =>
-                new CreateResult(_createAccountSuccess, string.Empty, _fixture.Create<int>()));
+                new CreateAccountResult(_createAccountResultCode, string.Empty, _fixture.Create<int>()));
 
         return accountProcessorMock;
     }
@@ -71,7 +71,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
             .Setup(m => m.CreateUserAsync(
                 It.IsAny<CreateUserRequest>()))
             .ReturnsAsync(() =>
-                new CreateResult(_createUserSuccess, string.Empty, _fixture.Create<int>()));
+                new CreateUserResult(_createUserResultCode, string.Empty, _fixture.Create<int>()));
 
         return userProcessorMock;
     }
@@ -84,7 +84,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
             .Setup(m => m.UpsertBasicAuthAsync(
                 It.IsAny<UpsertBasicAuthRequest>()))
             .ReturnsAsync(() =>
-                new UpsertBasicAuthResult(_createBasicAuthSuccess, string.Empty,
+                new UpsertBasicAuthResult(_upsertBasicAuthResultCode, string.Empty,
                     _fixture.Create<int>(), _fixture.Create<UpsertType>()));
 
         return basicAuthProcessorMock;
@@ -98,7 +98,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
             .Setup(m => m.CreateGroupAsync(
                 It.IsAny<CreateGroupRequest>()))
             .ReturnsAsync(() =>
-                new CreateResult(_createGroupSuccess, string.Empty, _fixture.Create<int>()));
+                new CreateGroupResult(_createGroupResultCode, string.Empty, _fixture.Create<int>()));
 
         groupProcessorMock
             .Setup(m => m.AddUsersToGroupAsync(
@@ -109,37 +109,37 @@ public class RegistrationServiceTests : ProcessorBaseTests
     }
 
     [Fact]
-    public async Task RegisterUserAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+    public async Task RegisterUserAsync_Succeeds_WhenAllServicesSucceed()
     {
         var request = _fixture.Create<RegisterUserRequest>();
 
         var result = await _registrationService.RegisterUserAsync(request);
 
-        Assert.True(result.IsSuccess);
+        Assert.Equal(RegisterUserResultCode.Success, result.ResultCode);
     }
 
     [Fact]
-    public async Task RegisterUserAsync_ReturnsFailureResult_WhenUserProcessorFails()
+    public async Task RegisterUserAsync_Fails_WhenUserProcessorFails()
     {
-        _createUserSuccess = false;
+        _createUserResultCode = CreateUserResultCode.UserExistsError;
         var request = _fixture.Create<RegisterUserRequest>();
 
         var result = await _registrationService.RegisterUserAsync(request);
 
-        Assert.False(result.IsSuccess);
+        Assert.Equal(RegisterUserResultCode.UserCreationError, result.ResultCode);
         _basicAuthProcessorMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
         _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
     }
 
     [Fact]
-    public async Task RegisterUserAsync_ReturnsFailureResult_WhenBasicAuthProcessorFails()
+    public async Task RegisterUserAsync_Fails_WhenBasicAuthProcessorFails()
     {
-        _createBasicAuthSuccess = false;
+        _upsertBasicAuthResultCode = UpsertBasicAuthResultCode.Fail;
         var request = _fixture.Create<RegisterUserRequest>();
 
         var result = await _registrationService.RegisterUserAsync(request);
 
-        Assert.False(result.IsSuccess);
+        Assert.Equal(RegisterUserResultCode.BasicAuthCreationError, result.ResultCode);
         _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
     }
 
@@ -153,24 +153,26 @@ public class RegistrationServiceTests : ProcessorBaseTests
     }
 
     [Fact]
-    public async Task RegisterAccountAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+    public async Task RegisterAccountAsync_Succeeds_WhenAllServicesSucceed()
     {
         var request = _fixture.Create<RegisterAccountRequest>();
 
         var result = await _registrationService.RegisterAccountAsync(request);
 
-        Assert.True(result.IsSuccess);
+        Assert.Equal(CreateAccountResultCode.Success, result.ResultCode);
     }
 
-    [Fact]
-    public async Task RegisterAccountAsync_ReturnsFailureResult_WhenAccountProcessorFails()
+    [Theory]
+    [InlineData(CreateAccountResultCode.AccountExistsError)]
+    [InlineData(CreateAccountResultCode.UserOwnerNotFoundError)]
+    public async Task RegisterAccountAsync_Fails_WhenAccountProcessorFails(CreateAccountResultCode createAccountResultCode)
     {
-        _createAccountSuccess = false;
+        _createAccountResultCode = createAccountResultCode;
         var request = _fixture.Create<RegisterAccountRequest>();
 
         var result = await _registrationService.RegisterAccountAsync(request);
 
-        Assert.False(result.IsSuccess);
+        Assert.NotEqual(CreateAccountResultCode.Success, result.ResultCode);
         _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
     }
 
@@ -184,22 +186,24 @@ public class RegistrationServiceTests : ProcessorBaseTests
     }
 
     [Fact]
-    public async Task RegisterGroupAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+    public async Task RegisterGroupAsync_Succeeds_WhenAllServicesSucceed()
     {
         var request = _fixture.Create<RegisterGroupRequest>();
         var result = await _registrationService.RegisterGroupAsync(request);
-        Assert.True(result.IsSuccess);
+        Assert.Equal(CreateGroupResultCode.Success, result.ResultCode);
     }
 
-    [Fact]
-    public async Task RegisterGroupAsync_ReturnsFailureResult_WhenGroupProcessorFails()
+    [Theory]
+    [InlineData(CreateGroupResultCode.GroupExistsError)]
+    [InlineData(CreateGroupResultCode.AccountNotFoundError)]
+    public async Task RegisterGroupAsync_Fails_WhenGroupProcessorFails(CreateGroupResultCode createGroupResultCode)
     {
-        _createGroupSuccess = false;
+        _createGroupResultCode = createGroupResultCode;
         var request = _fixture.Create<RegisterGroupRequest>();
 
         var result = await _registrationService.RegisterGroupAsync(request);
 
-        Assert.False(result.IsSuccess);
+        Assert.Equal(createGroupResultCode, result.ResultCode);
     }
 
     [Fact]
@@ -219,7 +223,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
     }
 
     [Fact]
-    public async Task RegisterUsersWithGroupAsync_ReturnsSuccessResult_WhenAllServicesSucceed()
+    public async Task RegisterUsersWithGroupAsync_Succeeds_WhenAllServicesSucceed()
     {
         var request = _fixture.Create<RegisterUsersWithGroupRequest>();
         _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, request.GroupId);
@@ -230,7 +234,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
     }
 
     [Fact]
-    public async Task RegisterUsersWithGroupAsync_ReturnsFailureResult_WhenGroupProcessorFails()
+    public async Task RegisterUsersWithGroupAsync_Fails_WhenGroupProcessorFails()
     {
         var request = _fixture.Create<RegisterUsersWithGroupRequest>();
         _addUsersToGroupResult = new(AddUsersToGroupResultCode.GroupNotFoundError, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());

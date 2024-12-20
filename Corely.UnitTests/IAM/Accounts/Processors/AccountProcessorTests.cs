@@ -1,13 +1,11 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Accounts.Entities;
-using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Processors;
 using Corely.IAM.Mappers;
 using Corely.IAM.Security.Processors;
 using Corely.IAM.Users.Entities;
-using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -42,15 +40,14 @@ public class AccountProcessorTests
     }
 
     [Fact]
-    public async Task CreateAccountAsync_Throws_WhenAccountExists()
+    public async Task CreateAccountAsync_Fails_WhenAccountExists()
     {
         var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
         await _accountProcessor.CreateAccountAsync(createAccountRequest);
 
-        var ex = await Record.ExceptionAsync(() => _accountProcessor.CreateAccountAsync(createAccountRequest));
+        var createAccountResult = await _accountProcessor.CreateAccountAsync(createAccountRequest);
 
-        Assert.NotNull(ex);
-        Assert.IsType<AccountExistsException>(ex);
+        Assert.Equal(CreateAccountResultCode.AccountExistsError, createAccountResult.ResultCode);
     }
 
     [Fact]
@@ -61,7 +58,7 @@ public class AccountProcessorTests
 
         var createAccountResult = await _accountProcessor.CreateAccountAsync(createAccountRequest);
 
-        Assert.True(createAccountResult.IsSuccess);
+        Assert.Equal(CreateAccountResultCode.Success, createAccountResult.ResultCode);
 
         // Verify account is linked to owner user id
         var accountRepo = _serviceFactory.GetRequiredService<IRepo<AccountEntity>>();
@@ -84,13 +81,13 @@ public class AccountProcessorTests
     }
 
     [Fact]
-    public async Task CreateAccount_Throws_WithInvalidUserId()
+    public async Task CreateAccount_Fails_WithInvalidUserId()
     {
         var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, -1);
-        var ex = await Record.ExceptionAsync(() => _accountProcessor.CreateAccountAsync(createAccountRequest));
 
-        Assert.NotNull(ex);
-        Assert.IsType<UserDoesNotExistException>(ex);
+        var createAccountResult = await _accountProcessor.CreateAccountAsync(createAccountRequest);
+
+        Assert.Equal(CreateAccountResultCode.UserOwnerNotFoundError, createAccountResult.ResultCode);
     }
 
     [Fact]

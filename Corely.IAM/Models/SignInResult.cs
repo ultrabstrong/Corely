@@ -3,5 +3,4 @@
 public record SignInResult(
     bool IsSuccess,
     string? Message,
-    string? AuthToken)
-    : ResultBase(IsSuccess, Message);
+    string? AuthToken);

@@ -1,12 +1,10 @@
 ﻿using Corely.Common.Extensions;
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Mappers;
-using Corely.IAM.Models;
 using Corely.IAM.Processors;
 using Corely.IAM.Security.Enums;
 using Corely.IAM.Security.Processors;
 using Corely.IAM.Users.Entities;
-using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
 using Microsoft.EntityFrameworkCore;
@@ -34,13 +32,30 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
         _securityProcessor = securityProcessor.ThrowIfNull(nameof(securityProcessor));
     }
 
-    public async Task<CreateResult> CreateUserAsync(CreateUserRequest request)
+    public async Task<CreateUserResult> CreateUserAsync(CreateUserRequest request)
     {
         return await LogRequestResultAspect(nameof(UserProcessor), nameof(CreateUserAsync), request, async () =>
         {
             var user = MapThenValidateTo<User>(request);
 
-            await ThrowIfUserExists(user.Username, user.Email);
+            var existingUser = await _userRepo.GetAsync(u =>
+                u.Username == request.Username || u.Email == request.Email);
+
+            if (existingUser != null)
+            {
+                bool usernameExists = existingUser.Username == request.Username;
+                bool emailExists = existingUser.Email == request.Email;
+
+                if (usernameExists)
+                    Logger.LogWarning("User already exists with Username {ExistingUsername}", existingUser.Username);
+                if (emailExists)
+                    Logger.LogWarning("User already exists with Email {ExistingEmail}", existingUser.Email);
+
+                string usernameExistsMessage = usernameExists ? $"Username {request.Username} already exists." : string.Empty;
+                string emailExistsMessage = emailExists ? $"Email {request.Email} already exists." : string.Empty;
+
+                return new CreateUserResult(CreateUserResultCode.UserExistsError, $"{usernameExistsMessage} {emailExistsMessage}".Trim(), -1);
+            }
 
             user.SymmetricKeys = [_securityProcessor.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
             user.AsymmetricKeys = [
@@ -50,33 +65,8 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
             var userEntity = MapTo<UserEntity>(user)!; // user is validated
             var createdId = await _userRepo.CreateAsync(userEntity);
 
-            return new CreateResult(true, string.Empty, createdId);
+            return new CreateUserResult(CreateUserResultCode.Success, string.Empty, createdId);
         });
-    }
-
-    private async Task ThrowIfUserExists(string username, string email)
-    {
-        var existingUser = await _userRepo.GetAsync(u =>
-            u.Username == username || u.Email == email);
-        if (existingUser != null)
-        {
-            bool usernameExists = existingUser.Username == username;
-            bool emailExists = existingUser.Email == email;
-
-            if (usernameExists)
-                Logger.LogWarning("User already exists with Username {ExistingUsername}", existingUser.Username);
-            if (emailExists)
-                Logger.LogWarning("User already exists with Email {ExistingEmail}", existingUser.Email);
-
-            string usernameExistsMessage = usernameExists ? $"Username {username} already exists." : string.Empty;
-            string emailExistsMessage = emailExists ? $"Email {email} already exists." : string.Empty;
-
-            throw new UserExistsException($"{usernameExistsMessage} {emailExistsMessage}".Trim())
-            {
-                UsernameExists = usernameExists,
-                EmailExists = emailExists
-            };
-        }
     }
 
     public async Task<User?> GetUserAsync(int userId)

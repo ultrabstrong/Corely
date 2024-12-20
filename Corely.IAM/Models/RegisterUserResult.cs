@@ -1,8 +1,14 @@
 ﻿namespace Corely.IAM.Models;
 
+public enum RegisterUserResultCode
+{
+    Success,
+    UserCreationError,
+    BasicAuthCreationError
+}
+
 public record RegisterUserResult(
-    bool IsSuccess,
+    RegisterUserResultCode ResultCode,
     string? Message,
     int CreatedUserId,
-    int CreatedAuthId)
-    : ResultBase(IsSuccess, Message);
+    int CreatedAuthId);

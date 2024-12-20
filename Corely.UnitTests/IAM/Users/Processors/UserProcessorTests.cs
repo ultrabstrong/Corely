@@ -3,7 +3,6 @@ using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Mappers;
 using Corely.IAM.Security.Processors;
 using Corely.IAM.Users.Entities;
-using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Processors;
 using Corely.IAM.Validators;
@@ -32,15 +31,14 @@ public class UserProcessorTests
     }
 
     [Fact]
-    public async Task CreateUserAsync_Throws_WhenUserExists()
+    public async Task CreateUserAsync_Fails_WhenUserExists()
     {
         var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
         await _userProcessor.CreateUserAsync(createUserRequest);
 
-        Exception ex = await Record.ExceptionAsync(() => _userProcessor.CreateUserAsync(createUserRequest));
+        var createUserResult = await _userProcessor.CreateUserAsync(createUserRequest);
 
-        Assert.NotNull(ex);
-        Assert.IsType<UserExistsException>(ex);
+        Assert.Equal(CreateUserResultCode.UserExistsError, createUserResult.ResultCode);
     }
 
     [Fact]
@@ -48,8 +46,7 @@ public class UserProcessorTests
     {
         var createUserRequest = new CreateUserRequest(VALID_USERNAME, VALID_EMAIL);
         var res = await _userProcessor.CreateUserAsync(createUserRequest);
-
-        Assert.True(res.IsSuccess);
+        Assert.Equal(CreateUserResultCode.Success, res.ResultCode);
     }
 
     [Fact]

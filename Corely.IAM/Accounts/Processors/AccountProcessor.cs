@@ -1,14 +1,11 @@
 ﻿using Corely.Common.Extensions;
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Accounts.Entities;
-using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Mappers;
-using Corely.IAM.Models;
 using Corely.IAM.Processors;
 using Corely.IAM.Security.Processors;
 using Corely.IAM.Users.Entities;
-using Corely.IAM.Users.Exceptions;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
@@ -34,14 +31,25 @@ internal class AccountProcessor : ProcessorBase, IAccountProcessor
         _securityService = securityService.ThrowIfNull(nameof(securityService));
     }
 
-    public async Task<CreateResult> CreateAccountAsync(CreateAccountRequest request)
+    public async Task<CreateAccountResult> CreateAccountAsync(CreateAccountRequest request)
     {
         return await LogRequestResultAspect(nameof(AccountProcessor), nameof(CreateAccountAsync), request, async () =>
         {
             var account = MapThenValidateTo<Account>(request);
 
-            await ThrowIfAccountExists(account.AccountName);
-            var userEntity = await GetUserOrThrowIfNotFound(request.OwnerUserId);
+            var existingAccount = await _accountRepo.GetAsync(a => a.AccountName == request.AccountName);
+            if (existingAccount != null)
+            {
+                Logger.LogWarning("Account {Account} already exists", request.AccountName);
+                return new CreateAccountResult(CreateAccountResultCode.AccountExistsError, $"Account {request.AccountName} already exists", -1);
+            }
+
+            var userEntity = await _userRepo.GetAsync(request.OwnerUserId);
+            if (userEntity == null)
+            {
+                Logger.LogWarning("User with Id {UserId} not found", request.OwnerUserId);
+                return new CreateAccountResult(CreateAccountResultCode.UserOwnerNotFoundError, $"User with Id {request.OwnerUserId} not found", -1);
+            }
 
             account.SymmetricKeys = [_securityService.GetSymmetricEncryptionKeyEncryptedWithSystemKey()];
             account.AsymmetricKeys = [
@@ -52,29 +60,8 @@ internal class AccountProcessor : ProcessorBase, IAccountProcessor
             accountEntity.Users = [userEntity];
             var createdId = await _accountRepo.CreateAsync(accountEntity);
 
-            return new CreateResult(true, string.Empty, createdId);
+            return new CreateAccountResult(CreateAccountResultCode.Success, string.Empty, createdId);
         });
-    }
-
-    private async Task ThrowIfAccountExists(string accountName)
-    {
-        var existingAccount = await _accountRepo.GetAsync(a => a.AccountName == accountName);
-        if (existingAccount != null)
-        {
-            Logger.LogWarning("Account {Account} already exists", accountName);
-            throw new AccountExistsException($"Account {accountName} already exists");
-        }
-    }
-
-    private async Task<UserEntity> GetUserOrThrowIfNotFound(int userId)
-    {
-        var userEntity = await _userRepo.GetAsync(userId);
-        if (userEntity == null)
-        {
-            Logger.LogWarning("User with Id {UserId} not found", userId);
-            throw new UserDoesNotExistException($"User with Id {userId} not found");
-        }
-        return userEntity;
     }
 
     public async Task<Account?> GetAccountAsync(int accountId)

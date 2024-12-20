@@ -69,7 +69,7 @@ public class SignInServiceTests : ProcessorBaseTests
 
 
     [Fact]
-    public async Task SignInAsync_ReturnsSuccessResultAndUpdateSuccessfulLogin_WhenUserExistsAndPasswordIsValid()
+    public async Task SignInAsync_SucceedsAndUpdateSuccessfulLogin_WhenUserExistsAndPasswordIsValid()
     {
         var request = new SignInRequest(_user.Username, _fixture.Create<string>());
         _user.TotalSuccessfulLogins = 0;
@@ -100,7 +100,7 @@ public class SignInServiceTests : ProcessorBaseTests
     }
 
     [Fact]
-    public async Task SignInAsync_ReturnsFailureResult_WhenUserDoesNotExist()
+    public async Task SignInAsync_Fails_WhenUserDoesNotExist()
     {
         var request = _fixture.Create<SignInRequest>();
 
@@ -116,7 +116,7 @@ public class SignInServiceTests : ProcessorBaseTests
     }
 
     [Fact]
-    public async Task SignInAsync_ReturnsFailureResult_WhenUserIsLockedOut()
+    public async Task SignInAsync_Fails_WhenUserIsLockedOut()
     {
         var request = new SignInRequest(_user.Username, _fixture.Create<string>());
         _user.FailedLoginsSinceLastSuccess = MAX_LOGIN_ATTEMPTS;
@@ -129,7 +129,7 @@ public class SignInServiceTests : ProcessorBaseTests
     }
 
     [Fact]
-    public async Task SignInAsync_ReturnsFailureResultAndUpdatedFailedLogins_WhenPasswordIsInvalid()
+    public async Task SignInAsync_FailsAndUpdatedFailedLogins_WhenPasswordIsInvalid()
     {
         var request = new SignInRequest(_user.Username, _fixture.Create<string>());
         _user.TotalSuccessfulLogins = 0;

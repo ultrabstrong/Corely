@@ -1,13 +1,10 @@
 ﻿using Corely.Common.Extensions;
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Accounts.Entities;
-using Corely.IAM.Accounts.Exceptions;
 using Corely.IAM.Groups.Entities;
 using Corely.IAM.Groups.Enums;
-using Corely.IAM.Groups.Exceptions;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Mappers;
-using Corely.IAM.Models;
 using Corely.IAM.Processors;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Validators;
@@ -35,36 +32,31 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
         _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
     }
 
-    public async Task<CreateResult> CreateGroupAsync(CreateGroupRequest createGroupRequest)
+    public async Task<CreateGroupResult> CreateGroupAsync(CreateGroupRequest createGroupRequest)
     {
         return await LogRequestResultAspect(nameof(GroupProcessor), nameof(CreateGroupAsync), createGroupRequest, async () =>
         {
             var group = MapThenValidateTo<Group>(createGroupRequest);
 
-            await ThrowIfGroupCannotBeAdded(group.AccountId, group.GroupName);
+            if (await _groupRepo.AnyAsync(g =>
+            g.AccountId == group.AccountId && g.GroupName == group.GroupName))
+            {
+                Logger.LogWarning("Group with name {GroupName} already exists", group.GroupName);
+                return new CreateGroupResult(CreateGroupResultCode.GroupExistsError, $"Group with name {group.GroupName} already exists", -1);
+            }
+
+            var accountEntity = await _accountRepo.GetAsync(group.AccountId);
+            if (accountEntity == null)
+            {
+                Logger.LogWarning("Account with Id {AccountId} not found", group.AccountId);
+                return new CreateGroupResult(CreateGroupResultCode.AccountNotFoundError, $"Account with Id {group.AccountId} not found", -1);
+            }
 
             var groupEntity = MapTo<GroupEntity>(group)!; // group is validated
             var createdId = await _groupRepo.CreateAsync(groupEntity);
 
-            return new CreateResult(true, string.Empty, createdId);
+            return new CreateGroupResult(CreateGroupResultCode.Success, string.Empty, createdId);
         });
-    }
-
-    private async Task ThrowIfGroupCannotBeAdded(int accountId, string groupName)
-    {
-        if (await _groupRepo.AnyAsync(g =>
-            g.AccountId == accountId && g.GroupName == groupName))
-        {
-            Logger.LogWarning("Group with name {GroupName} already exists", groupName);
-            throw new GroupExistsException($"Group with name {groupName} already exists");
-        }
-
-        var accountEntity = await _accountRepo.GetAsync(accountId);
-        if (accountEntity == null)
-        {
-            Logger.LogWarning("Account with Id {AccountId} not found", accountId);
-            throw new AccountDoesNotExistException($"Account with Id {accountId} not found");
-        }
     }
 
     public async Task<AddUsersToGroupResult> AddUsersToGroupAsync(AddUsersToGroupRequest request)

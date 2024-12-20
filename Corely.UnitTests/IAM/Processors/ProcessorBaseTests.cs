@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using Corely.IAM.Mappers;
-using Corely.IAM.Models;
 using Corely.IAM.Processors;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
@@ -88,7 +87,7 @@ public class ProcessorBaseTests
     {
         var createUserRequest = _fixture.Create<CreateUserRequest>();
 
-        var ex = Record.Exception(() => _mockProcessorBase.MapThenValidateTo<CreateResult>(createUserRequest));
+        var ex = Record.Exception(() => _mockProcessorBase.MapThenValidateTo<CreateUserResult>(createUserRequest));
 
         Assert.NotNull(ex);
         Assert.IsType<AutoMapperMappingException>(ex);
@@ -128,7 +127,7 @@ public class ProcessorBaseTests
     {
         var createUserRequest = _fixture.Create<CreateUserRequest>();
 
-        var ex = Record.Exception(() => _mockProcessorBase.MapTo<CreateResult>(createUserRequest));
+        var ex = Record.Exception(() => _mockProcessorBase.MapTo<CreateUserResult>(createUserRequest));
 
         Assert.NotNull(ex);
         Assert.IsType<AutoMapperMappingException>(ex);

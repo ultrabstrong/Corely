@@ -1,10 +1,14 @@
 ﻿using Corely.Common.Extensions;
 using Corely.DataAccess.Interfaces.UnitOfWork;
+using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Processors;
+using Corely.IAM.BasicAuths.Models;
 using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Groups.Enums;
+using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
+using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Processors;
 using Microsoft.Extensions.Logging;
 
@@ -46,25 +50,25 @@ internal class RegistrationService : IRegistrationService
             await _uowProvider.BeginAsync();
 
             var createUserResult = await _userProcessor.CreateUserAsync(new(request.Username, request.Email));
-            if (!createUserResult.IsSuccess)
+            if (createUserResult.ResultCode != CreateUserResultCode.Success)
             {
                 _logger.LogInformation("Creating user failed for username {Username}", request.Username);
                 _logger.LogInformation("Account registration failed.");
-                return new RegisterUserResult(false, createUserResult.Message, -1, -1);
+                return new RegisterUserResult(RegisterUserResultCode.UserCreationError, createUserResult.Message, -1, -1);
             }
 
             var createAuthResult = await _basicAuthProcessor.UpsertBasicAuthAsync(new(createUserResult.CreatedId, request.Password));
-            if (!createAuthResult.IsSuccess)
+            if (createAuthResult.ResultCode != UpsertBasicAuthResultCode.Success)
             {
                 _logger.LogInformation("Creating auth failed for username {Username}", request.Username);
                 _logger.LogInformation("Account registration failed.");
-                return new RegisterUserResult(false, createAuthResult.Message, -1, -1);
+                return new RegisterUserResult(RegisterUserResultCode.BasicAuthCreationError, createAuthResult.Message, -1, -1);
             }
 
             await _uowProvider.CommitAsync();
             operationSucceeded = true;
             _logger.LogInformation("User {Username} registered with Id {UserId}", request.Username, createUserResult.CreatedId);
-            return new RegisterUserResult(true, string.Empty, createUserResult.CreatedId, createAuthResult.CreatedId);
+            return new RegisterUserResult(RegisterUserResultCode.Success, string.Empty, createUserResult.CreatedId, createAuthResult.CreatedId);
         }
         finally
         {
@@ -86,17 +90,17 @@ internal class RegistrationService : IRegistrationService
             await _uowProvider.BeginAsync();
 
             var createAccountResult = await _accountProcessor.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
-            if (!createAccountResult.IsSuccess)
+            if (createAccountResult.ResultCode != CreateAccountResultCode.Success)
             {
                 _logger.LogInformation("Creating account failed for account name {AccountName}", request.AccountName);
                 _logger.LogInformation("Account registration failed.");
-                return new RegisterAccountResult(false, createAccountResult.Message, -1);
+                return new RegisterAccountResult(createAccountResult.ResultCode, createAccountResult.Message, -1);
             }
 
             await _uowProvider.CommitAsync();
             operationSucceeded = true;
             _logger.LogInformation("Account {AccountName} registered with Id {AccountId}", request.AccountName, createAccountResult.CreatedId);
-            return new RegisterAccountResult(true, string.Empty, createAccountResult.CreatedId);
+            return new RegisterAccountResult(createAccountResult.ResultCode, string.Empty, createAccountResult.CreatedId);
         }
         finally
         {
@@ -113,16 +117,16 @@ internal class RegistrationService : IRegistrationService
         _logger.LogInformation("Registering group {GroupName}", request.GroupName);
 
         var createGroupResult = await _groupProcessor.CreateGroupAsync(new(request.GroupName, request.OwnerAccountId));
-        if (!createGroupResult.IsSuccess)
+        if (createGroupResult.ResultCode != CreateGroupResultCode.Success)
         {
             _logger.LogInformation("Creating group failed for group name {GroupName}", request.GroupName);
             _logger.LogInformation("Group registration failed.");
-            return new RegisterGroupResult(false, createGroupResult.Message, -1);
+            return new RegisterGroupResult(createGroupResult.ResultCode, createGroupResult.Message, -1);
         }
 
         _logger.LogInformation("Group {GroupName} registered with Id {GroupId}", request.GroupName, createGroupResult.CreatedId);
 
-        return new RegisterGroupResult(true, string.Empty, createGroupResult.CreatedId);
+        return new RegisterGroupResult(createGroupResult.ResultCode, string.Empty, createGroupResult.CreatedId);
     }
 
     public async Task<RegisterUsersWithGroupResult> RegisterUsersWithGroupAsync(RegisterUsersWithGroupRequest request)

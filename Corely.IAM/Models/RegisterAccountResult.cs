@@ -1,7 +1,8 @@
-﻿namespace Corely.IAM.Models;
+﻿using Corely.IAM.Accounts.Models;
+
+namespace Corely.IAM.Models;
 
 public record RegisterAccountResult(
-    bool IsSuccess,
+    CreateAccountResultCode ResultCode,
     string? Message,
-    int CreatedAccountId)
-    : ResultBase(IsSuccess, Message);
+    int CreatedAccountId);
