@@ -2,9 +2,9 @@
 
 public enum CreateGroupResultCode
 {
+    Success,
     GroupExistsError,
-    AccountNotFoundError,
-    Success
+    AccountNotFoundError
 }
 
 internal record CreateGroupResult(

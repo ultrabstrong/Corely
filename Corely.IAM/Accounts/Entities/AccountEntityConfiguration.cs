@@ -29,6 +29,11 @@ internal sealed class AccountEntityConfiguration : EntityConfigurationBase<Accou
             .HasForeignKey(p => p.AccountId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(e => e.Roles)
+            .WithOne(e => e.Account)
+            .HasForeignKey(p => p.AccountId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasMany(e => e.SymmetricKeys)
             .WithOne()
             .HasForeignKey(p => p.AccountId)

@@ -107,7 +107,7 @@ public class GroupProcessorTests
         Assert.IsType<ArgumentNullException>(ex);
     }
 
-    [Theory, ClassData(typeof(EmptyAndWhitespace))]
+    [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
     public async Task CreateGroupAsync_Throws_WithInvalidGroupName(string groupName)
     {
         var createGroupRequest = new CreateGroupRequest(groupName, await CreateAccountAsync());

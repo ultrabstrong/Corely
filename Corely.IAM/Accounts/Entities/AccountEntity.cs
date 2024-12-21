@@ -1,5 +1,6 @@
 ﻿using Corely.DataAccess.Interfaces.Entities;
 using Corely.IAM.Groups.Entities;
+using Corely.IAM.Roles.Entities;
 using Corely.IAM.Users.Entities;
 
 namespace Corely.IAM.Accounts.Entities;
@@ -12,6 +13,7 @@ internal class AccountEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     public DateTime ModifiedUtc { get; set; }
     public virtual ICollection<UserEntity>? Users { get; set; }
     public virtual ICollection<GroupEntity>? Groups { get; set; }
+    public virtual ICollection<RoleEntity>? Roles { get; set; }
     public virtual ICollection<AccountSymmetricKeyEntity>? SymmetricKeys { get; init; }
     public virtual ICollection<AccountAsymmetricKeyEntity>? AsymmetricKeys { get; init; }
 }

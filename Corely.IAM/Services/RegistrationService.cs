@@ -8,6 +8,8 @@ using Corely.IAM.Groups.Enums;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
+using Corely.IAM.Roles.Models;
+using Corely.IAM.Roles.Processors;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Processors;
 using Microsoft.Extensions.Logging;
@@ -21,6 +23,7 @@ internal class RegistrationService : IRegistrationService
     private readonly IUserProcessor _userProcessor;
     private readonly IBasicAuthProcessor _basicAuthProcessor;
     private readonly IGroupProcessor _groupProcessor;
+    private readonly IRoleProcessor _roleProcessor;
     private readonly IUnitOfWorkProvider _uowProvider;
 
     public RegistrationService(
@@ -29,6 +32,7 @@ internal class RegistrationService : IRegistrationService
         IUserProcessor userProcessor,
         IBasicAuthProcessor basicAuthProcessor,
         IGroupProcessor groupProcessor,
+        IRoleProcessor roleProcessor,
         IUnitOfWorkProvider uowProvider)
     {
         _logger = logger.ThrowIfNull(nameof(logger));
@@ -36,6 +40,7 @@ internal class RegistrationService : IRegistrationService
         _userProcessor = userProcessor.ThrowIfNull(nameof(userProcessor));
         _basicAuthProcessor = basicAuthProcessor.ThrowIfNull(nameof(basicAuthProcessor));
         _groupProcessor = groupProcessor.ThrowIfNull(nameof(groupProcessor));
+        _roleProcessor = roleProcessor.ThrowIfNull(nameof(roleProcessor));
         _uowProvider = uowProvider.ThrowIfNull(nameof(uowProvider));
     }
 
@@ -109,6 +114,24 @@ internal class RegistrationService : IRegistrationService
 
         return new RegisterGroupResult(createGroupResult.ResultCode, string.Empty, createGroupResult.CreatedId);
     }
+
+    public async Task<RegisterRoleResult> RegisterRoleAsync(RegisterRoleRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        _logger.LogInformation("Registering role {RoleName}", request.RoleName);
+
+        var createRoleResult = await _roleProcessor.CreateRoleAsync(new(request.RoleName, request.OwnerAccountId));
+        if (createRoleResult.ResultCode != CreateRoleResultCode.Success)
+        {
+            _logger.LogInformation("Registering role failed for role name {RoleName}", request.RoleName);
+            return new RegisterRoleResult(createRoleResult.ResultCode, createRoleResult.Message, -1);
+        }
+
+        _logger.LogInformation("Role {RoleName} registered with Id {RoleId}", request.RoleName, createRoleResult.CreatedId);
+
+        return new RegisterRoleResult(createRoleResult.ResultCode, string.Empty, createRoleResult.CreatedId);
+    }
+
 
     public async Task<RegisterUsersWithGroupResult> RegisterUsersWithGroupAsync(RegisterUsersWithGroupRequest request)
     {

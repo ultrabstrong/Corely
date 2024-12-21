@@ -48,6 +48,9 @@ internal class Program
             var registerGroupRequest = new RegisterGroupRequest("grp1", registerAccountResult.CreatedAccountId);
             var registerGroupResult = await registrationService.RegisterGroupAsync(registerGroupRequest);
 
+            var registerRoleRequest = new RegisterRoleRequest("role1", registerAccountResult.CreatedAccountId);
+            var registerRoleResult = await registrationService.RegisterRoleAsync(registerRoleRequest);
+
             var registerUsersWithGroupRequest = new RegisterUsersWithGroupRequest([registerUserResult.CreatedUserId, 9999, 8888], registerGroupResult.CreatedGroupId);
             var registerUsersWithGroupResult = await registrationService.RegisterUsersWithGroupAsync(registerUsersWithGroupRequest);
 

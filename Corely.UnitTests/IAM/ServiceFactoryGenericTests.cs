@@ -6,6 +6,7 @@ using Corely.IAM.Accounts.Processors;
 using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
+using Corely.IAM.Roles.Processors;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Security.Processors;
 using Corely.IAM.Services;
@@ -53,6 +54,7 @@ public abstract class ServiceFactoryGenericTests
             [typeof(IUserProcessor)],
             [typeof(IBasicAuthProcessor)],
             [typeof(IGroupProcessor)],
+            [typeof(IRoleProcessor)],
             [typeof(IRegistrationService)],
             [typeof(IDeregistrationService)],
             [typeof(ISecurityProcessor)],

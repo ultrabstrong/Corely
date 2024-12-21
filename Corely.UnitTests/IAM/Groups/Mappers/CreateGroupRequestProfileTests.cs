@@ -7,6 +7,5 @@ public class CreateGroupRequestProfileTests
     : ProfileDelegateTestsBase
 {
     private class Delegate : ProfileTestsBase<CreateGroupRequest, Group>;
-
     protected override ProfileTestsBase GetDelegate() => new Delegate();
 }

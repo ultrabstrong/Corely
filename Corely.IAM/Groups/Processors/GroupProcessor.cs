@@ -39,7 +39,7 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
             var group = MapThenValidateTo<Group>(createGroupRequest);
 
             if (await _groupRepo.AnyAsync(g =>
-            g.AccountId == group.AccountId && g.GroupName == group.GroupName))
+                g.AccountId == group.AccountId && g.GroupName == group.GroupName))
             {
                 Logger.LogWarning("Group with name {GroupName} already exists", group.GroupName);
                 return new CreateGroupResult(CreateGroupResultCode.GroupExistsError, $"Group with name {group.GroupName} already exists", -1);

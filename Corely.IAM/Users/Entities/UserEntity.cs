@@ -2,6 +2,7 @@
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.BasicAuths.Entities;
 using Corely.IAM.Groups.Entities;
+using Corely.IAM.Roles.Entities;
 
 namespace Corely.IAM.Users.Entities;
 
@@ -21,6 +22,7 @@ internal class UserEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     public virtual BasicAuthEntity? BasicAuth { get; set; }
     public virtual ICollection<AccountEntity>? Accounts { get; set; }
     public virtual ICollection<GroupEntity>? Groups { get; set; }
+    public virtual ICollection<RoleEntity>? Roles { get; set; }
     public virtual ICollection<UserSymmetricKeyEntity>? SymmetricKeys { get; init; }
     public virtual ICollection<UserAsymmetricKeyEntity>? AsymmetricKeys { get; init; }
 }

@@ -9,6 +9,8 @@ using Corely.IAM.Groups.Enums;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
+using Corely.IAM.Roles.Models;
+using Corely.IAM.Roles.Processors;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Processors;
@@ -25,12 +27,14 @@ public class RegistrationServiceTests : ProcessorBaseTests
     private readonly Mock<IUserProcessor> _userProcessorMock;
     private readonly Mock<IBasicAuthProcessor> _basicAuthProcessorMock;
     private readonly Mock<IGroupProcessor> _groupProcessorMock;
+    private readonly Mock<IRoleProcessor> _roleProcessorMock;
     private readonly RegistrationService _registrationService;
 
     private CreateAccountResultCode _createAccountResultCode = CreateAccountResultCode.Success;
     private CreateUserResultCode _createUserResultCode = CreateUserResultCode.Success;
     private UpsertBasicAuthResultCode _upsertBasicAuthResultCode = UpsertBasicAuthResultCode.Success;
     private CreateGroupResultCode _createGroupResultCode = CreateGroupResultCode.Success;
+    private CreateRoleResultCode _createRoleResultCode = CreateRoleResultCode.Success;
 
     private AddUsersToGroupResult _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, 0);
 
@@ -40,6 +44,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
         _userProcessorMock = GetMockUserProcessor();
         _basicAuthProcessorMock = GetMockBasicAuthProcessor();
         _groupProcessorMock = GetMockGroupProcessor();
+        _roleProcessorMock = GetMockRoleProcessor();
 
         _registrationService = new RegistrationService(
             _serviceFactory.GetRequiredService<ILogger<RegistrationService>>(),
@@ -47,6 +52,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
             _userProcessorMock.Object,
             _basicAuthProcessorMock.Object,
             _groupProcessorMock.Object,
+            _roleProcessorMock.Object,
             _unitOfWorkProviderMock.Object);
     }
 
@@ -106,6 +112,19 @@ public class RegistrationServiceTests : ProcessorBaseTests
             .ReturnsAsync(() => _addUsersToGroupResult);
 
         return groupProcessorMock;
+    }
+
+    private Mock<IRoleProcessor> GetMockRoleProcessor()
+    {
+        var roleProcessorMock = new Mock<IRoleProcessor>();
+
+        roleProcessorMock
+            .Setup(m => m.CreateRoleAsync(
+                It.IsAny<CreateRoleRequest>()))
+            .ReturnsAsync(() =>
+                new CreateRoleResult(_createRoleResultCode, string.Empty, _fixture.Create<int>()));
+
+        return roleProcessorMock;
     }
 
     [Fact]
@@ -209,6 +228,33 @@ public class RegistrationServiceTests : ProcessorBaseTests
     public async Task RegisterGroupAsync_Throws_WithNullRequest()
     {
         var ex = await Record.ExceptionAsync(() => _registrationService.RegisterGroupAsync(null!));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Fact]
+    public async Task RegisterRoleAsync_Succeeds_WhenAllServicesSucceed()
+    {
+        var request = _fixture.Create<RegisterRoleRequest>();
+        var result = await _registrationService.RegisterRoleAsync(request);
+        Assert.Equal(CreateRoleResultCode.Success, result.ResultCode);
+    }
+
+    [Theory]
+    [InlineData(CreateRoleResultCode.RoleExistsError)]
+    [InlineData(CreateRoleResultCode.AccountNotFoundError)]
+    public async Task RegisterRoleAsync_Fails_WhenRoleProcessorFails(CreateRoleResultCode createRoleResultCode)
+    {
+        _createRoleResultCode = createRoleResultCode;
+        var request = _fixture.Create<RegisterRoleRequest>();
+        var result = await _registrationService.RegisterRoleAsync(request);
+        Assert.Equal(createRoleResultCode, result.ResultCode);
+    }
+
+    [Fact]
+    public async Task RegisterRoleAsync_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _registrationService.RegisterRoleAsync(null!));
         Assert.NotNull(ex);
         Assert.IsType<ArgumentNullException>(ex);
     }

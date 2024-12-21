@@ -2,5 +2,4 @@
 
 public record RegisterGroupRequest(
     string GroupName,
-    int OwnerAccountId,
-    List<int>? UserIdsToAdd = null);
+    int OwnerAccountId);
