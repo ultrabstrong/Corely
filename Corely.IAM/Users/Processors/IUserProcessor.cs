@@ -4,7 +4,7 @@ namespace Corely.IAM.Users.Processors;
 
 internal interface IUserProcessor
 {
-    Task<CreateUserResult> CreateUserAsync(CreateUserRequest createUserRequest);
+    Task<CreateUserResult> CreateUserAsync(CreateUserRequest request);
     Task<User?> GetUserAsync(int userId);
     Task<User?> GetUserAsync(string userName);
     Task UpdateUserAsync(User user);

@@ -1,4 +1,4 @@
-﻿using Corely.IAM.Groups.Enums;
+﻿using Corely.IAM.Groups.Models;
 
 namespace Corely.IAM.Models;
 

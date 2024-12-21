@@ -5,7 +5,6 @@ using Corely.IAM.Accounts.Processors;
 using Corely.IAM.BasicAuths.Models;
 using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Enums;
-using Corely.IAM.Groups.Enums;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
@@ -37,6 +36,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
     private CreateRoleResultCode _createRoleResultCode = CreateRoleResultCode.Success;
 
     private AddUsersToGroupResult _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, 0);
+    private AssignRolesToGroupResult _assignRolesToGroupResult = new(AssignRolesToGroupResultCode.Success, string.Empty, 0);
 
     public RegistrationServiceTests() : base()
     {
@@ -58,73 +58,78 @@ public class RegistrationServiceTests : ProcessorBaseTests
 
     private Mock<IAccountProcessor> GetMockAccountProcessor()
     {
-        var accountProcessorMock = new Mock<IAccountProcessor>();
+        var mock = new Mock<IAccountProcessor>();
 
-        accountProcessorMock
+        mock
             .Setup(m => m.CreateAccountAsync(
                 It.IsAny<CreateAccountRequest>()))
             .ReturnsAsync(() =>
                 new CreateAccountResult(_createAccountResultCode, string.Empty, _fixture.Create<int>()));
 
-        return accountProcessorMock;
+        return mock;
     }
 
     private Mock<IUserProcessor> GetMockUserProcessor()
     {
-        var userProcessorMock = new Mock<IUserProcessor>();
+        var mock = new Mock<IUserProcessor>();
 
-        userProcessorMock
+        mock
             .Setup(m => m.CreateUserAsync(
                 It.IsAny<CreateUserRequest>()))
             .ReturnsAsync(() =>
                 new CreateUserResult(_createUserResultCode, string.Empty, _fixture.Create<int>()));
 
-        return userProcessorMock;
+        return mock;
     }
 
     private Mock<IBasicAuthProcessor> GetMockBasicAuthProcessor()
     {
-        var basicAuthProcessorMock = new Mock<IBasicAuthProcessor>();
+        var mock = new Mock<IBasicAuthProcessor>();
 
-        basicAuthProcessorMock
+        mock
             .Setup(m => m.UpsertBasicAuthAsync(
                 It.IsAny<UpsertBasicAuthRequest>()))
             .ReturnsAsync(() =>
                 new UpsertBasicAuthResult(_upsertBasicAuthResultCode, string.Empty,
                     _fixture.Create<int>(), _fixture.Create<UpsertType>()));
 
-        return basicAuthProcessorMock;
+        return mock;
     }
 
     private Mock<IGroupProcessor> GetMockGroupProcessor()
     {
-        var groupProcessorMock = new Mock<IGroupProcessor>();
+        var mock = new Mock<IGroupProcessor>();
 
-        groupProcessorMock
+        mock
             .Setup(m => m.CreateGroupAsync(
                 It.IsAny<CreateGroupRequest>()))
             .ReturnsAsync(() =>
                 new CreateGroupResult(_createGroupResultCode, string.Empty, _fixture.Create<int>()));
 
-        groupProcessorMock
+        mock
             .Setup(m => m.AddUsersToGroupAsync(
                 It.IsAny<AddUsersToGroupRequest>()))
             .ReturnsAsync(() => _addUsersToGroupResult);
 
-        return groupProcessorMock;
+        mock
+            .Setup(m => m.AssignRolesToGroupAsync(
+                It.IsAny<AssignRolesToGroupRequest>()))
+            .ReturnsAsync(() => _assignRolesToGroupResult);
+
+        return mock;
     }
 
     private Mock<IRoleProcessor> GetMockRoleProcessor()
     {
-        var roleProcessorMock = new Mock<IRoleProcessor>();
+        var mock = new Mock<IRoleProcessor>();
 
-        roleProcessorMock
+        mock
             .Setup(m => m.CreateRoleAsync(
                 It.IsAny<CreateRoleRequest>()))
             .ReturnsAsync(() =>
                 new CreateRoleResult(_createRoleResultCode, string.Empty, _fixture.Create<int>()));
 
-        return roleProcessorMock;
+        return mock;
     }
 
     [Fact]
@@ -290,5 +295,38 @@ public class RegistrationServiceTests : ProcessorBaseTests
         Assert.Equal(_addUsersToGroupResult.Message, result.Message);
         Assert.Equal(_addUsersToGroupResult.AddedUserCount, result.RegisteredUserCount);
         Assert.Equal(_addUsersToGroupResult.InvalidUserIds.Count, result.InvalidUserIds.Count);
+    }
+
+    [Fact]
+    public async Task RegisterRolesWithGroup_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _registrationService.RegisterRolesWithGroupAsync(null!));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Fact]
+    public async Task RegisterRolesWithGroup_Succeeds_WhenAllServicesSucceed()
+    {
+        var request = _fixture.Create<RegisterRolesWithGroupRequest>();
+        _assignRolesToGroupResult = new(AssignRolesToGroupResultCode.Success, string.Empty, request.GroupId);
+
+        var result = await _registrationService.RegisterRolesWithGroupAsync(request);
+
+        Assert.Equal(AssignRolesToGroupResultCode.Success, result.ResultCode);
+    }
+
+    [Fact]
+    public async Task RegisterRolesWithGroup_Fails_WhenGroupProcessorFails()
+    {
+        var request = _fixture.Create<RegisterRolesWithGroupRequest>();
+        _assignRolesToGroupResult = new(AssignRolesToGroupResultCode.GroupNotFoundError, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
+
+        var result = await _registrationService.RegisterRolesWithGroupAsync(request);
+
+        Assert.Equal(AssignRolesToGroupResultCode.GroupNotFoundError, result.ResultCode);
+        Assert.Equal(_assignRolesToGroupResult.Message, result.Message);
+        Assert.Equal(_assignRolesToGroupResult.AddedRoleCount, result.RegisteredRoleCount);
+        Assert.Equal(_assignRolesToGroupResult.InvalidRoleIds.Count, result.InvalidRoleIds.Count);
     }
 }

@@ -152,6 +152,16 @@ public class ProcessorBaseTests
         Assert.IsType<ArgumentNullException>(ex);
     }
 
+    [Fact]
+    public async Task LogRequestResultAspect_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _mockProcessorBase.LogRequestResultAspect(
+            TEST_CLASS_NAME, TEST_METHOD_NAME, null! as string,
+            async () => await Task.FromResult(1)));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
 
     [Fact]
     public async Task LogRequestResultAspect_ReturnsResult_WithRequestAndResult()
@@ -172,6 +182,16 @@ public class ProcessorBaseTests
     }
 
     [Fact]
+    public async Task LogRequestAspect_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _mockProcessorBase.LogRequestAspect(
+            TEST_CLASS_NAME, TEST_METHOD_NAME, null! as string,
+            () => Task.FromResult(1)));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Fact]
     public async Task LogRequestAspect_ReturnsResult_WithRequestAndResult()
     {
         var result = await _mockProcessorBase.LogRequestAspect(
@@ -187,6 +207,16 @@ public class ProcessorBaseTests
             TEST_CLASS_NAME, TEST_METHOD_NAME, string.Empty,
             () => throw new Exception()));
         Assert.NotNull(ex);
+    }
+
+    [Fact]
+    public async Task LogRequestAspectWithNoResult_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _mockProcessorBase.LogRequestAspect(
+            TEST_CLASS_NAME, TEST_METHOD_NAME, null! as string,
+            () => Task.CompletedTask));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
     }
 
     [Fact]

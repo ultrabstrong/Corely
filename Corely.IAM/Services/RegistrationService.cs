@@ -4,7 +4,6 @@ using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Processors;
 using Corely.IAM.BasicAuths.Models;
 using Corely.IAM.BasicAuths.Processors;
-using Corely.IAM.Groups.Enums;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
@@ -54,24 +53,24 @@ internal class RegistrationService : IRegistrationService
         {
             await _uowProvider.BeginAsync();
 
-            var createUserResult = await _userProcessor.CreateUserAsync(new(request.Username, request.Email));
-            if (createUserResult.ResultCode != CreateUserResultCode.Success)
+            var userResult = await _userProcessor.CreateUserAsync(new(request.Username, request.Email));
+            if (userResult.ResultCode != CreateUserResultCode.Success)
             {
                 _logger.LogInformation("Registering user failed for username {Username}", request.Username);
-                return new RegisterUserResult(RegisterUserResultCode.UserCreationError, createUserResult.Message, -1, -1);
+                return new RegisterUserResult(RegisterUserResultCode.UserCreationError, userResult.Message, -1, -1);
             }
 
-            var createAuthResult = await _basicAuthProcessor.UpsertBasicAuthAsync(new(createUserResult.CreatedId, request.Password));
-            if (createAuthResult.ResultCode != UpsertBasicAuthResultCode.Success)
+            var basicAuthResult = await _basicAuthProcessor.UpsertBasicAuthAsync(new(userResult.CreatedId, request.Password));
+            if (basicAuthResult.ResultCode != UpsertBasicAuthResultCode.Success)
             {
-                _logger.LogInformation("Registering auth failed for username {Username}", request.Username);
-                return new RegisterUserResult(RegisterUserResultCode.BasicAuthCreationError, createAuthResult.Message, -1, -1);
+                _logger.LogInformation("Registering basic auth failed for username {Username}", request.Username);
+                return new RegisterUserResult(RegisterUserResultCode.BasicAuthCreationError, basicAuthResult.Message, -1, -1);
             }
 
             await _uowProvider.CommitAsync();
             operationSucceeded = true;
-            _logger.LogInformation("User {Username} registered with Id {UserId}", request.Username, createUserResult.CreatedId);
-            return new RegisterUserResult(RegisterUserResultCode.Success, string.Empty, createUserResult.CreatedId, createAuthResult.CreatedId);
+            _logger.LogInformation("User {Username} registered with Id {UserId}", request.Username, userResult.CreatedId);
+            return new RegisterUserResult(RegisterUserResultCode.Success, string.Empty, userResult.CreatedId, basicAuthResult.CreatedId);
         }
         finally
         {
@@ -87,15 +86,15 @@ internal class RegistrationService : IRegistrationService
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         _logger.LogInformation("Registering account {AccountName}", request.AccountName);
 
-        var createAccountResult = await _accountProcessor.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
-        if (createAccountResult.ResultCode != CreateAccountResultCode.Success)
+        var result = await _accountProcessor.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
+        if (result.ResultCode != CreateAccountResultCode.Success)
         {
             _logger.LogInformation("Registering account failed for account name {AccountName}", request.AccountName);
-            return new RegisterAccountResult(createAccountResult.ResultCode, createAccountResult.Message, -1);
+            return new RegisterAccountResult(result.ResultCode, result.Message, -1);
         }
 
-        _logger.LogInformation("Account {AccountName} registered with Id {AccountId}", request.AccountName, createAccountResult.CreatedId);
-        return new RegisterAccountResult(createAccountResult.ResultCode, string.Empty, createAccountResult.CreatedId);
+        _logger.LogInformation("Account {AccountName} registered with Id {AccountId}", request.AccountName, result.CreatedId);
+        return new RegisterAccountResult(result.ResultCode, string.Empty, result.CreatedId);
     }
 
     public async Task<RegisterGroupResult> RegisterGroupAsync(RegisterGroupRequest request)
@@ -103,16 +102,16 @@ internal class RegistrationService : IRegistrationService
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         _logger.LogInformation("Registering group {GroupName}", request.GroupName);
 
-        var createGroupResult = await _groupProcessor.CreateGroupAsync(new(request.GroupName, request.OwnerAccountId));
-        if (createGroupResult.ResultCode != CreateGroupResultCode.Success)
+        var result = await _groupProcessor.CreateGroupAsync(new(request.GroupName, request.OwnerAccountId));
+        if (result.ResultCode != CreateGroupResultCode.Success)
         {
             _logger.LogInformation("Registering group failed for group name {GroupName}", request.GroupName);
-            return new RegisterGroupResult(createGroupResult.ResultCode, createGroupResult.Message, -1);
+            return new RegisterGroupResult(result.ResultCode, result.Message, -1);
         }
 
-        _logger.LogInformation("Group {GroupName} registered with Id {GroupId}", request.GroupName, createGroupResult.CreatedId);
+        _logger.LogInformation("Group {GroupName} registered with Id {GroupId}", request.GroupName, result.CreatedId);
 
-        return new RegisterGroupResult(createGroupResult.ResultCode, string.Empty, createGroupResult.CreatedId);
+        return new RegisterGroupResult(result.ResultCode, string.Empty, result.CreatedId);
     }
 
     public async Task<RegisterRoleResult> RegisterRoleAsync(RegisterRoleRequest request)
@@ -120,48 +119,79 @@ internal class RegistrationService : IRegistrationService
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         _logger.LogInformation("Registering role {RoleName}", request.RoleName);
 
-        var createRoleResult = await _roleProcessor.CreateRoleAsync(new(request.RoleName, request.OwnerAccountId));
-        if (createRoleResult.ResultCode != CreateRoleResultCode.Success)
+        var result = await _roleProcessor.CreateRoleAsync(new(request.RoleName, request.OwnerAccountId));
+        if (result.ResultCode != CreateRoleResultCode.Success)
         {
             _logger.LogInformation("Registering role failed for role name {RoleName}", request.RoleName);
-            return new RegisterRoleResult(createRoleResult.ResultCode, createRoleResult.Message, -1);
+            return new RegisterRoleResult(result.ResultCode, result.Message, -1);
         }
 
-        _logger.LogInformation("Role {RoleName} registered with Id {RoleId}", request.RoleName, createRoleResult.CreatedId);
+        _logger.LogInformation("Role {RoleName} registered with Id {RoleId}", request.RoleName, result.CreatedId);
 
-        return new RegisterRoleResult(createRoleResult.ResultCode, string.Empty, createRoleResult.CreatedId);
+        return new RegisterRoleResult(result.ResultCode, string.Empty, result.CreatedId);
     }
-
 
     public async Task<RegisterUsersWithGroupResult> RegisterUsersWithGroupAsync(RegisterUsersWithGroupRequest request)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         _logger.LogInformation("Registering user ids {@UserIds} with group id {GroupId}", request.UserIds, request.GroupId);
 
-        var addUsersToGroupResult = await _groupProcessor.AddUsersToGroupAsync(new(request.UserIds, request.GroupId));
-        if (addUsersToGroupResult.ResultCode != AddUsersToGroupResultCode.Success
-            && addUsersToGroupResult.ResultCode != AddUsersToGroupResultCode.PartialSuccess)
+        var result = await _groupProcessor.AddUsersToGroupAsync(new(request.UserIds, request.GroupId));
+        if (result.ResultCode != AddUsersToGroupResultCode.Success
+            && result.ResultCode != AddUsersToGroupResultCode.PartialSuccess)
         {
             _logger.LogInformation("Registering users with group failed for group id {GroupId}", request.GroupId);
             return new RegisterUsersWithGroupResult(
-                addUsersToGroupResult.ResultCode,
-                addUsersToGroupResult.Message ?? string.Empty,
-                addUsersToGroupResult.AddedUserCount,
-                addUsersToGroupResult.InvalidUserIds);
+                result.ResultCode,
+                result.Message ?? string.Empty,
+                result.AddedUserCount,
+                result.InvalidUserIds);
         }
 
         using (_logger.BeginScope(new Dictionary<string, object>
         {
-            ["@InvalidUserIds"] = addUsersToGroupResult.InvalidUserIds
+            ["@InvalidUserIds"] = result.InvalidUserIds
         }))
         {
-            _logger.LogInformation("Registered {RegisteredUserCount} users with group id {GroupId}", addUsersToGroupResult.AddedUserCount, request.GroupId);
+            _logger.LogInformation("Registered {RegisteredUserCount} users with group id {GroupId}", result.AddedUserCount, request.GroupId);
         }
 
         return new RegisterUsersWithGroupResult(
-            addUsersToGroupResult.ResultCode,
+            result.ResultCode,
             string.Empty,
             request.UserIds.Count,
-            addUsersToGroupResult.InvalidUserIds);
+            result.InvalidUserIds);
+    }
+
+    public async Task<RegisterRolesWithGroupResult> RegisterRolesWithGroupAsync(RegisterRolesWithGroupRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        _logger.LogInformation("Registering role ids {@RoleIds} with group id {GroupId}", request.RoleIds, request.GroupId);
+
+        var result = await _groupProcessor.AssignRolesToGroupAsync(new(request.RoleIds, request.GroupId));
+        if (result.ResultCode != AssignRolesToGroupResultCode.Success
+            && result.ResultCode != AssignRolesToGroupResultCode.PartialSuccess)
+        {
+            _logger.LogInformation("Registering roles with group failed for group id {GroupId}", request.GroupId);
+            return new RegisterRolesWithGroupResult(
+                result.ResultCode,
+                result.Message ?? string.Empty,
+                result.AddedRoleCount,
+                result.InvalidRoleIds);
+        }
+
+        using (_logger.BeginScope(new Dictionary<string, object>
+        {
+            ["@InvalidRoleIds"] = result.InvalidRoleIds
+        }))
+        {
+            _logger.LogInformation("Registered {RegisteredRoleCount} roles with group id {GroupId}", result.AddedRoleCount, request.GroupId);
+        }
+
+        return new RegisterRolesWithGroupResult(
+            result.ResultCode,
+            string.Empty,
+            request.RoleIds.Count,
+            result.InvalidRoleIds);
     }
 }

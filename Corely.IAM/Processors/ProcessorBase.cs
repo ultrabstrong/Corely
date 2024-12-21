@@ -74,6 +74,7 @@ internal abstract class ProcessorBase
     {
         try
         {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
             Logger.LogDebug("[{Class}] {Method} starting with request {@Request}", className, methodName, request);
             var result = await next();
             Logger.LogDebug("[{Class}] {Method} completed with result {@Result}", className, methodName, result);
@@ -90,6 +91,7 @@ internal abstract class ProcessorBase
     {
         try
         {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
             Logger.LogDebug("[{Class}] {Method} starting with request {@Request}", className, methodName, request);
             var result = await next();
             Logger.LogDebug("[{Class}] {Method} completed with result", className, methodName);
@@ -106,6 +108,7 @@ internal abstract class ProcessorBase
     {
         try
         {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
             Logger.LogDebug("[{Class}] {Method} starting with request {@Request}", className, methodName, request);
             await next();
             Logger.LogDebug("[{Class}] {Method} completed with result", className, methodName);

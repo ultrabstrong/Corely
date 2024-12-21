@@ -1,6 +1,12 @@
-﻿using Corely.IAM.Groups.Enums;
+﻿namespace Corely.IAM.Groups.Models;
 
-namespace Corely.IAM.Groups.Models;
+public enum AddUsersToGroupResultCode
+{
+    Success,
+    PartialSuccess,
+    InvalidUserIdsError,
+    GroupNotFoundError
+}
 
 internal record AddUsersToGroupResult(
     AddUsersToGroupResultCode ResultCode,
