@@ -45,26 +45,26 @@ public class SignInServiceTests : ProcessorBaseTests
 
     private Mock<IUserProcessor> GetMockUserProcessor()
     {
-        var userProcessorMock = new Mock<IUserProcessor>();
+        var mock = new Mock<IUserProcessor>();
 
-        userProcessorMock
+        mock
             .Setup(m => m.GetUserAsync(
                 It.IsAny<string>()))
             .ReturnsAsync(() => _user);
 
-        return userProcessorMock;
+        return mock;
     }
 
     private static Mock<IBasicAuthProcessor> GetMockBasicAuthProcessor()
     {
-        var basicAuthProcessorMock = new Mock<IBasicAuthProcessor>();
+        var mock = new Mock<IBasicAuthProcessor>();
 
-        basicAuthProcessorMock
+        mock
             .Setup(m => m.VerifyBasicAuthAsync(
                 It.IsAny<VerifyBasicAuthRequest>()))
             .ReturnsAsync(true);
 
-        return basicAuthProcessorMock;
+        return mock;
     }
 
 

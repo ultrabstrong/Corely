@@ -42,28 +42,28 @@ public class AccountProcessorTests
     [Fact]
     public async Task CreateAccountAsync_Fails_WhenAccountExists()
     {
-        var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
-        await _accountProcessor.CreateAccountAsync(createAccountRequest);
+        var request = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
+        await _accountProcessor.CreateAccountAsync(request);
 
-        var createAccountResult = await _accountProcessor.CreateAccountAsync(createAccountRequest);
+        var result = await _accountProcessor.CreateAccountAsync(request);
 
-        Assert.Equal(CreateAccountResultCode.AccountExistsError, createAccountResult.ResultCode);
+        Assert.Equal(CreateAccountResultCode.AccountExistsError, result.ResultCode);
     }
 
     [Fact]
     public async Task CreateAccount_ReturnsCreateAccountResult()
     {
         var userIdOfOwner = await CreateUserAsync();
-        var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, userIdOfOwner);
+        var request = new CreateAccountRequest(VALID_ACCOUNT_NAME, userIdOfOwner);
 
-        var createAccountResult = await _accountProcessor.CreateAccountAsync(createAccountRequest);
+        var result = await _accountProcessor.CreateAccountAsync(request);
 
-        Assert.Equal(CreateAccountResultCode.Success, createAccountResult.ResultCode);
+        Assert.Equal(CreateAccountResultCode.Success, result.ResultCode);
 
         // Verify account is linked to owner user id
         var accountRepo = _serviceFactory.GetRequiredService<IRepo<AccountEntity>>();
         var accountEntity = await accountRepo.GetAsync(
-            a => a.Id == createAccountResult.CreatedId,
+            a => a.Id == result.CreatedId,
             include: q => q.Include(a => a.Users));
         Assert.NotNull(accountEntity);
         Assert.NotNull(accountEntity.Users);
@@ -83,18 +83,18 @@ public class AccountProcessorTests
     [Fact]
     public async Task CreateAccount_Fails_WithInvalidUserId()
     {
-        var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, -1);
+        var request = new CreateAccountRequest(VALID_ACCOUNT_NAME, -1);
 
-        var createAccountResult = await _accountProcessor.CreateAccountAsync(createAccountRequest);
+        var result = await _accountProcessor.CreateAccountAsync(request);
 
-        Assert.Equal(CreateAccountResultCode.UserOwnerNotFoundError, createAccountResult.ResultCode);
+        Assert.Equal(CreateAccountResultCode.UserOwnerNotFoundError, result.ResultCode);
     }
 
     [Fact]
     public async Task CreateAccount_Throws_WithNullAccountName()
     {
-        var createAccountRequest = new CreateAccountRequest(null!, -1);
-        var ex = await Record.ExceptionAsync(() => _accountProcessor.CreateAccountAsync(createAccountRequest));
+        var request = new CreateAccountRequest(null!, -1);
+        var ex = await Record.ExceptionAsync(() => _accountProcessor.CreateAccountAsync(request));
 
         Assert.NotNull(ex);
         Assert.IsType<ValidationException>(ex);
@@ -111,10 +111,10 @@ public class AccountProcessorTests
     [Fact]
     public async Task GetAccountByAccountIdAsync_ReturnsAccount_WhenAccountExists()
     {
-        var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
-        var createAccountResult = await _accountProcessor.CreateAccountAsync(createAccountRequest);
+        var request = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
+        var result = await _accountProcessor.CreateAccountAsync(request);
 
-        var account = await _accountProcessor.GetAccountAsync(createAccountResult.CreatedId);
+        var account = await _accountProcessor.GetAccountAsync(result.CreatedId);
 
         Assert.NotNull(account);
         Assert.Equal(VALID_ACCOUNT_NAME, account.AccountName);
@@ -131,8 +131,8 @@ public class AccountProcessorTests
     [Fact]
     public async Task GetAccountByAccountNameAsync_ReturnsAccount_WhenAccountExists()
     {
-        var createAccountRequest = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
-        await _accountProcessor.CreateAccountAsync(createAccountRequest);
+        var request = new CreateAccountRequest(VALID_ACCOUNT_NAME, await CreateUserAsync());
+        await _accountProcessor.CreateAccountAsync(request);
 
         var account = await _accountProcessor.GetAccountAsync(VALID_ACCOUNT_NAME);
 

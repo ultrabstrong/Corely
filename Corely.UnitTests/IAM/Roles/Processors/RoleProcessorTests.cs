@@ -41,9 +41,9 @@ public class RoleProcessorTests
     [Fact]
     public async Task CreateRoleAsync_Fails_WhenAccountDoesNotExist()
     {
-        var createRoleRequest = new CreateRoleRequest(VALID_ROLE_NAME, _fixture.Create<int>());
+        var request = new CreateRoleRequest(VALID_ROLE_NAME, _fixture.Create<int>());
 
-        var result = await _roleProcessor.CreateRoleAsync(createRoleRequest);
+        var result = await _roleProcessor.CreateRoleAsync(request);
 
         Assert.Equal(CreateRoleResultCode.AccountNotFoundError, result.ResultCode);
     }
@@ -51,10 +51,10 @@ public class RoleProcessorTests
     [Fact]
     public async Task CreateRoleAsync_Fails_WhenRoleExists()
     {
-        var createRoleRequest = new CreateRoleRequest(VALID_ROLE_NAME, await CreateAccountAsync());
-        await _roleProcessor.CreateRoleAsync(createRoleRequest);
+        var request = new CreateRoleRequest(VALID_ROLE_NAME, await CreateAccountAsync());
+        await _roleProcessor.CreateRoleAsync(request);
 
-        var result = await _roleProcessor.CreateRoleAsync(createRoleRequest);
+        var result = await _roleProcessor.CreateRoleAsync(request);
 
         Assert.Equal(CreateRoleResultCode.RoleExistsError, result.ResultCode);
     }
@@ -63,16 +63,16 @@ public class RoleProcessorTests
     public async Task CreateRoleAsync_ReturnsCreateRoleResult()
     {
         var accountId = await CreateAccountAsync();
-        var createRoleRequest = new CreateRoleRequest(VALID_ROLE_NAME, accountId);
+        var request = new CreateRoleRequest(VALID_ROLE_NAME, accountId);
 
-        var createRoleResult = await _roleProcessor.CreateRoleAsync(createRoleRequest);
+        var result = await _roleProcessor.CreateRoleAsync(request);
 
-        Assert.Equal(CreateRoleResultCode.Success, createRoleResult.ResultCode);
+        Assert.Equal(CreateRoleResultCode.Success, result.ResultCode);
 
         // Verify role is linked to account id
         var roleRepo = _serviceFactory.GetRequiredService<IRepo<RoleEntity>>();
         var roleEntity = await roleRepo.GetAsync(
-            r => r.Id == createRoleResult.CreatedId,
+            r => r.Id == result.CreatedId,
             include: q => q.Include(r => r.Account));
         Assert.NotNull(roleEntity);
         //Assert.NotNull(roleEntity.Account); // Account not available for memory mock repo
@@ -91,9 +91,9 @@ public class RoleProcessorTests
     [Theory, ClassData(typeof(NullEmptyAndWhitespace))]
     public async Task CreateRoleAsync_Throws_WhenRoleNameInvalid(string roleName)
     {
-        var createRoleRequest = new CreateRoleRequest(roleName, await CreateAccountAsync());
+        var request = new CreateRoleRequest(roleName, await CreateAccountAsync());
 
-        var ex = Record.ExceptionAsync(() => _roleProcessor.CreateRoleAsync(createRoleRequest));
+        var ex = Record.ExceptionAsync(() => _roleProcessor.CreateRoleAsync(request));
 
         Assert.NotNull(ex);
         Assert.IsType<ValidationException>(await ex);
