@@ -37,9 +37,17 @@ internal sealed class UserEntityConfiguration : EntityConfigurationBase<UserEnti
             .HasForeignKey<BasicAuthEntity>(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(e => e.Accounts)
+            .WithMany(e => e.Users)
+            .UsingEntity(j => j.ToTable("UserAccounts"));
+
         builder.HasMany(e => e.Groups)
             .WithMany(e => e.Users)
             .UsingEntity(j => j.ToTable("UserGroups"));
+
+        builder.HasMany(e => e.Roles)
+            .WithMany(e => e.Users)
+            .UsingEntity(j => j.ToTable("UserRoles"));
 
         builder.HasMany(e => e.SymmetricKeys)
             .WithOne()

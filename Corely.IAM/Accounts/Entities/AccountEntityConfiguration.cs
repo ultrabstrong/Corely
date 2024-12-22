@@ -21,9 +21,6 @@ internal sealed class AccountEntityConfiguration : EntityConfigurationBase<Accou
         builder.HasIndex(e => e.AccountName)
             .IsUnique();
 
-        builder.HasMany(e => e.Users)
-            .WithMany(e => e.Accounts);
-
         builder.HasMany(e => e.Groups)
             .WithOne(e => e.Account)
             .HasForeignKey(p => p.AccountId)
