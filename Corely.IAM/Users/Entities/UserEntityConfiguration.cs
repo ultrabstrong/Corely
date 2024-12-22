@@ -38,7 +38,8 @@ internal sealed class UserEntityConfiguration : EntityConfigurationBase<UserEnti
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(e => e.Groups)
-            .WithMany(e => e.Users);
+            .WithMany(e => e.Users)
+            .UsingEntity(j => j.ToTable("UserGroups"));
 
         builder.HasMany(e => e.SymmetricKeys)
             .WithOne()

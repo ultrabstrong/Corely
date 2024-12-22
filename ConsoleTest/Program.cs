@@ -57,6 +57,9 @@ internal class Program
             var registerRolesWithGroupRequest = new RegisterRolesWithGroupRequest([registerRoleResult.CreatedRoleId, 9999, 8888], registerGroupResult.CreatedGroupId);
             var registerRolesWithGroupResult = await registrationService.RegisterRolesWithGroupAsync(registerRolesWithGroupRequest);
 
+            var registerRolesWithUserRequest = new RegisterRolesWithUserRequest([registerRoleResult.CreatedRoleId, 9999, 8888], registerUserResult.CreatedUserId);
+            var registerRolesWithUserResult = await registrationService.RegisterRolesWithUserAsync(registerRolesWithUserRequest);
+
             var signInService = host.Services.GetRequiredService<ISignInService>();
             var signInRequest = new SignInRequest("un1", "admin");
             var signInResult = await signInService.SignInAsync(signInRequest);

@@ -11,4 +11,5 @@ internal interface IUserProcessor
     Task<string?> GetUserAuthTokenAsync(int userId);
     Task<bool> IsUserAuthTokenValidAsync(int userId, string authToken);
     Task<string?> GetAsymmetricSignatureVerificationKeyAsync(int userId);
+    Task<AssignRolesToUserResult> AssignRolesToUserAsync(AssignRolesToUserRequest request);
 }

@@ -67,7 +67,6 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
         return await LogRequestResultAspect(nameof(GroupProcessor), nameof(AddUsersToGroupAsync), request, async () =>
         {
             var groupEntity = await _groupRepo.GetAsync(g => g.Id == request.GroupId);
-
             if (groupEntity == null)
             {
                 Logger.LogWarning("Group with Id {GroupId} not found", request.GroupId);
@@ -95,7 +94,6 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
             await _groupRepo.UpdateAsync(groupEntity);
 
             var invalidUserIds = request.UserIds.Except(userEntities.Select(u => u.Id)).ToList();
-
             if (invalidUserIds.Count > 0)
             {
                 Logger.LogInformation("Some user ids not found or already exist in group : {@InvalidUserIds}", invalidUserIds);
@@ -112,7 +110,6 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
         return await LogRequestResultAspect(nameof(GroupProcessor), nameof(AssignRolesToGroupAsync), request, async () =>
         {
             var groupEntity = await _groupRepo.GetAsync(g => g.Id == request.GroupId);
-
             if (groupEntity == null)
             {
                 Logger.LogWarning("Group with Id {GroupId} not found", request.GroupId);
@@ -126,9 +123,9 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
 
             if (roleEntities.Count == 0)
             {
-                Logger.LogInformation("All role ids not found or already exist in group : {@InvalidRoleIds}", request.RoleIds);
+                Logger.LogInformation("All role ids not found or already assigned to group : {@InvalidRoleIds}", request.RoleIds);
                 return new AssignRolesToGroupResult(AssignRolesToGroupResultCode.InvalidRoleIdsError,
-                    "All role ids not found or already exist in group", 0, request.RoleIds);
+                    "All role ids not found or already assigned to group", 0, request.RoleIds);
             }
 
             groupEntity.Roles ??= [];
@@ -140,12 +137,11 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
             await _groupRepo.UpdateAsync(groupEntity);
 
             var invalidRoleIds = request.RoleIds.Except(roleEntities.Select(r => r.Id)).ToList();
-
             if (invalidRoleIds.Count > 0)
             {
-                Logger.LogInformation("Some role ids not found or already exist in group : {@InvalidRoleIds}", invalidRoleIds);
+                Logger.LogInformation("Some role ids not found or already assigned to group : {@InvalidRoleIds}", invalidRoleIds);
                 return new AssignRolesToGroupResult(AssignRolesToGroupResultCode.PartialSuccess,
-                    "Some role ids not found or already exist in group", roleEntities.Count, invalidRoleIds);
+                    "Some role ids not found or already assigned to group", roleEntities.Count, invalidRoleIds);
             }
 
             return new AssignRolesToGroupResult(AssignRolesToGroupResultCode.Success, string.Empty, roleEntities.Count, invalidRoleIds);

@@ -179,7 +179,6 @@ public class GroupProcessorTests
         Assert.Equal(AddUsersToGroupResultCode.Success, result.ResultCode);
 
         var groupRepo = _serviceFactory.GetRequiredService<IRepo<GroupEntity>>();
-
         var groupEntity = await groupRepo.GetAsync(
             g => g.Id == groupId,
             include: q => q.Include(g => g.Users));
@@ -252,7 +251,7 @@ public class GroupProcessorTests
         var result = await _groupProcessor.AssignRolesToGroupAsync(request);
 
         Assert.Equal(AssignRolesToGroupResultCode.InvalidRoleIdsError, result.ResultCode);
-        Assert.Equal("All role ids not found or already exist in group", result.Message);
+        Assert.Equal("All role ids not found or already assigned to group", result.Message);
     }
 
     [Fact]
@@ -267,7 +266,6 @@ public class GroupProcessorTests
         Assert.Equal(AssignRolesToGroupResultCode.Success, result.ResultCode);
 
         var groupRepo = _serviceFactory.GetRequiredService<IRepo<GroupEntity>>();
-
         var groupEntity = await groupRepo.GetAsync(
             g => g.Id == groupId,
             include: q => q.Include(g => g.Roles));
@@ -278,7 +276,7 @@ public class GroupProcessorTests
     }
 
     [Fact]
-    public async Task AssignRolesToGroupAsync_PartiallySucceeds_WhenSomeRolesExistInGroup()
+    public async Task AssignRolesToGroupAsync_PartiallySucceeds_WhenSomeRolesAssignedToGroup()
     {
         var groupId = await CreateGroupAsync();
         var existingRoleId = await CreateRoleAsync(groupId);
@@ -288,14 +286,14 @@ public class GroupProcessorTests
         var result = await _groupProcessor.AssignRolesToGroupAsync(request);
 
         Assert.Equal(AssignRolesToGroupResultCode.PartialSuccess, result.ResultCode);
-        Assert.Equal("Some role ids not found or already exist in group", result.Message);
+        Assert.Equal("Some role ids not found or already assigned to group", result.Message);
         Assert.Equal(1, result.AddedRoleCount);
         Assert.NotEmpty(result.InvalidRoleIds);
         Assert.Contains(existingRoleId, result.InvalidRoleIds);
     }
 
     [Fact]
-    public async Task AssignRolesToGroupAsync_ReportsInvalidRoleIds_WhenRolesDoNotExist()
+    public async Task AssignRolesToGroupAsync_ReportsInvalidRoleIds_WhenSomeRolesDoNotExist()
     {
         var roleId = await CreateRoleAsync();
         var groupId = await CreateGroupAsync();
@@ -309,7 +307,7 @@ public class GroupProcessorTests
     }
 
     [Fact]
-    public async Task AssignRolesToGroupAsync_Fails_WhenAllRolesAlreadyExistInGroup()
+    public async Task AssignRolesToGroupAsync_Fails_WhenAllRolesAlreadyAssignedToGroup()
     {
         var groupId = await CreateGroupAsync();
         var roleId = await CreateRoleAsync(groupId);
@@ -319,7 +317,7 @@ public class GroupProcessorTests
         var result = await _groupProcessor.AssignRolesToGroupAsync(request);
 
         Assert.Equal(AssignRolesToGroupResultCode.InvalidRoleIdsError, result.ResultCode);
-        Assert.Equal("All role ids not found or already exist in group", result.Message);
+        Assert.Equal("All role ids not found or already assigned to group", result.Message);
         Assert.NotEmpty(result.InvalidRoleIds);
         Assert.Contains(roleId, result.InvalidRoleIds);
     }

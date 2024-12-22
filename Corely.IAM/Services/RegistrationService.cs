@@ -194,4 +194,36 @@ internal class RegistrationService : IRegistrationService
             request.RoleIds.Count,
             result.InvalidRoleIds);
     }
+
+    public async Task<RegisterRolesWithUserResult> RegisterRolesWithUserAsync(RegisterRolesWithUserRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        _logger.LogInformation("Registering role ids {@RoleIds} with user id {UserId}", request.RoleIds, request.UserId);
+
+        var result = await _userProcessor.AssignRolesToUserAsync(new(request.RoleIds, request.UserId));
+        if (result.ResultCode != AssignRolesToUserResultCode.Success
+            && result.ResultCode != AssignRolesToUserResultCode.PartialSuccess)
+        {
+            _logger.LogInformation("Registering roles with user failed for user id {UserId}", request.UserId);
+            return new RegisterRolesWithUserResult(
+                result.ResultCode,
+                result.Message ?? string.Empty,
+                result.AddedRoleCount,
+                result.InvalidRoleIds);
+        }
+
+        using (_logger.BeginScope(new Dictionary<string, object>
+        {
+            ["@InvalidRoleIds"] = result.InvalidRoleIds
+        }))
+        {
+            _logger.LogInformation("Registered {RegisteredRoleCount} roles with user id {UserId}", result.AddedRoleCount, request.UserId);
+        }
+
+        return new RegisterRolesWithUserResult(
+            result.ResultCode,
+            string.Empty,
+            request.RoleIds.Count,
+            result.InvalidRoleIds);
+    }
 }

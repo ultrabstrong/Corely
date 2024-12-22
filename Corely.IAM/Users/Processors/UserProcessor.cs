@@ -2,6 +2,7 @@
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Mappers;
 using Corely.IAM.Processors;
+using Corely.IAM.Roles.Entities;
 using Corely.IAM.Security.Enums;
 using Corely.IAM.Security.Processors;
 using Corely.IAM.Users.Entities;
@@ -18,10 +19,12 @@ namespace Corely.IAM.Users.Processors;
 internal class UserProcessor : ProcessorBase, IUserProcessor
 {
     private readonly IRepo<UserEntity> _userRepo;
+    private readonly IReadonlyRepo<RoleEntity> _roleRepo;
     private readonly ISecurityProcessor _securityProcessor;
 
     public UserProcessor(
         IRepo<UserEntity> userRepo,
+        IReadonlyRepo<RoleEntity> roleRepo,
         ISecurityProcessor securityProcessor,
         IMapProvider mapProvider,
         IValidationProvider validationProvider,
@@ -29,6 +32,7 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
         : base(mapProvider, validationProvider, logger)
     {
         _userRepo = userRepo.ThrowIfNull(nameof(userRepo));
+        _roleRepo = roleRepo.ThrowIfNull(nameof(roleRepo));
         _securityProcessor = securityProcessor.ThrowIfNull(nameof(securityProcessor));
     }
 
@@ -221,5 +225,47 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
         }
 
         return signatureKey;
+    }
+
+    public async Task<AssignRolesToUserResult> AssignRolesToUserAsync(AssignRolesToUserRequest request)
+    {
+        return await LogRequestResultAspect(nameof(UserProcessor), nameof(AssignRolesToUserAsync), request, async () =>
+        {
+            var userEntity = await _userRepo.GetAsync(u => u.Id == request.UserId);
+            if (userEntity == null)
+            {
+                Logger.LogWarning("User with Id {UserId} not found", request.UserId);
+                return new AssignRolesToUserResult(AssignRolesToUserResultCode.UserNotFoundError,
+                    $"User with Id {request.UserId} not found", 0, request.RoleIds);
+            }
+            var roleEntities = await _roleRepo.ListAsync(
+                r => request.RoleIds.Contains(r.Id)
+                && !r.Users!.Any(u => u.Id == userEntity.Id));
+
+            if (roleEntities.Count == 0)
+            {
+                Logger.LogInformation("All role ids not found or already assigned to user : {@InvalidRoleIds}", request.RoleIds);
+                return new AssignRolesToUserResult(AssignRolesToUserResultCode.InvalidRoleIdsError,
+                    "All role ids not found or already assigned to user", 0, request.RoleIds);
+            }
+
+            userEntity.Roles ??= [];
+            foreach (var role in roleEntities)
+            {
+                userEntity.Roles.Add(role);
+            }
+
+            await _userRepo.UpdateAsync(userEntity);
+
+            var invalidRoleIds = request.RoleIds.Except(roleEntities.Select(r => r.Id)).ToList();
+            if (invalidRoleIds.Count > 0)
+            {
+                Logger.LogInformation("Some role ids not found or already assigned to user : {@InvalidRoleIds}", invalidRoleIds);
+                return new AssignRolesToUserResult(AssignRolesToUserResultCode.PartialSuccess,
+                    "Some role ids not found or already assigned to user", roleEntities.Count, invalidRoleIds);
+            }
+
+            return new AssignRolesToUserResult(AssignRolesToUserResultCode.Success, string.Empty, roleEntities.Count, invalidRoleIds);
+        });
     }
 }

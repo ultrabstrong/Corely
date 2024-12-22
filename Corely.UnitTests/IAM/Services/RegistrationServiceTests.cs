@@ -37,7 +37,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
 
     private AddUsersToGroupResult _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, 0);
     private AssignRolesToGroupResult _assignRolesToGroupResult = new(AssignRolesToGroupResultCode.Success, string.Empty, 0);
-
+    private AssignRolesToUserResult _assignRolesToUserResult = new(AssignRolesToUserResultCode.Success, string.Empty, 0);
     public RegistrationServiceTests() : base()
     {
         _accountProcessorMock = GetMockAccountProcessor();
@@ -78,6 +78,11 @@ public class RegistrationServiceTests : ProcessorBaseTests
                 It.IsAny<CreateUserRequest>()))
             .ReturnsAsync(() =>
                 new CreateUserResult(_createUserResultCode, string.Empty, _fixture.Create<int>()));
+
+        mock
+            .Setup(m => m.AssignRolesToUserAsync(
+                It.IsAny<AssignRolesToUserRequest>()))
+            .ReturnsAsync(() => _assignRolesToUserResult);
 
         return mock;
     }
@@ -328,5 +333,38 @@ public class RegistrationServiceTests : ProcessorBaseTests
         Assert.Equal(_assignRolesToGroupResult.Message, result.Message);
         Assert.Equal(_assignRolesToGroupResult.AddedRoleCount, result.RegisteredRoleCount);
         Assert.Equal(_assignRolesToGroupResult.InvalidRoleIds.Count, result.InvalidRoleIds.Count);
+    }
+
+    [Fact]
+    public async Task RegisterRolesWithUser_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _registrationService.RegisterRolesWithUserAsync(null!));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Fact]
+    public async Task RegisterRolesWithUser_Succeeds_WhenAllServicesSucceed()
+    {
+        var request = _fixture.Create<RegisterRolesWithUserRequest>();
+        _assignRolesToUserResult = new(AssignRolesToUserResultCode.Success, string.Empty, request.UserId);
+
+        var result = await _registrationService.RegisterRolesWithUserAsync(request);
+
+        Assert.Equal(AssignRolesToUserResultCode.Success, result.ResultCode);
+    }
+
+    [Fact]
+    public async Task RegisterRolesWithUser_Fails_WhenUserProcessorFails()
+    {
+        var request = _fixture.Create<RegisterRolesWithUserRequest>();
+        _assignRolesToUserResult = new(AssignRolesToUserResultCode.UserNotFoundError, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
+
+        var result = await _registrationService.RegisterRolesWithUserAsync(request);
+
+        Assert.Equal(AssignRolesToUserResultCode.UserNotFoundError, result.ResultCode);
+        Assert.Equal(_assignRolesToUserResult.Message, result.Message);
+        Assert.Equal(_assignRolesToUserResult.AddedRoleCount, result.RegisteredRoleCount);
+        Assert.Equal(_assignRolesToUserResult.InvalidRoleIds.Count, result.InvalidRoleIds.Count);
     }
 }
