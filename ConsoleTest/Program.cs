@@ -54,7 +54,6 @@ internal class Program
             var signInService = host.Services.GetRequiredService<ISignInService>();
             var signInRequest = new SignInRequest("un1", "admin");
             var signInResult = await signInService.SignInAsync(signInRequest);
-
         }
         catch (Exception ex)
         {

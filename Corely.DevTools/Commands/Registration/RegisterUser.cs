@@ -29,7 +29,7 @@ internal partial class Registration : CommandBase
         {
             if (Create)
             {
-                CreateSampleJson();
+                CreateSampleJson(RequestJsonFile, new RegisterUserRequest("userName", "email", "password"));
             }
             else
             {
@@ -37,47 +37,18 @@ internal partial class Registration : CommandBase
             }
         }
 
-        private void CreateSampleJson()
-        {
-            FileInfo file = new(RequestJsonFile);
-
-            if (!Directory.Exists(file.DirectoryName))
-            {
-                Console.WriteLine($"Directory not found: {file.DirectoryName}");
-                return;
-            }
-
-            var registerRequest = new RegisterUserRequest("userName", "email", "password");
-            var json = JsonSerializer.Serialize(registerRequest);
-            File.WriteAllText(RequestJsonFile, json);
-
-            Console.WriteLine($"Sample json file created at: {RequestJsonFile}");
-        }
-
         private async Task RegisterUserAsync()
         {
-
-            if (!File.Exists(RequestJsonFile))
-            {
-                Console.WriteLine($"File not found: {RequestJsonFile}");
-                return;
-            }
-
-            var json = File.ReadAllText(RequestJsonFile);
-
-            var registerRequest = JsonSerializer.Deserialize<RegisterUserRequest>(json);
-
-            if (registerRequest == null)
-            {
-                Console.WriteLine($"Invalid json: {RequestJsonFile}");
-                return;
-            }
+            var request = ReadRequestJson<RegisterUserRequest>(RequestJsonFile);
+            if (request == null) return;
 
             try
             {
-                var result = await _registrationService.RegisterUserAsync(registerRequest);
-
-                Console.WriteLine(JsonSerializer.Serialize(result));
+                foreach (var registerRequest in request)
+                {
+                    var result = await _registrationService.RegisterUserAsync(registerRequest);
+                    Console.WriteLine(JsonSerializer.Serialize(result));
+                }
             }
             catch (ValidationException ex)
             {

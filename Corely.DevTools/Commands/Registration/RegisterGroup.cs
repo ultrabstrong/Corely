@@ -7,11 +7,12 @@ using System.Text.Json;
 
 namespace Corely.DevTools.Commands.Registration;
 
+
 internal partial class Registration : CommandBase
 {
-    internal class RegisterAccount : CommandBase
+    internal class RegisterGroup : CommandBase
     {
-        [Argument("Filepath to register account request json", true)]
+        [Argument("Filepath to register group request json", true)]
         private string RequestJsonFile { get; init; } = null!;
 
         [Option("-c", "--create", Description = "Create sample json file at path")]
@@ -19,7 +20,7 @@ internal partial class Registration : CommandBase
 
         private readonly IRegistrationService _registrationService;
 
-        public RegisterAccount(IRegistrationService registrationService) : base("account", "Register a new account")
+        public RegisterGroup(IRegistrationService registrationService) : base("group", "Register a new group")
         {
             _registrationService = registrationService.ThrowIfNull(nameof(registrationService));
         }
@@ -28,25 +29,24 @@ internal partial class Registration : CommandBase
         {
             if (Create)
             {
-
-                CreateSampleJson(RequestJsonFile, new RegisterAccountRequest("accountName", 1));
+                CreateSampleJson(RequestJsonFile, new RegisterGroupRequest("groupName", 1));
             }
             else
             {
-                await RegisterAccountAsync();
+                await RegisterGroupAsync();
             }
         }
 
-        private async Task RegisterAccountAsync()
+        private async Task RegisterGroupAsync()
         {
-            var request = ReadRequestJson<RegisterAccountRequest>(RequestJsonFile);
+            var request = ReadRequestJson<RegisterGroupRequest>(RequestJsonFile);
             if (request == null) return;
 
             try
             {
                 foreach (var registerRequest in request)
                 {
-                    var result = await _registrationService.RegisterAccountAsync(registerRequest);
+                    var result = await _registrationService.RegisterGroupAsync(registerRequest);
                     Console.WriteLine(JsonSerializer.Serialize(result));
                 }
             }
