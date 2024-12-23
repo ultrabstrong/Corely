@@ -88,10 +88,9 @@ public class UserProcessorTests
     }
 
     [Fact]
-    public async Task GetUserByUseridAsync_ReturnsNull_WhenUserDNE()
+    public async Task GetUserByUseridAsync_ReturnsNull_WhenUserNotFound()
     {
         var user = await _userProcessor.GetUserAsync(_fixture.Create<int>());
-
         Assert.Null(user);
     }
 
@@ -109,10 +108,9 @@ public class UserProcessorTests
     }
 
     [Fact]
-    public async Task GetUserByUsernameAsync_ReturnsNull_WhenUserDNE()
+    public async Task GetUserByUsernameAsync_ReturnsNull_WhenUserNotFound()
     {
         var user = await _userProcessor.GetUserAsync(_fixture.Create<string>());
-
         Assert.Null(user);
     }
 

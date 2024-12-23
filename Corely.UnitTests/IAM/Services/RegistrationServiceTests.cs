@@ -134,6 +134,12 @@ public class RegistrationServiceTests : ProcessorBaseTests
             .ReturnsAsync(() =>
                 new CreateRoleResult(_createRoleResultCode, string.Empty, _fixture.Create<int>()));
 
+        mock
+            .Setup(m => m.GetRoleAsync(
+                It.IsAny<string>(),
+                It.IsAny<int>()))
+            .ReturnsAsync(() => _fixture.Create<Role>());
+
         return mock;
     }
 
@@ -189,22 +195,33 @@ public class RegistrationServiceTests : ProcessorBaseTests
 
         var result = await _registrationService.RegisterAccountAsync(request);
 
-        Assert.Equal(CreateAccountResultCode.Success, result.ResultCode);
-        _unitOfWorkProviderMock.Verify(m => m.CommitAsync(), Times.Once);
+        Assert.Equal(RegisterAccountResultCode.Success, result.ResultCode);
         _roleProcessorMock.Verify(m => m.CreateDefaultSystemRolesAsync(It.IsAny<int>()), Times.Once);
+        _userProcessorMock.Verify(m => m.AssignRolesToUserAsync(It.IsAny<AssignRolesToUserRequest>()), Times.Once);
+        _unitOfWorkProviderMock.Verify(m => m.CommitAsync(), Times.Once);
     }
 
-    [Theory]
-    [InlineData(CreateAccountResultCode.AccountExistsError)]
-    [InlineData(CreateAccountResultCode.UserOwnerNotFoundError)]
-    public async Task RegisterAccountAsync_Fails_WhenAccountProcessorFails(CreateAccountResultCode createAccountResultCode)
+    [Fact]
+    public async Task RegisterAccountAsync_Fails_WhenAccountProcessorFails()
     {
-        _createAccountResultCode = createAccountResultCode;
+        _createAccountResultCode = CreateAccountResultCode.AccountExistsError;
         var request = _fixture.Create<RegisterAccountRequest>();
 
         var result = await _registrationService.RegisterAccountAsync(request);
 
-        Assert.Equal(createAccountResultCode, result.ResultCode);
+        Assert.Equal(RegisterAccountResultCode.AccountCreationError, result.ResultCode);
+        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task RegisterAccountAsync_Fails_WhenAssignOwnerRoleFails()
+    {
+        _assignRolesToUserResult = new(AssignRolesToUserResultCode.UserNotFoundError, string.Empty, -1);
+        var request = _fixture.Create<RegisterAccountRequest>();
+
+        var result = await _registrationService.RegisterAccountAsync(request);
+
+        Assert.Equal(RegisterAccountResultCode.SystemRoleAssignmentError, result.ResultCode);
         _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
     }
 

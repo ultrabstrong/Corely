@@ -114,4 +114,44 @@ public class RoleProcessorTests
         Assert.Contains(roles, r => r.Name == RoleConstants.ADMIN_ROLE_NAME);
         Assert.Contains(roles, r => r.Name == RoleConstants.USER_ROLE_NAME);
     }
+
+    [Fact]
+    public async Task GetRoleByRoleIdAsync_ReturnsNull_WhenRoleNotFound()
+    {
+        var role = await _roleProcessor.GetRoleAsync(-1);
+        Assert.Null(role);
+    }
+
+    [Fact]
+    public async Task GetRoleByRoleIdAsync_ReturnsRole_WhenRoleExists()
+    {
+        var accountId = await CreateAccountAsync();
+        var request = new CreateRoleRequest(VALID_ROLE_NAME, accountId);
+        var result = await _roleProcessor.CreateRoleAsync(request);
+
+        var role = await _roleProcessor.GetRoleAsync(result.CreatedId);
+
+        Assert.NotNull(role);
+        Assert.Equal(VALID_ROLE_NAME, role!.Name);
+    }
+
+    [Fact]
+    public async Task GetRoleByRoleNameAsync_ReturnsNull_WhenRoleNotFound()
+    {
+        var role = await _roleProcessor.GetRoleAsync("nonexistent", -1);
+        Assert.Null(role);
+    }
+
+    [Fact]
+    public async Task GetRoleByRoleNameAsync_ReturnsRole_WhenRoleExists()
+    {
+        var accountId = await CreateAccountAsync();
+        var request = new CreateRoleRequest(VALID_ROLE_NAME, accountId);
+        await _roleProcessor.CreateRoleAsync(request);
+
+        var role = await _roleProcessor.GetRoleAsync(VALID_ROLE_NAME, accountId);
+
+        Assert.NotNull(role);
+        Assert.Equal(VALID_ROLE_NAME, role!.Name);
+    }
 }

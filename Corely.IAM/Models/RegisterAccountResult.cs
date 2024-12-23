@@ -1,8 +1,13 @@
-﻿using Corely.IAM.Accounts.Models;
+﻿namespace Corely.IAM.Models;
 
-namespace Corely.IAM.Models;
+public enum RegisterAccountResultCode
+{
+    Success,
+    AccountCreationError,
+    SystemRoleAssignmentError
+}
 
 public record RegisterAccountResult(
-    CreateAccountResultCode ResultCode,
+    RegisterAccountResultCode ResultCode,
     string? Message,
     int CreatedAccountId);

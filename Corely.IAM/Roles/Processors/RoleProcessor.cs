@@ -54,27 +54,62 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
         });
     }
 
-    public async Task CreateDefaultSystemRolesAsync(int ownerAccountID)
+    public async Task CreateDefaultSystemRolesAsync(int ownerAccountId)
     {
         RoleEntity[] roleEntities =
             [
                 new() {
-                    AccountId = ownerAccountID,
+                    AccountId = ownerAccountId,
                     Name = RoleConstants.OWNER_ROLE_NAME,
                     IsSystemDefined = true,
                 },
                 new() {
-                    AccountId = ownerAccountID,
+                    AccountId = ownerAccountId,
                     Name = RoleConstants.ADMIN_ROLE_NAME,
                     IsSystemDefined = true,
                 },
                 new() {
-                    AccountId = ownerAccountID,
+                    AccountId = ownerAccountId,
                     Name = RoleConstants.USER_ROLE_NAME,
                     IsSystemDefined = true,
                 }
             ];
 
         await _roleRepo.CreateAsync(roleEntities);
+    }
+
+    public async Task<Role?> GetRoleAsync(int roleId)
+    {
+        return await LogRequestAspect(nameof(RoleProcessor), nameof(GetRoleAsync), roleId, async () =>
+        {
+            var roleEntity = await _roleRepo.GetAsync(roleId);
+
+            if (roleEntity == null)
+            {
+                Logger.LogInformation("Role with Id {RoleId} not found", roleId);
+                return null;
+            }
+
+            var role = MapTo<Role>(roleEntity);
+            return role;
+        });
+    }
+
+    public Task<Role?> GetRoleAsync(string roleName, int ownerAccountId)
+    {
+        return LogRequestAspect(nameof(RoleProcessor), nameof(GetRoleAsync), roleName, async () =>
+        {
+            var roleEntity = await _roleRepo.GetAsync(r =>
+                r.Name == roleName && r.AccountId == ownerAccountId);
+
+            if (roleEntity == null)
+            {
+                Logger.LogInformation("Role with name {RoleName} not found", roleName);
+                return null;
+            }
+
+            var role = MapTo<Role>(roleEntity);
+            return role;
+        });
     }
 }

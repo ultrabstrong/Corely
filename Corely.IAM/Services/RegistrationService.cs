@@ -7,6 +7,7 @@ using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
+using Corely.IAM.Roles.Constants;
 using Corely.IAM.Roles.Models;
 using Corely.IAM.Roles.Processors;
 using Corely.IAM.Users.Models;
@@ -91,19 +92,27 @@ internal class RegistrationService : IRegistrationService
         {
             await _uowProvider.BeginAsync();
 
-            var result = await _accountProcessor.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
-            if (result.ResultCode != CreateAccountResultCode.Success)
+            var createAccountResult = await _accountProcessor.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
+            if (createAccountResult.ResultCode != CreateAccountResultCode.Success)
             {
                 _logger.LogInformation("Registering account failed for account name {AccountName}", request.AccountName);
-                return new RegisterAccountResult(result.ResultCode, result.Message, -1);
+                return new RegisterAccountResult(RegisterAccountResultCode.AccountCreationError, createAccountResult.Message, -1);
             }
 
-            await _roleProcessor.CreateDefaultSystemRolesAsync(result.CreatedId);
+            await _roleProcessor.CreateDefaultSystemRolesAsync(createAccountResult.CreatedId);
+            var ownerRole = await _roleProcessor.GetRoleAsync(RoleConstants.OWNER_ROLE_NAME, createAccountResult.CreatedId);
+
+            var assignRoleResult = await _userProcessor.AssignRolesToUserAsync(new([ownerRole!.Id], request.OwnerUserId));
+            if (assignRoleResult.ResultCode != AssignRolesToUserResultCode.Success)
+            {
+                _logger.LogInformation("Assigning owner role to user failed for account name {AccountName}", request.AccountName);
+                return new RegisterAccountResult(RegisterAccountResultCode.SystemRoleAssignmentError, assignRoleResult.Message, -1);
+            }
 
             await _uowProvider.CommitAsync();
             uowSucceeded = true;
-            _logger.LogInformation("Account {AccountName} registered with Id {AccountId}", request.AccountName, result.CreatedId);
-            return new RegisterAccountResult(result.ResultCode, string.Empty, result.CreatedId);
+            _logger.LogInformation("Account {AccountName} registered with Id {AccountId}", request.AccountName, createAccountResult.CreatedId);
+            return new RegisterAccountResult(RegisterAccountResultCode.Success, string.Empty, createAccountResult.CreatedId);
         }
         finally
         {
