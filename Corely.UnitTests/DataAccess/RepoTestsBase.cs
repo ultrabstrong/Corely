@@ -23,6 +23,15 @@ public abstract class RepoTestsBase : ReadonlyRepoTestsBase
     }
 
     [Fact]
+    public async Task Create_ThenList_ReturnsAllAdded()
+    {
+        var entities = Fixture.CreateMany<EntityFixture>().ToArray();
+        await Repo.CreateAsync(entities);
+        var result = await Repo.ListAsync();
+        result.Should().BeEquivalentTo(entities);
+    }
+
+    [Fact]
     public async Task Create_ThenUpdate_Updates()
     {
         var entity = Fixture.Create<EntityFixture>();

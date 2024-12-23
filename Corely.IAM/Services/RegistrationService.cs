@@ -48,7 +48,7 @@ internal class RegistrationService : IRegistrationService
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         _logger.LogInformation("Registering user {User}", request.Username);
 
-        bool operationSucceeded = false;
+        bool uowSucceeded = false;
         try
         {
             await _uowProvider.BeginAsync();
@@ -68,13 +68,13 @@ internal class RegistrationService : IRegistrationService
             }
 
             await _uowProvider.CommitAsync();
-            operationSucceeded = true;
+            uowSucceeded = true;
             _logger.LogInformation("User {Username} registered with Id {UserId}", request.Username, userResult.CreatedId);
             return new RegisterUserResult(RegisterUserResultCode.Success, string.Empty, userResult.CreatedId, basicAuthResult.CreatedId);
         }
         finally
         {
-            if (!operationSucceeded)
+            if (!uowSucceeded)
             {
                 await _uowProvider.RollbackAsync();
             }
@@ -86,15 +86,32 @@ internal class RegistrationService : IRegistrationService
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         _logger.LogInformation("Registering account {AccountName}", request.AccountName);
 
-        var result = await _accountProcessor.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
-        if (result.ResultCode != CreateAccountResultCode.Success)
+        var uowSucceeded = false;
+        try
         {
-            _logger.LogInformation("Registering account failed for account name {AccountName}", request.AccountName);
-            return new RegisterAccountResult(result.ResultCode, result.Message, -1);
-        }
+            await _uowProvider.BeginAsync();
 
-        _logger.LogInformation("Account {AccountName} registered with Id {AccountId}", request.AccountName, result.CreatedId);
-        return new RegisterAccountResult(result.ResultCode, string.Empty, result.CreatedId);
+            var result = await _accountProcessor.CreateAccountAsync(new(request.AccountName, request.OwnerUserId));
+            if (result.ResultCode != CreateAccountResultCode.Success)
+            {
+                _logger.LogInformation("Registering account failed for account name {AccountName}", request.AccountName);
+                return new RegisterAccountResult(result.ResultCode, result.Message, -1);
+            }
+
+            await _roleProcessor.CreateDefaultSystemRolesAsync(result.CreatedId);
+
+            await _uowProvider.CommitAsync();
+            uowSucceeded = true;
+            _logger.LogInformation("Account {AccountName} registered with Id {AccountId}", request.AccountName, result.CreatedId);
+            return new RegisterAccountResult(result.ResultCode, string.Empty, result.CreatedId);
+        }
+        finally
+        {
+            if (!uowSucceeded)
+            {
+                await _uowProvider.RollbackAsync();
+            }
+        }
     }
 
     public async Task<RegisterGroupResult> RegisterGroupAsync(RegisterGroupRequest request)

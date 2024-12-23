@@ -145,6 +145,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
         var result = await _registrationService.RegisterUserAsync(request);
 
         Assert.Equal(RegisterUserResultCode.Success, result.ResultCode);
+        _unitOfWorkProviderMock.Verify(m => m.CommitAsync(), Times.Once);
     }
 
     [Fact]
@@ -189,6 +190,8 @@ public class RegistrationServiceTests : ProcessorBaseTests
         var result = await _registrationService.RegisterAccountAsync(request);
 
         Assert.Equal(CreateAccountResultCode.Success, result.ResultCode);
+        _unitOfWorkProviderMock.Verify(m => m.CommitAsync(), Times.Once);
+        _roleProcessorMock.Verify(m => m.CreateDefaultSystemRolesAsync(It.IsAny<int>()), Times.Once);
     }
 
     [Theory]
@@ -202,6 +205,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
         var result = await _registrationService.RegisterAccountAsync(request);
 
         Assert.Equal(createAccountResultCode, result.ResultCode);
+        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
     }
 
     [Fact]

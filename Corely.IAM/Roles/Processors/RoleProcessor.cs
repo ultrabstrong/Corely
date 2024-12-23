@@ -3,6 +3,7 @@ using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
 using Corely.IAM.Processors;
+using Corely.IAM.Roles.Constants;
 using Corely.IAM.Roles.Entities;
 using Corely.IAM.Roles.Models;
 using Corely.IAM.Validators;
@@ -33,10 +34,10 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
             var role = MapThenValidateTo<Role>(createRoleRequest);
 
             if (await _roleRepo.AnyAsync(r =>
-                r.AccountId == role.AccountId && r.RoleName == role.RoleName))
+                r.AccountId == role.AccountId && r.Name == role.Name))
             {
-                Logger.LogWarning("Role with name {RoleName} already exists", role.RoleName);
-                return new CreateRoleResult(CreateRoleResultCode.RoleExistsError, $"Role with name {role.RoleName} already exists", -1);
+                Logger.LogWarning("Role with name {RoleName} already exists", role.Name);
+                return new CreateRoleResult(CreateRoleResultCode.RoleExistsError, $"Role with name {role.Name} already exists", -1);
             }
 
             var accountEntity = await _accountRepo.GetAsync(role.AccountId);
@@ -51,5 +52,29 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
 
             return new CreateRoleResult(CreateRoleResultCode.Success, string.Empty, createdId);
         });
+    }
+
+    public async Task CreateDefaultSystemRolesAsync(int ownerAccountID)
+    {
+        RoleEntity[] roleEntities =
+            [
+                new() {
+                    AccountId = ownerAccountID,
+                    Name = RoleConstants.OWNER_ROLE_NAME,
+                    IsSystemDefined = true,
+                },
+                new() {
+                    AccountId = ownerAccountID,
+                    Name = RoleConstants.ADMIN_ROLE_NAME,
+                    IsSystemDefined = true,
+                },
+                new() {
+                    AccountId = ownerAccountID,
+                    Name = RoleConstants.USER_ROLE_NAME,
+                    IsSystemDefined = true,
+                }
+            ];
+
+        await _roleRepo.CreateAsync(roleEntities);
     }
 }

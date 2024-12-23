@@ -18,6 +18,12 @@ public class MockRepo<T>
         return Task.FromResult(entity.Id);
     }
 
+    public virtual Task CreateAsync(params T[] entities)
+    {
+        Entities.AddRange(entities);
+        return Task.CompletedTask;
+    }
+
     public virtual Task<T?> GetAsync(int id)
     {
         return Task.FromResult(Entities.FirstOrDefault(u => u.Id == id));

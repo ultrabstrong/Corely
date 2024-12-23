@@ -3,6 +3,7 @@ using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
+using Corely.IAM.Roles.Constants;
 using Corely.IAM.Roles.Entities;
 using Corely.IAM.Roles.Models;
 using Corely.IAM.Roles.Processors;
@@ -97,5 +98,20 @@ public class RoleProcessorTests
 
         Assert.NotNull(ex);
         Assert.IsType<ValidationException>(await ex);
+    }
+
+    [Fact]
+    public async Task CreateDefaultSystemRolesAsync_CreatesDefaultRoles()
+    {
+        var accountId = await CreateAccountAsync();
+
+        await _roleProcessor.CreateDefaultSystemRolesAsync(accountId);
+
+        var roleRepo = _serviceFactory.GetRequiredService<IRepo<RoleEntity>>();
+        var roles = await roleRepo.ListAsync(r => r.AccountId == accountId);
+        Assert.Equal(3, roles.Count);
+        Assert.Contains(roles, r => r.Name == RoleConstants.OWNER_ROLE_NAME);
+        Assert.Contains(roles, r => r.Name == RoleConstants.ADMIN_ROLE_NAME);
+        Assert.Contains(roles, r => r.Name == RoleConstants.USER_ROLE_NAME);
     }
 }

@@ -8,7 +8,9 @@ namespace Corely.IAM.Roles.Entities;
 internal class RoleEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
 {
     public int Id { get; set; }
-    public string RoleName { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public string? Description { get; set; } = null!;
+    public bool IsSystemDefined { get; set; }
     public int AccountId { get; set; }
     public virtual AccountEntity? Account { get; set; } = null!;
     public virtual ICollection<UserEntity>? Users { get; set; }

@@ -15,10 +15,10 @@ public class RoleValidatorTests
     {
         var role = new Role
         {
-            RoleName = roleName
+            Name = roleName
         };
         var result = _validator.TestValidate(role);
-        result.ShouldHaveValidationErrorFor(x => x.RoleName);
+        result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
     [Theory, MemberData(nameof(InvalidRoleTestData))]
@@ -26,10 +26,10 @@ public class RoleValidatorTests
     {
         var role = new Role
         {
-            RoleName = roleName
+            Name = roleName
         };
         var result = _validator.TestValidate(role);
-        result.ShouldHaveValidationErrorFor(x => x.RoleName);
+        result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
     public static IEnumerable<object[]> InvalidRoleTestData =>

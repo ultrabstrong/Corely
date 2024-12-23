@@ -8,6 +8,8 @@ public interface IRepo<T>
 {
     Task<int> CreateAsync(T entity);
 
+    Task CreateAsync(params T[] entities);
+
     Task UpdateAsync(T entity);
 
     Task DeleteAsync(T entity);

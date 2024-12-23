@@ -12,8 +12,11 @@ internal sealed class RoleEntityConfiguration : EntityConfigurationBase<RoleEnti
     }
     protected override void ConfigureInternal(EntityTypeBuilder<RoleEntity> builder)
     {
-        builder.Property(e => e.RoleName)
+        builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(RoleConstants.ROLE_NAME_MAX_LENGTH);
+
+        builder.HasIndex(e => new { e.AccountId, e.Name })
+            .IsUnique();
     }
 }

@@ -8,6 +8,7 @@ internal class CreateGroupRequestProfile : Profile
     public CreateGroupRequestProfile()
     {
         CreateMap<CreateGroupRequest, Group>(MemberList.Source)
+            .ForMember(m => m.Name, opt => opt.MapFrom(m => m.GroupName))
             .ForMember(m => m.AccountId, opt => opt.MapFrom(m => m.OwnerAccountId));
     }
 }

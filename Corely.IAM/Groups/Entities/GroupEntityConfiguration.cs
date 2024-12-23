@@ -14,9 +14,12 @@ internal sealed class GroupEntityConfiguration : EntityConfigurationBase<GroupEn
 
     protected override void ConfigureInternal(EntityTypeBuilder<GroupEntity> builder)
     {
-        builder.Property(e => e.GroupName)
+        builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(GroupConstants.GROUP_NAME_MAX_LENGTH);
+
+        builder.HasIndex(e => new { e.AccountId, e.Name })
+            .IsUnique();
 
         builder.HasMany(e => e.Roles)
             .WithMany(e => e.Groups)

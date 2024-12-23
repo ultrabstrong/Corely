@@ -16,11 +16,11 @@ public class GroupValidatorTests
     {
         var group = new Group
         {
-            GroupName = groupName
+            Name = groupName
         };
 
         var result = _validator.TestValidate(group);
-        result.ShouldHaveValidationErrorFor(x => x.GroupName);
+        result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
 
@@ -29,11 +29,11 @@ public class GroupValidatorTests
     {
         var group = new Group
         {
-            GroupName = groupName
+            Name = groupName
         };
 
         var result = _validator.TestValidate(group);
-        result.ShouldHaveValidationErrorFor(x => x.GroupName);
+        result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
     public static IEnumerable<object[]> InvalidGroupTestData =>

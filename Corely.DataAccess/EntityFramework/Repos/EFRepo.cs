@@ -28,6 +28,12 @@ public class EFRepo<T>
         return newEntity.Entity.Id;
     }
 
+    public virtual async Task CreateAsync(params T[] entities)
+    {
+        await DbSet.AddRangeAsync(entities);
+        await DbContext.SaveChangesAsync();
+    }
+
     public virtual async Task UpdateAsync(T entity)
     {
         if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))

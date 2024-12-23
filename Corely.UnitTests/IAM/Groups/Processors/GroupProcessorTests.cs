@@ -79,7 +79,7 @@ public class GroupProcessorTests
         var accountId = await CreateAccountAsync();
         var group = new GroupEntity
         {
-            GroupName = VALID_GROUP_NAME,
+            Name = VALID_GROUP_NAME,
             AccountId = accountId
         };
         var groupRepo = _serviceFactory.GetRequiredService<IRepo<GroupEntity>>();
