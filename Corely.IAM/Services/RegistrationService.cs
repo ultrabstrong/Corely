@@ -184,8 +184,8 @@ internal class RegistrationService : IRegistrationService
 
         return new RegisterUsersWithGroupResult(
             result.ResultCode,
-            string.Empty,
-            request.UserIds.Count,
+            result.Message ?? string.Empty,
+            result.AddedUserCount,
             result.InvalidUserIds);
     }
 
@@ -216,8 +216,8 @@ internal class RegistrationService : IRegistrationService
 
         return new RegisterRolesWithGroupResult(
             result.ResultCode,
-            string.Empty,
-            request.RoleIds.Count,
+            result.Message ?? string.Empty,
+            result.AddedRoleCount,
             result.InvalidRoleIds);
     }
 
@@ -248,8 +248,8 @@ internal class RegistrationService : IRegistrationService
 
         return new RegisterRolesWithUserResult(
             result.ResultCode,
-            string.Empty,
-            request.RoleIds.Count,
+            result.Message ?? string.Empty,
+            result.AddedRoleCount,
             result.InvalidRoleIds);
     }
 }

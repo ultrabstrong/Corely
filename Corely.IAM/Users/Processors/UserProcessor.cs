@@ -231,7 +231,9 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
     {
         return await LogRequestResultAspect(nameof(UserProcessor), nameof(AssignRolesToUserAsync), request, async () =>
         {
-            var userEntity = await _userRepo.GetAsync(u => u.Id == request.UserId);
+            var userEntity = await _userRepo.GetAsync(
+                u => u.Id == request.UserId,
+                include: q => q.Include(u => u.Accounts));
             if (userEntity == null)
             {
                 Logger.LogWarning("User with Id {UserId} not found", request.UserId);
@@ -242,11 +244,17 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
                 r => request.RoleIds.Contains(r.Id)
                 && !r.Users!.Any(u => u.Id == userEntity.Id));
 
+            roleEntities = roleEntities
+                .Where(r =>
+                    userEntity.Accounts?.Any(a => a.Id == r.AccountId)
+                    ?? false)
+                .ToList();
+
             if (roleEntities.Count == 0)
             {
-                Logger.LogInformation("All role ids not found or already assigned to user : {@InvalidRoleIds}", request.RoleIds);
+                Logger.LogInformation("All role ids are invalid (not found, already assigned to user, or from different account) : {@InvalidRoleIds}", request.RoleIds);
                 return new AssignRolesToUserResult(AssignRolesToUserResultCode.InvalidRoleIdsError,
-                    "All role ids not found or already assigned to user", 0, request.RoleIds);
+                    "All role ids are invalid (not found, already assigned to user, or from different account)", 0, request.RoleIds);
             }
 
             userEntity.Roles ??= [];
@@ -260,9 +268,9 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
             var invalidRoleIds = request.RoleIds.Except(roleEntities.Select(r => r.Id)).ToList();
             if (invalidRoleIds.Count > 0)
             {
-                Logger.LogInformation("Some role ids not found or already assigned to user : {@InvalidRoleIds}", invalidRoleIds);
+                Logger.LogInformation("Some role ids are invalid (not found, already assigned to user, or from different account) : {@InvalidRoleIds}", invalidRoleIds);
                 return new AssignRolesToUserResult(AssignRolesToUserResultCode.PartialSuccess,
-                    "Some role ids not found or already assigned to user", roleEntities.Count, invalidRoleIds);
+                    "Some role ids are invalid (not found, already assigned to user, or from different account)", roleEntities.Count, invalidRoleIds);
             }
 
             return new AssignRolesToUserResult(AssignRolesToUserResultCode.Success, string.Empty, roleEntities.Count, invalidRoleIds);

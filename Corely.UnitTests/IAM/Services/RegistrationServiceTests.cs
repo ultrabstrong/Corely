@@ -302,18 +302,21 @@ public class RegistrationServiceTests : ProcessorBaseTests
     public async Task RegisterUsersWithGroupAsync_Succeeds_WhenAllServicesSucceed()
     {
         var request = _fixture.Create<RegisterUsersWithGroupRequest>();
-        _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, request.GroupId);
+        _addUsersToGroupResult = _fixture.Create<AddUsersToGroupResult>() with { ResultCode = AddUsersToGroupResultCode.Success };
 
         var result = await _registrationService.RegisterUsersWithGroupAsync(request);
 
         Assert.Equal(AddUsersToGroupResultCode.Success, result.ResultCode);
+        Assert.Equal(_addUsersToGroupResult.Message, result.Message);
+        Assert.Equal(_addUsersToGroupResult.AddedUserCount, result.RegisteredUserCount);
+        Assert.Equal(_addUsersToGroupResult.InvalidUserIds.Count, result.InvalidUserIds.Count);
     }
 
     [Fact]
     public async Task RegisterUsersWithGroupAsync_Fails_WhenGroupProcessorFails()
     {
         var request = _fixture.Create<RegisterUsersWithGroupRequest>();
-        _addUsersToGroupResult = new(AddUsersToGroupResultCode.GroupNotFoundError, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
+        _addUsersToGroupResult = _fixture.Create<AddUsersToGroupResult>() with { ResultCode = AddUsersToGroupResultCode.GroupNotFoundError };
 
         var result = await _registrationService.RegisterUsersWithGroupAsync(request);
 
@@ -335,18 +338,21 @@ public class RegistrationServiceTests : ProcessorBaseTests
     public async Task RegisterRolesWithGroup_Succeeds_WhenAllServicesSucceed()
     {
         var request = _fixture.Create<RegisterRolesWithGroupRequest>();
-        _assignRolesToGroupResult = new(AssignRolesToGroupResultCode.Success, string.Empty, request.GroupId);
+        _assignRolesToGroupResult = _fixture.Create<AssignRolesToGroupResult>() with { ResultCode = AssignRolesToGroupResultCode.Success };
 
         var result = await _registrationService.RegisterRolesWithGroupAsync(request);
 
         Assert.Equal(AssignRolesToGroupResultCode.Success, result.ResultCode);
+        Assert.Equal(_assignRolesToGroupResult.Message, result.Message);
+        Assert.Equal(_assignRolesToGroupResult.AddedRoleCount, result.RegisteredRoleCount);
+        Assert.Equal(_assignRolesToGroupResult.InvalidRoleIds.Count, result.InvalidRoleIds.Count);
     }
 
     [Fact]
     public async Task RegisterRolesWithGroup_Fails_WhenGroupProcessorFails()
     {
         var request = _fixture.Create<RegisterRolesWithGroupRequest>();
-        _assignRolesToGroupResult = new(AssignRolesToGroupResultCode.GroupNotFoundError, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
+        _assignRolesToGroupResult = _fixture.Create<AssignRolesToGroupResult>() with { ResultCode = AssignRolesToGroupResultCode.GroupNotFoundError };
 
         var result = await _registrationService.RegisterRolesWithGroupAsync(request);
 
@@ -368,18 +374,21 @@ public class RegistrationServiceTests : ProcessorBaseTests
     public async Task RegisterRolesWithUser_Succeeds_WhenAllServicesSucceed()
     {
         var request = _fixture.Create<RegisterRolesWithUserRequest>();
-        _assignRolesToUserResult = new(AssignRolesToUserResultCode.Success, string.Empty, request.UserId);
+        _assignRolesToUserResult = _fixture.Create<AssignRolesToUserResult>() with { ResultCode = AssignRolesToUserResultCode.Success };
 
         var result = await _registrationService.RegisterRolesWithUserAsync(request);
 
         Assert.Equal(AssignRolesToUserResultCode.Success, result.ResultCode);
+        Assert.Equal(_assignRolesToUserResult.Message, result.Message);
+        Assert.Equal(_assignRolesToUserResult.AddedRoleCount, result.RegisteredRoleCount);
+        Assert.Equal(_assignRolesToUserResult.InvalidRoleIds.Count, result.InvalidRoleIds.Count);
     }
 
     [Fact]
     public async Task RegisterRolesWithUser_Fails_WhenUserProcessorFails()
     {
         var request = _fixture.Create<RegisterRolesWithUserRequest>();
-        _assignRolesToUserResult = new(AssignRolesToUserResultCode.UserNotFoundError, "Error", _fixture.Create<int>(), _fixture.CreateMany<int>(5).ToList());
+        _assignRolesToUserResult = _fixture.Create<AssignRolesToUserResult>() with { ResultCode = AssignRolesToUserResultCode.UserNotFoundError };
 
         var result = await _registrationService.RegisterRolesWithUserAsync(request);
 

@@ -2,6 +2,7 @@
   "profiles": {
     "Corely.DevTools": {
       "commandName": "Project",
-      "commandLineArgs": "asym-encrypt -c"
+      "commandLineArgs": "register users-with-group C:\\Users\\ultra\\Downloads\\users-with-group.json"
     }
-  }
+  }
+}

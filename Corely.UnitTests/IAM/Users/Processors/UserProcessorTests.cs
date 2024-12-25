@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Interfaces.Repos;
+using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Mappers;
 using Corely.IAM.Roles.Entities;
 using Corely.IAM.Security.Processors;
@@ -33,17 +34,23 @@ public class UserProcessorTests
             _serviceFactory.GetRequiredService<ILogger<UserProcessor>>());
     }
 
-    private async Task<int> CreateUserAsync()
+    private async Task<(int UserId, int AccountId)> CreateUserAsync()
     {
+        var account = new AccountEntity
+        {
+            Id = _fixture.Create<int>(),
+        };
         var user = new UserEntity
         {
             Username = _fixture.Create<string>(),
+            Accounts = [account]
         };
         var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
-        return await userRepo.CreateAsync(user);
+        var userId = await userRepo.CreateAsync(user);
+        return (userId, account.Id);
     }
 
-    private async Task<int> CreateRoleAsync(params int[] userIds)
+    private async Task<int> CreateRoleAsync(int accountId, params int[] userIds)
     {
         var roleId = _fixture.Create<int>();
         var role = new RoleEntity
@@ -53,7 +60,9 @@ public class UserProcessorTests
                 userIds
                     ?.Select(u => new UserEntity { Id = u })
                     ?.ToList()
-                ?? []
+                ?? [],
+            AccountId = accountId,
+            Account = new AccountEntity { Id = accountId }
         };
         var roleRepo = _serviceFactory.GetRequiredService<IRepo<RoleEntity>>();
         return await roleRepo.CreateAsync(role);
@@ -293,20 +302,20 @@ public class UserProcessorTests
     [Fact]
     public async Task AssignRolesToUserAsync_Fails_WhenRolesNotProvided()
     {
-        var userId = await CreateUserAsync();
+        var (userId, _) = await CreateUserAsync();
         var request = new AssignRolesToUserRequest([], userId);
 
         var result = await _userProcessor.AssignRolesToUserAsync(request);
 
         Assert.Equal(AssignRolesToUserResultCode.InvalidRoleIdsError, result.ResultCode);
-        Assert.Equal("All role ids not found or already assigned to user", result.Message);
+        Assert.Equal("All role ids are invalid (not found, already assigned to user, or from different account)", result.Message);
     }
 
     [Fact]
     public async Task AssignRolesToUserAsync_Succeeds_WhenRolesAssigned()
     {
-        var userId = await CreateUserAsync();
-        var roleId = await CreateRoleAsync();
+        var (userId, accountId) = await CreateUserAsync();
+        var roleId = await CreateRoleAsync(accountId);
         var request = new AssignRolesToUserRequest([roleId], userId);
 
         var result = await _userProcessor.AssignRolesToUserAsync(request);
@@ -324,48 +333,96 @@ public class UserProcessorTests
     }
 
     [Fact]
-    public async Task AssignRolesToUserAsync_PartiallySucceeds_WhenSomeRolesAssignedToUser()
+    public async Task AssignRolesToUserAsync_PartiallySucceeds_WhenSomeRolesExistForUser()
     {
-        var userId = await CreateUserAsync();
-        var existingRoleId = await CreateRoleAsync(userId);
-        var newRoleId = await CreateRoleAsync();
+        var (userId, accountId) = await CreateUserAsync();
+        var existingRoleId = await CreateRoleAsync(accountId, userId);
+        var newRoleId = await CreateRoleAsync(accountId);
         var request = new AssignRolesToUserRequest([existingRoleId, newRoleId], userId);
 
         var result = await _userProcessor.AssignRolesToUserAsync(request);
 
         Assert.Equal(AssignRolesToUserResultCode.PartialSuccess, result.ResultCode);
-        Assert.Equal("Some role ids not found or already assigned to user", result.Message);
+        Assert.Equal("Some role ids are invalid (not found, already assigned to user, or from different account)", result.Message);
         Assert.Equal(1, result.AddedRoleCount);
         Assert.NotEmpty(result.InvalidRoleIds);
     }
 
     [Fact]
-    public async Task AssignRolesToUserAsync_ReportsInvalidRoleIds_WhenSomeRolesDoNotExist()
+    public async Task AssignRolesToUserAsync_PartiallySucceeds_WhenSomeRolesDoNotExist()
     {
-        var roleId = await CreateRoleAsync();
-        var userId = await CreateUserAsync();
+        var (userId, accountId) = await CreateUserAsync();
+        var roleId = await CreateRoleAsync(accountId);
         var request = new AssignRolesToUserRequest([roleId, -1], userId);
 
         var result = await _userProcessor.AssignRolesToUserAsync(request);
 
         Assert.Equal(AssignRolesToUserResultCode.PartialSuccess, result.ResultCode);
+        Assert.Equal("Some role ids are invalid (not found, already assigned to user, or from different account)", result.Message);
         Assert.NotEmpty(result.InvalidRoleIds);
         Assert.Contains(-1, result.InvalidRoleIds);
     }
 
     [Fact]
-    public async Task AssignRolesToUserAsync_Fails_WhenAllRolesAlreadyAssignedToUser()
+    public async Task AssignRolesToUserAsync_PartiallySucceeds_WhenSomeRolesBelongToDifferentAccount()
     {
-        var userId = await CreateUserAsync();
-        var roleId = await CreateRoleAsync(userId);
-        var request = new AssignRolesToUserRequest([roleId], userId);
+        var (userId, accountId) = await CreateUserAsync();
+        var roleIdSameAccount = await CreateRoleAsync(accountId);
+        var roleIdDifferentAccount = await CreateRoleAsync(accountId + 1);
+        var request = new AssignRolesToUserRequest([roleIdSameAccount, roleIdDifferentAccount], userId);
+
+        var result = await _userProcessor.AssignRolesToUserAsync(request);
+
+        Assert.Equal(AssignRolesToUserResultCode.PartialSuccess, result.ResultCode);
+        Assert.Equal("Some role ids are invalid (not found, already assigned to user, or from different account)", result.Message);
+        Assert.Equal(1, result.AddedRoleCount);
+        Assert.NotEmpty(result.InvalidRoleIds);
+        Assert.Contains(roleIdDifferentAccount, result.InvalidRoleIds);
+    }
+
+    [Fact]
+    public async Task AssignRolesToUserAsync_Fails_WhenAllRolesExistForUser()
+    {
+        var (userId, accountId) = await CreateUserAsync();
+        var roleIds = new List<int>() { await CreateRoleAsync(accountId, userId), await CreateRoleAsync(accountId, userId) };
+        var request = new AssignRolesToUserRequest(roleIds, userId);
         await _userProcessor.AssignRolesToUserAsync(request);
 
         var result = await _userProcessor.AssignRolesToUserAsync(request);
 
         Assert.Equal(AssignRolesToUserResultCode.InvalidRoleIdsError, result.ResultCode);
-        Assert.Equal("All role ids not found or already assigned to user", result.Message);
-        Assert.NotEmpty(result.InvalidRoleIds);
-        Assert.Contains(roleId, result.InvalidRoleIds);
+        Assert.Equal("All role ids are invalid (not found, already assigned to user, or from different account)", result.Message);
+        Assert.Equal(0, result.AddedRoleCount);
+        Assert.Equal(roleIds, result.InvalidRoleIds);
+    }
+
+    [Fact]
+    public async Task AssignRolesToUserAsync_Fails_WhenAllRolesDoNotExist()
+    {
+        var (userId, _) = await CreateUserAsync();
+        var roleIds = _fixture.CreateMany<int>().ToList();
+        var request = new AssignRolesToUserRequest(roleIds, userId);
+
+        var result = await _userProcessor.AssignRolesToUserAsync(request);
+
+        Assert.Equal(AssignRolesToUserResultCode.InvalidRoleIdsError, result.ResultCode);
+        Assert.Equal("All role ids are invalid (not found, already assigned to user, or from different account)", result.Message);
+        Assert.Equal(0, result.AddedRoleCount);
+        Assert.Equal(roleIds, result.InvalidRoleIds);
+    }
+
+    [Fact]
+    public async Task AssignRolesToUserAsync_Fails_WhenAllRolesBelongToDifferentAccount()
+    {
+        var (userId, accountId) = await CreateUserAsync();
+        var roleIds = new List<int>() { await CreateRoleAsync(accountId + 1), await CreateRoleAsync(accountId + 2) };
+        var request = new AssignRolesToUserRequest(roleIds, userId);
+
+        var result = await _userProcessor.AssignRolesToUserAsync(request);
+
+        Assert.Equal(AssignRolesToUserResultCode.InvalidRoleIdsError, result.ResultCode);
+        Assert.Equal("All role ids are invalid (not found, already assigned to user, or from different account)", result.Message);
+        Assert.Equal(0, result.AddedRoleCount);
+        Assert.Equal(roleIds, result.InvalidRoleIds);
     }
 }

@@ -42,7 +42,7 @@ public class GroupProcessorTests
         return await accountRepo.CreateAsync(account);
     }
 
-    private async Task<int> CreateUserAsync(params int[] groupIds)
+    private async Task<int> CreateUserAsync(int accountId, params int[] groupIds)
     {
         var userId = _fixture.Create<int>();
         var user = new UserEntity
@@ -52,13 +52,14 @@ public class GroupProcessorTests
                 groupIds
                     ?.Select(g => new GroupEntity { Id = g })
                     ?.ToList()
-                ?? []
+                ?? [],
+            Accounts = [new AccountEntity { Id = accountId }]
         };
         var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
         return await userRepo.CreateAsync(user);
     }
 
-    private async Task<int> CreateRoleAsync(params int[] groupIds)
+    private async Task<int> CreateRoleAsync(int accountId, params int[] groupIds)
     {
         var roleId = _fixture.Create<int>();
         var role = new RoleEntity
@@ -68,22 +69,26 @@ public class GroupProcessorTests
                 groupIds
                     ?.Select(g => new GroupEntity { Id = g })
                     ?.ToList()
-                ?? []
+                ?? [],
+            AccountId = accountId,
+            Account = new AccountEntity { Id = accountId }
         };
         var roleRepo = _serviceFactory.GetRequiredService<IRepo<RoleEntity>>();
         return await roleRepo.CreateAsync(role);
     }
 
-    private async Task<int> CreateGroupAsync()
+    private async Task<(int GroupId, int AccountId)> CreateGroupAsync()
     {
         var accountId = await CreateAccountAsync();
         var group = new GroupEntity
         {
             Name = VALID_GROUP_NAME,
-            AccountId = accountId
+            AccountId = accountId,
+            Account = new AccountEntity { Id = accountId }
         };
         var groupRepo = _serviceFactory.GetRequiredService<IRepo<GroupEntity>>();
-        return await groupRepo.CreateAsync(group);
+        var groupId = await groupRepo.CreateAsync(group);
+        return (groupId, accountId);
     }
 
     [Fact]
@@ -158,20 +163,20 @@ public class GroupProcessorTests
     [Fact]
     public async Task AddUsersToGroupAsync_Fails_WhenUsersNotProvided()
     {
-        var groupId = await CreateGroupAsync();
+        var (groupId, _) = await CreateGroupAsync();
         var request = new AddUsersToGroupRequest([], groupId);
 
         var result = await _groupProcessor.AddUsersToGroupAsync(request);
 
         Assert.Equal(AddUsersToGroupResultCode.InvalidUserIdsError, result.ResultCode);
-        Assert.Equal("All user ids not found or already exist in group", result.Message);
+        Assert.Equal("All user ids are invalid (not found, from different account, or already exist in group)", result.Message);
     }
 
     [Fact]
     public async Task AddUsersToGroupAsync_Succeeds_WhenUsersAdded()
     {
-        var userId = await CreateUserAsync();
-        var groupId = await CreateGroupAsync();
+        var (groupId, accountId) = await CreateGroupAsync();
+        var userId = await CreateUserAsync(accountId);
         var request = new AddUsersToGroupRequest([userId], groupId);
 
         var result = await _groupProcessor.AddUsersToGroupAsync(request);
@@ -191,47 +196,95 @@ public class GroupProcessorTests
     [Fact]
     public async Task AddUsersToGroupAsync_PartiallySucceeds_WhenSomeUsersExistInGroup()
     {
-        var groupId = await CreateGroupAsync();
-        var existingUserId = await CreateUserAsync(groupId);
-        var newUserId = await CreateUserAsync();
+        var (groupId, accountId) = await CreateGroupAsync();
+        var existingUserId = await CreateUserAsync(accountId, groupId);
+        var newUserId = await CreateUserAsync(accountId);
         var request = new AddUsersToGroupRequest([existingUserId, newUserId], groupId);
 
         var result = await _groupProcessor.AddUsersToGroupAsync(request);
 
         Assert.Equal(AddUsersToGroupResultCode.PartialSuccess, result.ResultCode);
-        Assert.Equal("Some user ids not found or already exist in group", result.Message);
+        Assert.Equal("Some user ids are invalid (not found, from different account, or already exist in group)", result.Message);
         Assert.Equal(1, result.AddedUserCount);
         Assert.NotEmpty(result.InvalidUserIds);
         Assert.Contains(existingUserId, result.InvalidUserIds);
     }
 
     [Fact]
-    public async Task AddUsersToGroupAsync_ReportsInvalidUserIds_WhenUsersDoNotExist()
+    public async Task AddUsersToGroupAsync_PartiallySucceeds_WhenSomeUsersDoNotExist()
     {
-        var userId = await CreateUserAsync();
-        var groupId = await CreateGroupAsync();
+        var (groupId, accountId) = await CreateGroupAsync();
+        var userId = await CreateUserAsync(accountId);
         var request = new AddUsersToGroupRequest([userId, -1], groupId);
 
         var result = await _groupProcessor.AddUsersToGroupAsync(request);
 
         Assert.Equal(AddUsersToGroupResultCode.PartialSuccess, result.ResultCode);
+        Assert.Equal("Some user ids are invalid (not found, from different account, or already exist in group)", result.Message);
         Assert.NotEmpty(result.InvalidUserIds);
         Assert.Contains(-1, result.InvalidUserIds);
     }
 
     [Fact]
-    public async Task AddUsersToGroupAsync_Fails_WhenAllUsersAlreadyExistInGroup()
+    public async Task AddUsersToGroupAsync_PartiallySucceeds_WhenSomeUsersDoNotHaveGroupAccount()
     {
-        var groupId = await CreateGroupAsync();
-        var userId = await CreateUserAsync(groupId);
-        var request = new AddUsersToGroupRequest([userId], groupId);
+        var (groupId, accountId) = await CreateGroupAsync();
+        var userIdSameAccount = await CreateUserAsync(accountId);
+        var userIdDifferentAccount = await CreateUserAsync(accountId + 1);
+        var request = new AddUsersToGroupRequest([userIdSameAccount, userIdDifferentAccount], groupId);
+
+        var result = await _groupProcessor.AddUsersToGroupAsync(request);
+
+        Assert.Equal(AddUsersToGroupResultCode.PartialSuccess, result.ResultCode);
+        Assert.Equal("Some user ids are invalid (not found, from different account, or already exist in group)", result.Message);
+        Assert.Equal(1, result.AddedUserCount);
+        Assert.NotEmpty(result.InvalidUserIds);
+        Assert.Contains(userIdDifferentAccount, result.InvalidUserIds);
+    }
+
+    [Fact]
+    public async Task AddUsersToGroupAsync_Fails_WhenAllUsersExistInGroup()
+    {
+        var (groupId, accountId) = await CreateGroupAsync();
+        var userIds = new List<int>() { await CreateUserAsync(accountId, groupId), await CreateUserAsync(accountId, groupId) };
+        var request = new AddUsersToGroupRequest(userIds, groupId);
 
         var result = await _groupProcessor.AddUsersToGroupAsync(request);
 
         Assert.Equal(AddUsersToGroupResultCode.InvalidUserIdsError, result.ResultCode);
-        Assert.Equal("All user ids not found or already exist in group", result.Message);
-        Assert.NotEmpty(result.InvalidUserIds);
-        Assert.Contains(userId, result.InvalidUserIds);
+        Assert.Equal("All user ids are invalid (not found, from different account, or already exist in group)", result.Message);
+        Assert.Equal(0, result.AddedUserCount);
+        Assert.Equal(userIds, result.InvalidUserIds);
+    }
+
+    [Fact]
+    public async Task AddUsersToGroupAsync_Fails_WhenAllUsersDoNotExist()
+    {
+        var (groupId, _) = await CreateGroupAsync();
+        var userIds = _fixture.CreateMany<int>().ToList();
+        var request = new AddUsersToGroupRequest(userIds, groupId);
+
+        var result = await _groupProcessor.AddUsersToGroupAsync(request);
+
+        Assert.Equal(AddUsersToGroupResultCode.InvalidUserIdsError, result.ResultCode);
+        Assert.Equal("All user ids are invalid (not found, from different account, or already exist in group)", result.Message);
+        Assert.Equal(0, result.AddedUserCount);
+        Assert.Equal(userIds, result.InvalidUserIds);
+    }
+
+    [Fact]
+    public async Task AddUsersToGroupAsync_Fails_WhenAllUsersDoNotHaveGroupAccount()
+    {
+        var (groupId, accountId) = await CreateGroupAsync();
+        var userIds = new List<int>() { await CreateUserAsync(accountId + 1), await CreateUserAsync(accountId + 2) };
+        var request = new AddUsersToGroupRequest(userIds, groupId);
+
+        var result = await _groupProcessor.AddUsersToGroupAsync(request);
+
+        Assert.Equal(AddUsersToGroupResultCode.InvalidUserIdsError, result.ResultCode);
+        Assert.Equal("All user ids are invalid (not found, from different account, or already exist in group)", result.Message);
+        Assert.Equal(0, result.AddedUserCount);
+        Assert.Equal(userIds, result.InvalidUserIds);
     }
 
     [Fact]
@@ -245,20 +298,20 @@ public class GroupProcessorTests
     [Fact]
     public async Task AssignRolesToGroupAsync_Fails_WhenRolesNotProvided()
     {
-        var groupId = await CreateGroupAsync();
+        var (groupId, _) = await CreateGroupAsync();
         var request = new AssignRolesToGroupRequest([], groupId);
 
         var result = await _groupProcessor.AssignRolesToGroupAsync(request);
 
         Assert.Equal(AssignRolesToGroupResultCode.InvalidRoleIdsError, result.ResultCode);
-        Assert.Equal("All role ids not found or already assigned to group", result.Message);
+        Assert.Equal("All role ids are invalid (not found, from different account, or already assigned to group)", result.Message);
     }
 
     [Fact]
     public async Task AssignRolesToGroupAsync_Succeeds_WhenRolesAssigned()
     {
-        var roleId = await CreateRoleAsync();
-        var groupId = await CreateGroupAsync();
+        var (groupId, accountId) = await CreateGroupAsync();
+        var roleId = await CreateRoleAsync(accountId);
         var request = new AssignRolesToGroupRequest([roleId], groupId);
 
         var result = await _groupProcessor.AssignRolesToGroupAsync(request);
@@ -276,27 +329,27 @@ public class GroupProcessorTests
     }
 
     [Fact]
-    public async Task AssignRolesToGroupAsync_PartiallySucceeds_WhenSomeRolesAssignedToGroup()
+    public async Task AssignRolesToGroupAsync_PartiallySucceeds_WhenSomeRolesExistForGroup()
     {
-        var groupId = await CreateGroupAsync();
-        var existingRoleId = await CreateRoleAsync(groupId);
-        var newRoleId = await CreateRoleAsync();
+        var (groupId, accountId) = await CreateGroupAsync();
+        var existingRoleId = await CreateRoleAsync(accountId, groupId);
+        var newRoleId = await CreateRoleAsync(accountId, groupId + 1);
         var request = new AssignRolesToGroupRequest([existingRoleId, newRoleId], groupId);
 
         var result = await _groupProcessor.AssignRolesToGroupAsync(request);
 
         Assert.Equal(AssignRolesToGroupResultCode.PartialSuccess, result.ResultCode);
-        Assert.Equal("Some role ids not found or already assigned to group", result.Message);
+        Assert.Equal("Some role ids are invalid (not found, from different account, or already assigned to group)", result.Message);
         Assert.Equal(1, result.AddedRoleCount);
         Assert.NotEmpty(result.InvalidRoleIds);
         Assert.Contains(existingRoleId, result.InvalidRoleIds);
     }
 
     [Fact]
-    public async Task AssignRolesToGroupAsync_ReportsInvalidRoleIds_WhenSomeRolesDoNotExist()
+    public async Task AssignRolesToGroupAsync_PartiallySucceeds_WhenSomeRolesDoNotExist()
     {
-        var roleId = await CreateRoleAsync();
-        var groupId = await CreateGroupAsync();
+        var (groupId, accountId) = await CreateGroupAsync();
+        var roleId = await CreateRoleAsync(accountId);
         var request = new AssignRolesToGroupRequest([roleId, -1], groupId);
 
         var result = await _groupProcessor.AssignRolesToGroupAsync(request);
@@ -307,19 +360,64 @@ public class GroupProcessorTests
     }
 
     [Fact]
-    public async Task AssignRolesToGroupAsync_Fails_WhenAllRolesAlreadyAssignedToGroup()
+    public async Task AssignRolesToGroupAsync_PartiallySucceeds_WhenSomeRolesBelongToDifferentAccount()
     {
-        var groupId = await CreateGroupAsync();
-        var roleId = await CreateRoleAsync(groupId);
-        var request = new AssignRolesToGroupRequest([roleId], groupId);
+        var (groupId, accountId) = await CreateGroupAsync();
+        var roleIdSameAccount = await CreateRoleAsync(accountId);
+        var roleIdDifferentAccount = await CreateRoleAsync(accountId + 1);
+        var request = new AssignRolesToGroupRequest([roleIdSameAccount, roleIdDifferentAccount], groupId);
+
+        var result = await _groupProcessor.AssignRolesToGroupAsync(request);
+
+        Assert.Equal(AssignRolesToGroupResultCode.PartialSuccess, result.ResultCode);
+        Assert.Equal("Some role ids are invalid (not found, from different account, or already assigned to group)", result.Message);
+        Assert.Equal(1, result.AddedRoleCount);
+        Assert.NotEmpty(result.InvalidRoleIds);
+        Assert.Contains(roleIdDifferentAccount, result.InvalidRoleIds);
+    }
+
+    [Fact]
+    public async Task AssignRolesToGroupAsync_Fails_WhenAllRolesExistForGroup()
+    {
+        var (groupId, accountId) = await CreateGroupAsync();
+        var roleIds = new List<int> { await CreateRoleAsync(accountId, groupId), await CreateRoleAsync(accountId, groupId) };
+        var request = new AssignRolesToGroupRequest(roleIds, groupId);
         await _groupProcessor.AssignRolesToGroupAsync(request);
 
         var result = await _groupProcessor.AssignRolesToGroupAsync(request);
 
         Assert.Equal(AssignRolesToGroupResultCode.InvalidRoleIdsError, result.ResultCode);
-        Assert.Equal("All role ids not found or already assigned to group", result.Message);
-        Assert.NotEmpty(result.InvalidRoleIds);
-        Assert.Contains(roleId, result.InvalidRoleIds);
+        Assert.Equal("All role ids are invalid (not found, from different account, or already assigned to group)", result.Message);
+        Assert.Equal(roleIds, result.InvalidRoleIds);
     }
 
+    [Fact]
+    public async Task AssignRolesToGroupAsync_Fails_WhenAllRolesDoNotExist()
+    {
+        var (groupId, _) = await CreateGroupAsync();
+        var roleIds = _fixture.CreateMany<int>().ToList();
+        var request = new AssignRolesToGroupRequest(roleIds, groupId);
+
+        var result = await _groupProcessor.AssignRolesToGroupAsync(request);
+
+        Assert.Equal(AssignRolesToGroupResultCode.InvalidRoleIdsError, result.ResultCode);
+        Assert.Equal("All role ids are invalid (not found, from different account, or already assigned to group)", result.Message);
+        Assert.Equal(0, result.AddedRoleCount);
+        Assert.Equal(roleIds, result.InvalidRoleIds);
+    }
+
+    [Fact]
+    public async Task AssignRolesToGroupAsync_Fails_WhenAllRolesBelongToDifferentAccount()
+    {
+        var (groupId, accountId) = await CreateGroupAsync();
+        var roleIds = new List<int>() { await CreateRoleAsync(accountId + 1), await CreateRoleAsync(accountId + 2) };
+        var request = new AssignRolesToGroupRequest(roleIds, groupId);
+
+        var result = await _groupProcessor.AssignRolesToGroupAsync(request);
+
+        Assert.Equal(AssignRolesToGroupResultCode.InvalidRoleIdsError, result.ResultCode);
+        Assert.Equal("All role ids are invalid (not found, from different account, or already assigned to group)", result.Message);
+        Assert.Equal(0, result.AddedRoleCount);
+        Assert.Equal(roleIds, result.InvalidRoleIds);
+    }
 }
