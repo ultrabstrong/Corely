@@ -7,6 +7,8 @@ using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
+using Corely.IAM.Permissions.Models;
+using Corely.IAM.Permissions.Processors;
 using Corely.IAM.Roles.Constants;
 using Corely.IAM.Roles.Models;
 using Corely.IAM.Roles.Processors;
@@ -24,6 +26,7 @@ internal class RegistrationService : IRegistrationService
     private readonly IBasicAuthProcessor _basicAuthProcessor;
     private readonly IGroupProcessor _groupProcessor;
     private readonly IRoleProcessor _roleProcessor;
+    private readonly IPermissionProcessor _permissionProcessor;
     private readonly IUnitOfWorkProvider _uowProvider;
 
     public RegistrationService(
@@ -33,6 +36,7 @@ internal class RegistrationService : IRegistrationService
         IBasicAuthProcessor basicAuthProcessor,
         IGroupProcessor groupProcessor,
         IRoleProcessor roleProcessor,
+        IPermissionProcessor permissionProcessor,
         IUnitOfWorkProvider uowProvider)
     {
         _logger = logger.ThrowIfNull(nameof(logger));
@@ -41,6 +45,7 @@ internal class RegistrationService : IRegistrationService
         _basicAuthProcessor = basicAuthProcessor.ThrowIfNull(nameof(basicAuthProcessor));
         _groupProcessor = groupProcessor.ThrowIfNull(nameof(groupProcessor));
         _roleProcessor = roleProcessor.ThrowIfNull(nameof(roleProcessor));
+        _permissionProcessor = permissionProcessor.ThrowIfNull(nameof(permissionProcessor));
         _uowProvider = uowProvider.ThrowIfNull(nameof(uowProvider));
     }
 
@@ -155,6 +160,22 @@ internal class RegistrationService : IRegistrationService
         _logger.LogInformation("Role {RoleName} registered with Id {RoleId}", request.RoleName, result.CreatedId);
 
         return new RegisterRoleResult(result.ResultCode, string.Empty, result.CreatedId);
+    }
+
+    public async Task<RegisterPermissionResult> RegisterPermissionAsync(RegisterPermissionRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        _logger.LogInformation("Registering permission {PermissionName}", request.PermissionName);
+
+        var result = await _permissionProcessor.CreatePermissionAsync(new(request.PermissionName, request.OwnerAccountId, request.ResourceType, request.ResourceId));
+        if (result.ResultCode != CreatePermissionResultCode.Success)
+        {
+            _logger.LogInformation("Registering permission failed for permission name {PermissionName}", request.PermissionName);
+            return new RegisterPermissionResult(result.ResultCode, result.Message, -1);
+        }
+
+        _logger.LogInformation("Permission {PermissionName} registered with Id {PermissionId}", request.PermissionName, result.CreatedId);
+        return new RegisterPermissionResult(result.ResultCode, string.Empty, result.CreatedId);
     }
 
     public async Task<RegisterUsersWithGroupResult> RegisterUsersWithGroupAsync(RegisterUsersWithGroupRequest request)

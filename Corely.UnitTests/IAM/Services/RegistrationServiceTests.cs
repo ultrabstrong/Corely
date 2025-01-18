@@ -8,6 +8,8 @@ using Corely.IAM.Enums;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Models;
+using Corely.IAM.Permissions.Models;
+using Corely.IAM.Permissions.Processors;
 using Corely.IAM.Roles.Models;
 using Corely.IAM.Roles.Processors;
 using Corely.IAM.Services;
@@ -27,6 +29,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
     private readonly Mock<IBasicAuthProcessor> _basicAuthProcessorMock;
     private readonly Mock<IGroupProcessor> _groupProcessorMock;
     private readonly Mock<IRoleProcessor> _roleProcessorMock;
+    private readonly Mock<IPermissionProcessor> _permissionProcessorMock;
     private readonly RegistrationService _registrationService;
 
     private CreateAccountResultCode _createAccountResultCode = CreateAccountResultCode.Success;
@@ -34,6 +37,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
     private UpsertBasicAuthResultCode _upsertBasicAuthResultCode = UpsertBasicAuthResultCode.Success;
     private CreateGroupResultCode _createGroupResultCode = CreateGroupResultCode.Success;
     private CreateRoleResultCode _createRoleResultCode = CreateRoleResultCode.Success;
+    private CreatePermissionResultCode _createPermissionResultCode = CreatePermissionResultCode.Success;
 
     private AddUsersToGroupResult _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, 0);
     private AssignRolesToGroupResult _assignRolesToGroupResult = new(AssignRolesToGroupResultCode.Success, string.Empty, 0);
@@ -45,6 +49,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
         _basicAuthProcessorMock = GetMockBasicAuthProcessor();
         _groupProcessorMock = GetMockGroupProcessor();
         _roleProcessorMock = GetMockRoleProcessor();
+        _permissionProcessorMock = GetMockPermissionProcessor();
 
         _registrationService = new RegistrationService(
             _serviceFactory.GetRequiredService<ILogger<RegistrationService>>(),
@@ -53,6 +58,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
             _basicAuthProcessorMock.Object,
             _groupProcessorMock.Object,
             _roleProcessorMock.Object,
+            _permissionProcessorMock.Object,
             _unitOfWorkProviderMock.Object);
     }
 
@@ -139,6 +145,19 @@ public class RegistrationServiceTests : ProcessorBaseTests
                 It.IsAny<string>(),
                 It.IsAny<int>()))
             .ReturnsAsync(() => _fixture.Create<Role>());
+
+        return mock;
+    }
+
+    private Mock<IPermissionProcessor> GetMockPermissionProcessor()
+    {
+        var mock = new Mock<IPermissionProcessor>();
+
+        mock
+            .Setup(m => m.CreatePermissionAsync(
+                It.IsAny<CreatePermissionRequest>()))
+            .ReturnsAsync(() =>
+                new CreatePermissionResult(_createPermissionResultCode, string.Empty, _fixture.Create<int>()));
 
         return mock;
     }
@@ -286,6 +305,33 @@ public class RegistrationServiceTests : ProcessorBaseTests
     public async Task RegisterRoleAsync_Throws_WithNullRequest()
     {
         var ex = await Record.ExceptionAsync(() => _registrationService.RegisterRoleAsync(null!));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Fact]
+    public async Task RegisterPermissionAsync_Succeeds_WhenAllServicesSucceed()
+    {
+        var request = _fixture.Create<RegisterPermissionRequest>();
+        var result = await _registrationService.RegisterPermissionAsync(request);
+        Assert.Equal(CreatePermissionResultCode.Success, result.ResultCode);
+    }
+
+    [Theory]
+    [InlineData(CreatePermissionResultCode.PermissionExistsError)]
+    [InlineData(CreatePermissionResultCode.AccountNotFoundError)]
+    public async Task RegisterPermissionAsync_Fails_WhenPermissionProcessorFails(CreatePermissionResultCode createPermissionResultCode)
+    {
+        _createPermissionResultCode = createPermissionResultCode;
+        var request = _fixture.Create<RegisterPermissionRequest>();
+        var result = await _registrationService.RegisterPermissionAsync(request);
+        Assert.Equal(createPermissionResultCode, result.ResultCode);
+    }
+
+    [Fact]
+    public async Task RegisterPermissionAsync_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _registrationService.RegisterPermissionAsync(null!));
         Assert.NotNull(ex);
         Assert.IsType<ArgumentNullException>(ex);
     }

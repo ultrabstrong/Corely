@@ -1,6 +1,7 @@
 ﻿using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Roles.Constants;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.IAM.Roles.Entities;
@@ -18,5 +19,9 @@ internal sealed class RoleEntityConfiguration : EntityConfigurationBase<RoleEnti
 
         builder.HasIndex(e => new { e.AccountId, e.Name })
             .IsUnique();
+
+        builder.HasMany(e => e.Permissions)
+            .WithMany(e => e.Roles)
+            .UsingEntity(j => j.ToTable("RolePermissions"));
     }
 }

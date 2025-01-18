@@ -3,6 +3,7 @@ using Corely.IAM.BasicAuths.Processors;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
+using Corely.IAM.Permissions.Processors;
 using Corely.IAM.Roles.Processors;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Security.Processors;
@@ -56,6 +57,7 @@ public abstract class ServiceFactoryBase
         services.AddScoped<IBasicAuthProcessor, BasicAuthProcessor>();
         services.AddScoped<IGroupProcessor, GroupProcessor>();
         services.AddScoped<IRoleProcessor, RoleProcessor>();
+        services.AddScoped<IPermissionProcessor, PermissionProcessor>();
 
         services.AddScoped<IRegistrationService, RegistrationService>();
         services.AddScoped<IDeregistrationService, DeregistrationService>();

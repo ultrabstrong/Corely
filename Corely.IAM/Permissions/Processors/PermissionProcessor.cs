@@ -1,0 +1,55 @@
+﻿using Corely.DataAccess.Interfaces.Repos;
+using Corely.IAM.Accounts.Entities;
+using Corely.IAM.Groups.Processors;
+using Corely.IAM.Mappers;
+using Corely.IAM.Permissions.Entities;
+using Corely.IAM.Permissions.Models;
+using Corely.IAM.Processors;
+using Corely.IAM.Validators;
+using Microsoft.Extensions.Logging;
+
+namespace Corely.IAM.Permissions.Processors;
+internal class PermissionProcessor : ProcessorBase, IPermissionProcessor
+{
+    private readonly IRepo<PermissionEntity> _permissionRepo;
+    private IReadonlyRepo<AccountEntity> _accountRepo;
+
+    public PermissionProcessor(
+        IRepo<PermissionEntity> permissionRepo,
+        IReadonlyRepo<AccountEntity> accountRepo,
+        IMapProvider mapProvider,
+        IValidationProvider validationProvider,
+        ILogger<GroupProcessor> logger)
+        : base(mapProvider, validationProvider, logger)
+    {
+        _permissionRepo = permissionRepo;
+        _accountRepo = accountRepo;
+    }
+
+    public async Task<CreatePermissionResult> CreatePermissionAsync(CreatePermissionRequest request)
+    {
+        return await LogRequestResultAspect(nameof(PermissionProcessor), nameof(CreatePermissionAsync), request, async () =>
+        {
+            var permission = MapThenValidateTo<Permission>(request);
+
+            if (await _permissionRepo.AnyAsync(p =>
+                p.AccountId == permission.AccountId && p.Name == permission.Name))
+            {
+                Logger.LogWarning("Permission with name {PermissionName} already exists", permission.Name);
+                return new CreatePermissionResult(CreatePermissionResultCode.PermissionExistsError, $"Permission with name {permission.Name} already exists", -1);
+            }
+
+            var accountEntity = await _accountRepo.GetAsync(permission.AccountId);
+            if (accountEntity == null)
+            {
+                Logger.LogWarning("Account with Id {AccountId} not found", permission.AccountId);
+                return new CreatePermissionResult(CreatePermissionResultCode.AccountNotFoundError, $"Account with Id {permission.AccountId} not found", -1);
+            }
+
+            var permissionEntity = MapTo<PermissionEntity>(permission)!; // permission is validated
+            var createdId = await _permissionRepo.CreateAsync(permissionEntity);
+
+            return new CreatePermissionResult(CreatePermissionResultCode.Success, "Permission created successfully", createdId);
+        });
+    }
+}

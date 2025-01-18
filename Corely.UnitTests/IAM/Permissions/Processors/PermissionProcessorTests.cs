@@ -1,0 +1,94 @@
+﻿using AutoFixture;
+using Corely.DataAccess.Interfaces.Repos;
+using Corely.IAM.Accounts.Entities;
+using Corely.IAM.Groups.Processors;
+using Corely.IAM.Mappers;
+using Corely.IAM.Permissions.Entities;
+using Corely.IAM.Permissions.Models;
+using Corely.IAM.Permissions.Processors;
+using Corely.IAM.Validators;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+namespace Corely.UnitTests.IAM.Permissions.Processors;
+public class PermissionProcessorTests
+{
+    private const string VALID_PERMISSION_NAME = "permissionname";
+
+    private readonly Fixture _fixture = new();
+    private readonly ServiceFactory _serviceFactory = new();
+    private readonly PermissionProcessor _permissionProcessor;
+
+    public PermissionProcessorTests()
+    {
+        _permissionProcessor = new PermissionProcessor(
+            _serviceFactory.GetRequiredService<IRepo<PermissionEntity>>(),
+            _serviceFactory.GetRequiredService<IReadonlyRepo<AccountEntity>>(),
+            _serviceFactory.GetRequiredService<IMapProvider>(),
+            _serviceFactory.GetRequiredService<IValidationProvider>(),
+            _serviceFactory.GetRequiredService<ILogger<GroupProcessor>>());
+    }
+
+    private async Task<int> CreateAccountAsync()
+    {
+        var accountId = _fixture.Create<int>();
+        var account = new AccountEntity { Id = accountId };
+        var accountRepo = _serviceFactory.GetRequiredService<IRepo<AccountEntity>>();
+        return await accountRepo.CreateAsync(account);
+    }
+
+    private async Task<(int PermissionId, int AccountId)> CreatePermissionAsync()
+    {
+        var accountId = await CreateAccountAsync();
+        var permission = new PermissionEntity
+        {
+            Name = VALID_PERMISSION_NAME,
+            AccountId = accountId,
+            Account = new AccountEntity { Id = accountId }
+        };
+        var permissionRepo = _serviceFactory.GetRequiredService<IRepo<PermissionEntity>>();
+        var permissionId = await permissionRepo.CreateAsync(permission);
+        return (permissionId, accountId);
+    }
+
+    [Fact]
+    public async Task CreatePermissionAsync_Fails_WhenAccountDoesNotExist()
+    {
+        var request = new CreatePermissionRequest(VALID_PERMISSION_NAME, _fixture.Create<int>());
+
+        var result = await _permissionProcessor.CreatePermissionAsync(request);
+
+        Assert.Equal(CreatePermissionResultCode.AccountNotFoundError, result.ResultCode);
+    }
+
+    [Fact]
+    public async Task CreatePermissionAsync_Fails_WhenPermissionExists()
+    {
+        var request = new CreatePermissionRequest(VALID_PERMISSION_NAME, await CreateAccountAsync());
+        await _permissionProcessor.CreatePermissionAsync(request);
+
+        var result = await _permissionProcessor.CreatePermissionAsync(request);
+
+        Assert.Equal(CreatePermissionResultCode.PermissionExistsError, result.ResultCode);
+    }
+
+    [Fact]
+    public async Task CreatePermissionAsync_ReturnsCreatePermissionResult()
+    {
+        var accountId = await CreateAccountAsync();
+        var request = new CreatePermissionRequest(VALID_PERMISSION_NAME, accountId);
+
+        var result = await _permissionProcessor.CreatePermissionAsync(request);
+
+        Assert.Equal(CreatePermissionResultCode.Success, result.ResultCode);
+
+        // Verify permission is linked to account id
+        var permissionRepo = _serviceFactory.GetRequiredService<IRepo<PermissionEntity>>();
+        var permissionEntity = await permissionRepo.GetAsync(p =>
+            p.Id == result.CreatedId,
+            include: q => q.Include(g => g.Account));
+        Assert.NotNull(permissionEntity);
+        // Assert.NotNull(permissionEntity.Account); // Account not available for memory mock repo
+        Assert.Equal(accountId, permissionEntity.AccountId);
+    }
+}
