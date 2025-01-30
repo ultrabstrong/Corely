@@ -54,7 +54,9 @@ public class PermissionProcessorTests
     [Fact]
     public async Task CreatePermissionAsync_Fails_WhenAccountDoesNotExist()
     {
-        var request = new CreatePermissionRequest(VALID_PERMISSION_NAME, _fixture.Create<int>());
+        var request = _fixture.Build<CreatePermissionRequest>()
+            .With(r => r.PermissionName, VALID_PERMISSION_NAME)
+            .Create();
 
         var result = await _permissionProcessor.CreatePermissionAsync(request);
 
@@ -64,7 +66,10 @@ public class PermissionProcessorTests
     [Fact]
     public async Task CreatePermissionAsync_Fails_WhenPermissionExists()
     {
-        var request = new CreatePermissionRequest(VALID_PERMISSION_NAME, await CreateAccountAsync());
+        var request = _fixture.Build<CreatePermissionRequest>()
+            .With(r => r.PermissionName, VALID_PERMISSION_NAME)
+            .With(r => r.OwnerAccountId, await CreateAccountAsync())
+            .Create();
         await _permissionProcessor.CreatePermissionAsync(request);
 
         var result = await _permissionProcessor.CreatePermissionAsync(request);
@@ -76,7 +81,10 @@ public class PermissionProcessorTests
     public async Task CreatePermissionAsync_ReturnsCreatePermissionResult()
     {
         var accountId = await CreateAccountAsync();
-        var request = new CreatePermissionRequest(VALID_PERMISSION_NAME, accountId);
+        var request = _fixture.Build<CreatePermissionRequest>()
+            .With(r => r.PermissionName, VALID_PERMISSION_NAME)
+            .With(r => r.OwnerAccountId, accountId)
+            .Create();
 
         var result = await _permissionProcessor.CreatePermissionAsync(request);
 

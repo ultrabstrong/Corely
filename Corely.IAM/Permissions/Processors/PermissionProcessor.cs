@@ -12,7 +12,7 @@ namespace Corely.IAM.Permissions.Processors;
 internal class PermissionProcessor : ProcessorBase, IPermissionProcessor
 {
     private readonly IRepo<PermissionEntity> _permissionRepo;
-    private IReadonlyRepo<AccountEntity> _accountRepo;
+    private readonly IReadonlyRepo<AccountEntity> _accountRepo;
 
     public PermissionProcessor(
         IRepo<PermissionEntity> permissionRepo,
