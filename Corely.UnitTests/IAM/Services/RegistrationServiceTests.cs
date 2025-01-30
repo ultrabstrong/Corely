@@ -42,6 +42,8 @@ public class RegistrationServiceTests : ProcessorBaseTests
     private AddUsersToGroupResult _addUsersToGroupResult = new(AddUsersToGroupResultCode.Success, string.Empty, 0);
     private AssignRolesToGroupResult _assignRolesToGroupResult = new(AssignRolesToGroupResultCode.Success, string.Empty, 0);
     private AssignRolesToUserResult _assignRolesToUserResult = new(AssignRolesToUserResultCode.Success, string.Empty, 0);
+    private AssignPermissionsToRoleResult _assignPermissionsToRoleResult = new(AssignPermissionsToRoleResultCode.Success, string.Empty, 0);
+
     public RegistrationServiceTests() : base()
     {
         _accountProcessorMock = GetMockAccountProcessor();
@@ -145,6 +147,11 @@ public class RegistrationServiceTests : ProcessorBaseTests
                 It.IsAny<string>(),
                 It.IsAny<int>()))
             .ReturnsAsync(() => _fixture.Create<Role>());
+
+        mock
+            .Setup(m => m.AssignPermissionsToRoleAsync(
+                It.IsAny<AssignPermissionsToRoleRequest>()))
+            .ReturnsAsync(() => _assignPermissionsToRoleResult);
 
         return mock;
     }
@@ -442,5 +449,41 @@ public class RegistrationServiceTests : ProcessorBaseTests
         Assert.Equal(_assignRolesToUserResult.Message, result.Message);
         Assert.Equal(_assignRolesToUserResult.AddedRoleCount, result.RegisteredRoleCount);
         Assert.Equal(_assignRolesToUserResult.InvalidRoleIds.Count, result.InvalidRoleIds.Count);
+    }
+
+    [Fact]
+    public async Task RegisterPermissionsWithRole_Throws_WithNullRequest()
+    {
+        var ex = await Record.ExceptionAsync(() => _registrationService.RegisterPermissionsWithRoleAsync(null!));
+        Assert.NotNull(ex);
+        Assert.IsType<ArgumentNullException>(ex);
+    }
+
+    [Fact]
+    public async Task RegisterPermissionsWithRole_Succeeds_WhenAllServicesSucceed()
+    {
+        var request = _fixture.Create<RegisterPermissionsWithRoleRequest>();
+        _assignPermissionsToRoleResult = _fixture.Create<AssignPermissionsToRoleResult>() with { ResultCode = AssignPermissionsToRoleResultCode.Success };
+
+        var result = await _registrationService.RegisterPermissionsWithRoleAsync(request);
+
+        Assert.Equal(AssignPermissionsToRoleResultCode.Success, result.ResultCode);
+        Assert.Equal(_assignPermissionsToRoleResult.Message, result.Message);
+        Assert.Equal(_assignPermissionsToRoleResult.AddedPermissionCount, result.RegisteredPermissionCount);
+        Assert.Equal(_assignPermissionsToRoleResult.InvalidPermissionIds.Count, result.InvalidPermissionIds.Count);
+    }
+
+    [Fact]
+    public async Task RegisterPermissionsWithRole_Fails_WhenRoleProcessorFails()
+    {
+        var request = _fixture.Create<RegisterPermissionsWithRoleRequest>();
+        _assignPermissionsToRoleResult = _fixture.Create<AssignPermissionsToRoleResult>() with { ResultCode = AssignPermissionsToRoleResultCode.RoleNotFoundError };
+
+        var result = await _registrationService.RegisterPermissionsWithRoleAsync(request);
+
+        Assert.Equal(AssignPermissionsToRoleResultCode.RoleNotFoundError, result.ResultCode);
+        Assert.Equal(_assignPermissionsToRoleResult.Message, result.Message);
+        Assert.Equal(_assignPermissionsToRoleResult.AddedPermissionCount, result.RegisteredPermissionCount);
+        Assert.Equal(_assignPermissionsToRoleResult.InvalidPermissionIds.Count, result.InvalidPermissionIds.Count);
     }
 }

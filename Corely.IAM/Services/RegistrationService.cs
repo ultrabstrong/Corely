@@ -273,4 +273,36 @@ internal class RegistrationService : IRegistrationService
             result.AddedRoleCount,
             result.InvalidRoleIds);
     }
+
+    public async Task<RegisterPermissionsWithRoleResult> RegisterPermissionsWithRoleAsync(RegisterPermissionsWithRoleRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        _logger.LogInformation("Registering permission ids {@PermissionIds} with role id {RoleId}", request.PermissionIds, request.RoleId);
+
+        var result = await _roleProcessor.AssignPermissionsToRoleAsync(new(request.PermissionIds, request.RoleId));
+        if (result.ResultCode != AssignPermissionsToRoleResultCode.Success
+            && result.ResultCode != AssignPermissionsToRoleResultCode.PartialSuccess)
+        {
+            _logger.LogInformation("Registering permissions with role failed for role id {RoleId}", request.RoleId);
+            return new RegisterPermissionsWithRoleResult(
+                result.ResultCode,
+                result.Message ?? string.Empty,
+                result.AddedPermissionCount,
+                result.InvalidPermissionIds);
+        }
+
+        using (_logger.BeginScope(new Dictionary<string, object>
+        {
+            ["@InvalidPermissionIds"] = result.InvalidPermissionIds
+        }))
+        {
+            _logger.LogInformation("Registered {RegisteredPermissionCount} permissions with role id {RoleId}", result.AddedPermissionCount, request.RoleId);
+        }
+
+        return new RegisterPermissionsWithRoleResult(
+            result.ResultCode,
+            result.Message ?? string.Empty,
+            result.AddedPermissionCount,
+            result.InvalidPermissionIds);
+    }
 }

@@ -12,4 +12,5 @@ public interface IRegistrationService
     Task<RegisterUsersWithGroupResult> RegisterUsersWithGroupAsync(RegisterUsersWithGroupRequest request);
     Task<RegisterRolesWithGroupResult> RegisterRolesWithGroupAsync(RegisterRolesWithGroupRequest request);
     Task<RegisterRolesWithUserResult> RegisterRolesWithUserAsync(RegisterRolesWithUserRequest request);
+    Task<RegisterPermissionsWithRoleResult> RegisterPermissionsWithRoleAsync(RegisterPermissionsWithRoleRequest request);
 }
