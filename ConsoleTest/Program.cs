@@ -39,7 +39,7 @@ internal class Program
 
             var registrationService = host.Services.GetRequiredService<IRegistrationService>();
 
-            var registerUserRequest = new RegisterUserRequest("un1", "email@x.y", "admin");
+            var registerUserRequest = new RegisterUserRequest("user1", "email@x.y", "admin");
             var registerUserResult = await registrationService.RegisterUserAsync(registerUserRequest);
 
             var registerAccountRequest = new RegisterAccountRequest("acct1", registerUserResult.CreatedUserId);
