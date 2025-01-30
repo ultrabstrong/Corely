@@ -2,6 +2,7 @@
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
+using Corely.IAM.Permissions.Entities;
 using Corely.IAM.Processors;
 using Corely.IAM.Roles.Constants;
 using Corely.IAM.Roles.Entities;
@@ -14,10 +15,12 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
 {
     private readonly IRepo<RoleEntity> _roleRepo;
     private readonly IReadonlyRepo<AccountEntity> _accountRepo;
+    private readonly IReadonlyRepo<PermissionEntity> _permissionRepo;
 
     public RoleProcessor(
         IRepo<RoleEntity> roleRepo,
         IReadonlyRepo<AccountEntity> accountRepo,
+        IReadonlyRepo<PermissionEntity> permissionRepo,
         IMapProvider mapProvider,
         IValidationProvider validationProvider,
         ILogger<GroupProcessor> logger)
@@ -25,6 +28,7 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
     {
         _roleRepo = roleRepo;
         _accountRepo = accountRepo;
+        _permissionRepo = permissionRepo;
     }
 
     public async Task<CreateRoleResult> CreateRoleAsync(CreateRoleRequest createRoleRequest)
@@ -110,6 +114,50 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
 
             var role = MapTo<Role>(roleEntity);
             return role;
+        });
+    }
+
+    public async Task<AssignPermissionsToRoleResult> AssignPermissionsToRoleAsync(AssignPermissionsToRoleRequest request)
+    {
+        return await LogRequestResultAspect(nameof(RoleProcessor), nameof(AssignPermissionsToRoleAsync), request, async () =>
+        {
+            var roleEntity = await _roleRepo.GetAsync(request.RoleId);
+            if (roleEntity == null)
+            {
+                Logger.LogWarning("Role with Id {RoleId} not found", request.RoleId);
+                return new AssignPermissionsToRoleResult(AssignPermissionsToRoleResultCode.RoleNotFoundError,
+                    $"Role with Id {request.RoleId} not found", 0, request.PermissionIds);
+            }
+
+            var permissionEntities = await _permissionRepo.ListAsync(
+                p => request.PermissionIds.Contains(p.Id) // permission exists
+                && !p.Roles!.Any(r => r.Id == roleEntity.Id) // permission not already assigned to role
+                && p.Account!.Id == roleEntity.AccountId); // permission belongs to the same account as role
+
+            if (permissionEntities.Count == 0)
+            {
+                Logger.LogInformation("All permission ids are invalid (not found, from different account, or already assigned to role) : {@InvalidPermissionIds}", request.PermissionIds);
+                return new AssignPermissionsToRoleResult(AssignPermissionsToRoleResultCode.InvalidPermissionIdsError,
+                    "All permission ids are invalid (not found, from different account, or already assigned to role)", 0, request.PermissionIds);
+            }
+
+            roleEntity.Permissions ??= [];
+            foreach (var permission in permissionEntities)
+            {
+                roleEntity.Permissions.Add(permission);
+            }
+
+            await _roleRepo.UpdateAsync(roleEntity);
+
+            var invalidPermissionIds = request.PermissionIds.Except(permissionEntities.Select(p => p.Id)).ToList();
+            if (invalidPermissionIds.Count > 0)
+            {
+                Logger.LogInformation("Some permission ids are invalid (not found, from different account, or already assigned to role) : {@InvalidPermissionIds}", invalidPermissionIds);
+                return new AssignPermissionsToRoleResult(AssignPermissionsToRoleResultCode.PartialSuccess,
+                    "Some permission ids are invalid (not found, from different account, or already assigned to role)", permissionEntities.Count, invalidPermissionIds);
+            }
+
+            return new AssignPermissionsToRoleResult(AssignPermissionsToRoleResultCode.Success, string.Empty, permissionEntities.Count, invalidPermissionIds);
         });
     }
 }

@@ -37,20 +37,6 @@ public class PermissionProcessorTests
         return await accountRepo.CreateAsync(account);
     }
 
-    private async Task<(int PermissionId, int AccountId)> CreatePermissionAsync()
-    {
-        var accountId = await CreateAccountAsync();
-        var permission = new PermissionEntity
-        {
-            Name = VALID_PERMISSION_NAME,
-            AccountId = accountId,
-            Account = new AccountEntity { Id = accountId }
-        };
-        var permissionRepo = _serviceFactory.GetRequiredService<IRepo<PermissionEntity>>();
-        var permissionId = await permissionRepo.CreateAsync(permission);
-        return (permissionId, accountId);
-    }
-
     [Fact]
     public async Task CreatePermissionAsync_Fails_WhenAccountDoesNotExist()
     {

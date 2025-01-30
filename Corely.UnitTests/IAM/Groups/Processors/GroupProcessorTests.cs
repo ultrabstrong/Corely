@@ -355,6 +355,7 @@ public class GroupProcessorTests
         var result = await _groupProcessor.AssignRolesToGroupAsync(request);
 
         Assert.Equal(AssignRolesToGroupResultCode.PartialSuccess, result.ResultCode);
+        Assert.Equal("Some role ids are invalid (not found, from different account, or already assigned to group)", result.Message);
         Assert.NotEmpty(result.InvalidRoleIds);
         Assert.Contains(-1, result.InvalidRoleIds);
     }
