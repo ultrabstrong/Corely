@@ -61,7 +61,7 @@ internal class Program
             var registerPermissionsWithRoleResult = await registrationService.RegisterPermissionsWithRoleAsync(registerPermissionsWithRoleRequest);
 
             var signInService = host.Services.GetRequiredService<ISignInService>();
-            var signInRequest = new SignInRequest("un1", "admin");
+            var signInRequest = new SignInRequest("user1", "admin");
             var signInResult = await signInService.SignInAsync(signInRequest);
         }
         catch (Exception ex)

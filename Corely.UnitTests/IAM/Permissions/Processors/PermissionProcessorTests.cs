@@ -3,6 +3,7 @@ using Corely.DataAccess.Interfaces.Repos;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
+using Corely.IAM.Permissions.Constants;
 using Corely.IAM.Permissions.Entities;
 using Corely.IAM.Permissions.Models;
 using Corely.IAM.Permissions.Processors;
@@ -84,5 +85,22 @@ public class PermissionProcessorTests
         Assert.NotNull(permissionEntity);
         // Assert.NotNull(permissionEntity.Account); // Account not available for memory mock repo
         Assert.Equal(accountId, permissionEntity.AccountId);
+    }
+
+    [Fact]
+    public async Task CreateDefaultSystemPermissionsAsync_CreatesDefaultPermissions()
+    {
+        var accountId = await CreateAccountAsync();
+
+        await _permissionProcessor.CreateDefaultSystemPermissionsAsync(accountId);
+
+        var permissionRepo = _serviceFactory.GetRequiredService<IRepo<PermissionEntity>>();
+        var permissions = await permissionRepo.ListAsync(p => p.AccountId == accountId);
+        Assert.Equal(5, permissions.Count);
+        Assert.Contains(permissions, p => p.Name == PermissionConstants.ADMIN_USER_ACCESS_PERMISSION_NAME);
+        Assert.Contains(permissions, p => p.Name == PermissionConstants.ADMIN_ACCOUNT_ACCESS_PERMISSION_NAME);
+        Assert.Contains(permissions, p => p.Name == PermissionConstants.ADMIN_GROUP_ACCESS_PERMISSION_NAME);
+        Assert.Contains(permissions, p => p.Name == PermissionConstants.ADMIN_ROLE_ACCESS_PERMISSION_NAME);
+        Assert.Contains(permissions, p => p.Name == PermissionConstants.ADMIN_PERMISSION_ACCESS_PERMISSION_NAME);
     }
 }

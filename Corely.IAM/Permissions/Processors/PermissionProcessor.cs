@@ -2,6 +2,7 @@
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Groups.Processors;
 using Corely.IAM.Mappers;
+using Corely.IAM.Permissions.Constants;
 using Corely.IAM.Permissions.Entities;
 using Corely.IAM.Permissions.Models;
 using Corely.IAM.Processors;
@@ -51,5 +52,34 @@ internal class PermissionProcessor : ProcessorBase, IPermissionProcessor
 
             return new CreatePermissionResult(CreatePermissionResultCode.Success, "Permission created successfully", createdId);
         });
+    }
+
+    public async Task CreateDefaultSystemPermissionsAsync(int accountId)
+    {
+        PermissionEntity[] permissionEntities =
+            [
+                new() {
+                    AccountId = accountId,
+                    Name = PermissionConstants.ADMIN_USER_ACCESS_PERMISSION_NAME
+                },
+                new() {
+                    AccountId = accountId,
+                    Name = PermissionConstants.ADMIN_ACCOUNT_ACCESS_PERMISSION_NAME
+                },
+                new() {
+                    AccountId = accountId,
+                    Name = PermissionConstants.ADMIN_GROUP_ACCESS_PERMISSION_NAME
+                },
+                new() {
+                    AccountId = accountId,
+                    Name = PermissionConstants.ADMIN_ROLE_ACCESS_PERMISSION_NAME
+                },
+                new() {
+                    AccountId = accountId,
+                    Name = PermissionConstants.ADMIN_PERMISSION_ACCESS_PERMISSION_NAME
+                }
+            ];
+
+        await _permissionRepo.CreateAsync(permissionEntities);
     }
 }
