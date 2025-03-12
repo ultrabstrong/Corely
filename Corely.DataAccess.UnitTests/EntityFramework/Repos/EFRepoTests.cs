@@ -1,11 +1,11 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.EntityFramework.Repos;
 using Corely.DataAccess.Interfaces.Repos;
-using Corely.UnitTests.Fixtures;
+using Corely.DataAccess.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.DataAccess.EntityFramework.Repos;
+namespace Corely.DataAccess.UnitTests.EntityFramework.Repos;
 
 public class EFRepoTests : RepoTestsBase
 {
@@ -16,17 +16,13 @@ public class EFRepoTests : RepoTestsBase
 
     public EFRepoTests()
     {
-        var serviceFactory = new ServiceFactory();
-
         _dbContext = new DbContextFixture(
             new DbContextOptionsBuilder<DbContextFixture>()
                 .UseInMemoryDatabase(databaseName: new Fixture().Create<string>())
                 .Options);
 
-        var logger = serviceFactory.GetRequiredService<ILogger<EFRepo<EntityFixture>>>();
-
         _efRepo = new EFRepo<EntityFixture>(
-            logger,
+            Moq.Mock.Of<ILogger<EFRepo<EntityFixture>>>(),
             _dbContext);
     }
 

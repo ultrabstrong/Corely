@@ -1,10 +1,11 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Interfaces.Repos;
-using Corely.UnitTests.Fixtures;
+using Corely.DataAccess.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System.Reflection;
 
-namespace Corely.UnitTests.DataAccess;
+namespace Corely.DataAccess.UnitTests;
 
 public abstract class ReadonlyRepoTestsBase
 {

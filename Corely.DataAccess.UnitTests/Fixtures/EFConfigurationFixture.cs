@@ -2,7 +2,7 @@
 using Corely.DataAccess.EntityFramework.Configurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace Corely.UnitTests.Fixtures;
+namespace Corely.DataAccess.UnitTests.Fixtures;
 
 public class EFConfigurationFixture : EFInMemoryConfigurationBase
 {

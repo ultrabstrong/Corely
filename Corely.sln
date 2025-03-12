@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAMDataAccessMigrati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.Security", "Corely.Security\Corely.Security.csproj", "{5E136CE2-0014-46E8-A9FB-1BF8F32E24E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.DataAccess.UnitTests", "Corely.DataAccess.UnitTests\Corely.DataAccess.UnitTests.csproj", "{A1239807-DAD2-4796-8EE4-CC4E816424B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{5E136CE2-0014-46E8-A9FB-1BF8F32E24E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E136CE2-0014-46E8-A9FB-1BF8F32E24E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E136CE2-0014-46E8-A9FB-1BF8F32E24E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1239807-DAD2-4796-8EE4-CC4E816424B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1239807-DAD2-4796-8EE4-CC4E816424B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1239807-DAD2-4796-8EE4-CC4E816424B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1239807-DAD2-4796-8EE4-CC4E816424B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

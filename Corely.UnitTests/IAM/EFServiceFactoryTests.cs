@@ -1,7 +1,8 @@
-﻿using Corely.DataAccess.EntityFramework.Configurations;
+﻿using AutoFixture;
+using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM;
 using Corely.Security.KeyStore;
-using Corely.UnitTests.Fixtures;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -9,6 +10,15 @@ namespace Corely.UnitTests.IAM;
 
 public class EFServiceFactoryTests : ServiceFactoryGenericTests
 {
+    private class TestEFConfiguration : EFInMemoryConfigurationBase
+    {
+        public override void Configure(DbContextOptionsBuilder optionsBuilder)
+        {
+            var fixture = new Fixture();
+            optionsBuilder.UseInMemoryDatabase(fixture.Create<string>());
+        }
+    }
+
     private class MockServiceFactory : EFServiceFactory
     {
         private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
@@ -28,7 +38,7 @@ public class EFServiceFactoryTests : ServiceFactoryGenericTests
 
         protected override IEFConfiguration GetEFConfiguraiton()
         {
-            return new EFConfigurationFixture();
+            return new TestEFConfiguration();
         }
     }
 

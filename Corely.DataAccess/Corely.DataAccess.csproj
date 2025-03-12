@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Corely.UnitTests" />
+    <InternalsVisibleTo Include="Corely.DataAccess.UnitTests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
   <ItemGroup>

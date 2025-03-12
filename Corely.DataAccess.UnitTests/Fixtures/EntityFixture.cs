@@ -1,6 +1,6 @@
 ﻿using Corely.DataAccess.Interfaces.Entities;
 
-namespace Corely.UnitTests.Fixtures;
+namespace Corely.DataAccess.UnitTests.Fixtures;
 
 public class EntityFixture : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
 {

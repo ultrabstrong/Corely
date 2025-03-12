@@ -85,3 +85,6 @@ dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
 
 # File-scoped namespaces
 csharp_style_namespace_declarations = file_scoped:error
+
+# IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = error

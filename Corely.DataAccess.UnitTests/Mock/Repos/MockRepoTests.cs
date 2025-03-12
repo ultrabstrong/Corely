@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.DataAccess.Mock.Repos;
-using Corely.UnitTests.Fixtures;
+using Corely.DataAccess.UnitTests.Fixtures;
 
-namespace Corely.UnitTests.DataAccess.Mock.Repos;
+namespace Corely.DataAccess.UnitTests.Mock.Repos;
 
 public class MockRepoTests : RepoTestsBase
 {

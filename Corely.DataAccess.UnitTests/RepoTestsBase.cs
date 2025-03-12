@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.Interfaces.Repos;
-using Corely.UnitTests.Fixtures;
+using Corely.DataAccess.UnitTests.Fixtures;
 using FluentAssertions;
 
-namespace Corely.UnitTests.DataAccess;
+namespace Corely.DataAccess.UnitTests;
 
 public abstract class RepoTestsBase : ReadonlyRepoTestsBase
 {

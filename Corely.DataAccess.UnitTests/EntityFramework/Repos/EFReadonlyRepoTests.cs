@@ -1,11 +1,11 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.EntityFramework.Repos;
 using Corely.DataAccess.Interfaces.Repos;
-using Corely.UnitTests.Fixtures;
+using Corely.DataAccess.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.DataAccess.EntityFramework.Repos;
+namespace Corely.DataAccess.UnitTests.EntityFramework.Repos;
 
 public class EFReadonlyRepoTests : ReadonlyRepoTestsBase
 {
@@ -14,11 +14,10 @@ public class EFReadonlyRepoTests : ReadonlyRepoTestsBase
 
     public EFReadonlyRepoTests()
     {
-        var serviceFactory = new ServiceFactory();
         _dbContext = GetDbContext();
 
         _efReadonlyRepo = new(
-            serviceFactory.GetRequiredService<ILogger<EFReadonlyRepo<EntityFixture>>>(),
+            Moq.Mock.Of<ILogger<EFRepo<EntityFixture>>>(),
             _dbContext);
     }
 

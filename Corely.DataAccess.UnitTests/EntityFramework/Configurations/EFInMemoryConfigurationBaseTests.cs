@@ -1,7 +1,7 @@
 ﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace Corely.UnitTests.DataAccess.EntityFramework.Configurations;
+namespace Corely.DataAccess.UnitTests.EntityFramework.Configurations;
 
 public class EFInMemoryConfigurationBaseTests : EFConfigurationTestsBase
 {

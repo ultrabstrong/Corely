@@ -1,6 +1,6 @@
 ﻿using Corely.DataAccess.Mock;
 
-namespace Corely.UnitTests.DataAccess.Mock;
+namespace Corely.DataAccess.UnitTests.Mock;
 
 public class MockUoWProviderTests
 {

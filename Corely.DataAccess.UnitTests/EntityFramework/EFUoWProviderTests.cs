@@ -1,15 +1,15 @@
 ﻿using Corely.DataAccess.EntityFramework;
-using Corely.IAM.DataAccess;
-using Corely.UnitTests.Fixtures;
+using Corely.DataAccess.UnitTests.Fixtures;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Moq;
 
-namespace Corely.UnitTests.DataAccess.EntityFramework;
+namespace Corely.DataAccess.UnitTests.EntityFramework;
 
 public class EFUoWProviderTests
 {
     private readonly Mock<IDbContextTransaction> _transaction = new();
-    private readonly Mock<IamDbContext> _iamDbContextMock;
+    private readonly Mock<DbContextFixture> _iamDbContextMock;
     private readonly EFUoWProvider _efUoWProvider;
 
     public EFUoWProviderTests()
@@ -18,15 +18,15 @@ public class EFUoWProviderTests
         _efUoWProvider = new(_iamDbContextMock.Object);
     }
 
-    private Mock<IamDbContext> GetMockIAMDbContext()
+    private Mock<DbContextFixture> GetMockIAMDbContext()
     {
-        var iamDbContextMock = new Mock<IamDbContext>(new EFConfigurationFixture());
-        var mockDatabaseFacade = new Mock<DatabaseFacade>(iamDbContextMock.Object);
+        var dbContextMock = new Mock<DbContextFixture>(new EFConfigurationFixture());
+        var mockDatabaseFacade = new Mock<DatabaseFacade>(dbContextMock.Object);
         mockDatabaseFacade.Setup(d => d.BeginTransactionAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => _transaction.Object);
-        iamDbContextMock.SetupGet(c => c.Database).Returns(mockDatabaseFacade.Object);
+        dbContextMock.SetupGet(c => c.Database).Returns(mockDatabaseFacade.Object);
 
-        return iamDbContextMock;
+        return dbContextMock;
     }
 
     [Fact]
