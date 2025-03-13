@@ -2,7 +2,7 @@
 using Corely.IAM.Mappers.AutoMapper.TypeConverters;
 using Corely.Security.Hashing.Models;
 using Corely.Security.Hashing.Providers;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters;
 

@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Roles.Constants;
 using Corely.IAM.Roles.Models;
 using Corely.IAM.Roles.Validators;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 using FluentValidation.TestHelper;
 
 namespace Corely.UnitTests.IAM.Roles.Validators;

@@ -1,5 +1,5 @@
 ﻿using Corely.Common.Converters.Json;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 using System.Text;
 using System.Text.Json;
 

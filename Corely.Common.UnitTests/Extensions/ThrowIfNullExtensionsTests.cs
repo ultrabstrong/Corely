@@ -1,8 +1,8 @@
 ﻿using AutoFixture;
 using Corely.Common.Extensions;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 
-namespace Corely.UnitTests.Common.Extensions;
+namespace Corely.Common.UnitTests.Extensions;
 
 public class ThrowIfNullExtensionsTests
 {

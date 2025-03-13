@@ -1,7 +1,8 @@
 ﻿using Corely.Common.File;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
+using Moq;
 
-namespace Corely.UnitTests.Common.File;
+namespace Corely.Common.UnitTests.File;
 
 public class TestableFilePathProvider : FilePathProvider
 {

@@ -2,7 +2,7 @@
 using Corely.Security.Hashing;
 using Corely.Security.Hashing.Factories;
 using Corely.Security.Hashing.Providers;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 
 namespace Corely.UnitTests.Security.Hashing.Factories;
 

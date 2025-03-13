@@ -1,5 +1,5 @@
 ﻿using Corely.Common.Extensions;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 
 namespace Corely.UnitTests.Common.Extensions;
 

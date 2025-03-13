@@ -2,7 +2,7 @@
 using Corely.IAM.Mappers.AutoMapper.TypeConverters;
 using Corely.Security.Encryption.Models;
 using Corely.Security.Encryption.Providers;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 
 namespace Corely.UnitTests.IAM.Mappers.AutoMapper.TypeConverters;
 

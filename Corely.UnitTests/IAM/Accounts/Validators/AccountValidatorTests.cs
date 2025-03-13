@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Accounts.Constants;
 using Corely.IAM.Accounts.Models;
 using Corely.IAM.Accounts.Validators;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 using FluentValidation.TestHelper;
 
 namespace Corely.UnitTests.IAM.Accounts.Validators;

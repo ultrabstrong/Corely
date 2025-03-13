@@ -2,7 +2,7 @@
 using Corely.Security.Signature;
 using Corely.Security.Signature.Factories;
 using Corely.Security.Signature.Providers;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 
 namespace Corely.UnitTests.Security.Signature.Factories;
 

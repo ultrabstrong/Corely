@@ -5,7 +5,7 @@ using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Providers;
 using Corely.Security.Signature.Factories;
 using Corely.Security.Signature.Providers;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 
 namespace Corely.UnitTests.IAM.Security.Processors;
 

@@ -1,5 +1,5 @@
 ﻿using Corely.Security.Keys;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 
 namespace Corely.UnitTests.Security.Keys;
 

@@ -8,7 +8,7 @@ using Corely.IAM.Mappers;
 using Corely.IAM.Roles.Entities;
 using Corely.IAM.Users.Entities;
 using Corely.IAM.Validators;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

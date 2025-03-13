@@ -1,14 +1,13 @@
-using System.Collections;
+﻿using System.Collections;
 
-namespace Corely.UnitTests.ClassData;
+namespace Corely.TestBase.ClassData;
 
-internal class NullEmptyAndWhitespace : IEnumerable<object[]>
+public class NullAndEmpty : IEnumerable<object[]>
 {
     private readonly List<object[]> _data =
     [
         [null],
             [string.Empty],
-            [" "],
         ];
 
     public IEnumerator<object[]> GetEnumerator() => _data.GetEnumerator();

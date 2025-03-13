@@ -1,8 +1,10 @@
 ﻿using Corely.Common.Text.Delimited;
+using Corely.TestBase;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Text;
 
-namespace Corely.UnitTests.Common.Text.Delimited;
+namespace Corely.Common.UnitTests.Text.Delimited;
 
 public class DelimitedTextProviderTests
 {
@@ -11,8 +13,7 @@ public class DelimitedTextProviderTests
 
     public DelimitedTextProviderTests()
     {
-        var serviceFactory = new ServiceFactory();
-        _logger = serviceFactory.GetRequiredService<ILogger<DelimitedTextProvider>>();
+        _logger = new NullLogger<DelimitedTextProvider>();
         _delimitedTextDataProvider = new DelimitedTextProvider(_logger);
     }
 

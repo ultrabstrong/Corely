@@ -43,6 +43,7 @@
     <ProjectReference Include="..\Corely.DataAccess\Corely.DataAccess.csproj" />
     <ProjectReference Include="..\Corely.IAM\Corely.IAM.csproj" />
     <ProjectReference Include="..\Corely.Security\Corely.Security.csproj" />
+    <ProjectReference Include="..\Corely.TestBase\Corely.TestBase.csproj" />
   </ItemGroup>
 
 </Project>

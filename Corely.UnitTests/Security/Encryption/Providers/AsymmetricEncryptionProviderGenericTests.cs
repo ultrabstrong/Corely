@@ -2,7 +2,7 @@
 using Corely.Security.Encryption;
 using Corely.Security.Encryption.Providers;
 using Corely.Security.KeyStore;
-using Corely.UnitTests.ClassData;
+using Corely.TestBase.ClassData;
 
 namespace Corely.UnitTests.Security.Encryption.Providers;
 

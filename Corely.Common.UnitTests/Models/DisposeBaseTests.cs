@@ -1,7 +1,8 @@
 ﻿using Corely.Common.Models;
+using Moq;
 using Moq.Protected;
 
-namespace Corely.UnitTests.Common.Models;
+namespace Corely.Common.UnitTests.Models;
 
 public class DisposeBaseTests
 {
