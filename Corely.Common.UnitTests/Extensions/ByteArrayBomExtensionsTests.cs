@@ -1,7 +1,7 @@
 ﻿using Corely.Common.Extensions;
 using System.Text;
 
-namespace Corely.UnitTests.Common.Extensions;
+namespace Corely.Common.UnitTests.Extensions;
 
 public class ByteArrayBomExtensionsTests
 {

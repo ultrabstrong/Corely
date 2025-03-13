@@ -1,6 +1,6 @@
 ﻿using Corely.Common.Models;
 
-namespace Corely.UnitTests.Common.Models;
+namespace Corely.Common.UnitTests.Models;
 
 public class PagedResultTests
 {

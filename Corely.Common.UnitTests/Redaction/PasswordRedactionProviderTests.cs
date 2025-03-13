@@ -1,6 +1,6 @@
 ﻿using Corely.Common.Providers.Redaction;
 
-namespace Corely.UnitTests.Common.Redaction;
+namespace Corely.Common.UnitTests.Redaction;
 
 public class PasswordRedactionProviderTests
 {

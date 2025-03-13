@@ -1,7 +1,7 @@
 ﻿using Corely.Common.Extensions;
 using Corely.TestBase.ClassData;
 
-namespace Corely.UnitTests.Common.Extensions;
+namespace Corely.Common.UnitTests.Extensions;
 
 public class StringExtensionsTests
 {

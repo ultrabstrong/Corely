@@ -3,7 +3,7 @@ using Corely.TestBase.ClassData;
 using System.Text;
 using System.Text.Json;
 
-namespace Corely.UnitTests.Common.Converters.Json;
+namespace Corely.Common.UnitTests.Converters.Json;
 
 public class JsonDateConverterTests
 {

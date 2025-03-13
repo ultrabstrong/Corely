@@ -1,7 +1,7 @@
 ﻿using Corely.Common.Redaction;
 using System.Text.RegularExpressions;
 
-namespace Corely.UnitTests.Common.Providers.Redaction;
+namespace Corely.Common.UnitTests.Providers.Redaction;
 
 public partial class RedactionProviderBaseTests
 {
