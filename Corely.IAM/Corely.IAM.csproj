@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Corely.UnitTests" />
+    <InternalsVisibleTo Include="Corely.IAM.UnitTests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
 	<InternalsVisibleTo Include="Corely.IAMDataAccessMigrations" />
   </ItemGroup>

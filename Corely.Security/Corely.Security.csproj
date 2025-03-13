@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="Corely.UnitTests" />
+    <InternalsVisibleTo Include="Corely.IAM.UnitTests" />
     <InternalsVisibleTo Include="Corely.Security.UnitTests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
