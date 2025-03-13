@@ -1,6 +1,6 @@
 ﻿namespace Corely.Common.Extensions;
 
-public static class StringBase64EncodeExtensions
+public static class StringExtensions
 {
     public static string Base64Encode(this string s)
     {
@@ -19,4 +19,19 @@ public static class StringBase64EncodeExtensions
         }
         return System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(s));
     }
+
+    public static string UrlEncode(this string source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        return Uri.EscapeDataString(source);
+    }
+
+    public static string UrlDecode(this string source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        return Uri.UnescapeDataString(source);
+    }
+
 }

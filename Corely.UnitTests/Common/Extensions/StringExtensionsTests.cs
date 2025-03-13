@@ -1,13 +1,35 @@
 ﻿using Corely.Common.Extensions;
+using Corely.UnitTests.ClassData;
 
 namespace Corely.UnitTests.Common.Extensions;
 
-public class StringUrlEncodeExtensionsTests
+public class StringExtensionsTests
 {
+    [Theory, ClassData(typeof(NullAndEmpty))]
+    public void Base64Encode_ReturnsEmptyString_WhenStringIsNullOrEmpty(string s)
+    {
+        Assert.Equal(string.Empty, s.Base64Encode());
+    }
+
+    [Theory, ClassData(typeof(NullAndEmpty))]
+    public void Base64Decode_ReturnsEmptyString_WhenStringIsNullOrEmpty(string s)
+    {
+        Assert.Equal(string.Empty, s.Base64Decode());
+    }
+
+    [Theory]
+    [InlineData("test")]
+    [InlineData("test string with spaces")]
+    [InlineData("test string with spaces and special characters !@#$%^&*()_+")]
+    public void Base64Encode_Base64DecodesToOriginalString(string s)
+    {
+        Assert.Equal(s, s.Base64Encode().Base64Decode());
+    }
+
     [Fact]
     public void UrlEncode_Null_Throws()
     {
-        var ex = Record.Exception(() => StringUrlEncodeExtensions.UrlEncode(null));
+        var ex = Record.Exception(() => StringExtensions.UrlEncode(null));
         Assert.NotNull(ex);
         Assert.IsType<ArgumentNullException>(ex);
     }
@@ -21,7 +43,7 @@ public class StringUrlEncodeExtensionsTests
     [Fact]
     public void UrlDecode_Throws_WithNullInput()
     {
-        var ex = Record.Exception(() => StringUrlEncodeExtensions.UrlDecode(null));
+        var ex = Record.Exception(() => StringExtensions.UrlDecode(null));
         Assert.NotNull(ex);
         Assert.IsType<ArgumentNullException>(ex);
     }
