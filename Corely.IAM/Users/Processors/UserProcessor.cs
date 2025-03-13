@@ -244,11 +244,10 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
                 r => request.RoleIds.Contains(r.Id)
                 && !r.Users!.Any(u => u.Id == userEntity.Id));
 
-            roleEntities = roleEntities
+            roleEntities = [.. roleEntities
                 .Where(r =>
                     userEntity.Accounts?.Any(a => a.Id == r.AccountId)
-                    ?? false)
-                .ToList();
+                    ?? false)];
 
             if (roleEntities.Count == 0)
             {
