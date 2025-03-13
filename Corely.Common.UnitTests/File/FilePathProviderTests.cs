@@ -1,6 +1,5 @@
 ﻿using Corely.Common.File;
 using Corely.TestBase.ClassData;
-using Moq;
 
 namespace Corely.Common.UnitTests.File;
 

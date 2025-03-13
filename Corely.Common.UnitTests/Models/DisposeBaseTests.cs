@@ -1,6 +1,4 @@
 ﻿using Corely.Common.Models;
-using Moq;
-using Moq.Protected;
 
 namespace Corely.Common.UnitTests.Models;
 

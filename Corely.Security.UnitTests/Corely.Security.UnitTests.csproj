@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Corely.Common\Corely.Common.csproj" />
+    <ProjectReference Include="..\Corely.Security\Corely.Security.csproj" />
     <ProjectReference Include="..\Corely.TestBase\Corely.TestBase.csproj" />
   </ItemGroup>
 
