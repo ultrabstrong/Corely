@@ -1,8 +1,8 @@
 ﻿using Corely.IAM.Permissions.Entities;
 using Corely.IAM.Permissions.Models;
-using Corely.UnitTests.Mappers.AutoMapper;
+using Corely.IAM.UnitTests.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.Permissions.Mappers;
+namespace Corely.IAM.UnitTests.Permissions.Mappers;
 public class PermissionProfileTests
     : BidirectionalProfileDelegateTestsBase
 {

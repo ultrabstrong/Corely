@@ -4,7 +4,7 @@ using Corely.Security.Encryption.Factories;
 using Corely.Security.Encryption.Providers;
 using Corely.TestBase.ClassData;
 
-namespace Corely.UnitTests.Mappers.AutoMapper.TypeConverters;
+namespace Corely.IAM.UnitTests.Mappers.AutoMapper.TypeConverters;
 
 public class SymmetricEncryptedStringToEncryptedValueTypeConverterTests
 {

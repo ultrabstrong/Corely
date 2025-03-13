@@ -7,7 +7,7 @@ using Corely.Security.Signature.Factories;
 using Corely.Security.Signature.Providers;
 using Corely.TestBase.ClassData;
 
-namespace Corely.UnitTests.Security.Processors;
+namespace Corely.IAM.UnitTests.Security.Processors;
 
 public class SecurityProcessorTests
 {

@@ -12,7 +12,7 @@ using Corely.TestBase.ClassData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.Groups.Processors;
+namespace Corely.IAM.UnitTests.Groups.Processors;
 
 public class GroupProcessorTests
 {

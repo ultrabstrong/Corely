@@ -2,9 +2,9 @@
 using Corely.Security.Encryption;
 using Corely.Security.Encryption.Models;
 using Corely.Security.Encryption.Providers;
-using Corely.UnitTests.Mappers.AutoMapper;
+using Corely.IAM.UnitTests.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.Security.Mappers;
+namespace Corely.IAM.UnitTests.Security.Mappers;
 
 public class EncryptedValueProfileTests
     : BidirectionalProfileTestsBase<SymmetricEncryptedValue, string>

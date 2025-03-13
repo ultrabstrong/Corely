@@ -1,4 +1,5 @@
 ﻿using Corely.Common.Text.Delimited;
+using Corely.Miscellaneous.Text.Delimited;
 using Corely.TestBase;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

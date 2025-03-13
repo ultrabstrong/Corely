@@ -6,11 +6,11 @@ using Corely.IAM.Security.Models;
 using Corely.IAM.Services;
 using Corely.IAM.Users.Models;
 using Corely.IAM.Users.Processors;
-using Corely.UnitTests.Processors;
+using Corely.IAM.UnitTests.Processors;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Corely.UnitTests.Services;
+namespace Corely.IAM.UnitTests.Services;
 
 public class SignInServiceTests : ProcessorBaseTests
 {

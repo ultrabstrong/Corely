@@ -1,8 +1,8 @@
 ﻿using Corely.IAM.Roles.Entities;
 using Corely.IAM.Roles.Models;
-using Corely.UnitTests.Mappers.AutoMapper;
+using Corely.IAM.UnitTests.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.Roles.Mappers;
+namespace Corely.IAM.UnitTests.Roles.Mappers;
 public class RoleProfileTests
     : BidirectionalProfileDelegateTestsBase
 {

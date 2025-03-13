@@ -2,7 +2,7 @@
 using Corely.Security.Keys;
 using Corely.Security.KeyStore;
 
-namespace Corely.UnitTests;
+namespace Corely.IAM.UnitTests;
 
 internal class SecurityConfigurationProvider : ISecurityConfigurationProvider
 {

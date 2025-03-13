@@ -1,6 +1,6 @@
 ﻿using Corely.IAM.Validators;
 
-namespace Corely.UnitTests.Validators;
+namespace Corely.IAM.UnitTests.Validators;
 
 public class ValidationResultTests
 {

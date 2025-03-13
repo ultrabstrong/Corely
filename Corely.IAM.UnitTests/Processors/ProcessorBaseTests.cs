@@ -6,7 +6,7 @@ using Corely.IAM.Users.Models;
 using Corely.IAM.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.Processors;
+namespace Corely.IAM.UnitTests.Processors;
 
 public class ProcessorBaseTests
 {

@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Corely.UnitTests;
+namespace Corely.IAM.UnitTests;
 
 public class ServiceFactoryBaseTests : ServiceFactoryGenericTests
 {

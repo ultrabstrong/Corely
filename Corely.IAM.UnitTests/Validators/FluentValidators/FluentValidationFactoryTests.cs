@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Validators.FluentValidators;
 using FluentValidation;
 
-namespace Corely.UnitTests.Validators.FluentValidators;
+namespace Corely.IAM.UnitTests.Validators.FluentValidators;
 
 public class FluentValidationFactoryTests
 {

@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Users.Models;
-using Corely.UnitTests.Mappers.AutoMapper;
+using Corely.IAM.UnitTests.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.Users.Mappers;
+namespace Corely.IAM.UnitTests.Users.Mappers;
 
 public class CreateUserRequestTests
     : ProfileDelegateTestsBase

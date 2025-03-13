@@ -11,7 +11,7 @@ using Corely.IAM.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.Permissions.Processors;
+namespace Corely.IAM.UnitTests.Permissions.Processors;
 public class PermissionProcessorTests
 {
     private const string VALID_PERMISSION_NAME = "permissionname";

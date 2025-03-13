@@ -19,7 +19,7 @@ using Corely.Security.PasswordValidation.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Corely.UnitTests;
+namespace Corely.IAM.UnitTests;
 
 public abstract class ServiceFactoryGenericTests
 {

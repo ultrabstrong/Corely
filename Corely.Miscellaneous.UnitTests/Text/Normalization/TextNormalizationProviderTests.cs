@@ -1,6 +1,6 @@
 ﻿using Corely.Common.Providers.Data;
 
-namespace Corely.UnitTests.Common.Text.Normalization;
+namespace Corely.Miscellaneous.UnitTests.Text.Normalization;
 
 public class TextNormalizationProviderTests
 {

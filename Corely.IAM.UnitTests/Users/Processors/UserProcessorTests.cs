@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Corely.UnitTests.Users.Processors;
+namespace Corely.IAM.UnitTests.Users.Processors;
 
 public class UserProcessorTests
 {

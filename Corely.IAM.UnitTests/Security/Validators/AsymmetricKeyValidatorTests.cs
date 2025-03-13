@@ -6,7 +6,7 @@ using Corely.Security.Encryption.Providers;
 using Corely.TestBase.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.Security.Validators;
+namespace Corely.IAM.UnitTests.Security.Validators;
 
 public class AsymmetricKeyValidatorTests
 {

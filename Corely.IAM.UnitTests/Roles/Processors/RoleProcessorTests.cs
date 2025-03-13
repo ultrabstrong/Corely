@@ -13,7 +13,7 @@ using Corely.TestBase.ClassData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.Roles.Processors;
+namespace Corely.IAM.UnitTests.Roles.Processors;
 public class RoleProcessorTests
 {
     private const string VALID_ROLE_NAME = "rolename";

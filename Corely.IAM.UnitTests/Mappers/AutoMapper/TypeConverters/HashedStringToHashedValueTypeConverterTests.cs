@@ -4,7 +4,7 @@ using Corely.Security.Hashing.Factories;
 using Corely.Security.Hashing.Providers;
 using Corely.TestBase.ClassData;
 
-namespace Corely.UnitTests.Mappers.AutoMapper.TypeConverters;
+namespace Corely.IAM.UnitTests.Mappers.AutoMapper.TypeConverters;
 
 public class HashedStringToHashedValueTypeConverterTests
 {

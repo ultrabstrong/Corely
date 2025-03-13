@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Groups.Models;
-using Corely.UnitTests.Mappers.AutoMapper;
+using Corely.IAM.UnitTests.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.Groups.Mappers;
+namespace Corely.IAM.UnitTests.Groups.Mappers;
 
 public class CreateGroupRequestProfileTests
     : ProfileDelegateTestsBase

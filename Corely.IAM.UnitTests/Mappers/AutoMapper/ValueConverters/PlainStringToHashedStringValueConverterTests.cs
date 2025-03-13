@@ -3,7 +3,7 @@ using Corely.IAM.Mappers.AutoMapper.ValueConverters;
 using Corely.Security.Hashing.Factories;
 using Corely.TestBase.ClassData;
 
-namespace Corely.UnitTests.Mappers.AutoMapper.ValueConverters;
+namespace Corely.IAM.UnitTests.Mappers.AutoMapper.ValueConverters;
 
 public class PlainStringToHashedStringValueConverterTests
 {

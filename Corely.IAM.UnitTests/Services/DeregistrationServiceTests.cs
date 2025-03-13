@@ -1,4 +1,4 @@
-﻿namespace Corely.UnitTests.Services;
+﻿namespace Corely.IAM.UnitTests.Services;
 
 public class DeregistrationServiceTests
 {

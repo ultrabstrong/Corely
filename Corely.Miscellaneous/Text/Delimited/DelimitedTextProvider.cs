@@ -1,8 +1,9 @@
 ﻿using Corely.Common.Extensions;
+using Corely.Common.Text.Delimited;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace Corely.Common.Text.Delimited;
+namespace Corely.Miscellaneous.Text.Delimited;
 
 public class DelimitedTextProvider : IDelimitedTextProvider
 {
@@ -296,7 +297,7 @@ public class DelimitedTextProvider : IDelimitedTextProvider
     public void WriteAllRecords(IEnumerable<IEnumerable<string>> records, Stream writeTo)
     {
         _logger.LogInformation("Writing all records to stream");
-        List<IEnumerable<string>> recordsList = records.ToList();
+        List<IEnumerable<string>> recordsList = [.. records];
 
         StreamWriter writer = new(writeTo, Encoding.UTF8);
         if (recordsList.Count > 0)
@@ -324,7 +325,7 @@ public class DelimitedTextProvider : IDelimitedTextProvider
 
     private void WriteRecord(IEnumerable<string> record, StreamWriter writer)
     {
-        List<string> recordList = record.ToList();
+        List<string> recordList = [.. record];
 
         if (recordList.Count > 0)
         {

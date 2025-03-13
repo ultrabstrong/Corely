@@ -2,11 +2,11 @@
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Security.Entities;
 using Corely.IAM.Security.Models;
+using Corely.IAM.UnitTests.Mappers.AutoMapper;
 using Corely.IAM.Users.Entities;
 using Corely.Security.Encryption;
-using Corely.UnitTests.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.Security.Mappers;
+namespace Corely.IAM.UnitTests.Security.Mappers;
 
 public class AsymmetricKeyProfileTests
 {

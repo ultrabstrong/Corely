@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Corely.UnitTests;
+namespace Corely.IAM.UnitTests;
 
 internal static class NonPublicHelpers
 {

@@ -4,7 +4,7 @@ using Corely.IAM.Permissions.Validators;
 using Corely.TestBase.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.Permissions.Validators;
+namespace Corely.IAM.UnitTests.Permissions.Validators;
 public class PermissionValidatorTests
 {
     private readonly PermissionValidator _validator = new();

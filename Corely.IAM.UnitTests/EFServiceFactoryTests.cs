@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Corely.UnitTests;
+namespace Corely.IAM.UnitTests;
 
 public class EFServiceFactoryTests : ServiceFactoryGenericTests
 {

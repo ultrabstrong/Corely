@@ -4,7 +4,7 @@ using Corely.IAM.Groups.Validators;
 using Corely.TestBase.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.Groups.Validators;
+namespace Corely.IAM.UnitTests.Groups.Validators;
 
 public class GroupValidatorTests
 {

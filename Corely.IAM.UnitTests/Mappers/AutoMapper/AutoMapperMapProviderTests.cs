@@ -3,7 +3,7 @@ using Corely.IAM.Mappers;
 using Corely.IAM.Mappers.AutoMapper;
 using Corely.IAM.Users.Models;
 
-namespace Corely.UnitTests.Mappers.AutoMapper;
+namespace Corely.IAM.UnitTests.Mappers.AutoMapper;
 
 public class AutoMapperMapProviderTests
 {

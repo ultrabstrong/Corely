@@ -1,6 +1,6 @@
 ﻿using Corely.Common.Text.Comparison;
 
-namespace Corely.UnitTests.Common.Text.Comparison;
+namespace Corely.Miscellaneous.UnitTests.Text.Comparison;
 
 public class TextComparisonProviderTests
 {

@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.BasicAuths.Models;
-using Corely.UnitTests.Mappers.AutoMapper;
+using Corely.IAM.UnitTests.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.BasicAuths.Mappers;
+namespace Corely.IAM.UnitTests.BasicAuths.Mappers;
 
 public class UpsertBasicAuthRequestProfileTests
     : ProfileDelegateTestsBase

@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
 
-namespace Corely.UnitTests.Mappers.AutoMapper;
+namespace Corely.IAM.UnitTests.Mappers.AutoMapper;
 
 public abstract class ProfileTestsBase
 {

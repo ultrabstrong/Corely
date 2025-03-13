@@ -10,7 +10,7 @@ using Corely.IAM.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Corely.UnitTests.Accounts.Processors;
+namespace Corely.IAM.UnitTests.Accounts.Processors;
 
 public class AccountProcessorTests
 {

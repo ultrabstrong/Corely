@@ -4,7 +4,7 @@ using Corely.IAM.Roles.Validators;
 using Corely.TestBase.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.Roles.Validators;
+namespace Corely.IAM.UnitTests.Roles.Validators;
 public class RoleValidatorTests
 {
     private readonly RoleValidator _validator = new();

@@ -2,9 +2,9 @@
 using Corely.Security.Hashing;
 using Corely.Security.Hashing.Models;
 using Corely.Security.Hashing.Providers;
-using Corely.UnitTests.Mappers.AutoMapper;
+using Corely.IAM.UnitTests.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.Security.Mappers;
+namespace Corely.IAM.UnitTests.Security.Mappers;
 
 public class HashedValueProfileTests
     : BidirectionalProfileTestsBase<HashedValue, string>

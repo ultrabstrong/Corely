@@ -4,7 +4,7 @@ using Corely.IAM.Accounts.Validators;
 using Corely.TestBase.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.Accounts.Validators;
+namespace Corely.IAM.UnitTests.Accounts.Validators;
 
 public class AccountValidatorTests
 {

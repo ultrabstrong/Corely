@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Validators;
 using Corely.TestBase;
 
-namespace Corely.UnitTests.Validators;
+namespace Corely.IAM.UnitTests.Validators;
 
 public class ValidationExceptionTests
     : ExceptionTestsBase<ValidationException>

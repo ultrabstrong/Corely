@@ -5,7 +5,7 @@ using Corely.Security.Hashing.Providers;
 using Corely.TestBase.ClassData;
 using FluentValidation.TestHelper;
 
-namespace Corely.UnitTests.BasicAuths.Validators;
+namespace Corely.IAM.UnitTests.BasicAuths.Validators;
 
 public class BasicAuthValidatorTests
 {

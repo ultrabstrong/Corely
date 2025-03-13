@@ -6,7 +6,7 @@ using CorelyValidationException = Corely.IAM.Validators.ValidationException;
 using FluentValidationFailure = FluentValidation.Results.ValidationFailure;
 using FluentValidationResult = FluentValidation.Results.ValidationResult;
 
-namespace Corely.UnitTests.Validators.FluentValidators;
+namespace Corely.IAM.UnitTests.Validators.FluentValidators;
 
 public class FluentValidationProviderTests
 {

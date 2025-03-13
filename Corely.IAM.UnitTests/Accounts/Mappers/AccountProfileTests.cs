@@ -1,8 +1,8 @@
 ﻿using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Models;
-using Corely.UnitTests.Mappers.AutoMapper;
+using Corely.IAM.UnitTests.Mappers.AutoMapper;
 
-namespace Corely.UnitTests.Accounts.Mappers;
+namespace Corely.IAM.UnitTests.Accounts.Mappers;
 
 public class AccountProfileTests
     : BidirectionalProfileDelegateTestsBase
