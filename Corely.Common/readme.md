@@ -52,6 +52,7 @@ Here's a brief example of how to use the library:
 
 ## Redaction Provider
 `IRedactionProvider` is an interface that provides a method to redact sensitive information from a string. The `RedactionProviderBase` class implements this interface and provides a default implementation for redacting sensitive information from a string. The `RedactionProviderBase` class uses the [ReplaceGroups Regex Extension](#replacegroups) to redact sensitive information from a string. You can easily create new redaction providers:
+```csharp
 public partial class MyRedactionProvider : RedactionProviderBase
 {
     protected override List<Regex> GetReplacePatterns() => [
@@ -61,15 +62,19 @@ public partial class MyRedactionProvider : RedactionProviderBase
     [GeneratedRegex(@"(text-to-replace)", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
     private static partial Regex RegexToReplace();
 }
+```
 
 Example usage:
+```csharp
 var redactionProvider = new MyRedactionProvider();
 var redacted = redactionProvider.Redact("text-to-replace");
+```
 
 ## Paged Result
 `PagedResult<T>` is a class that helps in managing paginated data. It provides properties and methods to handle pagination logic, such as skipping items, taking a specific number of items, and determining if there are more items to fetch.
 
 Example usage:
+```csharp
 var pagedResult = new PagedResult<MyItem>(0, 10); 
 pagedResult.OnGetNextChunk += (pagedResponse) =>
 {
@@ -80,6 +85,7 @@ pagedResult.OnGetNextChunk += (pagedResponse) =>
     return pagedResponse;
 }; 
 var nextChunk = pagedResult.GetNextChunk();
+```
 
 ### Properties
 - `Items`: The list of items in the current page.
@@ -100,6 +106,7 @@ var nextChunk = pagedResult.GetNextChunk();
 `DisposeBase` is an abstract class that implements `IDisposable` and `IAsyncDisposable`. It provides `Dispose` and `DisposeAsync` public methods and has protected overrides for disposing managed and unmanaged resources.
 
 Example Usage:
+```charp
 public class MyClass : DisposeBase
 {
     protected override void DisposeManagedResources()
@@ -110,10 +117,12 @@ public class MyClass : DisposeBase
     {
         // Dispose unmanaged resources
     }
-    protected async override ValueTask DisposeAsyncCore(){
+    protected async override ValueTask DisposeAsyncCore()
+    {
         // Dispose managed resources asynchronously
-    }}
+    }
 }
+```
 
 ## File Paths
 `IFilePathProvider` supports the following operations:
@@ -125,8 +134,10 @@ public class MyClass : DisposeBase
 The following implementations of `IFilePathProvider` are included:
 ### FilePathProvider
 This implements `IFilePathProvider` for local file paths. It is used to provide file path operations for local files
+```csharp
 var provider = new FilePathProvider();
 var path = provider.GetOverwriteProtectedPath("C:\\temp\\file.txt");
+```
 
 ## Extensions
 
@@ -135,13 +146,18 @@ Extensions for the `System.Text.RegularExpressions.Regex` class are provided to 
 
 #### ReplaceGroups
 This extension allows you to replace the groups in a regular expression with a value. The following example demonstrates how to replace `Hello, World!` with `redacted, redacted!`:
+```csharp
 var input = "Hello, World!";
 var replacement = "redacted";
 var regex = new Regex(@"(Hello), (World)!");
 var result = regex.ReplaceGroups(input, replacement);
+```
+
 This is useful for sanitizing logs or other data. Here is an example of regex used to redact passwords in JSON:
+```csharp
 [GeneratedRegex(@"""?(?:password|pwd)""?.*?""((?:[^""\\]|\\.)+)""", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
 private static partial Regex JsonPasswordProperty();
+```
 
 ### Null Checking Extensions
 These extensions are used to check for null or empty values in objects and throw an exception if they are invalid. The following extensions are included:
@@ -154,29 +170,38 @@ These extensions are used to check for null or empty values in objects and throw
 - `ThrowIfAnyNullOrEmpty` : Throws an exception if any of the strings in the `IEnumerable` are null or empty.
 
 These extensions are useful for validating input parameters in methods. For example:
+```csharp
 public MyClass(IInterface interface)
 {
-	var i = interface.ThrowIfNull(nameof(interface));
+    var i = interface.ThrowIfNull(nameof(interface));
 }
+```
 
 ### String Extensions For Encoding And Decoding
 String extensions are provided for encoding and decoding different formats. Supported formats are:
+
 #### Base64
+```csharp
 var base64 = "SGVsbG8gV29ybGQ=";
 var decoded = base64.Base64Decode();
 var encoded = decoded.Base64Encode();
+```
 
 #### URL
+```csharp
 var url = "Hello%20World";
 var decoded = url.UrlDecode();
 var encoded = decoded.UrlEncode();
+```
 
 ### Byte Array Extension For Finding BOM (Byte Order Mark)
 In some cases, when reading a file, the BOM (Byte Order Mark) is included in the byte array. This extension method allows you to find the BOM in the byte array and remove it.
 
 This extension returns a `System.Text.Encoding` for the BOM. It can be invoked as follows:
+```csharp
 var array = new byte[] { 0xEF, 0xBB, 0xBF }; // UTF-8 BOM
 var encoding = array.GetByteOrderMarkEncoding();
+```
 
 Supported BOMs:
 - UTF-8: 0xEF, 0xBB, 0xBF
