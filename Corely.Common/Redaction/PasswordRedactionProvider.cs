@@ -1,5 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using Corely.Common.Redaction;
+﻿using Corely.Common.Redaction;
+using System.Text.RegularExpressions;
 
 namespace Corely.Common.Providers.Redaction;
 
@@ -7,7 +7,7 @@ public partial class PasswordRedactionProvider : RedactionProviderBase
 {
     protected override List<Regex> GetReplacePatterns() => [
         JsonPasswordProperty(),
-            LogPasswordProperty()
+        LogPasswordProperty()
     ];
 
     [GeneratedRegex(@"""?(?:password|pwd)""?.*?""((?:[^""\\]|\\.)+)""", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
