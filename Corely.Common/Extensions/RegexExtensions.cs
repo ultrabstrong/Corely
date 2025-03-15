@@ -5,29 +5,32 @@ namespace Corely.Common.Extensions;
 
 public static class RegexExtensions
 {
-    public static string ReplaceGroup(this Regex regex, string input, int groupIndex, string replacement)
+    public static string ReplaceGroups(this Regex regex, string input, string replacement)
     {
-        var sb = new StringBuilder();
-        int previousGroupEnd = 0;
+        ArgumentNullException.ThrowIfNull(input);
 
-        var matches = regex.Matches(input);
-        if (matches != null)
+        var sb = new StringBuilder(input.Length);
+        var previousGroupEnd = 0;
+        var inputSpan = input.AsSpan();
+
+        foreach (Match match in regex.Matches(input))
         {
-            foreach (var match in matches.ToList())
+            foreach (Group group in match.Groups.Cast<Group>().Skip(1)) // Skip the 0th group as it is the entire match
             {
-                var group = match.Groups[groupIndex];
-
-                // Append up to group index
-                sb.Append(input, previousGroupEnd, group.Index - previousGroupEnd);
-                sb.Append(replacement);
-                previousGroupEnd = group.Index + group.Length;
+                if (group.Success)
+                {
+                    // Append up to group index
+                    sb.Append(inputSpan[previousGroupEnd..group.Index]);
+                    sb.Append(replacement);
+                    previousGroupEnd = group.Index + group.Length;
+                }
             }
         }
 
         // Append the remainder of the string
         if (previousGroupEnd < input.Length)
         {
-            sb.Append(input, previousGroupEnd, input.Length - previousGroupEnd);
+            sb.Append(inputSpan[previousGroupEnd..]);
         }
 
         return sb.ToString();

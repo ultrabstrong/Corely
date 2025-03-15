@@ -11,8 +11,8 @@ public static class ThrowIfNullExtensions
         return obj;
     }
 
-    public static T[] ThrowIfAnyNull<T>(
-        this T?[]? obj,
+    public static IEnumerable<T> ThrowIfAnyNull<T>(
+        this IEnumerable<T?>? obj,
         string paramName)
         where T : class
     {
@@ -32,8 +32,8 @@ public static class ThrowIfNullExtensions
         return str;
     }
 
-    public static string[] ThrowIfAnyNullOrWhiteSpace(
-        this string[]? obj,
+    public static IEnumerable<string> ThrowIfAnyNullOrWhiteSpace(
+        this IEnumerable<string>? obj,
         string paramName)
     {
         ArgumentNullException.ThrowIfNull(obj, paramName);
@@ -52,8 +52,8 @@ public static class ThrowIfNullExtensions
         return str;
     }
 
-    public static string[] ThrowIfAnyNullOrEmpty(
-        this string[]? obj,
+    public static IEnumerable<string> ThrowIfAnyNullOrEmpty(
+        this IEnumerable<string>? obj,
         string paramName)
     {
         ArgumentNullException.ThrowIfNull(obj, paramName);

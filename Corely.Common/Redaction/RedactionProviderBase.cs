@@ -21,7 +21,7 @@ public abstract class RedactionProviderBase : IRedactionProvider
         string output = input;
         foreach (var regex in _regexPatterns)
         {
-            output = regex.ReplaceGroup(output, 1, REDACTED);
+            output = regex.ReplaceGroups(output, REDACTED);
         }
         return output;
     }
