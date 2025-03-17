@@ -1,5 +1,4 @@
-﻿using Corely.IAM;
-using Corely.Security.KeyStore;
+﻿using Corely.Security.KeyStore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -9,14 +8,14 @@ public class MockDbServiceFactoryTests : ServiceFactoryGenericTests
 {
     private class MockServiceFactory : MockDbServiceFactory
     {
-        private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
+        private class MockSecurityConfigurationProvider : ISecurityConfigurationProvider
         {
             public ISymmetricKeyStoreProvider GetSystemSymmetricKey() => null!;
         }
 
         protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
         {
-            return new MockSecurityConfiguraitonProvider();
+            return new MockSecurityConfigurationProvider();
         }
 
         protected override void AddLogging(ILoggingBuilder builder)

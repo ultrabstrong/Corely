@@ -49,13 +49,13 @@ internal class BasicAuthProcessor : ProcessorBase, IBasicAuthProcessor
             if (existingAuth?.Id == null)
             {
                 Logger.LogDebug("No existing basic auth for UserId {UserId}. Creating new", request.UserId);
-                var newId = await _basicAuthRepo.CreateAsync(basicAuthEntity);
-                result = new UpsertBasicAuthResult(UpsertBasicAuthResultCode.Success, string.Empty, newId, UpsertType.Create);
+                var created = await _basicAuthRepo.CreateAsync(basicAuthEntity);
+                result = new UpsertBasicAuthResult(UpsertBasicAuthResultCode.Success, string.Empty, created.Id, UpsertType.Create);
             }
             else
             {
                 Logger.LogDebug("Found existing basic auth for UserId {UserId}. Updating", request.UserId);
-                await _basicAuthRepo.UpdateAsync(basicAuthEntity);
+                await _basicAuthRepo.UpdateAsync(basicAuthEntity, a => a.Id == basicAuthEntity.Id);
                 result = new UpsertBasicAuthResult(UpsertBasicAuthResultCode.Success, string.Empty, existingAuth.Id, UpsertType.Update);
             }
 

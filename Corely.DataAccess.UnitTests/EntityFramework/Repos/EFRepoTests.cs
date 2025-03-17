@@ -43,7 +43,7 @@ public class EFRepoTests : RepoTestsBase
     {
         await _efRepo.CreateAsync(_testEntity);
 
-        var entity = await _efRepo.GetAsync(_testEntity.Id);
+        var entity = await _efRepo.GetAsync(e => e.Id == _testEntity.Id);
         Assert.Equal(_testEntity, entity);
     }
 
@@ -54,7 +54,7 @@ public class EFRepoTests : RepoTestsBase
         _dbContext.Set<EntityFixture>().Entry(_testEntity).State = EntityState.Detached;
 
         var entity = new EntityFixture { Id = _testEntity.Id };
-        await _efRepo.UpdateAsync(entity);
+        await _efRepo.UpdateAsync(entity, e => e.Id == entity.Id);
 
         var updatedEntity = _dbContext.Set<EntityFixture>().Find(entity.Id);
         Assert.NotNull(updatedEntity);
@@ -62,8 +62,9 @@ public class EFRepoTests : RepoTestsBase
         Assert.NotEqual(_testEntity, updatedEntity);
         Assert.Equal(entity, updatedEntity);
 
+        Assert.NotNull(updatedEntity.ModifiedUtc);
         Assert.InRange(
-            updatedEntity.ModifiedUtc,
+            updatedEntity.ModifiedUtc.Value,
             DateTime.UtcNow.AddSeconds(-2),
             DateTime.UtcNow);
     }
@@ -74,31 +75,16 @@ public class EFRepoTests : RepoTestsBase
         await _efRepo.CreateAsync(_testEntity);
         var untrackedSetupEntity = new EntityFixture { Id = _testEntity.Id };
 
-        await _efRepo.UpdateAsync(untrackedSetupEntity);
+        await _efRepo.UpdateAsync(untrackedSetupEntity, u => u.Id == untrackedSetupEntity.Id);
 
         // UpdateAsync automatically updates the ModifiedUtc
         // It should find and update ModifiedUtc of the original entity
         // This has the added benefit of testing the ModifiedUtc update
+        Assert.NotNull(_testEntity.ModifiedUtc);
         Assert.InRange(
-            _testEntity.ModifiedUtc,
+            _testEntity.ModifiedUtc.Value,
             DateTime.UtcNow.AddSeconds(-2),
             DateTime.UtcNow);
-    }
-
-    [Fact]
-    public async Task DeleteAsync_HandlesNonexistantEntity()
-    {
-        var ex = await Record.ExceptionAsync(() => _efRepo.DeleteAsync(_testEntity));
-
-        Assert.Null(ex);
-    }
-
-    [Fact]
-    public async Task DeleteAsync_Id_HandlesNonexistantEntity()
-    {
-        var ex = await Record.ExceptionAsync(() => _efRepo.DeleteAsync(_testEntity.Id));
-
-        Assert.Null(ex);
     }
 
     protected override int FillRepoAndReturnId()

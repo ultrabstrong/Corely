@@ -6,7 +6,7 @@ using Corely.IAM.Roles.Entities;
 
 namespace Corely.IAM.Users.Entities;
 
-internal class UserEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
+internal class UserEntity : IHasIdPk<int>, IHasCreatedUtc, IHasModifiedUtc
 {
     public int Id { get; set; }
     public string Username { get; set; } = null!;
@@ -18,7 +18,7 @@ internal class UserEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     public int TotalFailedLogins { get; set; }
     public DateTime? LastFailedLoginUtc { get; set; }
     public DateTime CreatedUtc { get; set; }
-    public DateTime ModifiedUtc { get; set; }
+    public DateTime? ModifiedUtc { get; set; }
     public virtual BasicAuthEntity? BasicAuth { get; set; }
     public virtual ICollection<AccountEntity>? Accounts { get; set; }
     public virtual ICollection<GroupEntity>? Groups { get; set; }

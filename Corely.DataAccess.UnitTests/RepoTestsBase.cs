@@ -17,7 +17,7 @@ public abstract class RepoTestsBase : ReadonlyRepoTestsBase
         var entity = Fixture.Create<EntityFixture>();
 
         await Repo.CreateAsync(entity);
-        var result = await Repo.GetAsync(entity.Id);
+        var result = await Repo.GetAsync(e => e.Id == entity.Id);
 
         Assert.Equal(entity, result);
     }
@@ -40,9 +40,9 @@ public abstract class RepoTestsBase : ReadonlyRepoTestsBase
         var updateEntity = Fixture.Create<EntityFixture>();
         updateEntity.Id = entity.Id;
         updateEntity.CreatedUtc = entity.CreatedUtc;
-        await Repo.UpdateAsync(updateEntity);
+        await Repo.UpdateAsync(updateEntity, e => e.Id == updateEntity.Id);
 
-        var result = await Repo.GetAsync(entity.Id);
+        var result = await Repo.GetAsync(e => e.Id == entity.Id);
 
         result.Should()
             .BeEquivalentTo(entity, options => options
@@ -61,8 +61,8 @@ public abstract class RepoTestsBase : ReadonlyRepoTestsBase
         updateEntity.Id = entity.Id;
 
         await Repo.CreateAsync(entity);
-        await Repo.UpdateAsync(updateEntity);
-        var result = await Repo.GetAsync(entity.Id);
+        await Repo.UpdateAsync(updateEntity, e => e.Id == updateEntity.Id);
+        var result = await Repo.GetAsync(e => e.Id == entity.Id);
 
         Assert.NotNull(result);
         Assert.True(originalModifiedUtc < updateEntity.ModifiedUtc);
@@ -75,7 +75,7 @@ public abstract class RepoTestsBase : ReadonlyRepoTestsBase
 
         await Repo.CreateAsync(entity);
         await Repo.DeleteAsync(entity);
-        var result = await Repo.GetAsync(entity.Id);
+        var result = await Repo.GetAsync(e => e.Id == entity.Id);
 
         Assert.Null(result);
     }
@@ -86,8 +86,8 @@ public abstract class RepoTestsBase : ReadonlyRepoTestsBase
         var entity = Fixture.Create<EntityFixture>();
 
         await Repo.CreateAsync(entity);
-        await Repo.DeleteAsync(entity.Id);
-        var result = await Repo.GetAsync(entity.Id);
+        await Repo.DeleteAsync(entity);
+        var result = await Repo.GetAsync(e => e.Id == entity.Id);
 
         Assert.Null(result);
     }

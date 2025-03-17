@@ -38,7 +38,8 @@ public class RoleProcessorTests
         var accountId = _fixture.Create<int>();
         var account = new AccountEntity { Id = accountId };
         var accountRepo = _serviceFactory.GetRequiredService<IRepo<AccountEntity>>();
-        return await accountRepo.CreateAsync(account);
+        var created = await accountRepo.CreateAsync(account);
+        return created.Id;
     }
 
     private async Task<int> CreatePermissionAsync(int accountId, params int[] roleIds)
@@ -56,7 +57,8 @@ public class RoleProcessorTests
             Account = new AccountEntity { Id = accountId }
         };
         var permissionRepo = _serviceFactory.GetRequiredService<IRepo<PermissionEntity>>();
-        return await permissionRepo.CreateAsync(permission);
+        var created = await permissionRepo.CreateAsync(permission);
+        return created.Id;
     }
 
     private async Task<(int RoleId, int AccountId)> CreateRoleAsync()
@@ -69,8 +71,8 @@ public class RoleProcessorTests
             Account = new AccountEntity { Id = accountId }
         };
         var roleRepo = _serviceFactory.GetRequiredService<IRepo<RoleEntity>>();
-        var roleId = await roleRepo.CreateAsync(role);
-        return (roleId, accountId);
+        var created = await roleRepo.CreateAsync(role);
+        return (created.Id, accountId);
     }
 
     [Fact]

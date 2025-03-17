@@ -1,13 +1,35 @@
 ﻿using Corely.DataAccess.EntityFramework.Configurations;
+using Corely.DataAccess.Extensions;
 using Corely.DataAccess.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.DataAccess.EntityFramework;
 
-public abstract class EntityConfigurationBase<T>
-    : IEntityTypeConfiguration<T>
-    where T : class
+public abstract class EntityConfigurationBase<TEntity, TKey>
+    : IEntityTypeConfiguration<TEntity>
+    where TEntity : class, IHasIdPk<TKey>
+{
+    protected readonly IEFDbTypes EFDbTypes;
+    protected EntityConfigurationBase(IEFDbTypes efDbTypes)
+    {
+        EFDbTypes = efDbTypes;
+    }
+    public void Configure(EntityTypeBuilder<TEntity> builder)
+    {
+        builder = builder
+            .ConfigureTable()
+            .ConfigureIdPk<TEntity, TKey>()
+            .ConfigureCreatedUtc(EFDbTypes)
+            .ConfigureModifiedUtc(EFDbTypes);
+        ConfigureInternal(builder);
+    }
+    protected abstract void ConfigureInternal(EntityTypeBuilder<TEntity> builder);
+}
+
+public abstract class EntityConfigurationBase<TEntity>
+    : IEntityTypeConfiguration<TEntity>
+    where TEntity : class
 {
     protected readonly IEFDbTypes EFDbTypes;
 
@@ -16,43 +38,15 @@ public abstract class EntityConfigurationBase<T>
         EFDbTypes = efDbTypes;
     }
 
-    public void Configure(EntityTypeBuilder<T> builder)
+    public void Configure(EntityTypeBuilder<TEntity> builder)
     {
-        if (typeof(T).Name.EndsWith("Entity"))
-        {
-            string tableName = typeof(T).Name.Replace("Entity", string.Empty);
-            if (!tableName.EndsWith('s'))
-            {
-                tableName += "s";
-            }
-            builder.ToTable(tableName);
-        }
-
-        if (typeof(IHasIdPk).IsAssignableFrom(typeof(T)))
-        {
-            builder.HasKey(e => ((IHasIdPk)e).Id);
-            builder.Property(e => ((IHasIdPk)e).Id)
-                .ValueGeneratedOnAdd();
-        }
-
-        if (typeof(IHasCreatedUtc).IsAssignableFrom(typeof(T)))
-        {
-            builder.Property(e => ((IHasCreatedUtc)e).CreatedUtc)
-                .HasColumnType(EFDbTypes.UTCDateColumnType)
-                .HasDefaultValueSql(EFDbTypes.UTCDateColumnDefaultValue)
-                .IsRequired();
-        }
-
-        if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
-        {
-            builder.Property(e => ((IHasModifiedUtc)e).ModifiedUtc)
-                .HasColumnType(EFDbTypes.UTCDateColumnType)
-                .HasDefaultValueSql(EFDbTypes.UTCDateColumnDefaultValue)
-                .IsRequired();
-        }
+        builder = builder
+            .ConfigureTable()
+            .ConfigureCreatedUtc(EFDbTypes)
+            .ConfigureModifiedUtc(EFDbTypes);
 
         ConfigureInternal(builder);
     }
 
-    protected abstract void ConfigureInternal(EntityTypeBuilder<T> builder);
+    protected abstract void ConfigureInternal(EntityTypeBuilder<TEntity> builder);
 }

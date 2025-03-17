@@ -39,7 +39,8 @@ public class GroupProcessorTests
         var accountId = _fixture.Create<int>();
         var account = new AccountEntity { Id = accountId };
         var accountRepo = _serviceFactory.GetRequiredService<IRepo<AccountEntity>>();
-        return await accountRepo.CreateAsync(account);
+        var created = await accountRepo.CreateAsync(account);
+        return created.Id;
     }
 
     private async Task<int> CreateUserAsync(int accountId, params int[] groupIds)
@@ -56,7 +57,8 @@ public class GroupProcessorTests
             Accounts = [new AccountEntity { Id = accountId }]
         };
         var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
-        return await userRepo.CreateAsync(user);
+        var created = await userRepo.CreateAsync(user);
+        return created.Id;
     }
 
     private async Task<int> CreateRoleAsync(int accountId, params int[] groupIds)
@@ -74,7 +76,8 @@ public class GroupProcessorTests
             Account = new AccountEntity { Id = accountId }
         };
         var roleRepo = _serviceFactory.GetRequiredService<IRepo<RoleEntity>>();
-        return await roleRepo.CreateAsync(role);
+        var created = await roleRepo.CreateAsync(role);
+        return created.Id;
     }
 
     private async Task<(int GroupId, int AccountId)> CreateGroupAsync()
@@ -87,8 +90,8 @@ public class GroupProcessorTests
             Account = new AccountEntity { Id = accountId }
         };
         var groupRepo = _serviceFactory.GetRequiredService<IRepo<GroupEntity>>();
-        var groupId = await groupRepo.CreateAsync(group);
-        return (groupId, accountId);
+        var created = await groupRepo.CreateAsync(group);
+        return (created.Id, accountId);
     }
 
     [Fact]

@@ -35,7 +35,8 @@ public class PermissionProcessorTests
         var accountId = _fixture.Create<int>();
         var account = new AccountEntity { Id = accountId };
         var accountRepo = _serviceFactory.GetRequiredService<IRepo<AccountEntity>>();
-        return await accountRepo.CreateAsync(account);
+        var created = await accountRepo.CreateAsync(account);
+        return created.Id;
     }
 
     [Fact]

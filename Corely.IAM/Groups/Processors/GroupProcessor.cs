@@ -48,7 +48,7 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
                 return new CreateGroupResult(CreateGroupResultCode.GroupExistsError, $"Group with name {group.Name} already exists", -1);
             }
 
-            var accountEntity = await _accountRepo.GetAsync(group.AccountId);
+            var accountEntity = await _accountRepo.GetAsync(a => a.Id == group.AccountId);
             if (accountEntity == null)
             {
                 Logger.LogWarning("Account with Id {AccountId} not found", group.AccountId);
@@ -56,9 +56,9 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
             }
 
             var groupEntity = MapTo<GroupEntity>(group)!; // group is validated
-            var createdId = await _groupRepo.CreateAsync(groupEntity);
+            var created = await _groupRepo.CreateAsync(groupEntity);
 
-            return new CreateGroupResult(CreateGroupResultCode.Success, string.Empty, createdId);
+            return new CreateGroupResult(CreateGroupResultCode.Success, string.Empty, created.Id);
         });
     }
 
@@ -92,7 +92,7 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
                 groupEntity.Users.Add(user);
             }
 
-            await _groupRepo.UpdateAsync(groupEntity);
+            await _groupRepo.UpdateAsync(groupEntity, g => g.Id == groupEntity.Id);
 
             var invalidUserIds = request.UserIds.Except(userEntities.Select(u => u.Id)).ToList();
             if (invalidUserIds.Count > 0)
@@ -136,7 +136,7 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
                 groupEntity.Roles.Add(role);
             }
 
-            await _groupRepo.UpdateAsync(groupEntity);
+            await _groupRepo.UpdateAsync(groupEntity, g => g.Id == groupEntity.Id);
 
             var invalidRoleIds = request.RoleIds.Except(roleEntities.Select(r => r.Id)).ToList();
             if (invalidRoleIds.Count > 0)

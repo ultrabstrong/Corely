@@ -2,5 +2,5 @@
 
 public interface IHasModifiedUtc
 {
-    public DateTime ModifiedUtc { get; set; }
+    public DateTime? ModifiedUtc { get; set; }
 }

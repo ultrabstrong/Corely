@@ -4,35 +4,30 @@ using System.Linq.Expressions;
 
 namespace Corely.DataAccess.Mock.Repos;
 
-public class MockRepo<T>
-    : IRepo<T>
-    where T : class, IHasIdPk
+public class MockRepo<TEntity>
+    : IRepo<TEntity>
+    where TEntity : class
 {
-    public readonly List<T> Entities = [];
+    public readonly List<TEntity> Entities = [];
 
     public MockRepo() : base() { }
 
-    public virtual Task<int> CreateAsync(T entity)
+    public virtual Task<TEntity> CreateAsync(TEntity entity)
     {
         Entities.Add(entity);
-        return Task.FromResult(entity.Id);
+        return Task.FromResult(entity);
     }
 
-    public virtual Task CreateAsync(params T[] entities)
+    public virtual Task CreateAsync(params TEntity[] entities)
     {
         Entities.AddRange(entities);
         return Task.CompletedTask;
     }
 
-    public virtual Task<T?> GetAsync(int id)
-    {
-        return Task.FromResult(Entities.FirstOrDefault(u => u.Id == id));
-    }
-
-    public virtual async Task<T?> GetAsync(
-        Expression<Func<T, bool>> query,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        Func<IQueryable<T>, IQueryable<T>>? include = null)
+    public virtual async Task<TEntity?> GetAsync(
+        Expression<Func<TEntity, bool>> query,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
     {
         ArgumentNullException.ThrowIfNull(query);
         var predicate = query.Compile();
@@ -51,17 +46,17 @@ public class MockRepo<T>
         return await Task.FromResult(queryable.FirstOrDefault(predicate));
     }
 
-    public virtual Task<bool> AnyAsync(Expression<Func<T, bool>> query)
+    public virtual Task<bool> AnyAsync(Expression<Func<TEntity, bool>> query)
     {
         ArgumentNullException.ThrowIfNull(query);
         var predicate = query.Compile();
         return Task.FromResult(Entities.Any(predicate));
     }
 
-    public virtual Task<List<T>> ListAsync(
-        Expression<Func<T, bool>>? query = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        Func<IQueryable<T>, IQueryable<T>>? include = null)
+    public virtual Task<List<TEntity>> ListAsync(
+        Expression<Func<TEntity, bool>>? query = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
     {
         var queryable = Entities.AsQueryable();
         if (query != null)
@@ -80,27 +75,21 @@ public class MockRepo<T>
         return Task.FromResult(queryable.ToList());
     }
 
-    public virtual Task UpdateAsync(T entity)
+    public virtual Task UpdateAsync(TEntity entity, Func<TEntity, bool> query)
     {
-        if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
+        if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(TEntity)))
         {
             ((IHasModifiedUtc)entity).ModifiedUtc = DateTime.UtcNow;
         }
 
-        var index = Entities.FindIndex(u => u.Id == entity.Id);
+        var index = Entities.FindIndex(new(query));
         if (index > -1) { Entities[index] = entity; }
         return Task.CompletedTask;
     }
 
-    public virtual Task DeleteAsync(T entity)
+    public virtual Task DeleteAsync(TEntity entity)
     {
         Entities.Remove(entity);
-        return Task.CompletedTask;
-    }
-
-    public virtual Task DeleteAsync(int id)
-    {
-        Entities.RemoveAll(u => u.Id == id);
         return Task.CompletedTask;
     }
 }

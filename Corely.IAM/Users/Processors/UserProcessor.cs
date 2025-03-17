@@ -67,9 +67,9 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
                 _securityProcessor.GetAsymmetricSignatureKeyEncryptedWithSystemKey()];
 
             var userEntity = MapTo<UserEntity>(user)!; // user is validated
-            var createdId = await _userRepo.CreateAsync(userEntity);
+            var created = await _userRepo.CreateAsync(userEntity);
 
-            return new CreateUserResult(CreateUserResultCode.Success, string.Empty, createdId);
+            return new CreateUserResult(CreateUserResultCode.Success, string.Empty, created.Id);
         });
     }
 
@@ -77,7 +77,7 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
     {
         return await LogRequestAspect(nameof(UserProcessor), nameof(GetUserAsync), userId, async () =>
         {
-            var userEntity = await _userRepo.GetAsync(userId);
+            var userEntity = await _userRepo.GetAsync(u => u.Id == userId);
 
             if (userEntity == null)
             {
@@ -113,7 +113,7 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
         {
             Validate(user);
             var userEntity = MapTo<UserEntity>(user)!; // user is validated
-            await _userRepo.UpdateAsync(userEntity);
+            await _userRepo.UpdateAsync(userEntity, u => u.Id == userEntity.Id);
         });
     }
 
@@ -262,7 +262,7 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
                 userEntity.Roles.Add(role);
             }
 
-            await _userRepo.UpdateAsync(userEntity);
+            await _userRepo.UpdateAsync(userEntity, u => u.Id == userEntity.Id);
 
             var invalidRoleIds = request.RoleIds.Except(roleEntities.Select(r => r.Id)).ToList();
             if (invalidRoleIds.Count > 0)

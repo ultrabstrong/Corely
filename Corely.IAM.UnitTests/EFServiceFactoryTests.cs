@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using Corely.DataAccess.EntityFramework.Configurations;
-using Corely.IAM;
 using Corely.Security.KeyStore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -21,14 +20,14 @@ public class EFServiceFactoryTests : ServiceFactoryGenericTests
 
     private class MockServiceFactory : EFServiceFactory
     {
-        private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
+        private class MockSecurityConfigurationProvider : ISecurityConfigurationProvider
         {
             public ISymmetricKeyStoreProvider GetSystemSymmetricKey() => null!;
         }
 
         protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
         {
-            return new MockSecurityConfiguraitonProvider();
+            return new MockSecurityConfigurationProvider();
         }
 
         protected override void AddLogging(ILoggingBuilder builder)
@@ -36,7 +35,7 @@ public class EFServiceFactoryTests : ServiceFactoryGenericTests
             builder.AddProvider(NullLoggerProvider.Instance);
         }
 
-        protected override IEFConfiguration GetEFConfiguraiton()
+        protected override IEFConfiguration GetEFConfiguration()
         {
             return new TestEFConfiguration();
         }

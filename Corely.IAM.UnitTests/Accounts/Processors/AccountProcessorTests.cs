@@ -36,7 +36,8 @@ public class AccountProcessorTests
         var userId = _fixture.Create<int>();
         var user = new UserEntity { Id = userId };
         var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
-        return await userRepo.CreateAsync(user);
+        var created = await userRepo.CreateAsync(user);
+        return created.Id;
     }
 
     [Fact]

@@ -14,7 +14,7 @@ public class User
     public int TotalFailedLogins { get; set; }
     public DateTime? LastFailedLoginUtc { get; set; }
     public DateTime CreatedUtc { get; set; }
-    public DateTime ModifiedUtc { get; set; }
+    public DateTime? ModifiedUtc { get; set; }
     public List<SymmetricKey>? SymmetricKeys { get; set; } = null!;
     public List<AsymmetricKey>? AsymmetricKeys { get; set; } = null!;
 }

@@ -44,7 +44,7 @@ internal class AccountProcessor : ProcessorBase, IAccountProcessor
                 return new CreateAccountResult(CreateAccountResultCode.AccountExistsError, $"Account {request.AccountName} already exists", -1);
             }
 
-            var userEntity = await _userRepo.GetAsync(request.OwnerUserId);
+            var userEntity = await _userRepo.GetAsync(u => u.Id == request.OwnerUserId);
             if (userEntity == null)
             {
                 Logger.LogWarning("User with Id {UserId} not found", request.OwnerUserId);
@@ -58,9 +58,9 @@ internal class AccountProcessor : ProcessorBase, IAccountProcessor
 
             var accountEntity = MapTo<AccountEntity>(account)!; // account is validated
             accountEntity.Users = [userEntity];
-            var createdId = await _accountRepo.CreateAsync(accountEntity);
+            var created = await _accountRepo.CreateAsync(accountEntity);
 
-            return new CreateAccountResult(CreateAccountResultCode.Success, string.Empty, createdId);
+            return new CreateAccountResult(CreateAccountResultCode.Success, string.Empty, created.Id);
         });
     }
 
@@ -68,7 +68,7 @@ internal class AccountProcessor : ProcessorBase, IAccountProcessor
     {
         return await LogRequestAspect(nameof(AccountProcessor), nameof(GetAccountAsync), accountId, async () =>
         {
-            var accountEntity = await _accountRepo.GetAsync(accountId);
+            var accountEntity = await _accountRepo.GetAsync(a => a.Id == accountId);
             var account = MapTo<Account>(accountEntity);
 
             if (account == null)

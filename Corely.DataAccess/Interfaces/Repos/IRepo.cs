@@ -1,18 +1,14 @@
-﻿using Corely.DataAccess.Interfaces.Entities;
+﻿namespace Corely.DataAccess.Interfaces.Repos;
 
-namespace Corely.DataAccess.Interfaces.Repos;
-
-public interface IRepo<T>
-    : IReadonlyRepo<T>
-    where T : class, IHasIdPk
+public interface IRepo<TEntity>
+    : IReadonlyRepo<TEntity>
+    where TEntity : class
 {
-    Task<int> CreateAsync(T entity);
+    Task<TEntity> CreateAsync(TEntity entity);
 
-    Task CreateAsync(params T[] entities);
+    Task CreateAsync(params TEntity[] entities);
 
-    Task UpdateAsync(T entity);
+    Task UpdateAsync(TEntity entity, Func<TEntity, bool> query);
 
-    Task DeleteAsync(T entity);
-
-    Task DeleteAsync(int id);
+    Task DeleteAsync(TEntity entity);
 }

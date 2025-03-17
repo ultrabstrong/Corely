@@ -40,7 +40,7 @@ internal class PermissionProcessor : ProcessorBase, IPermissionProcessor
                 return new CreatePermissionResult(CreatePermissionResultCode.PermissionExistsError, $"Permission with name {permission.Name} already exists", -1);
             }
 
-            var accountEntity = await _accountRepo.GetAsync(permission.AccountId);
+            var accountEntity = await _accountRepo.GetAsync(a => a.Id == permission.AccountId);
             if (accountEntity == null)
             {
                 Logger.LogWarning("Account with Id {AccountId} not found", permission.AccountId);
@@ -48,9 +48,9 @@ internal class PermissionProcessor : ProcessorBase, IPermissionProcessor
             }
 
             var permissionEntity = MapTo<PermissionEntity>(permission)!; // permission is validated
-            var createdId = await _permissionRepo.CreateAsync(permissionEntity);
+            var created = await _permissionRepo.CreateAsync(permissionEntity);
 
-            return new CreatePermissionResult(CreatePermissionResultCode.Success, "Permission created successfully", createdId);
+            return new CreatePermissionResult(CreatePermissionResultCode.Success, "Permission created successfully", created.Id);
         });
     }
 

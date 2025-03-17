@@ -11,5 +11,5 @@ public class SymmetricKey
     public int Version { get; set; }
     public ISymmetricEncryptedValue Key { get; set; } = null!;
     public DateTime CreatedUtc { get; set; }
-    public DateTime ModifiedUtc { get; set; }
+    public DateTime? ModifiedUtc { get; set; }
 }

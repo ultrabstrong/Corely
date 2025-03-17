@@ -10,5 +10,5 @@ internal class SymmetricKeyEntity : IHasCreatedUtc, IHasModifiedUtc
     public int Version { get; set; }
     public string EncryptedKey { get; set; } = null!;
     public DateTime CreatedUtc { get; set; }
-    public DateTime ModifiedUtc { get; set; }
+    public DateTime? ModifiedUtc { get; set; }
 }

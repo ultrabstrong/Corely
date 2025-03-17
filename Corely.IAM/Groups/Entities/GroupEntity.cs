@@ -5,7 +5,7 @@ using Corely.IAM.Users.Entities;
 
 namespace Corely.IAM.Groups.Entities;
 
-internal class GroupEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
+internal class GroupEntity : IHasIdPk<int>, IHasCreatedUtc, IHasModifiedUtc
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
@@ -15,5 +15,5 @@ internal class GroupEntity : IHasIdPk, IHasCreatedUtc, IHasModifiedUtc
     public virtual ICollection<UserEntity>? Users { get; set; }
     public virtual ICollection<RoleEntity>? Roles { get; set; }
     public DateTime CreatedUtc { get; set; }
-    public DateTime ModifiedUtc { get; set; }
+    public DateTime? ModifiedUtc { get; set; }
 }

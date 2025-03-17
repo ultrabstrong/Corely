@@ -1,22 +1,19 @@
-﻿using Corely.DataAccess.Interfaces.Entities;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Corely.DataAccess.Interfaces.Repos;
 
-public interface IReadonlyRepo<T>
-    where T : class, IHasIdPk
+public interface IReadonlyRepo<TEntity>
+    where TEntity : class
 {
-    Task<T?> GetAsync(int id);
+    Task<TEntity?> GetAsync(
+        Expression<Func<TEntity, bool>> query,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null);
 
-    Task<T?> GetAsync(
-        Expression<Func<T, bool>> query,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        Func<IQueryable<T>, IQueryable<T>>? include = null);
+    Task<bool> AnyAsync(Expression<Func<TEntity, bool>> query);
 
-    Task<bool> AnyAsync(Expression<Func<T, bool>> query);
-
-    Task<List<T>> ListAsync(
-        Expression<Func<T, bool>>? query = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        Func<IQueryable<T>, IQueryable<T>>? include = null);
+    Task<List<TEntity>> ListAsync(
+        Expression<Func<TEntity, bool>>? query = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null);
 }

@@ -40,7 +40,7 @@ internal class ServiceFactory : EFServiceFactory
     protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
         => new SecurityConfigurationProvider();
 
-    protected override IEFConfiguration GetEFConfiguraiton()
+    protected override IEFConfiguration GetEFConfiguration()
         => new MySqlEFConfiguration(ConfigurationProvider.GetConnectionString());
 
     protected override IPasswordValidationProvider GetPasswordValidation()

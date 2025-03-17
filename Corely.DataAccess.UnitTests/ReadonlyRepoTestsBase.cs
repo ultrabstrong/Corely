@@ -36,7 +36,7 @@ public abstract class ReadonlyRepoTestsBase
     public async Task GetAsync_ReturnsEntity_WIthIdLookup()
     {
         var id = FillRepoAndReturnId();
-        var result = await ReadonlyRepo.GetAsync(id);
+        var result = await ReadonlyRepo.GetAsync(e => e.Id == id);
 
         Assert.NotNull(result);
         Assert.Equal(id, result.Id);

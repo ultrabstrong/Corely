@@ -11,5 +11,5 @@ internal class AsymmetricKeyEntity : IHasCreatedUtc, IHasModifiedUtc
     public string PublicKey { get; set; } = null!;
     public string EncryptedPrivateKey { get; set; } = null!;
     public DateTime CreatedUtc { get; set; }
-    public DateTime ModifiedUtc { get; set; }
+    public DateTime? ModifiedUtc { get; set; }
 }

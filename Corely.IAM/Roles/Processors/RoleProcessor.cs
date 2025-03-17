@@ -44,7 +44,7 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
                 return new CreateRoleResult(CreateRoleResultCode.RoleExistsError, $"Role with name {role.Name} already exists", -1);
             }
 
-            var accountEntity = await _accountRepo.GetAsync(role.AccountId);
+            var accountEntity = await _accountRepo.GetAsync(a => a.Id == role.AccountId);
             if (accountEntity == null)
             {
                 Logger.LogWarning("Account with Id {AccountId} not found", role.AccountId);
@@ -52,9 +52,9 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
             }
 
             var roleEntity = MapTo<RoleEntity>(role)!; // role is validated 
-            var createdId = await _roleRepo.CreateAsync(roleEntity);
+            var created = await _roleRepo.CreateAsync(roleEntity);
 
-            return new CreateRoleResult(CreateRoleResultCode.Success, string.Empty, createdId);
+            return new CreateRoleResult(CreateRoleResultCode.Success, string.Empty, created.Id);
         });
     }
 
@@ -86,7 +86,7 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
     {
         return await LogRequestAspect(nameof(RoleProcessor), nameof(GetRoleAsync), roleId, async () =>
         {
-            var roleEntity = await _roleRepo.GetAsync(roleId);
+            var roleEntity = await _roleRepo.GetAsync(r => r.Id == roleId);
 
             if (roleEntity == null)
             {
@@ -121,7 +121,7 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
     {
         return await LogRequestResultAspect(nameof(RoleProcessor), nameof(AssignPermissionsToRoleAsync), request, async () =>
         {
-            var roleEntity = await _roleRepo.GetAsync(request.RoleId);
+            var roleEntity = await _roleRepo.GetAsync(r => r.Id == request.RoleId);
             if (roleEntity == null)
             {
                 Logger.LogWarning("Role with Id {RoleId} not found", request.RoleId);
@@ -147,7 +147,7 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
                 roleEntity.Permissions.Add(permission);
             }
 
-            await _roleRepo.UpdateAsync(roleEntity);
+            await _roleRepo.UpdateAsync(roleEntity, r => r.Id == roleEntity.Id);
 
             var invalidPermissionIds = request.PermissionIds.Except(permissionEntities.Select(p => p.Id)).ToList();
             if (invalidPermissionIds.Count > 0)

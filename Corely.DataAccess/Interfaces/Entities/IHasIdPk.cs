@@ -1,6 +1,6 @@
 ﻿namespace Corely.DataAccess.Interfaces.Entities;
 
-public interface IHasIdPk
+public interface IHasIdPk<TKey>
 {
-    int Id { get; set; }
+    TKey Id { get; set; }
 }

@@ -2,7 +2,6 @@
 using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.DataAccess.Mock;
 using Corely.DataAccess.Mock.Repos;
-using Corely.IAM;
 using Corely.Security.KeyStore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,14 +13,14 @@ public class ServiceFactoryBaseTests : ServiceFactoryGenericTests
 {
     private class MockServiceFactory : ServiceFactoryBase
     {
-        private class MockSecurityConfiguraitonProvider : ISecurityConfigurationProvider
+        private class MockSecurityConfigurationProvider : ISecurityConfigurationProvider
         {
             public ISymmetricKeyStoreProvider GetSystemSymmetricKey() => null!;
         }
 
         protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
         {
-            return new MockSecurityConfiguraitonProvider();
+            return new MockSecurityConfigurationProvider();
         }
 
         protected override void AddLogging(ILoggingBuilder builder)

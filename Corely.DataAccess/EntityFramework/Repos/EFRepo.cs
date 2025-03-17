@@ -6,42 +6,42 @@ using Microsoft.Extensions.Logging;
 
 namespace Corely.DataAccess.EntityFramework.Repos;
 
-public class EFRepo<T>
-    : EFReadonlyRepo<T>, IRepo<T>
-    where T : class, IHasIdPk
+public class EFRepo<TEntity>
+    : EFReadonlyRepo<TEntity>, IRepo<TEntity>
+    where TEntity : class
 {
     protected readonly DbContext DbContext;
 
     public EFRepo(
-        ILogger<EFRepo<T>> logger,
+        ILogger<EFRepo<TEntity>> logger,
         DbContext dbContext)
         : base(logger, dbContext)
     {
         DbContext = dbContext.ThrowIfNull(nameof(dbContext));
-        Logger.LogDebug("{RepoType} created for {EntityType}", GetType().Name.Split('`')[0], typeof(T).Name);
+        Logger.LogDebug("{RepoType} created for {EntityType}", GetType().Name.Split('`')[0], typeof(TEntity).Name);
     }
 
-    public virtual async Task<int> CreateAsync(T entity)
+    public virtual async Task<TEntity> CreateAsync(TEntity entity)
     {
         var newEntity = await DbSet.AddAsync(entity);
         await DbContext.SaveChangesAsync();
-        return newEntity.Entity.Id;
+        return newEntity.Entity;
     }
 
-    public virtual async Task CreateAsync(params T[] entities)
+    public virtual async Task CreateAsync(params TEntity[] entities)
     {
         await DbSet.AddRangeAsync(entities);
         await DbContext.SaveChangesAsync();
     }
 
-    public virtual async Task UpdateAsync(T entity)
+    public virtual async Task UpdateAsync(TEntity entity, Func<TEntity, bool> query)
     {
-        if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(T)))
+        if (typeof(IHasModifiedUtc).IsAssignableFrom(typeof(TEntity)))
         {
             ((IHasModifiedUtc)entity).ModifiedUtc = DateTime.UtcNow;
         }
 
-        var existingEntity = DbSet.Local.FirstOrDefault(m => m.Id == entity.Id);
+        var existingEntity = DbSet.Local.FirstOrDefault(query);
         if (existingEntity == null)
         {
             // attach new entity instance to local context for tracking
@@ -55,23 +55,8 @@ public class EFRepo<T>
         await DbContext.SaveChangesAsync();
     }
 
-    public virtual async Task DeleteAsync(T entity)
+    public virtual async Task DeleteAsync(TEntity entity)
     {
-        if (!await DbSet.AnyAsync(e => e.Id == entity.Id))
-        {
-            return;
-        }
-        DbSet.Remove(entity);
-        await DbContext.SaveChangesAsync();
-    }
-
-    public virtual async Task DeleteAsync(int id)
-    {
-        var entity = await DbSet.FindAsync(id);
-        if (entity == null)
-        {
-            return;
-        }
         DbSet.Remove(entity);
         await DbContext.SaveChangesAsync();
     }

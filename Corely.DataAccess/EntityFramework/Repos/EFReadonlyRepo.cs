@@ -1,5 +1,4 @@
 ﻿using Corely.Common.Extensions;
-using Corely.DataAccess.Interfaces.Entities;
 using Corely.DataAccess.Interfaces.Repos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,31 +6,26 @@ using System.Linq.Expressions;
 
 namespace Corely.DataAccess.EntityFramework.Repos;
 
-public class EFReadonlyRepo<T>
-    : IReadonlyRepo<T>
-    where T : class, IHasIdPk
+public class EFReadonlyRepo<TEntity>
+    : IReadonlyRepo<TEntity>
+    where TEntity : class
 {
-    protected readonly ILogger<EFReadonlyRepo<T>> Logger;
-    protected readonly DbSet<T> DbSet;
+    protected readonly ILogger<EFReadonlyRepo<TEntity>> Logger;
+    protected readonly DbSet<TEntity> DbSet;
 
     public EFReadonlyRepo(
-        ILogger<EFReadonlyRepo<T>> logger,
+        ILogger<EFReadonlyRepo<TEntity>> logger,
         DbContext context)
     {
         Logger = logger.ThrowIfNull(nameof(logger));
-        DbSet = context.Set<T>().ThrowIfNull(nameof(context));
-        Logger.LogDebug("{RepoType} created for {EntityType}", GetType().Name.Split('`')[0], typeof(T).Name);
+        DbSet = context.Set<TEntity>().ThrowIfNull(nameof(context));
+        Logger.LogDebug("{RepoType} created for {EntityType}", GetType().Name.Split('`')[0], typeof(TEntity).Name);
     }
 
-    public virtual async Task<T?> GetAsync(int id)
-    {
-        return await DbSet.FindAsync(id);
-    }
-
-    public virtual async Task<T?> GetAsync(
-       Expression<Func<T, bool>> query,
-       Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-       Func<IQueryable<T>, IQueryable<T>>? include = null)
+    public virtual async Task<TEntity?> GetAsync(
+       Expression<Func<TEntity, bool>> query,
+       Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+       Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
     {
         ArgumentNullException.ThrowIfNull(query);
         var queryable = DbSet.AsQueryable();
@@ -49,16 +43,16 @@ public class EFReadonlyRepo<T>
         return await queryable.FirstOrDefaultAsync(query);
     }
 
-    public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> query)
+    public virtual async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> query)
     {
         ArgumentNullException.ThrowIfNull(query);
         return await DbSet.AnyAsync(query);
     }
 
-    public virtual async Task<List<T>> ListAsync(
-        Expression<Func<T, bool>>? query = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        Func<IQueryable<T>, IQueryable<T>>? include = null)
+    public virtual async Task<List<TEntity>> ListAsync(
+        Expression<Func<TEntity, bool>>? query = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
     {
         var queryable = DbSet.AsQueryable();
 
