@@ -11,6 +11,7 @@
     <RepositoryUrl>https://github.com/ultrabstrong/Corely/tree/master/Corely.DataAccess</RepositoryUrl>
     <PackageProjectUrl>https://github.com/ultrabstrong/Corely</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -20,10 +21,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <NoWarn />
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Corely.Common\Corely.Common.csproj" />
-  </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Corely.DataAccess.UnitTests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
@@ -35,6 +32,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Corely.Common" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
