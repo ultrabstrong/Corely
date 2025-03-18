@@ -2,7 +2,7 @@
 
 namespace Corely.DataAccess.EntityFramework.Configurations;
 
-public abstract class EFPostgresConfigurationBase
+public abstract class EFPostgresConfigurationBase : IEFConfiguration
 {
     private class EFDbTypes : IEFDbTypes
     {
