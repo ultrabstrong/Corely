@@ -19,7 +19,7 @@ internal class Program
     {
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .Enrich.WithProperty("Application", "ConsoleTest")
+            .Enrich.WithProperty("Application", nameof(ConsoleTest))
             .Enrich.WithProperty("CorrelationId", Guid.NewGuid())
             .Enrich.With(new SerilogRedactionEnricher([
                 new PasswordRedactionProvider()]))
