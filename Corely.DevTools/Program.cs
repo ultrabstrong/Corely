@@ -1,6 +1,7 @@
 ﻿using Corely.Common.Providers.Redaction;
 using Corely.DevTools.Commands;
 using Corely.DevTools.SerilogCustomization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -26,9 +27,14 @@ internal class Program
         try
         {
             using var host = new HostBuilder()
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.SetBasePath(Directory.GetCurrentDirectory());
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    ServiceFactory.Instance.AddIAMServices(services);
+                    ServiceFactory.Instance.AddIAMServices(services, hostContext.Configuration);
 
                     var commandBaseTypes = AppDomain.CurrentDomain
                     .GetAssemblies()

@@ -1,4 +1,6 @@
 ﻿using Corely.Security.Password;
+using Corely.Security.PasswordValidation.Models;
+using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -6,11 +8,12 @@ namespace Corely.Security.PasswordValidation.Providers;
 
 public sealed class PasswordValidationProvider : IPasswordValidationProvider
 {
-    public int MinimumLength { get; init; } = 5;
-    public bool RequireUppercase { get; init; } = true;
-    public bool RequireLowercase { get; init; } = true;
-    public bool RequireDigit { get; init; } = true;
-    public bool RequireNonAlphanumeric { get; init; } = false;
+    private readonly PasswordValidationOptions _options;
+
+    public PasswordValidationProvider(IOptions<PasswordValidationOptions> options)
+    {
+        _options = options.Value;
+    }
 
     private Regex Regex => _regex ??= CreateRegex();
     private Regex? _regex;
@@ -20,11 +23,11 @@ public sealed class PasswordValidationProvider : IPasswordValidationProvider
         var patternBuilder = new StringBuilder();
 
         patternBuilder.Append('^');
-        if (RequireUppercase) patternBuilder.Append("(?=.*[A-Z])");
-        if (RequireLowercase) patternBuilder.Append("(?=.*[a-z])");
-        if (RequireDigit) patternBuilder.Append("(?=.*[0-9])");
-        if (RequireNonAlphanumeric) patternBuilder.Append("(?=.*[^A-Za-z0-9])");
-        patternBuilder.Append($".{{{MinimumLength},}}$");
+        if (_options.RequireUppercase) patternBuilder.Append("(?=.*[A-Z])");
+        if (_options.RequireLowercase) patternBuilder.Append("(?=.*[a-z])");
+        if (_options.RequireDigit) patternBuilder.Append("(?=.*[0-9])");
+        if (_options.RequireNonAlphanumeric) patternBuilder.Append("(?=.*[^A-Za-z0-9])");
+        patternBuilder.Append($".{{{_options.MinimumLength},}}$");
 
         return new Regex(patternBuilder.ToString());
     }
@@ -43,10 +46,10 @@ public sealed class PasswordValidationProvider : IPasswordValidationProvider
 
     private PasswordValidationResult DetailedValidation(string password)
     {
-        var hasUppercase = !RequireUppercase;
-        var hasLowercase = !RequireLowercase;
-        var hasDigit = !RequireDigit;
-        var hasSpecial = !RequireNonAlphanumeric;
+        var hasUppercase = !_options.RequireUppercase;
+        var hasLowercase = !_options.RequireLowercase;
+        var hasDigit = !_options.RequireDigit;
+        var hasSpecial = !_options.RequireNonAlphanumeric;
 
         foreach (var c in password)
         {
@@ -58,7 +61,7 @@ public sealed class PasswordValidationProvider : IPasswordValidationProvider
 
         var validationResults = new List<string>();
 
-        if (password.Length < MinimumLength)
+        if (password.Length < _options.MinimumLength)
         {
             validationResults.Add(PasswordValidationConstants.PASSWORD_TOO_SHORT);
         }

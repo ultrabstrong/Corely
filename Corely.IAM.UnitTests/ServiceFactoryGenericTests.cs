@@ -1,6 +1,5 @@
 ﻿using Corely.DataAccess.Interfaces.Repos;
 using Corely.DataAccess.Interfaces.UnitOfWork;
-using Corely.IAM;
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Accounts.Processors;
 using Corely.IAM.BasicAuths.Processors;
@@ -15,7 +14,9 @@ using Corely.IAM.Users.Processors;
 using Corely.IAM.Validators;
 using Corely.Security.Encryption.Factories;
 using Corely.Security.Hashing.Factories;
+using Corely.Security.PasswordValidation.Models;
 using Corely.Security.PasswordValidation.Providers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -29,7 +30,8 @@ public abstract class ServiceFactoryGenericTests
     public void ServiceFactoryBase_ProvidesService(Type serviceType)
     {
         var serviceCollection = new ServiceCollection();
-        ServiceFactory.AddIAMServices(serviceCollection);
+        var configuration = new ConfigurationManager();
+        ServiceFactory.AddIAMServices(serviceCollection, configuration);
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
         var service = serviceProvider.GetRequiredService(serviceType);
@@ -40,31 +42,32 @@ public abstract class ServiceFactoryGenericTests
     public static IEnumerable<object[]> GetRequiredServiceData =>
     [
         [typeof(ISecurityConfigurationProvider)],
-            [typeof(IPasswordValidationProvider)],
-            [typeof(IOptions<SecurityOptions>)],
+        [typeof(IPasswordValidationProvider)],
+        [typeof(IOptions<PasswordValidationOptions>)],
+        [typeof(IOptions<SecurityOptions>)],
 
-            [typeof(IMapProvider)],
+        [typeof(IMapProvider)],
 
-            [typeof(IValidationProvider)],
+        [typeof(IValidationProvider)],
 
-            [typeof(ISymmetricEncryptionProviderFactory)],
-            [typeof(IAsymmetricEncryptionProviderFactory)],
-            [typeof(IHashProviderFactory)],
+        [typeof(ISymmetricEncryptionProviderFactory)],
+        [typeof(IAsymmetricEncryptionProviderFactory)],
+        [typeof(IHashProviderFactory)],
 
-            [typeof(IAccountProcessor)],
-            [typeof(IUserProcessor)],
-            [typeof(IBasicAuthProcessor)],
-            [typeof(IGroupProcessor)],
-            [typeof(IRoleProcessor)],
-            [typeof(IPermissionProcessor)],
-            [typeof(IRegistrationService)],
-            [typeof(IDeregistrationService)],
-            [typeof(ISecurityProcessor)],
+        [typeof(IAccountProcessor)],
+        [typeof(IUserProcessor)],
+        [typeof(IBasicAuthProcessor)],
+        [typeof(IGroupProcessor)],
+        [typeof(IRoleProcessor)],
+        [typeof(IPermissionProcessor)],
+        [typeof(IRegistrationService)],
+        [typeof(IDeregistrationService)],
+        [typeof(ISecurityProcessor)],
 
-            // Repos are registered as generics. Only need to test each one once.
-            [typeof(IReadonlyRepo<AccountEntity>)],
-            [typeof(IRepo<AccountEntity>)],
+        // Repos are registered as generics. Only need to test each one once.
+        [typeof(IReadonlyRepo<AccountEntity>)],
+        [typeof(IRepo<AccountEntity>)],
 
-            [typeof(IUnitOfWorkProvider)]
+        [typeof(IUnitOfWorkProvider)]
     ];
 }

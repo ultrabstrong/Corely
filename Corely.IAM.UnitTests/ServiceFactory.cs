@@ -1,4 +1,4 @@
-﻿using Corely.IAM;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -12,10 +12,10 @@ public class ServiceFactory : MockDbServiceFactory
     public ServiceFactory()
     {
         var serviceCollection = new ServiceCollection();
-        AddIAMServices(serviceCollection);
+        var configuration = new ConfigurationManager();
+        AddIAMServices(serviceCollection, configuration);
         _serviceProvider = serviceCollection.BuildServiceProvider();
     }
-
 
     protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
     {

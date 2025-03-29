@@ -1,18 +1,20 @@
 ﻿using Corely.Security.Password;
+using Corely.Security.PasswordValidation.Models;
 using Corely.Security.PasswordValidation.Providers;
+using Microsoft.Extensions.Options;
 
 namespace Corely.Security.UnitTests.PasswordValidation.Providers;
 
 public class PasswordValidationProviderTests
 {
-    private readonly PasswordValidationProvider _provider = new()
+    private readonly PasswordValidationProvider _provider = new(Options.Create(new PasswordValidationOptions
     {
         MinimumLength = 8,
         RequireUppercase = true,
         RequireLowercase = true,
         RequireDigit = true,
         RequireNonAlphanumeric = true
-    };
+    }));
 
     [Theory, MemberData(nameof(ValidatePassword_ReturnsExpectedResult_Data))]
     public void ValidatePassword_ReturnExpectedResult(string password, bool expectedIsValid)
@@ -25,11 +27,11 @@ public class PasswordValidationProviderTests
     public static IEnumerable<object[]> ValidatePassword_ReturnsExpectedResult_Data() =>
     [
         ["Short1", false],
-            ["LongEnoughButNoDigitsOrUppercase1", false],
-            ["nouppercase1", false],
-            ["NOLOWERCASE1", false],
-            ["NoDigitPassword!", false],
-            ["ValidPa$sword1", true]
+        ["LongEnoughButNoDigitsOrUppercase1", false],
+        ["nouppercase1", false],
+        ["NOLOWERCASE1", false],
+        ["NoDigitPassword!", false],
+        ["ValidPa$sword1", true]
     ];
 
     [Fact]

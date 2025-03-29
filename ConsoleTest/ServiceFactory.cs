@@ -1,8 +1,6 @@
 ﻿using ConsoleTest.SerilogCustomization;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM;
-using Corely.IAM.Security.Models;
-using Corely.Security.PasswordValidation.Providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
@@ -66,9 +64,4 @@ internal class ServiceFactory : EFServiceFactory
     protected override IEFConfiguration GetEFConfiguration()
         => new MySqlEFConfiguration(ConfigurationProvider.GetConnectionString());
 
-    protected override IPasswordValidationProvider GetPasswordValidation()
-        => ConfigurationProvider.GetPasswordValidationProvider();
-
-    protected override SecurityOptions GetSecurityOptions() =>
-        ConfigurationProvider.GetSecurityOptions();
 }
