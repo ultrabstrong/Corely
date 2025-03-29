@@ -3,17 +3,9 @@ using Corely.Security.KeyStore;
 
 namespace ConsoleTest;
 
-internal class SecurityConfigurationProvider : ISecurityConfigurationProvider
+internal class SecurityConfigurationProvider(string symmetricKey) : ISecurityConfigurationProvider
 {
-    private readonly string _symmetricKey;
+    private readonly InMemorySymmetricKeyStoreProvider _keyStoreProvider = new(symmetricKey);
 
-    public SecurityConfigurationProvider()
-    {
-        _symmetricKey = ConfigurationProvider.GetSystemSymmetricEncryptionKey();
-    }
-
-    public ISymmetricKeyStoreProvider GetSystemSymmetricKey()
-    {
-        return new InMemorySymmetricKeyStoreProvider(_symmetricKey);
-    }
+    public ISymmetricKeyStoreProvider GetSystemSymmetricKey() => _keyStoreProvider;
 }

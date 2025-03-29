@@ -3,18 +3,31 @@ using Corely.DevTools.SerilogCustomization;
 using Corely.IAM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Reflection;
 
 namespace Corely.DevTools;
 
-internal class ServiceFactory : EFServiceFactory
+internal class ServiceFactory(IConfiguration configuration) : EFServiceFactory
 {
-    private static readonly Lazy<ServiceFactory> _instance = new(() => new ServiceFactory());
-    public static ServiceFactory Instance => _instance.Value;
+    private readonly IConfiguration _configuration = configuration;
 
-    private ServiceFactory() { }
+    protected override void AddLogging(ILoggingBuilder builder)
+    {
+        builder.AddSerilog(logger: Log.Logger, dispose: false);
+    }
+
+    protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
+        => new SecurityConfigurationProvider(
+            _configuration["SystemSymmetricEncryptionKey"]
+            ?? throw new Exception($"SystemSymmetricEncryptionKey not found in configuration"));
+
+    protected override IEFConfiguration GetEFConfiguration()
+        => new MySqlEFConfiguration(
+            _configuration.GetConnectionString("DefaultConnection")
+            ?? throw new Exception($"DefaultConnection string not found in configuration"));
 
     private class MySqlEFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
     {
@@ -31,14 +44,4 @@ internal class ServiceFactory : EFServiceFactory
         }
     }
 
-    protected override void AddLogging(ILoggingBuilder builder)
-    {
-        builder.AddSerilog(logger: Log.Logger, dispose: false);
-    }
-
-    protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
-        => new SecurityConfigurationProvider();
-
-    protected override IEFConfiguration GetEFConfiguration()
-        => new MySqlEFConfiguration(ConfigurationProvider.GetConnectionString());
 }

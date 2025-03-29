@@ -39,7 +39,8 @@ internal class Program
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    ServiceFactory.Instance.AddIAMServices(services, hostContext.Configuration);
+                    new ServiceFactory(hostContext.Configuration)
+                        .AddIAMServices(services, hostContext.Configuration);
                 })
                 .Build();
 
