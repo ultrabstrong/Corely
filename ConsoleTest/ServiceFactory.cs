@@ -26,8 +26,8 @@ internal class ServiceFactory(IConfiguration configuration) : EFServiceFactory
 
     protected override IEFConfiguration GetEFConfiguration()
         => new MySqlEFConfiguration(
-            _configuration.GetConnectionString("DefaultConnection")
-            ?? throw new Exception($"DefaultConnection string not found in configuration"));
+            _configuration.GetConnectionString("DataRepoConnection")
+            ?? throw new Exception($"DataRepoConnection string not found in configuration"));
 
     private class MySqlEFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
     {

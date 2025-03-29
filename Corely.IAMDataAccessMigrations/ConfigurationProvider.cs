@@ -19,7 +19,7 @@ internal static class ConfigurationProvider
 
     public static string GetConnectionString()
     {
-        return _configuration.GetConnectionString("DefaultConnection")
-            ?? throw new Exception($"DefaultConnection string not found in {SETTINGS_FILE_NAME}");
+        return _configuration.GetConnectionString("DataRepoConnection")
+            ?? throw new Exception($"DataRepoConnection string not found in {SETTINGS_FILE_NAME}");
     }
 }
