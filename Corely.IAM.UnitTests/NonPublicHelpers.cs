@@ -32,9 +32,9 @@ internal static class NonPublicHelpers
     /// <returns></returns>
     public static T? InvokeNonPublicMethod<T>(object classInstance, string methodName, params (Type, object)[] args)
     {
-        var methodInfo = GetNonPublicMethod(classInstance, methodName, args.Select(a => a.Item1).ToArray())
+        var methodInfo = GetNonPublicMethod(classInstance, methodName, [.. args.Select(a => a.Item1)])
             ?? throw new NullReferenceException($"Method {methodName} not found in type {classInstance.GetType().Name}");
-        return (T?)methodInfo.Invoke(classInstance, args.Select(a => a.Item2).ToArray());
+        return (T?)methodInfo.Invoke(classInstance, [.. args.Select(a => a.Item2)]);
     }
 
     private static MethodInfo? GetNonPublicMethod(object classInstance, string methodName)

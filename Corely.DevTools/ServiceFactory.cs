@@ -4,29 +4,27 @@ using Corely.IAM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Reflection;
 
 namespace Corely.DevTools;
 
-internal class ServiceFactory(IConfiguration configuration) : EFServiceFactory
+internal class ServiceFactory(IServiceCollection servicesCollection, IConfiguration configuration)
+    : EFServiceFactory(servicesCollection, configuration)
 {
-    private readonly IConfiguration _configuration = configuration;
-
     protected override void AddLogging(ILoggingBuilder builder)
-    {
-        builder.AddSerilog(logger: Log.Logger, dispose: false);
-    }
+        => builder.AddSerilog(logger: Log.Logger, dispose: false);
 
     protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
         => new SecurityConfigurationProvider(
-            _configuration["SystemSymmetricEncryptionKey"]
+            Configuration["SystemSymmetricEncryptionKey"]
             ?? throw new Exception($"SystemSymmetricEncryptionKey not found in configuration"));
 
     protected override IEFConfiguration GetEFConfiguration()
         => new MySqlEFConfiguration(
-            _configuration.GetConnectionString("DataRepoConnection")
+            Configuration.GetConnectionString("DataRepoConnection")
             ?? throw new Exception($"DataRepoConnection string not found in configuration"));
 
     private class MySqlEFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)

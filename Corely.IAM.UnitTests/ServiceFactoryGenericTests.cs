@@ -26,13 +26,17 @@ public abstract class ServiceFactoryGenericTests
 {
     protected abstract ServiceFactoryBase ServiceFactory { get; }
 
+    private static readonly IServiceCollection _serviceCollection = new ServiceCollection();
+    private static readonly IConfiguration _configuration = new ConfigurationManager();
+
+    protected static IServiceCollection ServiceCollection => _serviceCollection;
+    protected static IConfiguration Configuration => _configuration;
+
     [Theory, MemberData(nameof(GetRequiredServiceData))]
     public void ServiceFactoryBase_ProvidesService(Type serviceType)
     {
-        var serviceCollection = new ServiceCollection();
-        var configuration = new ConfigurationManager();
-        ServiceFactory.AddIAMServices(serviceCollection, configuration);
-        var serviceProvider = serviceCollection.BuildServiceProvider();
+        ServiceFactory.AddIAMServices();
+        var serviceProvider = ServiceCollection.BuildServiceProvider();
 
         var service = serviceProvider.GetRequiredService(serviceType);
 

@@ -4,20 +4,20 @@ using Corely.IAM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Reflection;
 
 namespace ConsoleTest;
 
-internal class ServiceFactory(IConfiguration configuration) : EFServiceFactory
+internal class ServiceFactory(IServiceCollection serviceCollection, IConfiguration configuration)
+    : EFServiceFactory(serviceCollection, configuration)
 {
     private readonly IConfiguration _configuration = configuration;
 
     protected override void AddLogging(ILoggingBuilder builder)
-    {
-        builder.AddSerilog(logger: Log.Logger, dispose: false);
-    }
+        => builder.AddSerilog(logger: Log.Logger, dispose: false);
 
     protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
         => new SecurityConfigurationProvider(

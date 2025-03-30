@@ -2,6 +2,8 @@
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.Security.KeyStore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -18,7 +20,8 @@ public class EFServiceFactoryTests : ServiceFactoryGenericTests
         }
     }
 
-    private class MockServiceFactory : EFServiceFactory
+    private class MockServiceFactory(IServiceCollection serviceCollection, IConfiguration configuration)
+        : EFServiceFactory(serviceCollection, configuration)
     {
         private class MockSecurityConfigurationProvider : ISecurityConfigurationProvider
         {
@@ -26,22 +29,16 @@ public class EFServiceFactoryTests : ServiceFactoryGenericTests
         }
 
         protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
-        {
-            return new MockSecurityConfigurationProvider();
-        }
+            => new MockSecurityConfigurationProvider();
 
         protected override void AddLogging(ILoggingBuilder builder)
-        {
-            builder.AddProvider(NullLoggerProvider.Instance);
-        }
+            => builder.AddProvider(NullLoggerProvider.Instance);
 
         protected override IEFConfiguration GetEFConfiguration()
-        {
-            return new TestEFConfiguration();
-        }
+            => new TestEFConfiguration();
     }
 
-    private readonly MockServiceFactory _mockServiceFactory = new();
+    private readonly MockServiceFactory _mockServiceFactory = new(ServiceCollection, Configuration);
 
     protected override ServiceFactoryBase ServiceFactory => _mockServiceFactory;
 }

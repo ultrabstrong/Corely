@@ -34,8 +34,7 @@ internal class Program
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    new ServiceFactory(hostContext.Configuration)
-                        .AddIAMServices(services, hostContext.Configuration);
+                    new ServiceFactory(services, hostContext.Configuration).AddIAMServices();
 
                     var commandBaseTypes = AppDomain.CurrentDomain
                     .GetAssemblies()

@@ -8,24 +8,17 @@ namespace Corely.IAM.UnitTests;
 public class ServiceFactory : MockDbServiceFactory
 {
     private readonly IServiceProvider _serviceProvider;
-
-    public ServiceFactory()
+    public ServiceFactory() : base(new ServiceCollection(), new ConfigurationManager())
     {
-        var serviceCollection = new ServiceCollection();
-        var configuration = new ConfigurationManager();
-        AddIAMServices(serviceCollection, configuration);
-        _serviceProvider = serviceCollection.BuildServiceProvider();
+        AddIAMServices();
+        _serviceProvider = ServiceCollection.BuildServiceProvider();
     }
 
     protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
-    {
-        return new SecurityConfigurationProvider();
-    }
+        => new SecurityConfigurationProvider();
 
     protected override void AddLogging(ILoggingBuilder builder)
-    {
-        builder.AddProvider(NullLoggerProvider.Instance);
-    }
+        => builder.AddProvider(NullLoggerProvider.Instance);
 
     public T GetRequiredService<T>() where T : notnull
         => _serviceProvider.GetRequiredService<T>();

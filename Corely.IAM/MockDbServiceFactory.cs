@@ -2,16 +2,18 @@
 using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.DataAccess.Mock;
 using Corely.DataAccess.Mock.Repos;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.IAM;
 
-public abstract class MockDbServiceFactory : ServiceFactoryBase
+public abstract class MockDbServiceFactory(IServiceCollection serviceCollection, IConfiguration configuration)
+    : ServiceFactoryBase(serviceCollection, configuration)
 {
-    protected override void AddDataServices(IServiceCollection services)
+    protected sealed override void AddDataServices()
     {
-        services.AddSingleton(typeof(IReadonlyRepo<>), typeof(MockReadonlyRepo<>));
-        services.AddSingleton(typeof(IRepo<>), typeof(MockRepo<>));
-        services.AddSingleton<IUnitOfWorkProvider, MockUoWProvider>();
+        ServiceCollection.AddSingleton(typeof(IReadonlyRepo<>), typeof(MockReadonlyRepo<>));
+        ServiceCollection.AddSingleton(typeof(IRepo<>), typeof(MockRepo<>));
+        ServiceCollection.AddSingleton<IUnitOfWorkProvider, MockUoWProvider>();
     }
 }

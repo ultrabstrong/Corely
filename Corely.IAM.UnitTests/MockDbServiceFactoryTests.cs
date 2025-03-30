@@ -1,4 +1,6 @@
 ﻿using Corely.Security.KeyStore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -6,7 +8,8 @@ namespace Corely.IAM.UnitTests;
 
 public class MockDbServiceFactoryTests : ServiceFactoryGenericTests
 {
-    private class MockServiceFactory : MockDbServiceFactory
+    private class MockServiceFactory(IServiceCollection serviceCollection, IConfiguration configuration)
+        : MockDbServiceFactory(serviceCollection, configuration)
     {
         private class MockSecurityConfigurationProvider : ISecurityConfigurationProvider
         {
@@ -14,17 +17,13 @@ public class MockDbServiceFactoryTests : ServiceFactoryGenericTests
         }
 
         protected override ISecurityConfigurationProvider GetSecurityConfigurationProvider()
-        {
-            return new MockSecurityConfigurationProvider();
-        }
+            => new MockSecurityConfigurationProvider();
 
         protected override void AddLogging(ILoggingBuilder builder)
-        {
-            builder.AddProvider(NullLoggerProvider.Instance);
-        }
+            => builder.AddProvider(NullLoggerProvider.Instance);
     }
 
-    private readonly MockServiceFactory _mockServiceFactory = new();
+    private readonly MockServiceFactory _mockServiceFactory = new(ServiceCollection, Configuration);
 
     protected override ServiceFactoryBase ServiceFactory => _mockServiceFactory;
 }

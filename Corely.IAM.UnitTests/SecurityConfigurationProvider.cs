@@ -1,5 +1,4 @@
-﻿using Corely.IAM;
-using Corely.Security.Keys;
+﻿using Corely.Security.Keys;
 using Corely.Security.KeyStore;
 
 namespace Corely.IAM.UnitTests;
@@ -14,7 +13,5 @@ internal class SecurityConfigurationProvider : ISecurityConfigurationProvider
     }
 
     public ISymmetricKeyStoreProvider GetSystemSymmetricKey()
-    {
-        return new InMemorySymmetricKeyStoreProvider(_symmetricKey);
-    }
+        => new InMemorySymmetricKeyStoreProvider(_symmetricKey);
 }

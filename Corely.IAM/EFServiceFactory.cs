@@ -2,19 +2,22 @@
 using Corely.DataAccess.Interfaces.Repos;
 using Corely.DataAccess.Interfaces.UnitOfWork;
 using Corely.IAM.DataAccess;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Corely.IAM;
 
-public abstract class EFServiceFactory : ServiceFactoryBase
+public abstract class EFServiceFactory(IServiceCollection serviceCollection, IConfiguration configuration)
+    : ServiceFactoryBase(serviceCollection, configuration)
+
 {
-    protected override void AddDataServices(IServiceCollection services)
+    protected sealed override void AddDataServices()
     {
-        services.AddScoped(serviceProvider => GetEFConfiguration());
-        services.AddDbContext<IamDbContext>();
-        services.AddScoped(typeof(IReadonlyRepo<>), typeof(IamEfReadonlyRepo<>));
-        services.AddScoped(typeof(IRepo<>), typeof(IamEfRepo<>));
-        services.AddScoped<IUnitOfWorkProvider, IamEfUoWProvider>();
+        ServiceCollection.AddScoped(serviceProvider => GetEFConfiguration());
+        ServiceCollection.AddDbContext<IamDbContext>();
+        ServiceCollection.AddScoped(typeof(IReadonlyRepo<>), typeof(IamEfReadonlyRepo<>));
+        ServiceCollection.AddScoped(typeof(IRepo<>), typeof(IamEfRepo<>));
+        ServiceCollection.AddScoped<IUnitOfWorkProvider, IamEfUoWProvider>();
     }
 
     protected abstract IEFConfiguration GetEFConfiguration();
