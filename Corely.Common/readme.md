@@ -27,9 +27,6 @@ This library contains common utilities to be used in other projects.
 ## Installation
 `dotnet add package Corely.Common`
 
-## Getting Started
-Here's a brief example of how to use the library:
-
 ## Repository
 [Corely.Common](https://github.com/ultrabstrong/Corely/tree/master/Corely.Common)
 
@@ -182,16 +179,16 @@ String extensions are provided for encoding and decoding different formats. Supp
 
 #### Base64
 ```csharp
-var base64 = "SGVsbG8gV29ybGQ=";
-var decoded = base64.Base64Decode();
-var encoded = decoded.Base64Encode();
+var helloWorld = "Hello World";
+var encoded = helloWorld.Base64Encode();
+var decoded = encoded.Base64Decode();
 ```
 
 #### URL
 ```csharp
-var url = "Hello%20World";
-var decoded = url.UrlDecode();
-var encoded = decoded.UrlEncode();
+var helloWorld = "Hello World";
+var encoded = helloWorld.UrlEncode();
+var decoded = encoded.UrlDecode();
 ```
 
 ### Byte Array Extension For Finding BOM (Byte Order Mark)
