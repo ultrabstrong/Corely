@@ -1,12 +1,10 @@
 ﻿using ConsoleTest.SerilogCustomization;
 using Corely.Common.Providers.Redaction;
-using Corely.Common.Text.Delimited;
 using Corely.IAM.Models;
 using Corely.IAM.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging.Abstractions;
 using Serilog;
 
 namespace ConsoleTest;
@@ -33,19 +31,6 @@ internal class Program
 
         try
         {
-            long lastRecordEndPosition = 0; // Get the last successful record end position
-            var provider = new DelimitedTextProvider(NullLogger<DelimitedTextProvider>.Instance);
-            using (var stream = File.OpenRead("data.csv"))
-            {
-                var record = new ReadRecordResult() { StartPosition = lastRecordEndPosition };
-                while (record.HasMore)
-                {
-                    record = provider.ReadNextRecord(stream, record.EndPosition);
-                    // Handle record
-                    // Save the end position of this record in case next record read is interrupted
-                }
-            }
-            return;
             using var host = new HostBuilder()
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
