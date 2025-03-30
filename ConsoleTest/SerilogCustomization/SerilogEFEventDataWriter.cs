@@ -37,7 +37,7 @@ internal class SerilogEFEventDataWriter
         {
             LogLevel.Trace => LogEventLevel.Verbose,
             LogLevel.Debug => LogEventLevel.Verbose,
-            LogLevel.Information => LogEventLevel.Verbose,
+            LogLevel.Information => LogEventLevel.Verbose, // Not an accident. These include the SQL queries executed by EF. May not want to include in production.
             LogLevel.Warning => LogEventLevel.Warning,
             LogLevel.Error => LogEventLevel.Error,
             LogLevel.Critical => LogEventLevel.Fatal,
