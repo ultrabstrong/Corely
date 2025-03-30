@@ -192,7 +192,7 @@ var decoded = encoded.UrlDecode();
 ```
 
 ### Byte Array Extension For Finding BOM (Byte Order Mark)
-In some cases, when reading a file, the BOM (Byte Order Mark) is included in the byte array. This extension method allows you to find the BOM in the byte array and remove it.
+In some cases, when reading a file, the BOM (Byte Order Mark) is prepended to the byte array. This extension method returns the encoding represented by the BOM.
 
 This extension returns a `System.Text.Encoding` for the BOM. It can be invoked as follows:
 ```csharp
@@ -207,7 +207,7 @@ Supported BOMs:
 - UTF-32 (Little Endian): 0xFF, 0xFE, 0x00, 0x00
 - UTF-32 (Big Endian): 0x00, 0x00, 0xFE, 0xFF
 
-UTF-8 will be returned if BOM is not found or not recognized.
+UTF-8 is returned if BOM is not found or not recognized.
 
 ## Converters
 
