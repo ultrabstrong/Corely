@@ -12,26 +12,6 @@ This utility provides functionality for reading and writing delimited text data 
 - Handling of escaped delimiters
 - Support for multiple encodings (UTF-8, UTF-16, etc.)
 
-## Usage
-
-### Reading All Delimited Text
-```csharp
-using Corely.Common.DelimitedText;
-
-// Create a new instance of DelimitedTextProvider
-var provider = new DelimitedTextProvider();
-
-// Read all records from a CSV file
-using (var stream = File.OpenRead("data.csv"))
-{
-	var records = provider.ReadAllRecords(stream, Delimiter.Comma);
-	foreach (var record in records)
-	{
-		Console.WriteLine(string.Join(", ", record));
-	}
-}
-```
-
 ## DelimitedTextProvider
 
 The `DelimitedTextProvider` class implements `IDelimitedTextProvider` and provides robust reading and writing of delimited text data with support for various delimiters.
@@ -59,6 +39,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 ```
 
 ### Reading One Record At A Time
+
 This is the strongest feature of this utility and is preferred for large data streams
 ```csharp
 var provider = new DelimitedTextProvider(NullLogger<DelimitedTextProvider>.Instance);
@@ -83,6 +64,7 @@ The `ReadRecordResult` class is returned from `ReadNextRecord` and contains the 
 - `EndPosition`: End position of the record in the data stream
 
 ### Reading All Records At Once
+
 This can be used for small data streams.
 ```csharp
 var provider = new DelimitedTextProvider(NullLogger<DelimitedTextProvider>.Instance);
@@ -97,6 +79,7 @@ using (var stream = File.OpenRead("data.csv"))
 ```
 
 ### Writing One Record At A Time
+
 ```csharp
 var provider = new DelimitedTextProvider(NullLogger<DelimitedTextProvider>.Instance);
 var data = new string[][] {
@@ -114,6 +97,7 @@ using (var stream = File.OpenWrite("data.csv"))
 ```
 
 ### Writing All Records At Once
+
 ```csharp
 var provider = new DelimitedTextProvider(NullLogger<DelimitedTextProvider>.Instance);
 var data = new string[][] {
