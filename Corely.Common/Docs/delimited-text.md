@@ -10,7 +10,9 @@ This utility provides functionality for reading and writing delimited text data 
 - Support for common delimiters (comma, tab, pipe, semicolon)
 - Custom delimiter configuration
 - Handling of escaped delimiters
-- Support for multiple encodings (UTF-8, UTF-16, etc.)
+- Support for reading multiple encodings (UTF-8, UTF-16, etc.)
+  - See [BOM Documentation](extensions/byte-array-extensions.md) for more information
+- All write operations are encoded in UTF-8
 
 ## DelimitedTextProvider
 
