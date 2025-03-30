@@ -1,6 +1,6 @@
 ﻿using Corely.Common.Text.Delimited;
 
-namespace Corely.Miscellaneous.UnitTests.Text.Delimited;
+namespace Corely.Common.UnitTests.Text.Delimited;
 
 public class ReadRecordResultTests
 {

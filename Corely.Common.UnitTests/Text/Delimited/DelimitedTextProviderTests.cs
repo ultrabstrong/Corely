@@ -1,5 +1,4 @@
 ﻿using Corely.Common.Text.Delimited;
-using Corely.Miscellaneous.Text.Delimited;
 using Corely.TestBase;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -48,7 +47,7 @@ public class DelimitedTextProviderTests
     [Fact]
     public void WriteRecord_WritesCorrectRecord()
     {
-        string expected = "test1,te\"\"st2,\"te,st3\"";
+        string expected = "test1,te\"\"st2,\"te,st3\"\r\n";
         string actual;
         using (MemoryStream stream = new())
         {

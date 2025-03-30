@@ -35,7 +35,7 @@ public class PagedResultTests
         Assert.Equal(0, _pagedResponse.PageNum);
         Assert.Empty(_pagedResponse.Items);
 
-        var ex = Record.Exception(() => _pagedResponse.GetNextChunk());
+        var ex = Record.Exception(() => _pagedResponse.GetNextPage());
 
         Assert.NotNull(ex);
         Assert.IsType<InvalidOperationException>(ex);
@@ -46,7 +46,7 @@ public class PagedResultTests
     {
         _pagedResponse = new PagedResult<object>(skip, take);
 
-        _pagedResponse.OnGetNextChunk += (pagedResponse) =>
+        _pagedResponse.OnGetNextPage += (pagedResponse) =>
         {
             pagedResponse.AddItems(_testData
                 .Skip(pagedResponse.Skip)
@@ -56,7 +56,7 @@ public class PagedResultTests
 
         while (_pagedResponse.HasMore)
         {
-            _pagedResponse.GetNextChunk();
+            _pagedResponse.GetNextPage();
             Assert.Equal((int)Math.Ceiling((decimal)_pagedResponse.Skip / take), _pagedResponse.PageNum);
         }
 
@@ -74,7 +74,7 @@ public class PagedResultTests
     {
         _pagedResponse = new PagedResult<object>(skip, take);
 
-        _pagedResponse.OnGetNextChunk += (pagedResponse) =>
+        _pagedResponse.OnGetNextPage += (pagedResponse) =>
         {
             pagedResponse.SetItems(_testData
                 .Skip(pagedResponse.Skip)
@@ -85,7 +85,7 @@ public class PagedResultTests
         do
         {
             var lastSkip = _pagedResponse.Skip;
-            _pagedResponse.GetNextChunk();
+            _pagedResponse.GetNextPage();
             var took = _pagedResponse.Skip - lastSkip;
 
             Assert.Equal((int)Math.Ceiling((decimal)_pagedResponse.Skip / take), _pagedResponse.PageNum);
@@ -110,21 +110,21 @@ public class PagedResultTests
     public static IEnumerable<object[]> SkipAndTakeTestData() =>
     [
         [0, 1],
-            [0, 10],
-            [0, 17],
-            [7, 17],
-            [0, 50],
-            [13, 50],
-            [0, 99],
-            [13, 99],
-            [0, 100],
-            [5, 100],
-            [0, 101],
-            [16, 101],
-            [99, 1],
-            [99, 2],
-            [100, 1],
-            [101, 5]
+        [0, 10],
+        [0, 17],
+        [7, 17],
+        [0, 50],
+        [13, 50],
+        [0, 99],
+        [13, 99],
+        [0, 100],
+        [5, 100],
+        [0, 101],
+        [16, 101],
+        [99, 1],
+        [99, 2],
+        [100, 1],
+        [101, 5]
     ];
 
     [Fact]
@@ -132,32 +132,32 @@ public class PagedResultTests
     {
         _pagedResponse = new PagedResult<object>(0, 1);
 
-        _pagedResponse.OnGetNextChunk += (pagedResponse) =>
+        _pagedResponse.OnGetNextPage += (pagedResponse) =>
         {
             pagedResponse.SetItems(_testData);
             return pagedResponse;
         };
 
-        _pagedResponse.GetNextChunk();
+        _pagedResponse.GetNextPage();
         Assert.False(_pagedResponse.HasMore);
-        Assert.Null(_pagedResponse.GetNextChunk());
+        Assert.Null(_pagedResponse.GetNextPage());
     }
 
     [Fact]
-    public void OnGetNextChunk_Throws_WhenSubscriberRemoved()
+    public void OnGetNextPage_Throws_WhenSubscriberRemoved()
     {
         _pagedResponse = new PagedResult<object>(0, 1);
 
-        PagedResult<object> GetNextChunkHandler(PagedResult<object> pagedResponse)
+        PagedResult<object> GetNextPageHandler(PagedResult<object> pagedResponse)
         {
             pagedResponse.SetItems(_testData);
             return pagedResponse;
         }
 
-        _pagedResponse.OnGetNextChunk += GetNextChunkHandler;
-        _pagedResponse.OnGetNextChunk -= GetNextChunkHandler;
+        _pagedResponse.OnGetNextPage += GetNextPageHandler;
+        _pagedResponse.OnGetNextPage -= GetNextPageHandler;
 
-        var ex = Record.Exception(() => _pagedResponse.GetNextChunk());
+        var ex = Record.Exception(() => _pagedResponse.GetNextPage());
 
         Assert.NotNull(ex);
         Assert.IsType<InvalidOperationException>(ex);

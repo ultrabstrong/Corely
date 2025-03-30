@@ -11,20 +11,20 @@ public class PagedResult<T>
     public int PageNum => (int)Math.Ceiling((decimal)_skip / _take);
     public bool HasMore { get; private set; } = true;
 
-    public delegate PagedResult<T> GetNextChunkDelegate(PagedResult<T> currentChunk);
-    public event GetNextChunkDelegate OnGetNextChunk
+    public delegate PagedResult<T> GetNextPageDelegate(PagedResult<T> currentPage);
+    public event GetNextPageDelegate OnGetNextPage
     {
         add
         {
-            _onGetNextChunk -= value;
-            _onGetNextChunk += value;
+            _onGetNextPage -= value; // Ensure only one subscriber
+            _onGetNextPage += value;
         }
         remove
         {
-            _onGetNextChunk -= value;
+            _onGetNextPage -= value;
         }
     }
-    private event GetNextChunkDelegate _onGetNextChunk = null!;
+    private event GetNextPageDelegate _onGetNextPage = null!;
 
     public PagedResult(int skip, int take)
     {
@@ -35,17 +35,17 @@ public class PagedResult<T>
         _take = take;
     }
 
-    public PagedResult<T>? GetNextChunk()
+    public PagedResult<T>? GetNextPage()
     {
-        if (_onGetNextChunk == null)
+        if (_onGetNextPage == null)
         {
-            throw new InvalidOperationException($"{nameof(OnGetNextChunk)} must be set first");
+            throw new InvalidOperationException($"{nameof(OnGetNextPage)} must be set first");
         }
         if (HasMore == false)
         {
             return null;
         }
-        return _onGetNextChunk?.Invoke(this);
+        return _onGetNextPage?.Invoke(this);
     }
 
     public void SetItems(IEnumerable<T> items)
@@ -53,7 +53,7 @@ public class PagedResult<T>
         UpdatePage(items?.Count() ?? 0);
         if (items != null)
         {
-            Items = new(items);
+            Items = [.. items];
         }
     }
 

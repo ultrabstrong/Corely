@@ -1,11 +1,10 @@
 ﻿using Corely.Common.Extensions;
-using Corely.Common.Text.Delimited;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace Corely.Miscellaneous.Text.Delimited;
+namespace Corely.Common.Text.Delimited;
 
-public class DelimitedTextProvider : IDelimitedTextProvider
+public sealed class DelimitedTextProvider : IDelimitedTextProvider
 {
     private readonly ILogger<DelimitedTextProvider> _logger;
     private readonly char _tokenDelimiter;
@@ -82,6 +81,15 @@ public class DelimitedTextProvider : IDelimitedTextProvider
         return result ?? new() { HasMore = false };
     }
 
+    /// <summary>
+    /// Read the next record from the stream, one character at a time.
+    ///   - This achieves O(n) time and space complexity and records the current read position.
+    /// Read position allows recovery without re-processing the entire stream
+    ///   - In cases where stream is interrupted, the last read position can be used to continue reading
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="encoding"></param>
+    /// <returns></returns>
     private ReadRecordResult ReadNextRecord(Stream stream, Encoding encoding)
     {
         ReadRecordResult result = new();
@@ -319,6 +327,7 @@ public class DelimitedTextProvider : IDelimitedTextProvider
         _logger.LogDebug("Writing record to stream");
         StreamWriter writer = new(writeTo, Encoding.UTF8);
         WriteRecord(record, writer);
+        writer.Write(_recordDelimiter);
         writer.Flush();
         _logger.LogDebug("Finished writing record to stream");
     }

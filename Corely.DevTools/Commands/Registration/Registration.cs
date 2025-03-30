@@ -10,7 +10,7 @@ internal partial class Registration : CommandBase
 
     protected override void Execute()
     {
-        Console.WriteLine("You must specify a sub command. Use --help to see the available sub commands");
+        Console.WriteLine("Sub command missing. Use --help to see the available sub commands");
     }
 
 
