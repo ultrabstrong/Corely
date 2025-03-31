@@ -5,13 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>Corely Common</Title>
-    <Description>Common utilities to be used in other projects</Description>
+    <Description>This library contains common utilities to help simplify common programming tasks</Description>
     <RepositoryUrl>https://github.com/ultrabstrong/Corely/tree/master/Corely.Common</RepositoryUrl>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/ultrabstrong/Corely</PackageProjectUrl>
     <PackageTags>Corely Common Utilities Redaction Extensions Converters</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReleaseNotes></PackageReleaseNotes>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
