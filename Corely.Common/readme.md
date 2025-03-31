@@ -16,10 +16,13 @@ Corely.Common provides a collection of utility classes and extensions that can b
 - Converters for JSON serialization/deserialization
 
 ## Documentation
-Details about each utility can be found in the [documentation](Docs/index.md).
+Details about each utility can be found in the [documentation](https://github.com/ultrabstrong/Corely/blob/master/Corely.Common/Docs/index.md).
 
 ## Repository
 [Corely.Common](https://github.com/ultrabstrong/Corely/tree/master/Corely.Common)
+
+## Contributing
+We welcome contributions! Please read our [contributing guidelines](../CONTRIBUTING.md) to get started.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
