@@ -40,7 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Corely.Common\Corely.Common.csproj" />
     <ProjectReference Include="..\Corely.DataAccess\Corely.DataAccess.csproj" />
     <ProjectReference Include="..\Corely.IAM\Corely.IAM.csproj" />
     <ProjectReference Include="..\Corely.Security\Corely.Security.csproj" />
