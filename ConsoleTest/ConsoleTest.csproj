@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="Corely.Common" Version="1.0.1" />
+    <PackageReference Include="Corely.DataAccess" Version="1.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.3" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.3.efcore.9.0.0" />
@@ -31,7 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Corely.DataAccess\Corely.DataAccess.csproj" />
     <ProjectReference Include="..\Corely.IAM\Corely.IAM.csproj" />
   </ItemGroup>
 

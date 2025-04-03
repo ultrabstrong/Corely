@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.DataAccess", "Corely.DataAccess\Corely.DataAccess.csproj", "{EA424CC7-FF06-4B94-9E95-50FFE4679926}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAM", "Corely.IAM\Corely.IAM.csproj", "{B8428647-121D-476A-BBD6-B377D159417A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.DevTools", "Corely.DevTools\Corely.DevTools.csproj", "{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}"
@@ -24,8 +22,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAMDataAccessMigrations", "Corely.IAMDataAccessMigrations\Corely.IAMDataAccessMigrations.csproj", "{792DE99D-F0A7-47B9-85F6-B566B04CF643}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.Security", "Corely.Security\Corely.Security.csproj", "{5E136CE2-0014-46E8-A9FB-1BF8F32E24E6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.DataAccess.UnitTests", "Corely.DataAccess.UnitTests\Corely.DataAccess.UnitTests.csproj", "{A1239807-DAD2-4796-8EE4-CC4E816424B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.TestBase", "Corely.TestBase\Corely.TestBase.csproj", "{4D52A1EB-0EDD-4DD3-AC3C-781769773434}"
 EndProject
@@ -45,10 +41,6 @@ Global
 		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA424CC7-FF06-4B94-9E95-50FFE4679926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA424CC7-FF06-4B94-9E95-50FFE4679926}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA424CC7-FF06-4B94-9E95-50FFE4679926}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA424CC7-FF06-4B94-9E95-50FFE4679926}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B8428647-121D-476A-BBD6-B377D159417A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B8428647-121D-476A-BBD6-B377D159417A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8428647-121D-476A-BBD6-B377D159417A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -65,10 +57,6 @@ Global
 		{5E136CE2-0014-46E8-A9FB-1BF8F32E24E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E136CE2-0014-46E8-A9FB-1BF8F32E24E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E136CE2-0014-46E8-A9FB-1BF8F32E24E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1239807-DAD2-4796-8EE4-CC4E816424B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1239807-DAD2-4796-8EE4-CC4E816424B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1239807-DAD2-4796-8EE4-CC4E816424B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1239807-DAD2-4796-8EE4-CC4E816424B2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4D52A1EB-0EDD-4DD3-AC3C-781769773434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4D52A1EB-0EDD-4DD3-AC3C-781769773434}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D52A1EB-0EDD-4DD3-AC3C-781769773434}.Release|Any CPU.ActiveCfg = Release|Any CPU
