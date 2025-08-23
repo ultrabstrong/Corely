@@ -20,6 +20,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.Domain", "Corely.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.DevTools", "Corely.DevTools\Corely.DevTools.csproj", "{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.IAM", "Corely.IAM\Corely.IAM.csproj", "{2D031F86-095A-44B5-9A4B-8E7981A20766}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.IAM.UnitTests", "Corely.IAM.UnitTests\Corely.IAM.UnitTests.csproj", "{5A5D2FD3-F960-4BFF-80AA-6A42C1594546}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +54,14 @@ Global
 		{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D031F86-095A-44B5-9A4B-8E7981A20766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D031F86-095A-44B5-9A4B-8E7981A20766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D031F86-095A-44B5-9A4B-8E7981A20766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D031F86-095A-44B5-9A4B-8E7981A20766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A5D2FD3-F960-4BFF-80AA-6A42C1594546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A5D2FD3-F960-4BFF-80AA-6A42C1594546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A5D2FD3-F960-4BFF-80AA-6A42C1594546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5D2FD3-F960-4BFF-80AA-6A42C1594546}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
