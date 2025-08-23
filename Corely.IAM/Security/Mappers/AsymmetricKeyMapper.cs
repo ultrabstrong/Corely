@@ -1,5 +1,6 @@
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Security.Entities;
+using Corely.IAM.Security.Factories;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Users.Entities;
 
@@ -7,6 +8,14 @@ namespace Corely.IAM.Security.Mappers;
 
 internal static class AsymmetricKeyMapper
 {
+    private static ISymmetricEncryptionProviderFactory? _encryptionProviderFactory;
+
+    // This would be set by dependency injection in a real scenario
+    internal static void SetEncryptionProviderFactory(ISymmetricEncryptionProviderFactory factory)
+    {
+        _encryptionProviderFactory = factory;
+    }
+
     public static AsymmetricKeyEntity ToEntity(AsymmetricKey source)
     {
         if (source == null) return null!;
@@ -15,7 +24,7 @@ internal static class AsymmetricKeyMapper
         {
             Id = source.Id,
             PublicKey = source.PublicKey,
-            EncryptedPrivateKey = source.PrivateKey, // In real implementation, this would be encrypted
+            EncryptedPrivateKey = EncryptPrivateKey(source.PrivateKey),
             CreatedAt = source.CreatedAt,
             ExpiresAt = source.ExpiresAt
         };
@@ -29,7 +38,7 @@ internal static class AsymmetricKeyMapper
         {
             Id = source.Id,
             PublicKey = source.PublicKey,
-            PrivateKey = source.EncryptedPrivateKey, // In real implementation, this would be decrypted
+            PrivateKey = DecryptPrivateKey(source.EncryptedPrivateKey),
             CreatedAt = source.CreatedAt,
             ExpiresAt = source.ExpiresAt
         };
@@ -79,5 +88,23 @@ internal static class AsymmetricKeyMapper
         if (source == null) return null!;
         
         return ToModel((AsymmetricKeyEntity)source);
+    }
+
+    private static string EncryptPrivateKey(string privateKey)
+    {
+        if (_encryptionProviderFactory == null)
+            return privateKey; // Fallback if not configured
+
+        var provider = _encryptionProviderFactory.GetDefaultProvider();
+        return provider.Encrypt(privateKey);
+    }
+
+    private static string DecryptPrivateKey(string encryptedPrivateKey)
+    {
+        if (_encryptionProviderFactory == null)
+            return encryptedPrivateKey; // Fallback if not configured
+
+        var provider = _encryptionProviderFactory.GetProviderForDecrypting(encryptedPrivateKey);
+        return provider.Decrypt(encryptedPrivateKey);
     }
 }

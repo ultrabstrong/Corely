@@ -1,5 +1,6 @@
 using Corely.IAM.Accounts.Entities;
 using Corely.IAM.Security.Entities;
+using Corely.IAM.Security.Factories;
 using Corely.IAM.Security.Models;
 using Corely.IAM.Users.Entities;
 
@@ -7,6 +8,14 @@ namespace Corely.IAM.Security.Mappers;
 
 internal static class SymmetricKeyMapper
 {
+    private static ISymmetricEncryptionProviderFactory? _encryptionProviderFactory;
+
+    // This would be set by dependency injection in a real scenario
+    internal static void SetEncryptionProviderFactory(ISymmetricEncryptionProviderFactory factory)
+    {
+        _encryptionProviderFactory = factory;
+    }
+
     public static SymmetricKeyEntity ToEntity(SymmetricKey source)
     {
         if (source == null) return null!;
@@ -14,7 +23,7 @@ internal static class SymmetricKeyMapper
         return new SymmetricKeyEntity
         {
             Id = source.Id,
-            EncryptedKey = source.Key, // In real implementation, this would be encrypted
+            EncryptedKey = EncryptKey(source.Key),
             CreatedAt = source.CreatedAt,
             ExpiresAt = source.ExpiresAt
         };
@@ -27,7 +36,7 @@ internal static class SymmetricKeyMapper
         return new SymmetricKey
         {
             Id = source.Id,
-            Key = source.EncryptedKey, // In real implementation, this would be decrypted
+            Key = DecryptKey(source.EncryptedKey),
             CreatedAt = source.CreatedAt,
             ExpiresAt = source.ExpiresAt
         };
@@ -75,5 +84,23 @@ internal static class SymmetricKeyMapper
         if (source == null) return null!;
         
         return ToModel((SymmetricKeyEntity)source);
+    }
+
+    private static string EncryptKey(string key)
+    {
+        if (_encryptionProviderFactory == null)
+            return key; // Fallback if not configured
+
+        var provider = _encryptionProviderFactory.GetDefaultProvider();
+        return provider.Encrypt(key);
+    }
+
+    private static string DecryptKey(string encryptedKey)
+    {
+        if (_encryptionProviderFactory == null)
+            return encryptedKey; // Fallback if not configured
+
+        var provider = _encryptionProviderFactory.GetProviderForDecrypting(encryptedKey);
+        return provider.Decrypt(encryptedKey);
     }
 }
