@@ -18,6 +18,7 @@
   <ItemGroup>
     <PackageReference Include="Corely.Common" Version="1.1.0" />
     <PackageReference Include="Corely.DataAccess" Version="1.1.0" />
+    <PackageReference Include="Corely.Security" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.9" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
@@ -34,7 +35,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Corely.IAM\Corely.IAM.csproj" />
-    <ProjectReference Include="..\Corely.Security\Corely.Security.csproj" />
   </ItemGroup>
 
   <ItemGroup>
