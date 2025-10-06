@@ -177,7 +177,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
         var result = await _registrationService.RegisterUserAsync(request);
 
         Assert.Equal(RegisterUserResultCode.Success, result.ResultCode);
-        _unitOfWorkProviderMock.Verify(m => m.CommitAsync(), Times.Once);
+        _unitOfWorkProviderMock.Verify(m => m.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -190,7 +190,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
 
         Assert.Equal(RegisterUserResultCode.UserCreationError, result.ResultCode);
         _basicAuthProcessorMock.Verify(m => m.UpsertBasicAuthAsync(It.IsAny<UpsertBasicAuthRequest>()), Times.Never);
-        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -202,7 +202,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
         var result = await _registrationService.RegisterUserAsync(request);
 
         Assert.Equal(RegisterUserResultCode.BasicAuthCreationError, result.ResultCode);
-        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -224,7 +224,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
         Assert.Equal(RegisterAccountResultCode.Success, result.ResultCode);
         _roleProcessorMock.Verify(m => m.CreateDefaultSystemRolesAsync(It.IsAny<int>()), Times.Once);
         _userProcessorMock.Verify(m => m.AssignRolesToUserAsync(It.IsAny<AssignRolesToUserRequest>()), Times.Once);
-        _unitOfWorkProviderMock.Verify(m => m.CommitAsync(), Times.Once);
+        _unitOfWorkProviderMock.Verify(m => m.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -236,7 +236,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
         var result = await _registrationService.RegisterAccountAsync(request);
 
         Assert.Equal(RegisterAccountResultCode.AccountCreationError, result.ResultCode);
-        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -248,7 +248,7 @@ public class RegistrationServiceTests : ProcessorBaseTests
         var result = await _registrationService.RegisterAccountAsync(request);
 
         Assert.Equal(RegisterAccountResultCode.SystemRoleAssignmentError, result.ResultCode);
-        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(), Times.Once);
+        _unitOfWorkProviderMock.Verify(m => m.RollbackAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]

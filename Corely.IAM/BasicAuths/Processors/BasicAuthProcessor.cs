@@ -55,7 +55,7 @@ internal class BasicAuthProcessor : ProcessorBase, IBasicAuthProcessor
             else
             {
                 Logger.LogDebug("Found existing basic auth for UserId {UserId}. Updating", request.UserId);
-                await _basicAuthRepo.UpdateAsync(basicAuthEntity, a => a.Id == basicAuthEntity.Id);
+                await _basicAuthRepo.UpdateAsync(basicAuthEntity);
                 result = new UpsertBasicAuthResult(UpsertBasicAuthResultCode.Success, string.Empty, existingAuth.Id, UpsertType.Update);
             }
 

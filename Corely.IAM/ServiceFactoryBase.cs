@@ -33,7 +33,7 @@ public abstract class ServiceFactoryBase(IServiceCollection serviceCollection, I
 
     public void AddIAMServices()
     {
-        ServiceCollection.AddAutoMapper(typeof(IMapProvider).Assembly);
+        ServiceCollection.AddAutoMapper(cfg => { }, typeof(IMapProvider).Assembly);
         ServiceCollection.AddScoped<IMapProvider, AutoMapperMapProvider>();
 
 

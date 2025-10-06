@@ -187,7 +187,7 @@ public class UserProcessorTests
         var user = await userRepo.GetAsync(u => u.Id == result.CreatedId);
         user?.SymmetricKeys?.Clear();
         user?.AsymmetricKeys?.Clear();
-        await userRepo.UpdateAsync(user!, u => u.Id == user!.Id);
+        await userRepo.UpdateAsync(user!);
 
         var token = await _userProcessor.GetUserAuthTokenAsync(result.CreatedId);
 
@@ -237,7 +237,7 @@ public class UserProcessorTests
         var user = await userRepo.GetAsync(u => u.Id == result.CreatedId);
         user?.SymmetricKeys?.Clear();
         user?.AsymmetricKeys?.Clear();
-        await userRepo.UpdateAsync(user!, u => u.Id == user!.Id);
+        await userRepo.UpdateAsync(user!);
 
         var isValid = await _userProcessor.IsUserAuthTokenValidAsync(result.CreatedId, token!);
 
@@ -285,7 +285,7 @@ public class UserProcessorTests
         var userRepo = _serviceFactory.GetRequiredService<IRepo<UserEntity>>();
         var user = await userRepo.GetAsync(u => u.Id == result.CreatedId);
         user?.AsymmetricKeys?.Clear();
-        await userRepo.UpdateAsync(user!, u => u.Id == user!.Id);
+        await userRepo.UpdateAsync(user!);
 
         var key = await _userProcessor.GetAsymmetricSignatureVerificationKeyAsync(result.CreatedId);
 

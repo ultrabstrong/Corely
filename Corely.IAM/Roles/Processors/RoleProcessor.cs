@@ -147,7 +147,7 @@ internal class RoleProcessor : ProcessorBase, IRoleProcessor
                 roleEntity.Permissions.Add(permission);
             }
 
-            await _roleRepo.UpdateAsync(roleEntity, r => r.Id == roleEntity.Id);
+            await _roleRepo.UpdateAsync(roleEntity);
 
             var invalidPermissionIds = request.PermissionIds.Except(permissionEntities.Select(p => p.Id)).ToList();
             if (invalidPermissionIds.Count > 0)

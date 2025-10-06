@@ -113,7 +113,7 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
         {
             Validate(user);
             var userEntity = MapTo<UserEntity>(user)!; // user is validated
-            await _userRepo.UpdateAsync(userEntity, u => u.Id == userEntity.Id);
+            await _userRepo.UpdateAsync(userEntity);
         });
     }
 
@@ -262,7 +262,7 @@ internal class UserProcessor : ProcessorBase, IUserProcessor
                 userEntity.Roles.Add(role);
             }
 
-            await _userRepo.UpdateAsync(userEntity, u => u.Id == userEntity.Id);
+            await _userRepo.UpdateAsync(userEntity);
 
             var invalidRoleIds = request.RoleIds.Except(roleEntities.Select(r => r.Id)).ToList();
             if (invalidRoleIds.Count > 0)

@@ -92,7 +92,7 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
                 groupEntity.Users.Add(user);
             }
 
-            await _groupRepo.UpdateAsync(groupEntity, g => g.Id == groupEntity.Id);
+            await _groupRepo.UpdateAsync(groupEntity);
 
             var invalidUserIds = request.UserIds.Except(userEntities.Select(u => u.Id)).ToList();
             if (invalidUserIds.Count > 0)
@@ -136,7 +136,7 @@ internal class GroupProcessor : ProcessorBase, IGroupProcessor
                 groupEntity.Roles.Add(role);
             }
 
-            await _groupRepo.UpdateAsync(groupEntity, g => g.Id == groupEntity.Id);
+            await _groupRepo.UpdateAsync(groupEntity);
 
             var invalidRoleIds = request.RoleIds.Except(roleEntities.Select(r => r.Id)).ToList();
             if (invalidRoleIds.Count > 0)
