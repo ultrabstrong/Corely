@@ -1,11 +1,10 @@
-﻿using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.Configurations;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Security.Constants;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.IAM.Users.Entities;
 
-internal class UserSymmetricKeyEntityConfiguration : EntityConfigurationBase<UserSymmetricKeyEntity>
+internal class UserSymmetricKeyEntityConfiguration : EntityConfigurationBase<UserSymmetricKeyEntity, int>
 {
     public UserSymmetricKeyEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
     {

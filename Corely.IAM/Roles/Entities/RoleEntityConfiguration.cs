@@ -1,12 +1,11 @@
-﻿using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.Configurations;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Roles.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.IAM.Roles.Entities;
 
-internal sealed class RoleEntityConfiguration : EntityConfigurationBase<RoleEntity>
+internal sealed class RoleEntityConfiguration : EntityConfigurationBase<RoleEntity, int>
 {
     public RoleEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
     {

@@ -1,11 +1,10 @@
-﻿using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.Configurations;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.BasicAuths.Constants;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.IAM.BasicAuths.Entities;
 
-internal sealed class BasicAuthEntityConfiguration : EntityConfigurationBase<BasicAuthEntity>
+internal sealed class BasicAuthEntityConfiguration : EntityConfigurationBase<BasicAuthEntity, int>
 {
     public BasicAuthEntityConfiguration(IEFDbTypes efDbTypes) : base(efDbTypes)
     {

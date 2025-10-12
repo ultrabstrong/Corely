@@ -54,7 +54,6 @@ internal class RegistrationService : IRegistrationService
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         _logger.LogInformation("Registering user {User}", request.Username);
 
-        bool uowSucceeded = false;
         try
         {
             await _uowProvider.BeginAsync();
@@ -74,16 +73,14 @@ internal class RegistrationService : IRegistrationService
             }
 
             await _uowProvider.CommitAsync();
-            uowSucceeded = true;
             _logger.LogInformation("User {Username} registered with Id {UserId}", request.Username, userResult.CreatedId);
             return new RegisterUserResult(RegisterUserResultCode.Success, string.Empty, userResult.CreatedId, basicAuthResult.CreatedId);
         }
-        finally
+        catch (Exception ex)
         {
-            if (!uowSucceeded)
-            {
-                await _uowProvider.RollbackAsync();
-            }
+            _logger.LogError(ex, "Exception occurred while registering user {Username}", request.Username);
+            await _uowProvider.RollbackAsync();
+            throw;
         }
     }
 

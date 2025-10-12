@@ -1,10 +1,9 @@
-﻿using Corely.DataAccess.EntityFramework;
-using Corely.DataAccess.EntityFramework.Configurations;
+﻿using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM.Permissions.Constants;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Corely.IAM.Permissions.Entities;
-internal sealed class PermissionEntityConfiguration : EntityConfigurationBase<PermissionEntity>
+internal sealed class PermissionEntityConfiguration : EntityConfigurationBase<PermissionEntity, int>
 {
     public PermissionEntityConfiguration(IEFDbTypes eFDbTypes) : base(eFDbTypes)
     {

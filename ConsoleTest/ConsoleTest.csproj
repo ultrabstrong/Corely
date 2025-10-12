@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corely.Common" Version="1.1.0" />
-    <PackageReference Include="Corely.DataAccess" Version="1.1.0" />
-    <PackageReference Include="Corely.Security" Version="1.0.0" />
+    <PackageReference Include="Corely.Common" Version="1.1.1" />
+    <PackageReference Include="Corely.DataAccess" Version="2.2.1" />
+    <PackageReference Include="Corely.Security" Version="1.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.9" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
