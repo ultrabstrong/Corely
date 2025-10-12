@@ -11,10 +11,11 @@ internal class IamDbContext : DbContext
     private readonly IEFConfiguration _efConfiguration;
 
     public IamDbContext(IEFConfiguration efConfiguration)
-        : base()
-    {
-        _efConfiguration = efConfiguration;
-    }
+        : base() { _efConfiguration = efConfiguration; }
+
+    public IamDbContext(DbContextOptions<IamDbContext> opts, IEFConfiguration efConfiguration)
+        : base(opts) { _efConfiguration = efConfiguration; }
+
 
     public DbSet<AccountEntity> Accounts { get; set; } = null!;
     public DbSet<UserEntity> Users { get; set; } = null!;
