@@ -3,7 +3,7 @@ using Corely.IAM.Security.Models;
 using Corely.IAM.Security.Validators;
 using Corely.Security.Encryption.Models;
 using Corely.Security.Encryption.Providers;
-using Corely.TestBase.ClassData;
+using Corely.IAM.UnitTests.ClassData;
 using FluentValidation.TestHelper;
 
 namespace Corely.IAM.UnitTests.Security.Validators;

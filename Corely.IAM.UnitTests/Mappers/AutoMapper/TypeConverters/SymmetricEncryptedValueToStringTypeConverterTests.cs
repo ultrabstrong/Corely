@@ -1,8 +1,8 @@
 ﻿using AutoFixture;
 using Corely.IAM.Mappers.AutoMapper.TypeConverters;
+using Corely.IAM.UnitTests.ClassData;
 using Corely.Security.Encryption.Models;
 using Corely.Security.Encryption.Providers;
-using Corely.TestBase.ClassData;
 
 namespace Corely.IAM.UnitTests.Mappers.AutoMapper.TypeConverters;
 

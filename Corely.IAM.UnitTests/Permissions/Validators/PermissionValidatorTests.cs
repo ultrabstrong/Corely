@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Permissions.Constants;
 using Corely.IAM.Permissions.Models;
 using Corely.IAM.Permissions.Validators;
-using Corely.TestBase.ClassData;
+using Corely.IAM.UnitTests.ClassData;
 using FluentValidation.TestHelper;
 
 namespace Corely.IAM.UnitTests.Permissions.Validators;

@@ -9,7 +9,7 @@ using Corely.IAM.Roles.Entities;
 using Corely.IAM.Roles.Models;
 using Corely.IAM.Roles.Processors;
 using Corely.IAM.Validators;
-using Corely.TestBase.ClassData;
+using Corely.IAM.UnitTests.ClassData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

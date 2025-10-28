@@ -43,7 +43,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Corely.IAM\Corely.IAM.csproj" />
-    <ProjectReference Include="..\Corely.TestBase\Corely.TestBase.csproj" />
   </ItemGroup>
 
 </Project>

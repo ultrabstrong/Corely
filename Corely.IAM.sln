@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33717.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{00650092-1E47-4E30-ACDD-FF2E988BDF6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAM.ConsoleApp", "Corely.IAM.ConsoleTest\Corely.IAM.ConsoleApp.csproj", "{00650092-1E47-4E30-ACDD-FF2E988BDF6E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAM.UnitTests", "Corely.IAM.UnitTests\Corely.IAM.UnitTests.csproj", "{2C44C9BD-5486-45AE-8921-4855DF5DF9D5}"
 EndProject
@@ -17,11 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAM", "Corely.IAM\Corely.IAM.csproj", "{B8428647-121D-476A-BBD6-B377D159417A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.DevTools", "Corely.DevTools\Corely.DevTools.csproj", "{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAM.DevTools", "Corely.IAM.DevTools\Corely.IAM.DevTools.csproj", "{AA4DFB75-9A22-44DA-8682-9ACD2941A8A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAMDataAccessMigrations", "Corely.IAMDataAccessMigrations\Corely.IAMDataAccessMigrations.csproj", "{792DE99D-F0A7-47B9-85F6-B566B04CF643}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corely.TestBase", "Corely.TestBase\Corely.TestBase.csproj", "{4D52A1EB-0EDD-4DD3-AC3C-781769773434}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corely.IAM.DataAccessMigrations", "Corely.IAM.DataAccessMigrations\Corely.IAM.DataAccessMigrations.csproj", "{792DE99D-F0A7-47B9-85F6-B566B04CF643}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +47,6 @@ Global
 		{792DE99D-F0A7-47B9-85F6-B566B04CF643}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{792DE99D-F0A7-47B9-85F6-B566B04CF643}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{792DE99D-F0A7-47B9-85F6-B566B04CF643}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4D52A1EB-0EDD-4DD3-AC3C-781769773434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D52A1EB-0EDD-4DD3-AC3C-781769773434}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D52A1EB-0EDD-4DD3-AC3C-781769773434}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D52A1EB-0EDD-4DD3-AC3C-781769773434}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

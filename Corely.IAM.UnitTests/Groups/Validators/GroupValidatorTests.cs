@@ -1,7 +1,7 @@
 ﻿using Corely.IAM.Groups.Constants;
 using Corely.IAM.Groups.Models;
 using Corely.IAM.Groups.Validators;
-using Corely.TestBase.ClassData;
+using Corely.IAM.UnitTests.ClassData;
 using FluentValidation.TestHelper;
 
 namespace Corely.IAM.UnitTests.Groups.Validators;

@@ -2,7 +2,7 @@
 
 namespace Corely.IAM.UnitTests;
 
-internal static class NonPublicHelpers
+public static class NonPublicHelpers
 {
     private const BindingFlags BINDING_FLAGS = BindingFlags.Instance
             | BindingFlags.NonPublic
