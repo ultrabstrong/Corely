@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Events;
 
 namespace ConsoleTest;
 
@@ -19,13 +20,15 @@ internal class Program
     static async Task Main()
     {
         Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
+            .MinimumLevel.Override("System", LogEventLevel.Fatal)
             .Enrich.FromLogContext()
-            .Enrich.WithProperty("Application", nameof(ConsoleTest))
+            .Enrich.WithProperty("Application", $"Corely.IAM.{nameof(ConsoleTest)}")
             .Enrich.WithProperty("CorrelationId", Guid.NewGuid())
             .Enrich.With(new SerilogRedactionEnricher([
                 new PasswordRedactionProvider()]))
-            .MinimumLevel.Verbose()
-            .WriteTo.Console()
+            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
             .WriteTo.Seq("http://localhost:5341")
             .CreateLogger();
 

@@ -34,7 +34,7 @@ public class EFServiceFactoryTests : ServiceFactoryGenericTests
         protected override void AddLogging(ILoggingBuilder builder)
             => builder.AddProvider(NullLoggerProvider.Instance);
 
-        protected override IEFConfiguration GetEFConfiguration()
+        protected override IEFConfiguration GetEFConfiguration(IServiceProvider sp)
             => new TestEFConfiguration();
     }
 

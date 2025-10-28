@@ -12,10 +12,10 @@ public abstract class EFServiceFactory(IServiceCollection serviceCollection, ICo
 {
     protected sealed override void AddDataServices()
     {
-        ServiceCollection.AddScoped(serviceProvider => GetEFConfiguration());
+        ServiceCollection.AddScoped(GetEFConfiguration);
         ServiceCollection.AddDbContext<IamDbContext>();
         ServiceCollection.RegisterEntityFrameworkReposAndUoW();
     }
 
-    protected abstract IEFConfiguration GetEFConfiguration();
+    protected abstract IEFConfiguration GetEFConfiguration(IServiceProvider sp);
 }

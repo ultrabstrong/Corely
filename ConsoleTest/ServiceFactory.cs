@@ -1,4 +1,4 @@
-﻿using ConsoleTest.SerilogCustomization;
+﻿using Corely.DataAccess.EntityFramework;
 using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM;
 using Microsoft.EntityFrameworkCore;
@@ -24,46 +24,50 @@ internal class ServiceFactory(IServiceCollection serviceCollection, IConfigurati
             _configuration["SystemSymmetricEncryptionKey"]
             ?? throw new Exception($"SystemSymmetricEncryptionKey not found in configuration"));
 
-    protected override IEFConfiguration GetEFConfiguration()
+    protected override IEFConfiguration GetEFConfiguration(IServiceProvider sp)
         => new MySqlEFConfiguration(
             _configuration.GetConnectionString("DataRepoConnection")
-            ?? throw new Exception($"DataRepoConnection string not found in configuration"));
+            ?? throw new Exception($"DataRepoConnection string not found in configuration"),
+            sp.GetRequiredService<ILoggerFactory>()
+        );
 
-    private class MySqlEFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
+    private class MySqlEFConfiguration(string connectionString, ILoggerFactory loggerFactory) : EFMySqlConfigurationBase(connectionString)
     {
+        private readonly Microsoft.Extensions.Logging.ILogger _efLogger = loggerFactory.CreateLogger("EFCore");
+
         public override void Configure(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
                 .UseMySql(
                     connectionString,
                     ServerVersion.AutoDetect(connectionString),
-                    b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
+                    b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
+                )
                 .LogTo(
-                    filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
-                    logger: SerilogEFEventDataWriter.Write);
+                    logger: e =>
+                        EFEventDataLogger.Write(_efLogger, e, EFEventDataLogger.WriteInfoLogsAs.Trace),
+                    filter: (eventId, _) => eventId.Id == RelationalEventId.CommandExecuted.Id
+                );
 #if DEBUG
-            optionsBuilder
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors();
+            optionsBuilder.EnableSensitiveDataLogging().EnableDetailedErrors();
 #endif
         }
     }
 
-    private class InMemoryConfig : EFInMemoryConfigurationBase
+    public sealed class InMemoryConfig(string dbName, ILoggerFactory loggerFactory)
+        : EFInMemoryConfigurationBase
     {
-        public override void Configure(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder
-                .UseInMemoryDatabase("TestDb")
+        private readonly Microsoft.Extensions.Logging.ILogger _efLogger = loggerFactory.CreateLogger("EFCore");
+
+        public override void Configure(DbContextOptionsBuilder b) =>
+            b.UseInMemoryDatabase(dbName)
                 .LogTo(
-                    filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
-                    logger: SerilogEFEventDataWriter.Write);
-#if DEBUG
-            optionsBuilder
+                    logger: e =>
+                        EFEventDataLogger.Write(_efLogger, e, EFEventDataLogger.WriteInfoLogsAs.Trace),
+                    filter: (eventId, _) => eventId.Id == RelationalEventId.CommandExecuted.Id
+                )
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors();
-#endif
-        }
     }
 
 }

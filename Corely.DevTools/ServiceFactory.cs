@@ -1,5 +1,5 @@
-﻿using Corely.DataAccess.EntityFramework.Configurations;
-using Corely.DevTools.SerilogCustomization;
+﻿using Corely.DataAccess.EntityFramework;
+using Corely.DataAccess.EntityFramework.Configurations;
 using Corely.IAM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -22,13 +22,16 @@ internal class ServiceFactory(IServiceCollection servicesCollection, IConfigurat
             Configuration["SystemSymmetricEncryptionKey"]
             ?? throw new Exception($"SystemSymmetricEncryptionKey not found in configuration"));
 
-    protected override IEFConfiguration GetEFConfiguration()
+    protected override IEFConfiguration GetEFConfiguration(IServiceProvider sp)
         => new MySqlEFConfiguration(
             Configuration.GetConnectionString("DataRepoConnection")
-            ?? throw new Exception($"DataRepoConnection string not found in configuration"));
+            ?? throw new Exception($"DataRepoConnection string not found in configuration"),
+            sp.GetRequiredService<ILoggerFactory>());
 
-    private class MySqlEFConfiguration(string connectionString) : EFMySqlConfigurationBase(connectionString)
+    private class MySqlEFConfiguration(string connectionString, ILoggerFactory loggerFactory) : EFMySqlConfigurationBase(connectionString)
     {
+        private readonly Microsoft.Extensions.Logging.ILogger _efLogger = loggerFactory.CreateLogger("EFCore");
+
         public override void Configure(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
@@ -37,8 +40,10 @@ internal class ServiceFactory(IServiceCollection servicesCollection, IConfigurat
                     ServerVersion.AutoDetect(connectionString),
                     b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
                 .LogTo(
-                    filter: (eventId, logLevel) => eventId.Id == RelationalEventId.CommandExecuted.Id,
-                    logger: SerilogEFEventDataWriter.Write);
+                    logger: e =>
+                        EFEventDataLogger.Write(_efLogger, e, EFEventDataLogger.WriteInfoLogsAs.Trace),
+                    filter: (eventId, _) => eventId.Id == RelationalEventId.CommandExecuted.Id
+                );
         }
     }
 
